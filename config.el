@@ -6,8 +6,8 @@
 
 ;; Some functionality uses this to identify you, e.g. GPG configuration, email
 ;; clients, file templates and snippets.
-(setq user-full-name "John Doe"
-      user-mail-address "john@doe.com")
+(setq user-full-name nil
+      user-mail-address nil)
 
 ;; Doom exposes five (optional) variables for controlling fonts in Doom. Here
 ;; are the three important ones:
@@ -19,8 +19,10 @@
 ;;
 ;; They all accept either a font-spec, font string ("Input Mono-12"), or xlfd
 ;; font string. You generally only need these two:
-(setq doom-font (font-spec :family "monospace" :size 20 :weight 'semi-light)
-      doom-variable-pitch-font (font-spec :family "sans" :size 21))
+(setq doom-font (font-spec :family "Fira Code" :size 20)
+      doom-big-font (font-spec :family "Fira Code" :size 32)
+      doom-variable-pitch-font (font-spec :family "Overpass" :size 20)
+      doom-serif-font (font-spec :family "IBM Plex Mono" :weight 'light))
 
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
@@ -53,6 +55,40 @@
 ;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
 ;; they are implemented.
 
+;; Consider all windows when resizing and stretch cursor to glyph size
+(setq-default window-combination-resize t
+              x-stretch-cursor t)
+
+;; Raise undo-limit to 80Mb, more granular insert mode undos and auto save
+(setq undo-limit 80000000
+      evil-want-fine-undo t
+      auto-save-default t
+      truncate-string-ellipsis "…")
+
+;; On laptops it's nice to know how much power you have
+(unless (equal "Battery status not available"
+               (battery))
+  (display-battery-mode 1))
+
+;; Iterate through CamelCase words
+(global-subword-mode 1)
+
+;; Start emacs in fullscreen maximized
+(add-to-list 'default-frame-alist '(fullscreen . maximized))
+
+;; Ask for file after splitting the window
+(setq evil-vsplit-window-right t
+      evil-split-window-below t)
+
+(defadvice! prompt-for-buffer (&rest _)
+  :after '(evil-window-split evil-window-vsplit)
+  (+ivy/switch-buffer))
+
+(setq +ivy-buffer-preview t)
+
+;; Org mode as default mode
+(setq-default major-mode 'org-mode)
+
 ;; Enable visual lines with word wrapping
 (global-visual-line-mode t)
 
@@ -64,23 +100,20 @@
 (setq scroll-margin 5)
 (setq smooth-scroll-margin 5)
 
-;; Start emacs in fullscreen maximized
-(add-to-list 'default-frame-alist '(fullscreen . maximized))
-
 ;; AucTex settings
 (setq TeX-command-force "LatexMk"
       TeX-PDF-mode t
-      TeX-source-correlate-mode t
-      TeX-source-correlate-method 'synctex
-      TeX-view-program-list
-      '(("Okular" "okular --unique %o#src:%n%b")
-        ("Sumatra PDF" ("\"/mnt/c/Program Files/SumatraPDF/SumatraPDF.exe\" -reuse-instance"
-                        (mode-io-correlate " -forward-search %b %n ") " %o"))
-        ))
+      ;; Tex-source-correlate-mode t
+      +latex-viewers '(pdf-tools okular sumatrapdf zathura skim evince))
 
-(eval-after-load 'tex
- '(progn
-   (assq-delete-all 'output-pdf TeX-view-program-selection)
-   (add-to-list 'TeX-view-program-selection '(output-pdf "Sumatra PDF")))
- )
-(server-start)
+;; (setq TeX-source-correlate-method 'synctex
+;;       TeX-view-program-list
+;;       '(("Sumatra PDF" ("\"/mnt/c/Program Files/SumatraPDF/SumatraPDF.exe\" -reuse-instance"
+;;                         (mode-io-correlate " -forward-search %b %n ") " %o"))))
+
+;; (eval-after-load 'tex
+;;  '(progn
+;;    (assq-delete-all 'output-pdf TeX-view-program-selection)
+;;    (add-to-list 'TeX-view-program-selection '(output-pdf "Sumatra PDF")))
+;;  )
+;; (server-start)
