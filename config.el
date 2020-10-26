@@ -19,9 +19,9 @@
 ;;
 ;; They all accept either a font-spec, font string ("Input Mono-12"), or xlfd
 ;; font string. You generally only need these two:
-(setq doom-font (font-spec :family "Fira Code" :size 20)
-      doom-big-font (font-spec :family "Fira Code" :size 32)
-      doom-variable-pitch-font (font-spec :family "Overpass" :size 20)
+(setq doom-font (font-spec :family "Fira Code" :size 18)
+      doom-big-font (font-spec :family "Fira Code" :size 30)
+      doom-variable-pitch-font (font-spec :family "Overpass" :size 18)
       doom-serif-font (font-spec :family "IBM Plex Mono" :weight 'light))
 
 ;; There are two ways to load a theme. Both assume the theme is installed and
@@ -103,6 +103,9 @@
 ;; Scrolling margins
 (setq scroll-margin 5)
 (setq smooth-scroll-margin 5)
+
+;; Define zenmode text scale
+(setq +zen-text-scale 0.5)
 
 ;; AucTex settings
 (setq TeX-command-force "LatexMk"
