@@ -59,11 +59,15 @@
 (setq-default window-combination-resize t
               x-stretch-cursor t)
 
-;; Raise undo-limit to 80Mb, more granular insert mode undos and auto save
+;; Raise undo-limit to 80Mb and enable auto save
 (setq undo-limit 80000000
-      evil-want-fine-undo t
-      auto-save-default t
-      truncate-string-ellipsis "…")
+      auto-save-default t)
+
+;; More granualr inset mode undos
+(setq evil-want-fine-undo t)
+
+;; Truncate ...
+(setq truncate-string-ellipsis "…")
 
 ;; On laptops it's nice to know how much power you have
 (unless (equal "Battery status not available"
@@ -74,7 +78,7 @@
 (global-subword-mode 1)
 
 ;; Start emacs in fullscreen maximized
-(add-to-list 'default-frame-alist '(fullscreen . maximized))
+;; (add-to-list 'default-frame-alist '(fullscreen . maximized))
 
 ;; Ask for file after splitting the window
 (setq evil-vsplit-window-right t
@@ -103,17 +107,83 @@
 ;; AucTex settings
 (setq TeX-command-force "LatexMk"
       TeX-PDF-mode t
-      ;; Tex-source-correlate-mode t
       +latex-viewers '(pdf-tools okular sumatrapdf zathura skim evince))
 
-;; (setq TeX-source-correlate-method 'synctex
-;;       TeX-view-program-list
-;;       '(("Sumatra PDF" ("\"/mnt/c/Program Files/SumatraPDF/SumatraPDF.exe\" -reuse-instance"
-;;                         (mode-io-correlate " -forward-search %b %n ") " %o"))))
+;; Rebindings for TeX-font
+(defun latex/font-bold () (interactive) (TeX-font nil ?\C-b))
+(defun latex/font-medium () (interactive) (TeX-font nil ?\C-m))
+(defun latex/font-code () (interactive) (TeX-font nil ?\C-t))
+(defun latex/font-emphasis () (interactive) (TeX-font nil ?\C-e))
+(defun latex/font-italic () (interactive) (TeX-font nil ?\C-i))
+(defun latex/font-clear () (interactive) (TeX-font nil ?\C-d))
+(defun latex/font-calligraphic () (interactive) (TeX-font nil ?\C-a))
+(defun latex/font-small-caps () (interactive) (TeX-font nil ?\C-c))
+(defun latex/font-sans-serif () (interactive) (TeX-font nil ?\C-f))
+(defun latex/font-normal () (interactive) (TeX-font nil ?\C-n))
+(defun latex/font-serif () (interactive) (TeX-font nil ?\C-r))
+(defun latex/font-oblique () (interactive) (TeX-font nil ?\C-s))
+(defun latex/font-upright () (interactive) (TeX-font nil ?\C-u))
 
-;; (eval-after-load 'tex
-;;  '(progn
-;;    (assq-delete-all 'output-pdf TeX-view-program-selection)
-;;    (add-to-list 'TeX-view-program-selection '(output-pdf "Sumatra PDF")))
-;;  )
-;; (server-start)
+;; Latex Spacemacs keybindings
+(map! (:when (featurep! :lang latex)
+  (:map LaTeX-mode-map
+    (:prefix ("z" . "TeX-fold")
+      "=" 'TeX-fold-math
+      "b" 'TeX-fold-buffer
+      "B" 'TeX-fold-clearout-buffer
+      "e" 'TeX-fold-env
+      "I" 'TeX-fold-clearout-item
+      "m" 'TeX-fold-macro
+      "p" 'TeX-fold-paragraph
+      "P" 'TeX-fold-clearout-paragraph
+      "r" 'TeX-fold-region
+      "R" 'TeX-fold-clearout-region
+      "z" 'TeX-fold-dwim)
+    :localleader
+      "\\"  'TeX-insert-macro
+      "-"   'TeX-recenter-output-buffer
+      "%"   'TeX-comment-or-uncomment-paragraph
+      ";"   'comment-or-uncomment-region
+      "a"   'TeX-command-run-all
+      "k"   'TeX-kill-job
+      "l"   'TeX-recenter-output-buffer
+      "m"   'TeX-insert-macro
+      "n"   'TeX-next-error
+      "N"   'TeX-previous-error
+      "v"   'TeX-view
+      "*"   'LaTeX-mark-section
+      "."   'LaTeX-mark-environment
+      "c"   'LaTeX-close-environment
+      "e"   'LaTeX-environment
+      "i"   'LaTeX-insert-item
+      "s"   'LaTeX-section
+      (:prefix ("f" . "LaTeX-fill")
+        "e"  'LaTeX-fill-environment
+        "p"  'LaTeX-fill-paragraph
+        "r"  'LaTeX-fill-region
+        "s"  'LaTeX-fill-section)
+      (:prefix ("p" . "preview")
+        "b"  'preview-buffer
+        "c"  'preview-clearout
+        "d"  'preview-document
+        "e"  'preview-environment
+        "f"  'preview-cache-preamble
+        "p"  'preview-at-point
+        "r"  'preview-region
+        "s"  'preview-section)
+      (:prefix ("x" . "text")
+        "b"  'latex/font-bold
+        "c"  'latex/font-code
+        "e"  'latex/font-emphasis
+        "i"  'latex/font-italic
+        "r"  'latex/font-clear
+        "o"  'latex/font-oblique
+        "B"  'latex/font-medium
+        "r"  'latex/font-clear
+        (:prefix ("f" . "font")
+          "c" 'latex/font-small-caps
+          "f" 'latex/font-sans-serif
+          "a" 'latex/font-calligraphic
+          "n" 'latex/font-normal
+          "u" 'latex/font-upright
+          "r" 'latex/font-serif)))))
