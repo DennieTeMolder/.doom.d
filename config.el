@@ -195,9 +195,29 @@
           "u" 'latex/font-upright
           "r" 'latex/font-serif)))))
 
-;; ESS R keybindings, make underscore <-
+;; Define function to insert a pipe symbol for R mode
+(setq ess-pipe-list '("%>%"))
+
+(defun ess-insert-pipe (arg)
+  "Based on `ess-insert-assign', invoking the command twice reverts the insert"
+  (interactive "p")
+  (if (string= ess-language "S")
+      (let* ((pipe (car ess-pipe-list))
+             (event (event-basic-type last-input-event))
+             (char (ignore-errors (format "%c" event))))
+        (cond ((and char (ess-inside-string-or-comment-p))
+               (insert char))
+              ((re-search-backward pipe (- (point) (length pipe)) t)
+               (if (and char (numberp event))
+                   (replace-match char t t)
+                 (replace-match "")))
+              (t (insert pipe))))
+    (funcall #'self-insert-command arg)))
+
+;; ESS R keybindings, make underscore <-, type twice to undo
 (map! (:map ess-r-mode-map
        "_" 'ess-insert-assign
+       ">" 'ess-insert-pipe
        :localleader
          (:prefix "h"
            :desc "rdired list objects" "r" 'ess-rdired)))
