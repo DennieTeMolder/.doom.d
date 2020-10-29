@@ -77,9 +77,6 @@
 ;; Iterate through CamelCase words
 (global-subword-mode 1)
 
-;; Start emacs in fullscreen maximized
-;; (add-to-list 'default-frame-alist '(fullscreen . maximized))
-
 ;; Ask for file after splitting the window
 (setq evil-vsplit-window-right t
       evil-split-window-below t)
@@ -104,13 +101,19 @@
 (setq scroll-margin 5)
 (setq smooth-scroll-margin 5)
 
+;; Projectle sorting by recently opened
+(setq projectile-sort-order 'recentf)
+
 ;; Define zenmode text scale
 (setq +zen-text-scale 0.5)
 
-;; AucTex settings
+;; AucTex settings, inverse searching also requires config of the pdf reader
 (setq TeX-command-force "LatexMk"
       TeX-PDF-mode t
-      +latex-viewers '(pdf-tools okular sumatrapdf zathura skim evince))
+      +latex-viewers '(okular pdf-tools sumatrapdf zathura skim evince))
+
+;; Compatibility with multi-file documents
+(setq-default TeX-master nil)
 
 ;; Rebindings for TeX-font
 (defun latex/font-bold () (interactive) (TeX-font nil ?\C-b))
@@ -148,6 +151,7 @@
       "%"   'TeX-comment-or-uncomment-paragraph
       ";"   'comment-or-uncomment-region
       "a"   'TeX-command-run-all
+      :desc "TeX build master" "b" 'TeX-command-master
       "k"   'TeX-kill-job
       "l"   'TeX-recenter-output-buffer
       "m"   'TeX-insert-macro
@@ -190,3 +194,10 @@
           "n" 'latex/font-normal
           "u" 'latex/font-upright
           "r" 'latex/font-serif)))))
+
+;; ESS R keybindings, make underscore <-
+(map! (:map ess-r-mode-map
+       "_" 'ess-insert-assign
+       :localleader
+         (:prefix "h"
+           :desc "rdired list objects" "r" 'ess-rdired)))

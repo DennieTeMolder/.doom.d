@@ -26,8 +26,8 @@
        ;;ido               ; the other *other* search engine...
        (ivy               ; a search engine for love and life
         +icons            ; icons are nice
-        +prescient        ; I know what I want(ed)
-        +fuzzy)           ; fuzzy searching
+        ;; +fuzzy            ; fuzzy searching
+        +prescient)       ; I know what I want(ed)
 
        :ui
        ;;deft              ; notational velocity for Emacs
@@ -49,8 +49,7 @@
        (popup            ; tame sudden yet inevitable temporary windows
         +all             ; catch all popups that start with an asterix
         +defaults)       ; default popup rules
-       (tabs             ; a tab bar for Emacs
-        +centaur-tabs)   ; prittier tabs
+       tabs             ; a tab bar for Emacs
        treemacs          ; a project drawer, like neotree but cooler
        ;;unicode           ; extended unicode support for various languages
        vc-gutter         ; vcs diff in the fringe
@@ -105,7 +104,7 @@
        (eval +overlay)     ; run code, run (also, repls)
        ;;gist              ; interacting with github gists
        lookup              ; navigate your code and its documentation
-       ;;lsp
+       lsp
        magit             ; a git porcelain for Emacs
        ;;make              ; run make tasks from Emacs
        ;;pass              ; password manager for nerds
@@ -135,7 +134,8 @@
        ;;elm               ; care for a cup of TEA?
        emacs-lisp        ; drown in parentheses
        ;;erlang            ; an elegant language for a more civilized age
-       ;;ess               ; emacs speaks statistics
+       (ess               ; emacs speaks statistics
+        +lsp)
        ;;faust             ; dsp, but you get to keep your soul
        ;;fsharp            ; ML stands for Microsoft's Language
        ;;fstar             ; (dependent) types and (monadic) effects and Z3
