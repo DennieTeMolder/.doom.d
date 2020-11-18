@@ -96,10 +96,12 @@
 ;; Make j/k move visual lines (gj/gk)
 (define-key evil-normal-state-map (kbd "j") 'evil-next-visual-line)
 (define-key evil-normal-state-map (kbd "k") 'evil-previous-visual-line)
+(define-key evil-visual-state-map (kbd "j") 'evil-next-visual-line)
+(define-key evil-visual-state-map (kbd "k") 'evil-previous-visual-line)
 
 ;; Scrolling margins
-(setq scroll-margin 5)
-(setq smooth-scroll-margin 5)
+(setq scroll-margin 3
+      smooth-scroll-margin 3)
 
 ;; Projectle sorting by recently opened
 (setq projectile-sort-order 'recentf)
@@ -110,6 +112,7 @@
 ;; AucTex settings, inverse searching also requires config of the pdf reader
 (setq TeX-command-force "LatexMk"
       TeX-PDF-mode t
+      TeX-source-correlate-start-server t
       +latex-viewers '(okular pdf-tools sumatrapdf zathura skim evince))
 
 ;; Compatibility with multi-file documents
@@ -221,3 +224,9 @@
        :localleader
          (:prefix "h"
            :desc "rdired list objects" "r" 'ess-rdired)))
+
+;; Scroll down in REPL windows
+(setq comint-prompt-read-only t
+      comint-scroll-to-bottom-on-input t
+      comint-scroll-to-bottom-on-output t
+      comint-move-point-for-output t)
