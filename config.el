@@ -109,6 +109,20 @@
 ;; Define zenmode text scale
 (setq +zen-text-scale 0.5)
 
+;; Cycle trough kill ring in transient state
+(defhydra hydra-paste (:color red
+                       :hint nil)
+  "\n[%s(length kill-ring-yank-pointer)/%s(length kill-ring)] \
+ [_C-j_/_C-k_] cycles through yanked text, [_p_/_P_] pastes the same text \
+ above or below. Anything else exits."
+  ("C-j" evil-paste-pop)
+  ("C-k" evil-paste-pop-next)
+  ("p" evil-paste-after)
+  ("P" evil-paste-before))
+
+(map! :nv "p" #'hydra-paste/evil-paste-after
+      :nv "P" #'hydra-paste/evil-paste-before)
+
 ;; AucTex settings, inverse searching also requires config of the pdf reader
 (setq TeX-command-force "LatexMk"
       TeX-PDF-mode t

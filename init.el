@@ -37,7 +37,7 @@
        ;;(emoji +unicode)  ; 🙂
        fill-column       ; a `fill-column' indicator
        hl-todo           ; highlight TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW
-       ;;hydra
+       hydra             ; define transient state-like key bindings
        ;;indent-guides     ; highlighted indent columns
        (ligatures        ; ligatures and symbols to make your code pretty again
         +extra)
