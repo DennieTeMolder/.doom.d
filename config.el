@@ -55,8 +55,12 @@
 ;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
 ;; they are implemented.
 
+;; Quit without confirmation
+(setq confirm-kill-emacs nil)
+
 ;; Consider all windows when resizing and stretch cursor to glyph size
 (setq-default window-combination-resize t
+	      delete-by-moving-to-trash t
               x-stretch-cursor t)
 
 ;; Raise undo-limit to 80Mb and enable auto save
@@ -109,7 +113,8 @@
 ;; Define zenmode text scale
 (setq +zen-text-scale 0.5)
 
-;; Save clipboard to kill ring before deleting text
+;; Save clipboard to kill ring before deleting text 
+;; Cyle kill ring using <C-p> or <C-n> after pasting
 (setq save-interprogram-paste-before-kill t)
 
 ;; AucTex settings, inverse searching also requires config of the pdf reader
