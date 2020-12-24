@@ -151,7 +151,7 @@
        ;;kotlin            ; a better, slicker Java(Script)
        (latex             ; writing papers in Emacs has never been so fun
         +latexmk          ; what else would you use?
-        +cdlatex          ; quick maths symbols
+        ;; +cdlatex          ; quick maths symbols
         +fold)            ; fold the clutter away nicities
        ;;lean
        ;;factor
@@ -165,7 +165,9 @@
        ;;php               ; perl's insecure younger brother
        ;;plantuml          ; diagrams for confusing people more
        ;;purescript        ; javascript, but functional
-       ;;python            ; beautiful is better than ugly
+       (python            ; beautiful is better than ugly
+        ;; +lsp
+        +conda)
        ;;qt                ; the 'cutest' gui framework ever
        ;;racket            ; a DSL for DSLs
        ;;raku              ; the artist formerly known as perl6
