@@ -239,3 +239,6 @@
       comint-scroll-to-bottom-on-input t
       comint-scroll-to-bottom-on-output t
       comint-move-point-for-output t)
+
+;; Snakefiles in python mode
+(add-to-list 'auto-mode-alist '("Snakefile" . python-mode))
