@@ -92,9 +92,6 @@
 
 (setq +ivy-buffer-preview t)
 
-;; Org mode as default mode
-(setq-default major-mode 'org-mode)
-
 ;; Enable visual lines with word wrapping
 (global-visual-line-mode t)
 
