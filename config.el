@@ -241,4 +241,9 @@
       comint-move-point-for-output t)
 
 ;; Snakefiles in python mode
-(add-to-list 'auto-mode-alist '("Snakefile" . python-mode))
+(setq auto-mode-alist
+      (append '(("Snakefile" . python-mode)
+                ("\\.smk\\'" . python-mode))
+              auto-mode-alist))
+;; (add-to-list 'auto-mode-alist '("Snakefile" . python-mode))
+;; (add-to-list 'auto-mode-alist '("\\.smk\\'" . python-mode))
