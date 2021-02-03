@@ -40,7 +40,6 @@
        ;;hydra             ; define transient state-like key bindings
        ;;indent-guides     ; highlighted indent columns
        (ligatures        ; ligatures and symbols to make your code pretty again
-        +fira
         +extra)
        minimap           ; show a map of the code on the side
        modeline          ; snazzy, Atom-inspired modeline, plus API
@@ -98,6 +97,7 @@
 
        :tools
        ;;ansible           ; a crucible for infrastructure as code
+       biblio            ; A collection of bibliographic reference tools
        debugger          ; FIXME stepping through code, to help you add bugs
        ;;direnv
        ;;docker
@@ -164,7 +164,6 @@
        ;;nix               ; I hereby declare "nix geht mehr!"
        ;;ocaml             ; an objective camel
        (org               ; organize your plain life in plain text
-        +pandoc
         +present)
        ;;php               ; perl's insecure younger brother
        ;;plantuml          ; diagrams for confusing people more
@@ -202,4 +201,4 @@
 
        :config
        ;;literate
-       (default +bindings +smartparens +snippets +evil-commands))
+       (default +bindings +smartparens))

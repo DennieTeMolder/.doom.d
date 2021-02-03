@@ -71,9 +71,6 @@
 ;; More granualr inset mode undos
 (setq evil-want-fine-undo t)
 
-;; Truncate ...
-(setq truncate-string-ellipsis "…")
-
 ;; On laptops it's nice to know how much power you have
 (unless (equal "Battery status not available"
                (battery))
@@ -245,5 +242,11 @@
       (append '(("Snakefile" . python-mode)
                 ("\\.smk\\'" . python-mode))
               auto-mode-alist))
-;; (add-to-list 'auto-mode-alist '("Snakefile" . python-mode))
-;; (add-to-list 'auto-mode-alist '("\\.smk\\'" . python-mode))
+
+;; Org-mode settings
+(setq org-indent-indentation-per-level 1)
+
+;; Compilation to make org-ref citations work
+(setq org-latex-pdf-process (list "latexmk -shell-escape -bibtex -f -pdf %f"))
+;; Latex table captions below table
+(setq org-latex-caption-above nil)
