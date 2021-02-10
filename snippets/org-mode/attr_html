@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: srcname
+# key: attr
+# uuid: attr
+# --
+#+ATTR_HTML: $0
