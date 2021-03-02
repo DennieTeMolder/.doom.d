@@ -1,6 +1,6 @@
 # -*- mode: snippet -*-
-# name: srcname
+# name: add html attribute
 # key: attr
-# uuid: attr
+# condition: t
 # --
 #+ATTR_HTML: $0

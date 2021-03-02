@@ -1,7 +1,7 @@
 # -*- mode: snippet -*-
 # name: plotly plot
 # key: plotly
-# uuid: plotly
+# condition: t
 # --
 #+HTML: <div id="$1"></div>
 #+HTML: <script> myPlots.push({json:

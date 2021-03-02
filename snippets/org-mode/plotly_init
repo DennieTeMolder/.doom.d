@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: plotly init
+# key: plotly_init
+# condition: t
+# --
+#+HTML: <script>var myPlots = [];</script>
