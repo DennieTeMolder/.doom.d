@@ -7,6 +7,7 @@
 readr::read_tsv("$1")
 #+END_SRC
 
+#+ATTR_HTML: :border 0
 #+RESULTS:
 
 $0
