@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: #+begin_valign-wrapper block
+# key: <va
+# uuid: <va
+# --
+#+begin_valign-wrapper
+`%`$0
+#+end_valign-wrapper
