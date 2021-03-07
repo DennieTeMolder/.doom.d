@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: reveal speaker notes
+# key: <n
+# condition: t
+# --
+#+BEGIN_NOTES
+  $0
+#+END_NOTES

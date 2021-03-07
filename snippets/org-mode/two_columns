@@ -1,12 +1,11 @@
 # -*- mode: snippet -*-
 # name: Two Columns
 # key: <2c
-# condition: t
 # --
 #+begin_leftcol
 $1
 #+end_leftcol
 
 #+begin_rightcol
-$0
+$2
 #+end_rightcol

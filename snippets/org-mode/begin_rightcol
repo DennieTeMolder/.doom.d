@@ -1,8 +1,0 @@
-# -*- mode: snippet -*-
-# name: #+begin_rightcol block
-# key: <rc
-# uuid: <rc
-# --
-#+begin_rightcol
-`%`$0
-#+end_rightcol
