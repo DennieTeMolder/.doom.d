@@ -255,21 +255,21 @@
 (defun centaur-tabs-buffer-groups ()
   "`centaur-tabs-buffer-groups' control buffers' group rules.
 
-Group centaur-tabs with mode if buffer is derived from `eshell-mode'
-`emacs-lisp-mode' `dired-mode' `org-mode' `magit-mode'.
-All buffer name start with * will group to \"Emacs\".
-Other buffer group by `centaur-tabs-get-group-name' with project name."
+  Group centaur-tabs with mode if buffer is derived from `eshell-mode'
+  `emacs-lisp-mode' `dired-mode' `org-mode' `magit-mode'.
+  All buffer name start with * will group to \"Emacs\".
+  Other buffer group by `centaur-tabs-get-group-name' with project name."
   (list
    (cond
     ((or (string-equal "*" (substring (buffer-name) 0 1))
-	 (memq major-mode '(magit-process-mode
-			    magit-status-mode
-			    magit-diff-mode
-			    magit-log-mode
-			    magit-file-mode
-			    magit-blob-mode
-			    magit-blame-mode
-			    )))
+         (memq major-mode '(magit-process-mode
+                            magit-status-mode
+                            magit-diff-mode
+                            magit-log-mode
+                            magit-file-mode
+                            magit-blob-mode
+                            magit-blame-mode
+                            )))
      "Emacs")
     ((derived-mode-p 'eshell-mode)
      "EShell")
@@ -279,3 +279,6 @@ Other buffer group by `centaur-tabs-get-group-name' with project name."
      "Dired")
     (t
      (centaur-tabs-get-group-name (current-buffer))))))
+
+;; Personal ispell library
+(setq ispell-personal-dictionary "~/MEGA/personal_dict.pws")
