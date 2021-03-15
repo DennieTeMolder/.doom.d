@@ -109,11 +109,14 @@
 (setq projectile-sort-order 'recentf)
 
 ;; Define zenmode text scale
-(setq +zen-text-scale 1.3)
+(setq +zen-text-scale 1.5)
 
 ;; Save clipboard to kill ring before deleting text 
 ;; Cyle kill ring using <C-p> or <C-n> after pasting
 (setq save-interprogram-paste-before-kill t)
+
+;; Personal ispell library
+(setq ispell-personal-dictionary "~/dotfiles/personal_dict.pws")
 
 ;; AucTex settings, inverse searching also requires config of the pdf reader
 (setq TeX-command-force "LatexMk"
@@ -248,6 +251,7 @@
 
 ;; Compilation to make org-ref citations work
 (setq org-latex-pdf-process (list "latexmk -shell-escape -bibtex -f -pdf %f"))
+
 ;; Latex table captions below table
 (setq org-latex-caption-above nil)
 
@@ -279,6 +283,3 @@
      "Dired")
     (t
      (centaur-tabs-get-group-name (current-buffer))))))
-
-;; Personal ispell library
-(setq ispell-personal-dictionary "~/dotfiles/personal_dict.pws")
