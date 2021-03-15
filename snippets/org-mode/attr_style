@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: add html style
+# key: style
+# condition: t
+# --
+#+ATTR_HTML: :style $0
