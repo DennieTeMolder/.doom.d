@@ -281,4 +281,4 @@
      (centaur-tabs-get-group-name (current-buffer))))))
 
 ;; Personal ispell library
-(setq ispell-personal-dictionary "~/MEGA/personal_dict.pws")
+(setq ispell-personal-dictionary "~/dotfiles/personal_dict.pws")
