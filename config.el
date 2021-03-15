@@ -109,7 +109,7 @@
 (setq projectile-sort-order 'recentf)
 
 ;; Define zenmode text scale
-(setq +zen-text-scale 0.5)
+(setq +zen-text-scale 1.3)
 
 ;; Save clipboard to kill ring before deleting text 
 ;; Cyle kill ring using <C-p> or <C-n> after pasting
