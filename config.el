@@ -255,31 +255,7 @@
 ;; Latex table captions below table
 (setq org-latex-caption-above nil)
 
-;; Remove Org mode as buffer group
-(defun centaur-tabs-buffer-groups ()
-  "`centaur-tabs-buffer-groups' control buffers' group rules.
-
-  Group centaur-tabs with mode if buffer is derived from `eshell-mode'
-  `emacs-lisp-mode' `dired-mode' `org-mode' `magit-mode'.
-  All buffer name start with * will group to \"Emacs\".
-  Other buffer group by `centaur-tabs-get-group-name' with project name."
-  (list
-   (cond
-    ((or (string-equal "*" (substring (buffer-name) 0 1))
-         (memq major-mode '(magit-process-mode
-                            magit-status-mode
-                            magit-diff-mode
-                            magit-log-mode
-                            magit-file-mode
-                            magit-blob-mode
-                            magit-blame-mode
-                            )))
-     "Emacs")
-    ((derived-mode-p 'eshell-mode)
-     "EShell")
-    ((derived-mode-p 'emacs-lisp-mode)
-     "Elisp")
-    ((derived-mode-p 'dired-mode)
-     "Dired")
-    (t
-     (centaur-tabs-get-group-name (current-buffer))))))
+;; Fancy org mode bullets
+(use-package! org-bullets
+  :config
+  (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
