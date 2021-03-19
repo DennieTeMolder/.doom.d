@@ -37,7 +37,7 @@
        ;;(emoji +unicode)  ; 🙂
        fill-column       ; a `fill-column' indicator
        hl-todo           ; highlight TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW
-       ;;hydra             ; define transient state-like key bindings
+       hydra             ; define transient state-like key bindings
        ;;indent-guides     ; highlighted indent columns
        (ligatures        ; ligatures and symbols to make your code pretty again
         +extra)
@@ -167,7 +167,7 @@
        ;;php               ; perl's insecure younger brother
        ;;plantuml          ; diagrams for confusing people more
        ;;purescript        ; javascript, but functional
-       python            ; beautiful is better than ugly
+       ;;python            ; beautiful is better than ugly
        ;;+lsp
        ;;+conda)
        ;;qt                ; the 'cutest' gui framework ever
