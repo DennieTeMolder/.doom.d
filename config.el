@@ -256,6 +256,6 @@
 (setq org-latex-caption-above nil)
 
 ;; Fancy org mode bullets
-(use-package! org-bullets
+(use-package! org-superstar
   :config
-  (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
+  (add-hook 'org-mode-hook (lambda () (org-superstar-mode 1))))
