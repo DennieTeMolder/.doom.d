@@ -257,5 +257,15 @@
 
 ;; Fancy org mode bullets
 (use-package! org-superstar
+  :hook (org-mode . org-superstar-mode)
+  :init
   :config
-  (add-hook 'org-mode-hook (lambda () (org-superstar-mode 1))))
+  ;; Make leading stars truly invisible, by rendering them as spaces!
+  (setq org-superstar-leading-bullet ?\s
+        org-superstar-leading-fallback ?\s
+        org-hide-leading-stars nil
+        org-superstar-todo-bullet-alist
+        '(("TODO" . 9744)
+          ("[ ]"  . 9744)
+          ("DONE" . 9745)
+          ("[X]"  . 9745))))
