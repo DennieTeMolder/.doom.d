@@ -252,9 +252,6 @@
 ;; Compilation to make org-ref citations work
 (setq org-latex-pdf-process (list "latexmk -shell-escape -bibtex -f -pdf %f"))
 
-;; Latex table captions below table
-(setq org-latex-caption-above nil)
-
 ;; Fancy org mode bullets
 (use-package! org-superstar
   :hook (org-mode . org-superstar-mode)
@@ -269,3 +266,6 @@
           ("[ ]"  . 9744)
           ("DONE" . 9745)
           ("[X]"  . 9745))))
+
+;; Default bibliography
+(setq! +biblio-default-bibliography-files '("~/MEGA/library.bib"))
