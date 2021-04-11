@@ -267,5 +267,9 @@
           ("DONE" . 9745)
           ("[X]"  . 9745))))
 
+;; This option creates slowdown on lines with citations in large files
+;; You can still check for broken links by running "M-x org-ref"
+(setq org-ref-show-broken-links nil)
+
 ;; Default bibliography
 (setq! +biblio-default-bibliography-files '("~/MEGA/library.bib"))
