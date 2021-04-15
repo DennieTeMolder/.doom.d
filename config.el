@@ -32,7 +32,7 @@
 
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
-(setq org-directory "~/org/")
+;; (setq org-directory "~/org/")
 
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
@@ -272,4 +272,15 @@
 (setq org-ref-show-broken-links nil)
 
 ;; Default bibliography
-(setq! +biblio-default-bibliography-files '("~/MEGA/library.bib"))
+(setq! +biblio-pdf-library-dir "~/MEGA/PKM/files/"
+       +biblio-default-bibliography-files '("~/MEGA/PKM/master.bib" "~/MEGA/library.bib")
+       +biblio-notes-path "~/MEGA/PKM/notes/")
+
+;; Org-roam workflow settings
+(setq org-roam-directory "~/MEGA/PKM/")
+(setq ivy-bibtex-default-action 'ivy-bibtex-edit-notes)
+
+;; keymaps
+(map! (:map org-mode-map "C-c n a" 'orb-note-actions))
+(add-hook 'org-noter-doc-mode-hook (lambda ()
+  (local-set-key (kbd "C-c a") 'org-noter-insert-note)))
