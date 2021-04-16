@@ -82,7 +82,8 @@ In case of directory the path must end with a slash."
   :config
   ;; Although the name is helm-bibtex, it is actually a bibtex-completion function
   ;; it is the legacy naming of the project helm-bibtex that causes confusion.
-  (setq org-ref-open-pdf-function 'org-ref-get-pdf-filename-helm-bibtex)
+  ;; EDIT @dennietm this breaks oping pdfs, use default
+  ;; (setq org-ref-open-pdf-function 'org-ref-get-pdf-filename-helm-bibtex)
   ;; orb will define handlers for note taking so not needed to use the
   ;; ones set for bibtex-completion
   (unless (featurep! :lang org +roam)
