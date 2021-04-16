@@ -274,13 +274,21 @@
 ;; Default bibliography
 (setq! +biblio-pdf-library-dir "~/MEGA/PKM/files/"
        +biblio-default-bibliography-files '("~/MEGA/PKM/master.bib" "~/MEGA/library.bib")
-       +biblio-notes-path "~/MEGA/PKM/notes/")
+       +biblio-notes-path "~/MEGA/PKM/roam/notes/")
 
 ;; Org-roam workflow settings
-(setq org-roam-directory "~/MEGA/PKM/")
+(setq org-roam-directory "~/MEGA/PKM/roam"
+      org-roam-dailies-directory "daily/")
 (setq ivy-bibtex-default-action 'ivy-bibtex-edit-notes)
 
 ;; keymaps
 (map! (:map org-mode-map "C-c n a" 'orb-note-actions))
 (add-hook 'org-noter-doc-mode-hook (lambda ()
   (local-set-key (kbd "C-c a") 'org-noter-insert-note)))
+
+;; Cite note template
+(setq orb-templates
+  '(("r" "ref" plain #'org-roam-capture--get-point "%?" :file-name "notes/${slug}" :head "#+TITLE: ${=key=}: ${title}\n#+DATE: %<%Y-%m-%d>\n\n#+roam_key: ${ref}\n#+roam_tags: lit\n\n- tags ::\n- keywords :: ${keywords}\n\n\n* ${title}\n  :PROPERTIES:\n  :Custom_ID: ${=key=}\n  :URL: ${url}\n  :AUTHOR: ${author-or-editor}\n  :NOTER_DOCUMENT: %(orb-process-file-field \"${=key=}\")\n  :NOTER_PAGE: \n  :END:\n\n" :unnarrowed t)))
+
+;; M-x interaction-log-mode shows all executed command for debugging/showcasing
+(use-package! interaction-log)
