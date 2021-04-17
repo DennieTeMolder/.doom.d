@@ -272,13 +272,13 @@
 (setq org-ref-show-broken-links nil)
 
 ;; Default bibliography
-(setq! +biblio-pdf-library-dir "~/MEGA/PKM/files/"
-       +biblio-default-bibliography-files '("~/MEGA/PKM/master.bib" "~/MEGA/library.bib")
-       +biblio-notes-path "~/MEGA/PKM/roam/notes/")
+(setq! +biblio-pdf-library-dir "~/MEGA/Zotero/"
+       +biblio-default-bibliography-files '("~/MEGA/Zotero/master.bib" "~/MEGA/library.bib")
+       +biblio-notes-path "~/MEGA/PKM/Notes/")
 
 ;; Org-roam workflow settings
-(setq org-roam-directory "~/MEGA/PKM/roam"
-      org-roam-dailies-directory "daily/")
+(setq org-roam-directory "~/MEGA/PKM/"
+      org-roam-dailies-directory "Daily/")
 (setq ivy-bibtex-default-action 'ivy-bibtex-edit-notes)
 
 ;; keymaps
