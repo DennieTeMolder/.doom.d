@@ -87,14 +87,11 @@
 ;; Iterate through CamelCase words
 (global-subword-mode 1)
 
-;; Ask for file after splitting the window
+;; Change widnow split direction
 (setq evil-vsplit-window-right t
       evil-split-window-below t)
 
-(defadvice! prompt-for-buffer (&rest _)
-  :after '(evil-window-split evil-window-vsplit)
-  (+ivy/switch-buffer))
-
+;; Preview buffers when switching
 (setq +ivy-buffer-preview t)
 
 ;; Enable visual lines with word wrapping
