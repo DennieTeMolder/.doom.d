@@ -203,3 +203,9 @@
        :config
        ;;literate
        (default +bindings +smartparens))
+
+;; Overwrite modules/biblio setting that causes errors when opening pdf from ref
+;; It would be preffered to achieve this through !after, but this doens't work
+(use-package-hook! org-ref
+  :post-config
+  (setq org-ref-open-pdf-function 'org-ref-open-pdf-at-point))
