@@ -116,6 +116,11 @@
 ;; Define zenmode text scale
 (setq +zen-text-scale 1.5)
 
+;; Bind window resize hydra from doom hydra module
+(map! (:leader
+       (:prefix "w"
+        :desc "adjust windows hydra" "a" '+hydra/window-nav/body)))
+
 ;; Save clipboard to kill ring before deleting text 
 ;; Cyle kill ring using <C-p> or <C-n> after pasting
 (setq save-interprogram-paste-before-kill t)
