@@ -290,6 +290,7 @@
 (setq org-roam-directory "~/MEGA/PKM/"
       org-roam-dailies-directory "Daily/")
 (setq ivy-bibtex-default-action 'ivy-bibtex-edit-notes)
+(setq deft-directory "~/MEGA/PKM/")
 
 ;; keymaps
 (map! (:map org-mode-map "C-c n a" 'orb-note-actions))
@@ -302,3 +303,32 @@
 
 ;; M-x interaction-log-mode shows all executed command for debugging/showcasing
 (use-package! interaction-log)
+
+;; Org-download settings
+(defun drestivo/org-download-method (link)
+  "This is an helper function for org-download.
+It creates an \"./Image\" folder within the same directory of the org file.
+File is named as: download name + timestamp + target org file
+Based on drestivo's answer to this post: https://github.com/abo-abo/org-download/issues/40.
+Which was based off this commit message:
+https://github.com/abo-abo/org-download/commit/137c3d2aa083283a3fc853f9ecbbc03039bf397b"
+  (let ((filename
+         (file-name-nondirectory
+          (car (url-path-and-query
+                (url-generic-parse-url link)))))
+        (dir "Images/"))
+    (progn
+      (setq filename-with-timestamp (format "%s%s-<%s>.%s"
+                                         (file-name-sans-extension filename)
+                                         (format-time-string org-download-timestamp)
+                                         (file-name-base (buffer-file-name))
+                                         (file-name-extension filename)))
+      ;; Check if directory exists otherwise creates it
+      (unless (file-exists-p dir)
+        (make-directory dir t))
+      (message (format "Image: %s saved!" (expand-file-name filename-with-timestamp dir)))
+      (concat dir filename-with-timestamp))))
+
+(after! org-download
+  (setq org-download-method 'drestivo/org-download-method
+        org-download-link-format "[[file:%s]]\n"))
