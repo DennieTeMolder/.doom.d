@@ -21,12 +21,12 @@
 
        :completion
        company           ; the ultimate code completion backend
-        ;; +childframe)      ; improved UI
+       ;; +childframe)      ; improved UI
        ;;helm              ; the *other* search engine for love and life
        ;;ido               ; the other *other* search engine...
        (ivy               ; a search engine for love and life
         +icons            ; icons are nice
-        ;; +fuzzy            ; fuzzy searching
+        ;;+fuzzy            ; fuzzy searching
         +prescient)       ; I know what I want(ed)
 
        :ui
