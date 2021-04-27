@@ -111,8 +111,29 @@
 (define-key evil-insert-state-map (kbd "C-x C-f") 'comint-dynamic-complete-filename)
 
 ;; Scrolling margins
-(setq scroll-margin 3
-      smooth-scroll-margin 3)
+(setq scroll-margin 1)
+
+;; Smooth scrolling
+(use-package! good-scroll
+  :config
+  ;; Enable good-scroll
+  (good-scroll-mode 1)
+
+  ;; Increase animation time
+  (setq good-scroll-duration .25)
+
+  ;; Evil scrolling
+  (defun good-scroll-down-half ()
+    (interactive)
+    (good-scroll--update (/ (window-body-height nil t) good-scroll-step 2)))
+  
+  (defun good-scroll-up-half ()
+    (interactive)
+    (good-scroll--update (/ (window-body-height nil t) good-scroll-step -2)))
+  
+  (define-key evil-normal-state-map (kbd "C-d") 'good-scroll-down-half)
+  (define-key evil-normal-state-map (kbd "C-u") 'good-scroll-up-half)
+)
 
 ;; Projectle sorting by recently opened
 (setq projectile-sort-order 'recentf)
@@ -305,9 +326,6 @@
 (setq orb-templates
   '(("r" "ref" plain #'org-roam-capture--get-point "%?" :file-name "notes/${slug}" :head "#+TITLE: ${=key=}: ${title}\n#+DATE: %<%Y-%m-%d>\n\n#+roam_key: ${ref}\n#+roam_tags: lit\n\n- tags ::\n- keywords :: ${keywords}\n\n\n* ${title}\n  :PROPERTIES:\n  :Custom_ID: ${=key=}\n  :URL: ${url}\n  :AUTHOR: ${author-or-editor}\n  :NOTER_DOCUMENT: %(orb-process-file-field \"${=key=}\")\n  :NOTER_PAGE: \n  :END:\n\n" :unnarrowed t)))
 
-;; M-x interaction-log-mode shows all executed command for debugging/showcasing
-(use-package! interaction-log)
-
 ;; Org-download settings
 (defun drestivo/org-download-method (link)
   "This is an helper function for org-download.
@@ -336,3 +354,6 @@ https://github.com/abo-abo/org-download/commit/137c3d2aa083283a3fc853f9ecbbc0303
 (after! org-download
   (setq org-download-method 'drestivo/org-download-method
         org-download-link-format "[[file:%s]]\n"))
+
+;; M-x interaction-log-mode shows all executed command for debugging/showcasing
+(use-package! interaction-log)

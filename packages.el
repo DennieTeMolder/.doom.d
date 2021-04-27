@@ -51,3 +51,4 @@
 
 (package! org-superstar)
 (package! interaction-log)
+(package! good-scroll)
