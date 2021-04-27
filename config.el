@@ -120,16 +120,17 @@
   (good-scroll-mode 1)
 
   ;; Increase animation time
-  (setq good-scroll-duration .25)
+  (setq good-scroll-duration .25
+        good-scroll-step 120)
 
   ;; Evil scrolling
   (defun good-scroll-down-half ()
     (interactive)
-    (good-scroll--update (/ (window-body-height nil t) good-scroll-step 2)))
-  
+    (good-scroll--update (ceiling (/ (window-body-height nil t) good-scroll-step 2))))
+
   (defun good-scroll-up-half ()
     (interactive)
-    (good-scroll--update (/ (window-body-height nil t) good-scroll-step -2)))
+    (good-scroll--update (ceiling (/ (window-body-height nil t) good-scroll-step -2))))
   
   (define-key evil-normal-state-map (kbd "C-d") 'good-scroll-down-half)
   (define-key evil-normal-state-map (kbd "C-u") 'good-scroll-up-half)
