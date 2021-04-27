@@ -130,13 +130,13 @@
        ;;coq               ; proofs-as-programs
        ;;crystal           ; ruby at the speed of c
        ;;csharp            ; unity, .NET, and mono shenanigans
-       data              ; config/data formats
+       data                ; config/data formats
        ;;(dart +flutter)   ; paint ui and not much else
        ;;elixir            ; erlang done right
        ;;elm               ; care for a cup of TEA?
-       emacs-lisp        ; drown in parentheses
+       emacs-lisp          ; drown in parentheses
        ;;erlang            ; an elegant language for a more civilized age
-       (ess               ; emacs speaks statistics
+       (ess                ; emacs speaks statistics
         +lsp)
        ;;faust             ; dsp, but you get to keep your soul
        ;;fsharp            ; ML stands for Microsoft's Language
@@ -151,19 +151,19 @@
        ;;javascript        ; all(hope(abandon(ye(who(enter(here))))))
        ;;julia             ; a better, faster MATLAB
        ;;kotlin            ; a better, slicker Java(Script)
-       (latex             ; writing papers in Emacs has never been so fun
-        +latexmk          ; what else would you use?
-        +cdlatex          ; quick maths symbols
-        +fold)            ; fold the clutter away nicities
+       (latex              ; writing papers in Emacs has never been so fun
+        +latexmk           ; what else would you use?
+        +cdlatex           ; quick maths symbols
+        +fold)             ; fold the clutter away nicities
        ;;lean
        ;;factor
        ;;ledger            ; an accounting system in Emacs
        ;;lua               ; one-based indices? one-based indices
-       markdown          ; writing docs for people to ignore
+       markdown            ; writing docs for people to ignore
        ;;nim               ; python + lisp at the speed of c
        ;;nix               ; I hereby declare "nix geht mehr!"
        ;;ocaml             ; an objective camel
-       (org               ; organize your plain life in plain text
+       (org                ; organize your plain life in plain text
         +roam
         +noter
         +dragndrop
@@ -188,7 +188,7 @@
        ;;swift             ; who asked for emoji variables?
        ;;terra             ; Earth and Moon in alignment for performance.
        ;;web               ; the tubes
-       yaml              ; JSON, but readable
+       yaml                ; JSON, but readable
 
        :email
        ;;(mu4e +gmail)
