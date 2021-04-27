@@ -110,32 +110,6 @@
 ;; Overwrite company-files as it seems broken
 (define-key evil-insert-state-map (kbd "C-x C-f") 'comint-dynamic-complete-filename)
 
-;; Scrolling margins
-(setq scroll-margin 1)
-
-;; Smooth scrolling
-(use-package! good-scroll
-  :config
-  ;; Enable good-scroll
-  (good-scroll-mode 1)
-
-  ;; Increase animation time
-  (setq good-scroll-duration .25
-        good-scroll-step 120)
-
-  ;; Evil scrolling
-  (defun good-scroll-down-half ()
-    (interactive)
-    (good-scroll--update (ceiling (/ (window-body-height nil t) good-scroll-step 2))))
-
-  (defun good-scroll-up-half ()
-    (interactive)
-    (good-scroll--update (ceiling (/ (window-body-height nil t) good-scroll-step -2))))
-  
-  (define-key evil-normal-state-map (kbd "C-d") 'good-scroll-down-half)
-  (define-key evil-normal-state-map (kbd "C-u") 'good-scroll-up-half)
-)
-
 ;; Projectle sorting by recently opened
 (setq projectile-sort-order 'recentf)
 
@@ -358,3 +332,44 @@ https://github.com/abo-abo/org-download/commit/137c3d2aa083283a3fc853f9ecbbc0303
 
 ;; M-x interaction-log-mode shows all executed command for debugging/showcasing
 (use-package! interaction-log)
+
+;; Scrolling margins
+(setq scroll-margin 1)
+
+;; Smooth scrolling
+(use-package! good-scroll
+  :config
+  ;; Enable good-scroll
+  (good-scroll-mode 1)
+
+  ;; Increase animation time and mouse scrolling sensitivity
+  (setq good-scroll-duration .25
+        good-scroll-step 120)
+
+  ;; binding to toggle good scroll mode
+  (map! :desc "Toggle smooth scrolling" :leader "t S" 'good-scroll-mode)
+
+  ;; Evil scrolling
+  (defun good-scroll-down-half ()
+    (interactive)
+    (good-scroll--update (ceiling (/ (window-body-height nil t) good-scroll-step 2))))
+
+  (defun good-scroll-up-half ()
+    (interactive)
+    (good-scroll--update (ceiling (/ (window-body-height nil t) good-scroll-step -2))))
+
+  (defun my/toggle-bind-evil-smooth-scroll ()
+    (if good-scroll-mode
+        (progn
+          (define-key evil-normal-state-map (kbd "C-d") 'good-scroll-down-half)
+          (define-key evil-normal-state-map (kbd "C-u") 'good-scroll-up-half))
+      (progn
+        (define-key evil-normal-state-map (kbd "C-d") 'evil-scroll-down)
+        (define-key evil-normal-state-map (kbd "C-u") 'evil-scroll-up))))
+
+  ;; Activate key map on load
+  (my/toggle-bind-evil-smooth-scroll)
+
+  ;; Switch key map on mode enable/disable
+  (add-hook 'good-scroll-mode-hook #'my/toggle-bind-evil-smooth-scroll)
+)
