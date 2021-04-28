@@ -338,10 +338,8 @@ https://github.com/abo-abo/org-download/commit/137c3d2aa083283a3fc853f9ecbbc0303
 
 ;; Smooth scrolling
 (use-package! good-scroll
+  :defer 2
   :config
-  ;; Enable good-scroll
-  (good-scroll-mode 1)
-
   ;; Increase animation time and mouse scrolling sensitivity
   (setq good-scroll-duration .25
         good-scroll-step 120)
@@ -367,9 +365,9 @@ https://github.com/abo-abo/org-download/commit/137c3d2aa083283a3fc853f9ecbbc0303
         (define-key evil-normal-state-map (kbd "C-d") 'evil-scroll-down)
         (define-key evil-normal-state-map (kbd "C-u") 'evil-scroll-up))))
 
-  ;; Activate key map on load
-  (my/toggle-bind-evil-smooth-scroll)
-
   ;; Switch key map on mode enable/disable
   (add-hook 'good-scroll-mode-hook #'my/toggle-bind-evil-smooth-scroll)
+
+  ;; Enable good-scroll
+  (good-scroll-mode 1)
 )
