@@ -369,6 +369,5 @@ https://github.com/abo-abo/org-download/commit/137c3d2aa083283a3fc853f9ecbbc0303
   (add-hook 'good-scroll-mode-hook #'my/toggle-bind-evil-smooth-scroll)
 
   ;; Enable good-scroll
-  ;; Disabled till scrolling in partial buffers is fixed
-  (good-scroll-mode 0)
+  (good-scroll-mode 1)
 )
