@@ -31,7 +31,7 @@
 
 ;; Set theme based on time
 (setq doom-theme (let* ((light-theme 'doom-one-light)
-         (dark-theme 'doom-dracula)
+         (dark-theme 'doom-vibrant)
          (start-time-light-theme 7)
          (end-time-light-theme 18)
          (hour (string-to-number (substring (current-time-string) 11 13))))
@@ -369,5 +369,6 @@ https://github.com/abo-abo/org-download/commit/137c3d2aa083283a3fc853f9ecbbc0303
   (add-hook 'good-scroll-mode-hook #'my/toggle-bind-evil-smooth-scroll)
 
   ;; Enable good-scroll
-  (good-scroll-mode 1)
+  ;; Disabled till scrolling in partial buffers is fixed
+  (good-scroll-mode 0)
 )
