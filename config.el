@@ -126,7 +126,7 @@
 (setq save-interprogram-paste-before-kill t)
 
 ;; Personal ispell library
-(setq ispell-personal-dictionary "~/dotfiles/personal_dict.pws")
+(setq ispell-personal-dictionary "~/MEGA/personal_dict.pws")
 
 ;; AucTex settings, inverse searching also requires config of the pdf reader
 (setq TeX-command-force "LatexMk"
