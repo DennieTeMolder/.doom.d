@@ -265,7 +265,6 @@
 ;; Fancy org mode bullets
 (use-package! org-superstar
   :hook (org-mode . org-superstar-mode)
-  :init
   :config
   ;; Make leading stars truly invisible, by rendering them as spaces!
   (setq org-superstar-leading-bullet ?\s
@@ -371,3 +370,20 @@ https://github.com/abo-abo/org-download/commit/137c3d2aa083283a3fc853f9ecbbc0303
   ;; Enable good-scroll
   (good-scroll-mode 1)
 )
+
+;; Package for interacting with text fields, requires GhostText browser extension
+(use-package! atomic-chrome
+  :commands atomic-chrome-start-server
+  :init
+  (defun my/atomic-chrome-start-server ()
+    (interactive)
+    (progn
+      (atomic-chrome-start-server)
+      (message "%s" "Starting GhostText Server")))
+  (map! :desc "Start GhostText Server" :leader "t G" 'my/atomic-chrome-start-server)
+
+  :config
+  (setq atomic-chrome-buffer-open-style 'full)
+  (setq atomic-chrome-url-major-mode-alist
+        '(("github\\.com" . gfm-mode)
+          ("azuredatabricks\\.net" . python-mode))))
