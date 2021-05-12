@@ -379,7 +379,7 @@ https://github.com/abo-abo/org-download/commit/137c3d2aa083283a3fc853f9ecbbc0303
     (interactive)
     (progn
       (atomic-chrome-start-server)
-      (message "%s" "Starting GhostText Server")))
+      (message "%s" "Started GhostText Server")))
   (map! :desc "Start GhostText Server" :leader "t G" 'my/atomic-chrome-start-server)
 
   :config
