@@ -188,18 +188,18 @@
         "p"  'preview-at-point
         "r"  'preview-region
         "s"  'preview-section)
-     (:prefix ("z" . "TeX-fold")
-       "=" 'TeX-fold-math
-       "b" 'TeX-fold-buffer
-       "B" 'TeX-fold-clearout-buffer
-       "e" 'TeX-fold-env
-       "I" 'TeX-fold-clearout-item
-       "m" 'TeX-fold-macro
-       "p" 'TeX-fold-paragraph
-       "P" 'TeX-fold-clearout-paragraph
-       "r" 'TeX-fold-region
-       "R" 'TeX-fold-clearout-region
-       "z" 'TeX-fold-dwim)
+      (:prefix ("z" . "TeX-fold")
+        "=" 'TeX-fold-math
+        "b" 'TeX-fold-buffer
+        "B" 'TeX-fold-clearout-buffer
+        "e" 'TeX-fold-env
+        "I" 'TeX-fold-clearout-item
+        "m" 'TeX-fold-macro
+        "p" 'TeX-fold-paragraph
+        "P" 'TeX-fold-clearout-paragraph
+        "r" 'TeX-fold-region
+        "R" 'TeX-fold-clearout-region
+        "z" 'TeX-fold-dwim)
       (:prefix ("x" . "text")
         "b"  'latex/font-bold
         "c"  'latex/font-code
