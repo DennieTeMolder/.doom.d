@@ -21,8 +21,8 @@
 ;; font string. You generally only need these two:
 (setq doom-font (font-spec :family "Fira Code" :size 18)
       doom-big-font (font-spec :family "Fira Code" :size 30)
-;;      doom-variable-pitch-font (font-spec :family "Overpass" :size 18)
-;;      doom-serif-font (font-spec :family "IBM Plex Mono" :weight 'light)
+      doom-variable-pitch-font (font-spec :family "Droid Sans" :size 18)
+      doom-serif-font (font-spec :family "Droid Serif")
       )
 
 ;; There are two ways to load a theme. Both assume the theme is installed and
@@ -114,7 +114,8 @@
 (setq projectile-sort-order 'recentf)
 
 ;; Define zenmode text scale
-(setq +zen-text-scale 1.5)
+(setq +zen-text-scale 1.3
+      +zen-mixed-pitch-modes '(org-mode latex-mode markdown-mode))
 
 ;; Bind window resize hydra from doom hydra module
 (map! (:leader
@@ -386,4 +387,5 @@ https://github.com/abo-abo/org-download/commit/137c3d2aa083283a3fc853f9ecbbc0303
   (setq atomic-chrome-buffer-open-style 'full)
   (setq atomic-chrome-url-major-mode-alist
         '(("github\\.com" . gfm-mode)
+          ("overleaf\\.com" . latex-mode)
           ("azuredatabricks\\.net" . python-mode))))
