@@ -71,17 +71,18 @@
 ;; Quit without confirmation
 (setq confirm-kill-emacs nil)
 
-;; Consider all windows when resizing and stretch cursor to glyph size
-(setq-default window-combination-resize t
-	      delete-by-moving-to-trash t
-              x-stretch-cursor t)
+;; Rudimentary settings
+(setq-default delete-by-moving-to-trash t
+              tab-with 2
+              uniquify-buffer-name-style 'forward
+              window-combination-resize t ; Consider all windows when resizing
+              x-stretch-cursor t) ; stretch cursor to glyph size
 
-;; Raise undo-limit to 80Mb and enable auto save
-(setq undo-limit 80000000
-      auto-save-default t)
-
-;; More granualr inset mode undos
-(setq evil-want-fine-undo t)
+;; Save and undo settings
+(setq undo-limit 80000000 ; Raise undo-limit to 80Mb
+      auto-save-default t ; Enable auto save
+      evil-want-fine-undo t ; Granular undo in insert mode
+      inhibit-compacting-font-caches t) ; Keep all glyphs in memory
 
 ;; On laptops it's nice to know how much power you have
 (unless (equal "Battery status not available"
@@ -91,12 +92,31 @@
 ;; Iterate through CamelCase words
 (global-subword-mode 1)
 
-;; Change widnow split direction
+;; Change window split direction
 (setq evil-vsplit-window-right t
       evil-split-window-below t)
 
 ;; Preview buffers when switching
 (setq +ivy-buffer-preview t)
+
+;; Only display encoding in modeline when it's not UTF-8
+(defun doom-modeline-conditional-buffer-encoding ()
+  (setq-local doom-modeline-buffer-encoding
+              (unless (or (eq buffer-file-coding-system 'utf-8-unix)
+                          (eq buffer-file-coding-system 'utf-8)))))
+(add-hook 'after-change-major-mode-hook #'doom-modeline-conditional-buffer-encoding)
+
+;; Simplify window title and give a visual indication if file is edited
+(setq frame-title-format
+    '(""
+      (:eval
+       (if (s-contains-p org-roam-directory (or buffer-file-name ""))
+           (replace-regexp-in-string ".*/[0-9]*-?" ">" buffer-file-name)
+         "%b"))
+      (:eval
+       (let ((project-name (projectile-project-name)))
+         (unless (string= "-" project-name)
+           (format (if (buffer-modified-p)  " (*) | %s" " | %s") project-name))))))
 
 ;; Enable visual lines with word wrapping
 (global-visual-line-mode t)
@@ -118,9 +138,7 @@
       +zen-mixed-pitch-modes '(org-mode latex-mode markdown-mode))
 
 ;; Bind window resize hydra from doom hydra module
-(map! (:leader
-       (:prefix "w"
-        :desc "adjust windows hydra" "a" '+hydra/window-nav/body)))
+(map! (:leader :desc "adjust windows hydra" :leader "w a" '+hydra/window-nav/body))
 
 ;; Save clipboard to kill ring before deleting text 
 ;; Cyle kill ring using <C-p> or <C-n> after pasting
