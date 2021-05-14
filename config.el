@@ -21,8 +21,8 @@
 ;; font string. You generally only need these two:
 (setq doom-font (font-spec :family "Fira Code" :size 18)
       doom-big-font (font-spec :family "Fira Code" :size 30)
-      doom-variable-pitch-font (font-spec :family "Droid Sans" :size 18)
-      doom-serif-font (font-spec :family "Droid Serif")
+      doom-variable-pitch-font (font-spec :family "Nimbus Sans" :size 18)
+      ;; doom-serif-font (font-spec :family "Nimbus Serif")
       )
 
 ;; There are two ways to load a theme. Both assume the theme is installed and
