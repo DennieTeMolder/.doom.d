@@ -114,9 +114,8 @@
            (replace-regexp-in-string ".*/[0-9]*-?" ">" buffer-file-name)
          "%b"))
       (:eval
-       (let ((project-name (projectile-project-name)))
-         (unless (string= "-" project-name)
-           (format (if (buffer-modified-p)  " (*) | %s" " | %s") project-name))))))
+       (let ((project-name (if (string= "-" (projectile-project-name)) "Doom Emacs" (projectile-project-name))))
+         (format (if (buffer-modified-p)  " (*) | %s" " | %s") project-name)))))
 
 ;; Enable visual lines with word wrapping
 (global-visual-line-mode t)
