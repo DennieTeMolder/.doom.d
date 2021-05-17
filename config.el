@@ -21,7 +21,7 @@
 ;; font string. You generally only need these two:
 (setq doom-font (font-spec :family "Fira Code" :size 18)
       doom-big-font (font-spec :family "Fira Code" :size 30)
-      doom-variable-pitch-font (font-spec :family "Nimbus Sans" :size 18)
+      doom-variable-pitch-font (font-spec :family "DejaVuSans" :size 18)
       ;; doom-serif-font (font-spec :family "Nimbus Serif")
       )
 
