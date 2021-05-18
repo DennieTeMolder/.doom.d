@@ -71,6 +71,9 @@
 ;; Quit without confirmation
 (setq confirm-kill-emacs nil)
 
+;; Default major mode for scratch buffer
+(setq doom-scratch-initial-major-mode 'org-mode)
+
 ;; Rudimentary settings
 (setq-default delete-by-moving-to-trash t
               tab-with 2
