@@ -353,9 +353,6 @@ https://github.com/abo-abo/org-download/commit/137c3d2aa083283a3fc853f9ecbbc0303
 ;; M-x interaction-log-mode shows all executed command for debugging/showcasing
 (use-package! interaction-log)
 
-;; Scrolling margins
-(setq scroll-margin 1)
-
 ;; Smooth scrolling
 (use-package! good-scroll
   :defer 2
