@@ -406,3 +406,6 @@ https://github.com/abo-abo/org-download/commit/137c3d2aa083283a3fc853f9ecbbc0303
         '(("github\\.com" . gfm-mode)
           ("overleaf\\.com" . latex-mode)
           ("azuredatabricks\\.net" . python-mode))))
+
+;; Tab-indent for python
+(setq python-indent-offset 2)
