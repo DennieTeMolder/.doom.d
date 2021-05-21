@@ -351,7 +351,8 @@ https://github.com/abo-abo/org-download/commit/137c3d2aa083283a3fc853f9ecbbc0303
         org-download-link-format "[[file:%s]]\n"))
 
 ;; M-x interaction-log-mode shows all executed command for debugging/showcasing
-(use-package! interaction-log)
+(use-package! interaction-log
+  :commands interaction-log-mode)
 
 ;; Smooth scrolling
 (use-package! good-scroll
