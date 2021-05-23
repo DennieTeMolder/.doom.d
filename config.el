@@ -366,19 +366,19 @@ https://github.com/abo-abo/org-download/commit/137c3d2aa083283a3fc853f9ecbbc0303
   (map! :desc "Toggle smooth scrolling" :leader "t S" 'good-scroll-mode)
 
   ;; Evil scrolling
-  (defun good-scroll-down-half ()
+  (defun my/good-scroll-down-half ()
     (interactive)
     (good-scroll--update (ceiling (/ (window-body-height nil t) good-scroll-step 2))))
 
-  (defun good-scroll-up-half ()
+  (defun my/good-scroll-up-half ()
     (interactive)
     (good-scroll--update (ceiling (/ (window-body-height nil t) good-scroll-step -2))))
 
   (defun my/toggle-bind-evil-smooth-scroll ()
     (if good-scroll-mode
         (progn
-          (define-key evil-normal-state-map (kbd "C-d") 'good-scroll-down-half)
-          (define-key evil-normal-state-map (kbd "C-u") 'good-scroll-up-half))
+          (define-key evil-normal-state-map (kbd "C-d") 'my/good-scroll-down-half)
+          (define-key evil-normal-state-map (kbd "C-u") 'my/good-scroll-up-half))
       (progn
         (define-key evil-normal-state-map (kbd "C-d") 'evil-scroll-down)
         (define-key evil-normal-state-map (kbd "C-u") 'evil-scroll-up))))
