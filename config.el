@@ -397,7 +397,7 @@ https://github.com/abo-abo/org-download/commit/137c3d2aa083283a3fc853f9ecbbc0303
   ;; Function to make atomic chrome server toggleable
   (defun my/atomic-chrome-toggle-server ()
     (interactive)
-    (if global-atomic-chrome-edit-mode
+    (if (bound-and-true-p global-atomic-chrome-edit-mode)
         (progn
           (atomic-chrome-stop-server)
           (message "%s" "Stopped GhostText Server"))
