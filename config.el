@@ -394,12 +394,19 @@ https://github.com/abo-abo/org-download/commit/137c3d2aa083283a3fc853f9ecbbc0303
 (use-package! atomic-chrome
   :commands atomic-chrome-start-server
   :init
-  (defun my/atomic-chrome-start-server ()
+  ;; Function to make atomic chrome server toggleable
+  (defun my/atomic-chrome-toggle-server ()
     (interactive)
-    (progn
-      (atomic-chrome-start-server)
-      (message "%s" "Started GhostText Server")))
-  (map! :desc "Start GhostText Server" :leader "t G" 'my/atomic-chrome-start-server)
+    (if global-atomic-chrome-edit-mode
+        (progn
+          (atomic-chrome-stop-server)
+          (message "%s" "Stopped GhostText Server"))
+      (progn
+        (atomic-chrome-start-server)
+        (message "%s" "Started GhostText Server"))))
+
+  ;; Bind toggle
+  (map! :desc "Toggle GhostText Server" :leader "t G" 'my/atomic-chrome-toggle-server)
 
   :config
   (setq atomic-chrome-buffer-open-style 'full)
