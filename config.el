@@ -137,6 +137,7 @@
 
 ;; Define zenmode text scale
 (setq +zen-text-scale 1.3
+      writeroom-width 65
       +zen-mixed-pitch-modes '(org-mode latex-mode markdown-mode))
 
 ;; Bind window resize hydra from doom hydra module
