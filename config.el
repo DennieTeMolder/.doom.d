@@ -140,6 +140,9 @@
       writeroom-width 65
       +zen-mixed-pitch-modes '(org-mode latex-mode markdown-mode))
 
+;; Don't use the variable pitch font for treemacs
+(setq doom-themes-treemacs-enable-variable-pitch nil)
+
 ;; Bind window resize hydra from doom hydra module
 (map! (:leader :desc "adjust windows hydra" :leader "w a" '+hydra/window-nav/body))
 
