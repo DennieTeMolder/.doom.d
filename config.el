@@ -372,11 +372,11 @@ https://github.com/abo-abo/org-download/commit/137c3d2aa083283a3fc853f9ecbbc0303
   ;; Evil scrolling
   (defun my/good-scroll-down-half ()
     (interactive)
-    (good-scroll--update (ceiling (/ (window-body-height nil t) good-scroll-step 2))))
+    (good-scroll-move (/ (good-scroll--window-usable-height) 2)))
 
   (defun my/good-scroll-up-half ()
     (interactive)
-    (good-scroll--update (ceiling (/ (window-body-height nil t) good-scroll-step -2))))
+    (good-scroll-move (/ (good-scroll--window-usable-height) -2)))
 
   (defun my/toggle-bind-evil-smooth-scroll ()
     (if good-scroll-mode
