@@ -1,12 +1,12 @@
 ;; -*- no-byte-compile: t; -*-
 ;;; tools/biblio/packages.el
 
-(package! bibtex-completion :pin "ca09076c3d6e51cc4ffe208c8176fccf3710fcc6")
+(package! bibtex-completion :pin "9f6ea920a49457d85096caa0e61f086a42b2908e")
 (when (featurep! :completion ivy)
-  (package! ivy-bibtex :pin "ca09076c3d6e51cc4ffe208c8176fccf3710fcc6"))
+  (package! ivy-bibtex :pin "9f6ea920a49457d85096caa0e61f086a42b2908e"))
 (when (featurep! :completion helm)
-  (package! helm-bibtex :pin "ca09076c3d6e51cc4ffe208c8176fccf3710fcc6"))
+  (package! helm-bibtex :pin "9f6ea920a49457d85096caa0e61f086a42b2908e"))
 (when (featurep! :lang org)
-  (package! org-ref :pin "3ca9beb744621f007d932deb8a4197467012c23a"))
+  (package! org-ref :pin "8aa2bb45268f660956151547533689d4ec30378d"))
 (when (featurep! :lang org +roam)
-  (package! org-roam-bibtex :pin "8d80bf980776df6ead53e917eb482ec8e309a1d7"))
+  (package! org-roam-bibtex :pin "f7b5be2ce0b43dd4d842484fc0ec37fdc8526907"))
