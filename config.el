@@ -308,13 +308,24 @@
 ;; Default bibliography
 (setq! +biblio-pdf-library-dir "~/MEGA/Zotero/"
        +biblio-default-bibliography-files '("~/MEGA/Zotero/master.bib" "~/MEGA/library.bib")
-       +biblio-notes-path "~/MEGA/PKM/Notes/")
+       +biblio-notes-path "~/MEGA/PKM/notes/")
 
 ;; Org-roam workflow settings
 (setq org-roam-directory "~/MEGA/PKM/"
-      org-roam-dailies-directory "Daily/")
+      org-roam-dailies-directory "journals/"
+      org-roam-index-file "pages/contents.org")
 (setq ivy-bibtex-default-action 'ivy-bibtex-edit-notes)
 (setq deft-directory "~/MEGA/PKM/")
+
+;; Roam templates
+(setq org-roam-capture-templates
+      '(("d" "default" plain
+         #'org-roam-capture--get-point "%?"
+         :file-name "%<%Y%m%d%H%M%S>-${slug}" :head "#+title: ${title}\n" :unnarrowed t)))
+(setq org-roam-dailies-capture-templates
+      '(("d" "default" entry
+         #'org-roam-capture--get-point "* %?"
+         :file-name "journals/%<%Y_%m_%d>" :head "#+title: %<%Y-%m-%d>\n#+DATE: %<%A %B %e, Week %W %Y>\n")))
 
 ;; keymaps
 (map! (:map org-mode-map "C-c n a" 'orb-note-actions))
