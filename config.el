@@ -68,9 +68,6 @@
 ;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
 ;; they are implemented.
 
-;; Start emacs maximized
-(add-to-list 'default-frame-alist '(fullscreen . maximized))
-
 ;; Quit without confirmation
 (setq confirm-kill-emacs nil)
 
@@ -89,6 +86,10 @@
       auto-save-default t ; Enable auto save
       evil-want-fine-undo t ; Granular undo in insert mode
       inhibit-compacting-font-caches t) ; Keep all glyphs in memory
+
+;; Start emacs maximized on WSL
+(when (string-match "-[Mm]icrosoft" operating-system-release)
+  (add-to-list 'default-frame-alist '(fullscreen . maximized)))
 
 ;; On laptops it's nice to know how much power you have
 (unless (equal "Battery status not available"
