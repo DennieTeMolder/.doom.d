@@ -383,11 +383,12 @@ https://github.com/abo-abo/org-download/commit/137c3d2aa083283a3fc853f9ecbbc0303
 
 ;; Smooth scrolling
 (use-package! good-scroll
-  :defer 2
+  :defer 1
   :config
   ;; Increase animation time and mouse scrolling sensitivity
   (setq good-scroll-duration .25
-        good-scroll-step 120)
+        good-scroll-algorithm 'good-scroll-linear
+        good-scroll-step (round (/ (display-pixel-height) 5)))
 
   ;; binding to toggle good scroll mode
   (map! :desc "Toggle smooth scrolling" :leader "t S" 'good-scroll-mode)
