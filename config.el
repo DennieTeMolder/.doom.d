@@ -92,9 +92,8 @@
   (add-to-list 'default-frame-alist '(fullscreen . maximized)))
 
 ;; On laptops it's nice to know how much power you have
-(unless (equal "Battery status not available"
-               (battery))
-  (display-battery-mode 1))
+(if (string-match "[:digit:]" (battery))
+    (display-battery-mode 1))
 
 ;; Iterate through CamelCase words
 (global-subword-mode 1)
