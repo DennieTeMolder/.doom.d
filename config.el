@@ -319,7 +319,8 @@
 ;; Org-roam workflow settings
 (setq org-roam-directory "~/MEGA/PKM/"
       org-roam-dailies-directory "journals/"
-      org-roam-index-file "pages/contents.org")
+      org-roam-index-file "pages/contents.org"
+      org-roam-file-exclude-regexp "Rubbish/")
 (setq ivy-bibtex-default-action 'ivy-bibtex-edit-notes)
 (setq deft-directory "~/MEGA/PKM/")
 
