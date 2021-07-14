@@ -21,22 +21,23 @@
 ;; font string. You generally only need these two:
 (setq doom-font (font-spec :family "Fira Code" :size 18)
       doom-big-font (font-spec :family "Fira Code" :size 30)
-      doom-variable-pitch-font (font-spec :family "Lora" :size 18)
       ;; doom-serif-font (font-spec :family "Nimbus Serif")
-      )
+      doom-variable-pitch-font (font-spec :family "Lora" :size 18))
 
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
 
 ;; Set theme based on time
-(setq doom-theme (let* ((light-theme 'doom-one-light)
-         (dark-theme 'doom-vibrant)
-         (start-time-light-theme 7)
-         (end-time-light-theme 18)
-         (hour (string-to-number (substring (current-time-string) 11 13))))
-    (if (member hour (number-sequence start-time-light-theme end-time-light-theme))
-                    light-theme dark-theme)))
+(setq doom-theme
+      (let* ((light-theme 'doom-one-light)
+             (dark-theme 'doom-vibrant)
+             (start-time-light-theme 7)
+             (end-time-light-theme 18)
+             (hour (string-to-number (substring (current-time-string) 11 13))))
+        (if (member hour (number-sequence start-time-light-theme end-time-light-theme))
+            light-theme
+          dark-theme)))
 
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
@@ -246,13 +247,11 @@
           "r" 'latex/font-serif)))))
 
 ;; Define function to insert a pipe symbol for R mode
-(setq ess-pipe-list '("%>%"))
-
 (defun ess-insert-pipe (arg)
   "Based on `ess-insert-assign', invoking the command twice reverts the insert"
   (interactive "p")
   (if (string= ess-language "S")
-      (let* ((pipe (car ess-pipe-list))
+      (let* ((pipe "%>%")
              (event (event-basic-type last-input-event))
              (char (ignore-errors (format "%c" event))))
         (cond ((and char (ess-inside-string-or-comment-p))
@@ -362,15 +361,16 @@ https://github.com/abo-abo/org-download/commit/137c3d2aa083283a3fc853f9ecbbc0303
                 (url-generic-parse-url link)))))
         (dir "Images/"))
     (progn
-      (setq filename-with-timestamp (format "%s%s-<%s>.%s"
-                                         (file-name-sans-extension filename)
-                                         (format-time-string org-download-timestamp)
-                                         (file-name-base (buffer-file-name))
-                                         (file-name-extension filename)))
-      ;; Check if directory exists otherwise creates it
+      (setq filename-with-timestamp
+            (format "%s%s-<%s>.%s"
+                    (file-name-sans-extension filename)
+                    (format-time-string org-download-timestamp)
+                    (file-name-base (buffer-file-name))
+                    (file-name-extension filename)))
+      ;; Check if directory exists otherwise create it
       (unless (file-exists-p dir)
         (make-directory dir t))
-      (message (format "Image: %s saved!" (expand-file-name filename-with-timestamp dir)))
+      (message "Image: %s saved!" (expand-file-name filename-with-timestamp dir))
       (concat dir filename-with-timestamp))))
 
 (after! org-download
@@ -428,10 +428,10 @@ https://github.com/abo-abo/org-download/commit/137c3d2aa083283a3fc853f9ecbbc0303
     (if (bound-and-true-p global-atomic-chrome-edit-mode)
         (progn
           (atomic-chrome-stop-server)
-          (message "%s" "Stopped GhostText Server"))
+          (message "Stopped GhostText Server"))
       (progn
         (atomic-chrome-start-server)
-        (message "%s" "Started GhostText Server"))))
+        (message "Started GhostText Server"))))
 
   ;; Bind toggle
   (map! :desc "Toggle GhostText Server" :leader "t G" 'my/atomic-chrome-toggle-server)
