@@ -133,9 +133,6 @@
 (define-key evil-visual-state-map (kbd "j") 'evil-next-visual-line)
 (define-key evil-visual-state-map (kbd "k") 'evil-previous-visual-line)
 
-;; Overwrite company-files as it seems broken
-(define-key evil-insert-state-map (kbd "C-x C-f") 'comint-dynamic-complete-filename)
-
 ;; Projectle sorting by recently opened
 (setq projectile-sort-order 'recentf)
 
