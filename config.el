@@ -88,7 +88,7 @@
       inhibit-compacting-font-caches t) ; Keep all glyphs in memory
 
 ;; Start emacs maximized on WSL
-(when (string-match "-[Mm]icrosoft" operating-system-release)
+(when (string-match "-[Mm]icrosoft" (shell-command-to-string "uname -a"))
   (add-to-list 'default-frame-alist '(fullscreen . maximized)))
 
 ;; On laptops it's nice to know how much power you have
