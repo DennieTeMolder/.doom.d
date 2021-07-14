@@ -341,8 +341,9 @@
 (add-hook 'org-noter-doc-mode-hook (lambda ()
   (local-set-key (kbd "C-c a") 'org-noter-insert-note)))
 
-;; Always display full file
-(setq org-noter-hide-other nil)
+;; Org-noter settings
+(setq org-noter-hide-other nil ;; Don't fold headings when navigating
+      org-noter-always-create-frame nil) ;; Only crete new frames for additional sessions
 
 ;; Org-download settings
 (defun drestivo/org-download-method (link)
