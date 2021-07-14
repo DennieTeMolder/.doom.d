@@ -381,7 +381,7 @@ https://github.com/abo-abo/org-download/commit/137c3d2aa083283a3fc853f9ecbbc0303
 
 ;; Smooth scrolling
 (use-package! good-scroll
-  :defer 1
+  :defer 2
   :config
   ;; Increase animation time and mouse scrolling sensitivity
   (setq good-scroll-duration .25
