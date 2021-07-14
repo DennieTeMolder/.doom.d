@@ -345,10 +345,8 @@
 (add-hook 'org-noter-doc-mode-hook (lambda ()
   (local-set-key (kbd "C-c a") 'org-noter-insert-note)))
 
-;; Org-noter only open notes in a new window and only create on session and keep document visible
-(setq org-noter-notes-window-location 'other-frame
-      org-noter-always-create-frame nil
-      org-noter-hide-other nil)
+;; Always display full file
+(setq org-noter-hide-other nil)
 
 ;; Org-download settings
 (defun drestivo/org-download-method (link)
