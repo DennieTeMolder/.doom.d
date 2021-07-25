@@ -9,4 +9,4 @@
 (when (featurep! :lang org)
   (package! org-ref :pin "8aa2bb45268f660956151547533689d4ec30378d"))
 (when (featurep! :lang org +roam)
-  (package! org-roam-bibtex :pin "f7b5be2ce0b43dd4d842484fc0ec37fdc8526907"))
+  (package! org-roam-bibtex :pin "c9865196efe7cfdfcced0d47ea3e5b39bdddd162"))
