@@ -262,11 +262,14 @@
 
 ;; ESS R keybindings, make underscore <-, type twice to undo
 (map! (:map ess-r-mode-map
-       "_" 'ess-insert-assign
+       "<" 'ess-insert-assign
        ">" 'ess-insert-pipe
        :localleader
-         (:prefix "h"
-           :desc "rdired list objects" "r" 'ess-rdired)))
+       (:prefix "h"
+        :desc "rdired list objects" "r" 'ess-rdired))
+      ;; use SPC m tab to switch between console and script
+      (:map inferior-ess-r-mode-map
+       :localleader [tab] #'ess-switch-to-inferior-or-script-buffer))
 
 ;; Scroll down in REPL windows
 (setq comint-prompt-read-only t
