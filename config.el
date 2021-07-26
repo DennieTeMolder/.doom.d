@@ -133,6 +133,9 @@
 (define-key evil-visual-state-map (kbd "j") 'evil-next-visual-line)
 (define-key evil-visual-state-map (kbd "k") 'evil-previous-visual-line)
 
+;; Repeat last command using SPC r
+(map! :leader "r" 'repeat)
+
 ;; Projectle sorting by recently opened
 (setq projectile-sort-order 'recentf)
 
