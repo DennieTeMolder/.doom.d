@@ -246,6 +246,29 @@
           "u" 'latex/font-upright
           "r" 'latex/font-serif)))))
 
+;; ESS R settings
+;; Use a default session name and auto scroll down in REPL windows
+(setq ess-ask-for-ess-directory nil
+      ansi-color-for-comint-mode 'filter
+      comint-prompt-read-only t
+      comint-scroll-to-bottom-on-input t
+      comint-scroll-to-bottom-on-output t
+      comint-move-point-for-output t)
+
+;; Don't treat specific buffers as popups
+;; Otherwise the R subprocess would be closed when its popup is dismissed
+(set-popup-rule! "^*R:" :ignore t)
+(set-popup-rule! "^*ess-describe*" :ignore t)
+(set-popup-rule! "^*R dired*" :ignore t)
+
+(defadvice! my-advice-ess-describe (orig-fn)
+  "Switch to the REPL buffer after closing the *ess-describe* buffer"
+  :around #'ess-describe-object-at-point
+  (let ((starting-window (selected-window)))
+    (funcall orig-fn)
+    (ess-switch-to-ESS t)
+    (select-window starting-window)))
+
 ;; Define function to insert a pipe symbol for R mode
 (defun ess-insert-pipe (arg)
   "Based on `ess-insert-assign', invoking the command twice reverts the insert"
@@ -263,23 +286,17 @@
               (t (insert pipe))))
     (funcall #'self-insert-command arg)))
 
-;; ESS R keybindings, make underscore <-, type twice to undo
-(map! (:map ess-r-mode-map
-       "<" 'ess-insert-assign
-       ">" 'ess-insert-pipe
-       :localleader
-       (:prefix "h"
-        :desc "rdired list objects" "r" 'ess-rdired))
-      ;; use SPC m tab to switch between console and script
-      (:map inferior-ess-r-mode-map
-       :localleader [tab] #'ess-switch-to-inferior-or-script-buffer))
+;; ESS R keybindings, make < add a <-, type twice to undo (same goes for >)
+(map! (:after ess
+       (:map ess-mode-map
+        :n [C-return] 'ess-eval-line-and-step)
+       (:map ess-r-mode-map
+        "<" 'ess-insert-assign
+        ">" 'ess-insert-pipe
+        :localleader
+        :desc "evironment list objects" "e" 'ess-rdired)))
 
-;; Scroll down in REPL windows
-(setq comint-prompt-read-only t
-      comint-scroll-to-bottom-on-input t
-      comint-scroll-to-bottom-on-output t
-      comint-move-point-for-output t)
-
+;; Python Settings
 ;; Tab-indent for python
 (setq python-indent-offset 2)
 
