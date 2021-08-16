@@ -69,6 +69,9 @@
 ;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
 ;; they are implemented.
 
+;; Check if running on WSL
+(setq IS-WSL (if (string-match "-[Mm]icrosoft" (shell-command-to-string "uname -a")) t nil))
+
 ;; Quit without confirmation
 (setq confirm-kill-emacs nil)
 
@@ -89,8 +92,7 @@
       inhibit-compacting-font-caches t) ; Keep all glyphs in memory
 
 ;; Start emacs maximized on WSL
-(when (string-match "-[Mm]icrosoft" (shell-command-to-string "uname -a"))
-  (add-to-list 'default-frame-alist '(fullscreen . maximized)))
+(when IS-WSL (add-to-list 'default-frame-alist '(fullscreen . maximized)))
 
 ;; On laptops it's nice to know how much power you have
 (if (string-match "[0-9]" (battery))
