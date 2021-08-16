@@ -406,6 +406,7 @@ https://github.com/abo-abo/org-download/commit/137c3d2aa083283a3fc853f9ecbbc0303
 
 ;; Smooth scrolling
 (use-package! good-scroll
+  :if (not IS-WSL)
   :config
   ;; Increase animation time and mouse scrolling sensitivity
   (setq good-scroll-duration .25
