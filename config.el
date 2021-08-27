@@ -135,6 +135,13 @@
 (define-key evil-visual-state-map (kbd "j") 'evil-next-visual-line)
 (define-key evil-visual-state-map (kbd "k") 'evil-previous-visual-line)
 
+;; Spacemacs style M-x
+;; Old SPC SPC binding (projectile find file) also available under "SPC p f"
+;; This frees up the "SPC :" to be another evil-ex because i am condition to hit SPC
+(map! :leader
+      :desc "M-x" "SPC" 'execute-extended-command
+      ":" 'evil-ex)
+
 ;; Repeat last command using SPC r
 (map! :leader "r" 'repeat)
 
