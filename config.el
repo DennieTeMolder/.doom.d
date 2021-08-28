@@ -140,7 +140,7 @@
 ;; This frees up the "SPC :" to be another evil-ex because i am condition to hit SPC
 (map! :leader
       :desc "M-x" "SPC" 'execute-extended-command
-      ":" 'evil-ex)
+      :desc "Evil ex command" ":" 'evil-ex)
 
 ;; Repeat last command using SPC r
 (map! :leader "r" 'repeat)
