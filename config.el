@@ -305,6 +305,12 @@
         :localleader
         :desc "Environment list R objects" "e" 'ess-rdired)))
 
+(use-package! ess-view-data
+  :commands ess-view-data-print
+  :init
+  (map! :map ess-r-mode-map
+        :localleader "o" 'ess-view-data-print :desc "Object view"))
+
 ;; Python Settings
 ;; Tab-indent for python
 (setq python-indent-offset 2)

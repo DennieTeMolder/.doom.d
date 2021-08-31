@@ -53,3 +53,4 @@
 (package! interaction-log)
 (package! good-scroll)
 (package! atomic-chrome)
+(package! ess-view-data)
