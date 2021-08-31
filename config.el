@@ -266,9 +266,9 @@
 
 ;; Don't treat specific buffers as popups
 ;; Otherwise the R subprocess would be closed when its popup is dismissed
-(set-popup-rule! "^*R:" :ignore t)
-(set-popup-rule! "^*ess-describe*" :ignore t)
-(set-popup-rule! "^*R dired*" :ignore t)
+(set-popup-rule! "^\\*R[*:]" :ignore t)
+(set-popup-rule! "^\\*ess-describe\\*" :ignore t)
+(set-popup-rule! "^\\*R dired\\*" :ignore t)
 
 (defadvice! my-advice-ess-describe (orig-fn)
   "Switch to the REPL buffer after closing the *ess-describe* buffer"
@@ -298,12 +298,12 @@
 ;; ESS R keybindings, make < add a <-, type twice to undo (same goes for >)
 (map! (:after ess
        (:map ess-mode-map
-        :n [C-return] 'ess-eval-line-and-step)
+        :n [C-return] 'ess-eval-region-or-line-and-step)
        (:map ess-r-mode-map
         "<" 'ess-insert-assign
         ">" 'ess-insert-pipe
         :localleader
-        :desc "evironment list objects" "e" 'ess-rdired)))
+        :desc "Environment list R objects" "e" 'ess-rdired)))
 
 ;; Python Settings
 ;; Tab-indent for python
