@@ -157,7 +157,7 @@
 (setq doom-themes-treemacs-enable-variable-pitch nil)
 
 ;; Bind window resize hydra from doom hydra module
-(map! (:leader :desc "adjust windows hydra" :leader "w a" '+hydra/window-nav/body))
+(map! (:leader :desc "Adjust windows hydra" :leader "w a" '+hydra/window-nav/body))
 
 ;; Save clipboard to kill ring before deleting text 
 ;; Cyle kill ring using <C-p> or <C-n> after pasting
@@ -266,11 +266,11 @@
 
 ;; Don't treat specific buffers as popups
 ;; Otherwise the R subprocess would be closed when its popup is dismissed
-(set-popup-rule! "^\\*R[*:]" :ignore t)
+(set-popup-rule! "^\\*R\\(:.*\\)?\\*$" :ignore t)
 (set-popup-rule! "^\\*ess-describe\\*" :ignore t)
 (set-popup-rule! "^\\*R dired\\*" :ignore t)
 
-(defadvice! my-advice-ess-describe (orig-fn)
+(defadvice! my/advice-ess-describe (orig-fn)
   "Switch to the REPL buffer after closing the *ess-describe* buffer"
   :around #'ess-describe-object-at-point
   (let ((starting-window (selected-window)))
@@ -309,7 +309,13 @@
   :commands ess-view-data-print
   :init
   (map! :map ess-r-mode-map
-        :localleader "o" 'ess-view-data-print :desc "Object view"))
+        :localleader "o" 'ess-view-data-print :desc "Object view")
+
+  (defadvice! my/advice-ess-view-data (orig-fn)
+    "Enable text-mode and disable word-wrap-mode"
+    :after #'ess-view-data-print
+    (text-mode)
+    (+word-wrap-mode 0)))
 
 ;; Python Settings
 ;; Tab-indent for python
