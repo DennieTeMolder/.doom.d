@@ -322,7 +322,29 @@
               auto-mode-alist))
 
 ;; Org-mode settings
-(setq org-indent-indentation-per-level 1)
+(setq org-indent-indentation-per-level 1
+      org-ellipsis " ▾")
+
+;; Enable auto-fill mode on startup
+(defun my/enable-auto-fill-mode ()
+  (auto-fill-mode 1))
+(add-hook! 'org-mode-hook #'my/enable-auto-fill-mode)
+
+(after! org
+  ;; Make headings bold and larger
+  (dolist (face '((org-level-1 . 1.2)
+                  (org-level-2 . 1.1)
+                  (org-level-3 . 1.05)
+                  (org-level-4 . 1.0)
+                  (org-level-5 . 1.0)
+                  (org-level-6 . 1.0)
+                  (org-level-7 . 1.0)
+                  (org-level-8 . 1.0)))
+    (set-face-attribute (car face) nil :weight 'semi-bold :height (cdr face)))
+
+  ;; Give ellipsis same color as text
+  (set-face-attribute 'org-ellipsis nil :foreground nil :background nil :weight 'regular))
+
 
 ;; Compilation to make org-ref citations work
 (setq org-latex-pdf-process (list "latexmk -shell-escape -bibtex -f -pdf %f"))
@@ -331,10 +353,7 @@
 (use-package! org-superstar
   :hook (org-mode . org-superstar-mode)
   :config
-  ;; Make leading stars truly invisible, by rendering them as spaces!
-  (setq org-superstar-leading-bullet ?\s
-        org-superstar-leading-fallback ?\s
-        org-hide-leading-stars nil
+  (setq org-superstar-headline-bullets-list '("◉" "○" "●" "○" "●" "○" "●")
         org-superstar-todo-bullet-alist
         '(("TODO" . 9744)
           ("[ ]"  . 9744)
