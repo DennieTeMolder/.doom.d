@@ -76,7 +76,7 @@
 (setq confirm-kill-emacs nil)
 
 ;; Default major mode for scratch buffer
-(setq doom-scratch-initial-major-mode 'org-mode)
+(setq doom-scratch-initial-major-mode 'lisp-interaction-mode)
 
 ;; Rudimentary settings
 (setq-default delete-by-moving-to-trash t
@@ -113,7 +113,7 @@
   (setq-local doom-modeline-buffer-encoding
               (unless (or (eq buffer-file-coding-system 'utf-8-unix)
                           (eq buffer-file-coding-system 'utf-8)))))
-(add-hook 'after-change-major-mode-hook #'doom-modeline-conditional-buffer-encoding)
+(add-hook! 'after-change-major-mode-hook #'doom-modeline-conditional-buffer-encoding)
 
 ;; Simplify window title and give a visual indication if file is edited
 (setq frame-title-format
@@ -149,7 +149,7 @@
 (setq projectile-sort-order 'recentf)
 
 ;; Define zenmode text scale
-(setq +zen-text-scale 1.25
+(setq +zen-text-scale 1.15
       writeroom-width 70
       +zen-mixed-pitch-modes '(org-mode latex-mode markdown-mode))
 
@@ -376,7 +376,7 @@
 
 ;; keymaps
 (map! (:map org-mode-map "C-c n a" 'orb-note-actions))
-(add-hook 'org-noter-doc-mode-hook (lambda ()
+(add-hook! 'org-noter-doc-mode-hook (lambda ()
   (local-set-key (kbd "C-c a") 'org-noter-insert-note)))
 
 ;; Org-noter settings
@@ -448,7 +448,7 @@ https://github.com/abo-abo/org-download/commit/137c3d2aa083283a3fc853f9ecbbc0303
         (define-key evil-normal-state-map (kbd "C-u") 'evil-scroll-up))))
 
   ;; Switch key map on mode enable/disable
-  (add-hook 'good-scroll-mode-hook #'my/toggle-bind-evil-smooth-scroll)
+  (add-hook! 'good-scroll-mode-hook #'my/toggle-bind-evil-smooth-scroll)
 
   ;; Enable good-scroll
   (good-scroll-mode 1)
