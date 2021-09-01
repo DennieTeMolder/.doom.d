@@ -309,8 +309,8 @@
   :commands ess-view-data-print
   :init
   (map! :map ess-r-mode-map
-        :localleader "o" 'ess-view-data-print :desc "Object view")
-
+        :desc "View R object" :localleader "o" 'ess-view-data-print)
+  :config
   (defadvice! my/advice-ess-view-data (orig-fn)
     "Enable text-mode and disable word-wrap-mode"
     :after #'ess-view-data-print
