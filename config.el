@@ -98,6 +98,9 @@
 (if (string-match "[0-9]" (battery))
     (display-battery-mode 1))
 
+;; Increase auto-completion suggestion delay
+(setq company-idle-delay 0.4)
+
 ;; Iterate through CamelCase words
 (global-subword-mode 1)
 
@@ -324,6 +327,9 @@
 ;; Org-mode settings
 (setq org-indent-indentation-per-level 1
       org-ellipsis " ▾")
+
+;; Disable company auto pop-up in org, use C-SPC to trigger
+(setq-mode-local org-mode company-idle-delay nil)
 
 ;; Enable auto-fill mode on startup
 (defun my/enable-auto-fill-mode ()
