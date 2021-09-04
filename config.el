@@ -267,6 +267,18 @@
       comint-scroll-to-bottom-on-output t
       comint-move-point-for-output t)
 
+;; Proper number highlighting for R mode
+(after! highlight-numbers
+  (puthash 'ess-r-mode
+           "\\_<\\(?:[0-9]+\\)?\\(?:\\.[0-9]*\\)?\\(?:e-?[0-9]+\\)?\\_>"
+           highlight-numbers-modelist))
+
+(after! ess
+  ;; Enable additional highlighting
+  (add-to-list 'ess-R-font-lock-keywords '(ess-R-fl-keyword:F&T . t))
+  ;; Customize type faces
+  (set-face-attribute 'ess-constant-face nil :weight 'bold :inherit font-lock-warning-face))
+
 ;; Don't treat specific buffers as popups
 ;; Otherwise the R subprocess would be closed when its popup is dismissed
 (set-popup-rule! "^\\*R\\(:.*\\)?\\*$" :ignore t)
