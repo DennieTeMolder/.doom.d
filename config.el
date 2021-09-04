@@ -98,9 +98,6 @@
 (if (string-match "[0-9]" (battery))
     (display-battery-mode 1))
 
-;; Increase auto-completion suggestion delay
-(setq company-idle-delay 0.4)
-
 ;; Iterate through CamelCase words
 (global-subword-mode 1)
 
@@ -133,10 +130,9 @@
 (global-visual-line-mode t)
 
 ;; Make j/k move visual lines (gj/gk)
-(define-key evil-normal-state-map (kbd "j") 'evil-next-visual-line)
-(define-key evil-normal-state-map (kbd "k") 'evil-previous-visual-line)
-(define-key evil-visual-state-map (kbd "j") 'evil-next-visual-line)
-(define-key evil-visual-state-map (kbd "k") 'evil-previous-visual-line)
+(map!
+ :nvm "j" 'evil-next-visual-line
+ :nvm "k" 'evil-previous-visual-line)
 
 ;; Spacemacs style M-x
 ;; Old SPC SPC binding (projectile find file) also available under "SPC p f"
@@ -148,8 +144,11 @@
 ;; Repeat last command using SPC r
 (map! :leader "r" 'repeat)
 
+;; Increase auto-completion suggestion delay
+(setq company-idle-delay 0.4)
+
 ;; Projectle sorting by recently opened
-(setq projectile-sort-order 'recentf)
+(setq projectile-sort-order 'recently-active)
 
 ;; Define zenmode text scale
 (setq +zen-text-scale 1.15
