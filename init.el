@@ -90,7 +90,8 @@
        vterm               ; the best terminal emulation in Emacs
 
        :checkers
-       syntax              ; tasing you for every semicolon you forget
+       (syntax             ; tasing you for every semicolon you forget
+        +childframe)
        (spell              ; tasing you for misspelling mispelling
         +everywhere)
        ;;grammar           ; tasing grammar mistake every you make
