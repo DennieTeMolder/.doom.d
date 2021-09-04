@@ -306,7 +306,9 @@
         "<" 'ess-insert-assign
         ">" 'ess-insert-pipe
         :localleader
-        :desc "Environment list R objects" "e" 'ess-rdired)))
+        :desc "Environment list R objects" "e" 'ess-rdired)
+       (:map inferior-ess-mode-map
+        "C-l" 'comint-clear-buffer)))
 
 (use-package! ess-view-data
   :commands ess-view-data-print
