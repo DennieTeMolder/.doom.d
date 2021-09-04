@@ -331,12 +331,10 @@
       org-ellipsis " ▾")
 
 ;; Disable company auto pop-up in org, use C-SPC to trigger
-(setq-mode-local org-mode company-idle-delay nil)
+(add-hook! 'org-mode-hook (setq-local company-idle-delay nil))
 
-;; Enable auto-fill mode on startup
-(defun my/enable-auto-fill-mode ()
-  (auto-fill-mode 1))
-(add-hook! 'org-mode-hook #'my/enable-auto-fill-mode)
+;; Enable auto-fill mode in org buffers
+(add-hook! 'org-mode-hook (auto-fill-mode 1))
 
 (after! org
   ;; Make headings bold and larger
