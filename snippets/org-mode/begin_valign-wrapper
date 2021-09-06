@@ -1,7 +1,7 @@
 # -*- mode: snippet -*-
 # name: #+begin_valign-wrapper block
 # key: <va
-# condition: t
+# uuid: <va
 # --
 #+begin_valign-wrapper
 $0

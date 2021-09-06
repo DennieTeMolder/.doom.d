@@ -1,7 +1,7 @@
 # -*- mode: snippet -*-
 # name: reveal speaker notes
 # key: <n
-# condition: t
+# uuid: <n
 # --
 #+BEGIN_NOTES
   $0

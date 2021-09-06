@@ -1,6 +1,7 @@
 # -*- mode: snippet -*-
 # name: Two Columns
 # key: <2c
+# uuid: <2c
 # --
 #+begin_leftcol
 $1

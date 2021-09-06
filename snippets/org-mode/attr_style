@@ -1,6 +1,6 @@
 # -*- mode: snippet -*-
 # name: add html style
 # key: style
-# condition: t
+# uuid: style
 # --
 #+ATTR_HTML: :style $0

@@ -1,7 +1,7 @@
 # -*- mode: snippet -*-
 # name: R read tsv
 # key: read_tsv
-# condition: t
+# uuid: read_tsv
 # --
 #+BEGIN_SRC R :colnames yes :rownames no :exports results :session none
 readr::read_tsv("$1")
