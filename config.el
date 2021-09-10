@@ -98,8 +98,8 @@
 (if (string-match "[0-9]" (battery))
     (display-battery-mode 1))
 
-;; Iterate through CamelCase words
-(global-subword-mode 1)
+;; Iterate through CamelCase words in programming buffers
+(add-hook! 'prog-mode-hook (subword-mode 1))
 
 ;; Change window split direction
 (setq evil-vsplit-window-right t
