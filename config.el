@@ -260,7 +260,6 @@
 ;; ESS R settings
 ;; Use a default session name and auto scroll down in REPL windows
 (setq ess-ask-for-ess-directory nil
-      ansi-color-for-comint-mode 'filter
       comint-prompt-read-only t
       comint-scroll-to-bottom-on-input t
       comint-scroll-to-bottom-on-output t
@@ -297,7 +296,7 @@
   "Based on `ess-insert-assign', invoking the command twice reverts the insert"
   (interactive "p")
   (if (string= ess-language "S")
-      (let* ((pipe "%>%")
+      (let* ((pipe " %>% ")
              (event (event-basic-type last-input-event))
              (char (ignore-errors (format "%c" event))))
         (cond ((and char (ess-inside-string-or-comment-p))
