@@ -151,8 +151,9 @@
 (setq projectile-sort-order 'recently-active)
 
 ;; Define zenmode text scale
-(setq +zen-text-scale 1.15
+(setq +zen-text-scale 1.25
       writeroom-width 70
+      writeroom-mode-line t
       +zen-mixed-pitch-modes '(org-mode latex-mode markdown-mode))
 
 ;; Don't use the variable pitch font for treemacs
