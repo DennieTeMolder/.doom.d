@@ -169,6 +169,15 @@
 ;; Personal ispell library
 (setq ispell-personal-dictionary "~/MEGA/Dictionary/personal_dict.pws")
 
+;; PDFView bindings
+(map! :map pdf-view-mode-map
+      :v "h" 'pdf-annot-add-highlight-markup-annotation
+      :v "s" 'pdf-annot-add-strikeout-markup-annotation
+      :v "u" 'pdf-annot-add-underline-markup-annotation
+      (:prefix "C-c"
+       :desc "Add Note" "a" 'pdf-annot-add-text-annotation
+       :desc "Delete Annotation" "d" 'pdf-annot-delete))
+
 ;; AucTex settings, inverse searching also requires config of the pdf reader
 (setq TeX-command-force "LatexMk"
       TeX-PDF-mode t
