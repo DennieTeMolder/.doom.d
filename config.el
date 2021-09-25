@@ -105,9 +105,6 @@
 (setq evil-vsplit-window-right t
       evil-split-window-below t)
 
-;; Preview buffers when switching
-(setq +ivy-buffer-preview t)
-
 ;; Only display encoding in modeline when it's not UTF-8
 (defun doom-modeline-conditional-buffer-encoding ()
   (setq-local doom-modeline-buffer-encoding
@@ -358,7 +355,8 @@
 
 (after! org
   ;; Make headings bold and larger
-  (dolist (face '((org-level-1 . 1.2)
+  (dolist (face '((org-document-title . 1.2)
+                  (org-level-1 . 1.2)
                   (org-level-2 . 1.1)
                   (org-level-3 . 1.05)
                   (org-level-4 . 1.0)
@@ -371,10 +369,6 @@
   ;; Give ellipsis same color as text
   (set-face-attribute 'org-ellipsis nil :foreground nil :background nil :weight 'regular))
 
-
-;; Compilation to make org-ref citations work
-(setq org-latex-pdf-process (list "latexmk -shell-escape -bibtex -f -pdf %f"))
-
 ;; Fancy org mode bullets
 (use-package! org-superstar
   :hook (org-mode . org-superstar-mode)
@@ -386,21 +380,23 @@
           ("DONE" . 9745)
           ("[X]"  . 9745))))
 
-;; This option creates slowdown on lines with citations in large files
-;; You can still check for broken links by running "M-x org-ref"
-(setq org-ref-show-broken-links nil)
-
 ;; Default bibliography
-(setq! +biblio-pdf-library-dir "~/MEGA/Zotero/"
-       +biblio-default-bibliography-files '("~/MEGA/Zotero/master.bib" "~/MEGA/library.bib")
-       +biblio-notes-path "~/MEGA/PKM/notes/")
+(setq! bibtex-completion-bibliography '("~/MEGA/Zotero/master.bib" "~/MEGA/library.bib")
+       bibtex-completion-library-path "~/MEGA/Zotero/"
+       bibtex-completion-notes-path "~/MEGA/PKM/notes/")
+(setq! org-cite-csl-styles-dir "~/MEGA/Zotero/Styles")
+
+;; Org-cite settings
+(after! (oc org bibtex-completion bibtex-actions)
+  (setq org-cite-export-processors
+        '((latex biblatex "ieee")
+          (t csl "ieee.csl"))))
 
 ;; Org-roam workflow settings
 (setq org-roam-directory "~/MEGA/PKM/"
       org-roam-dailies-directory "journals/"
       org-roam-index-file "pages/contents.org"
       org-roam-file-exclude-regexp "Rubbish/")
-(setq ivy-bibtex-default-action 'ivy-bibtex-edit-notes)
 (setq deft-directory "~/MEGA/PKM/")
 
 ;; Roam templates
@@ -413,20 +409,20 @@
          #'org-roam-capture--get-point "* %?"
          :file-name "journals/%<%Y_%m_%d>" :head "#+title: %<%Y-%m-%d>\n#+DATE: %<%A %B %e, Week %W %Y>\n")))
 
-;; Cite note template
-(setq orb-templates
-      '(("r" "ref" plain
-         #'org-roam-capture--get-point "%?"
-         :file-name "notes/${slug}" :head "#+TITLE: ${=key=}: ${title}\n#+DATE: %<%Y-%m-%d>\n\n#+roam_key: ${ref}\n#+roam_tags: lit\n\n- tags ::\n- keywords :: ${keywords}\n\n\n* ${title}\n  :PROPERTIES:\n  :Custom_ID: ${=key=}\n  :URL: ${url}\n  :AUTHOR: ${author-or-editor}\n  :NOTER_DOCUMENT: %(orb-process-file-field \"${=key=}\")\n  :NOTER_PAGE: \n  :END:\n\n" :unnarrowed t)))
-
-;; keymaps
-(map! (:map org-mode-map "C-c n a" 'orb-note-actions))
-(add-hook! 'org-noter-doc-mode-hook (lambda ()
-  (local-set-key (kbd "C-c a") 'org-noter-insert-note)))
+;; Org-roam-bibtex
+;; (setq orb-templates
+;;       '(("r" "ref" plain
+;;          #'org-roam-capture--get-point "%?"
+;;          :file-name "notes/${slug}" :head "#+TITLE: ${=key=}: ${title}\n#+DATE: %<%Y-%m-%d>\n\n#+roam_key: ${ref}\n#+roam_tags: lit\n\n- tags ::\n- keywords :: ${keywords}\n\n\n* ${title}\n  :PROPERTIES:\n  :Custom_ID: ${=key=}\n  :URL: ${url}\n  :AUTHOR: ${author-or-editor}\n  :NOTER_DOCUMENT: %(orb-process-file-field \"${=key=}\")\n  :NOTER_PAGE: \n  :END:\n\n" :unnarrowed t)))
+;;
+;; (map! (:map org-mode-map "C-c n a" 'orb-note-actions))
 
 ;; Org-noter settings
 (setq org-noter-hide-other nil ;; Don't fold headings when navigating
       org-noter-always-create-frame nil) ;; Only crete new frames for additional sessions
+
+(add-hook! 'org-noter-doc-mode-hook (lambda ()
+  (local-set-key (kbd "C-c a") 'org-noter-insert-note)))
 
 ;; Org-download settings
 (defun drestivo/org-download-method (link)

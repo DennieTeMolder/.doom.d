@@ -24,10 +24,8 @@
         +childframe)       ; improved UI
        ;;helm              ; the *other* search engine for love and life
        ;;ido               ; the other *other* search engine...
-       (ivy                ; a search engine for love and life
-        +icons             ; icons are nice
-        ;;+fuzzy           ; fuzzy searching
-        +prescient)        ; I know what I want(ed)
+       ;;ivy               ; a search engine for love and life
+       (vertico +icons)    ; the search engine of the future
 
        :ui
        deft                ; notational velocity for Emacs
@@ -125,6 +123,7 @@
 
        :lang
        ;;agda              ; types of types of types of types...
+       ;;beancount         ; mind the GAAP
        ;;cc                ; C/C++/Obj-C madness
        ;;clojure           ; java with a lisp
        ;;common-lisp       ; if you've seen one lisp, you've seen them all
@@ -133,11 +132,13 @@
        ;;csharp            ; unity, .NET, and mono shenanigans
        data                ; config/data formats
        ;;(dart +flutter)   ; paint ui and not much else
+       ;;dhall
        ;;elixir            ; erlang done right
        ;;elm               ; care for a cup of TEA?
        emacs-lisp          ; drown in parentheses
        ;;erlang            ; an elegant language for a more civilized age
        ess                 ; emacs speaks statistics
+       ;;factor
        ;;faust             ; dsp, but you get to keep your soul
        ;;fsharp            ; ML stands for Microsoft's Language
        ;;fstar             ; (dependent) types and (monadic) effects and Z3
@@ -156,7 +157,6 @@
         +cdlatex           ; quick maths symbols
         +fold)             ; fold the clutter away nicities
        ;;lean
-       ;;factor
        ;;ledger            ; an accounting system in Emacs
        ;;lua               ; one-based indices? one-based indices
        markdown            ; writing docs for people to ignore
@@ -164,10 +164,9 @@
        ;;nix               ; I hereby declare "nix geht mehr!"
        ;;ocaml             ; an objective camel
        (org                ; organize your plain life in plain text
-        +roam
+        +roam2
         +noter
         +dragndrop
-        +pandoc
         +present)
        ;;php               ; perl's insecure younger brother
        ;;plantuml          ; diagrams for confusing people more
@@ -189,14 +188,17 @@
        ;;terra             ; Earth and Moon in alignment for performance.
        ;;web               ; the tubes
        yaml                ; JSON, but readable
+       ;;zig               ; C, but simpler
 
        :email
-       ;;(mu4e +gmail)
+       ;;(mu4e +org +gmail)
        ;;notmuch
        ;;(wanderlust +gmail)
 
        :app
        ;;calendar
+       ;;emms
+       ;;everywhere        ; *leave* Emacs!? You must be joking
        ;;irc               ; how neckbeards socialize
        ;;(rss +org)        ; emacs as an RSS reader
        ;;twitter           ; twitter client https://twitter.com/vnought
@@ -204,9 +206,3 @@
        :config
        ;;literate
        (default +bindings +smartparens))
-
-;; Overwrite modules/biblio setting that causes errors when opening pdf from ref
-;; It would be preffered to achieve this through !after, but this doens't work
-(use-package-hook! org-ref
-  :post-config
-  (setq org-ref-open-pdf-function 'org-ref-open-pdf-at-point))
