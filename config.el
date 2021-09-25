@@ -403,13 +403,14 @@
 
 ;; Roam templates
 (setq org-roam-capture-templates
-      '(("d" "default" plain
-         #'org-roam-capture--get-point "%?"
-         :file-name "pages/%<%Y%m%d%H%M%S>-${slug}" :head "#+title: ${title}\n" :unnarrowed t)))
+      '(("d" "default" plain "%?"
+         :target (file+head "pages/%<%Y%m%d%H%M%S>-${slug}.org"
+                            "#+title: ${title}\n")
+         :unnarrowed t)))
 (setq org-roam-dailies-capture-templates
-      '(("d" "default" entry
-         #'org-roam-capture--get-point "* %?"
-         :file-name "journals/%<%Y_%m_%d>" :head "#+title: %<%Y-%m-%d>\n#+DATE: %<%A %B %e, Week %W %Y>\n")))
+      '(("d" "default" entry "* %?"
+         :target (file+head "%<%Y_%m_%d>.org"
+                            "#+title: %<%Y-%m-%d>\n#+DATE: %<%A %B %e, Week %W %Y>\n"))))
 
 ;; Org-roam-bibtex
 ;; (setq orb-templates
