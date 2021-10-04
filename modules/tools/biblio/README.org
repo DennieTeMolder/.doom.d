@@ -96,11 +96,11 @@ This module makes available the following processors:
 
 For user-interface, the module configures these processors as follows for the different completion modules:
 
-| Feature  | Vertico        | Ivy          | Helm         |
-|----------+----------------+--------------+--------------|
-| Insert   | bibtex-actions | oc-basic     | oc-basic     |
-| Activate | oc-basic       | oc-basic     | oc-basic     |
-| Follow   | bibtex-actions | oc-basic     | oc-basic     |
+| Feature  | Vertico        | Ivy      | Helm     |
+|----------+----------------+----------+----------|
+| Insert   | bibtex-actions | oc-basic | oc-basic |
+| Activate | bibtex-actions | oc-basic | oc-basic |
+| Follow   | bibtex-actions | oc-basic | oc-basic |
 
 
 *** Other configuration options
@@ -130,13 +130,13 @@ You may also set the respective note and library path variables as well for
 enhanced functionality:
 
 #+BEGIN_src emacs-lisp
-(setq! bibtex-completion-library-path '("/path/to/Papers/")
+(setq! bibtex-completion-library-path '("/path/to/library/path/")
        bibtex-completion-notes-path "/path/to/your/notes/")
 #+END_src
 
 #+BEGIN_src emacs-lisp
-(setq! bibtex-actions-library-path '("/path/to/Papers/")
-       bibtex-actions-notes-path "/path/to/your/notes/")
+(setq! bibtex-actions-library-paths '("/path/to/library/files/")
+       bibtex-actions-notes-paths '("/path/to/your/notes/"))
 #+END_src
 
 ** Templates

@@ -40,13 +40,6 @@
         '((latex biblatex)
           (t csl))))
 
-(use-package! oc-bibtex-actions
-  :when (featurep! :completion vertico)
-  :after (oc bibtex-actions)
-  :config
-  (setq org-cite-insert-processor 'oc-bibtex-actions
-        org-cite-follow-processor 'oc-bibtex-actions))
-
   ;;; Org-cite processors
 (use-package! oc-basic
   :after oc)
@@ -69,4 +62,4 @@
   :config
   (setq org-cite-insert-processor 'oc-bibtex-actions
         org-cite-follow-processor 'oc-bibtex-actions
-        org-cite-activate-processor 'basic))
+        org-cite-activate-processor 'oc-bibtex-actions))
