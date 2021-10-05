@@ -401,6 +401,12 @@
       org-roam-file-exclude-regexp "Rubbish/")
 (setq deft-directory "~/MEGA/PKM/")
 
+;; Unbind key and redefine as prefix to nest the bib commands under
+(map! :leader "n b" nil)
+(map! :leader (:prefix ("n b" . "bibliography")
+                "b" 'bibtex-actions-open-entry
+                "r" 'bibtex-actions-refresh))
+
 ;; Roam templates
 (setq org-roam-capture-templates
       '(("d" "default" plain "%?"
