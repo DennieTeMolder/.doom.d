@@ -405,7 +405,9 @@
 (map! :leader "n b" nil)
 (map! :leader (:prefix ("n b" . "bibliography")
                 "b" 'bibtex-actions-open-entry
-                "r" 'bibtex-actions-refresh))
+                "r" 'bibtex-actions-refresh
+                (:map org-mode-map
+                  "i" 'org-cite-insert)))
 
 ;; Roam templates
 (setq org-roam-capture-templates
