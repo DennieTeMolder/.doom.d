@@ -62,4 +62,6 @@
   :config
   (setq org-cite-insert-processor 'oc-bibtex-actions
         org-cite-follow-processor 'oc-bibtex-actions
-        org-cite-activate-processor 'oc-bibtex-actions))
+        org-cite-activate-processor 'oc-bibtex-actions
+        ;; The activate processor relies on shift-select, so we set to t.
+        org-support-shift-select t))
