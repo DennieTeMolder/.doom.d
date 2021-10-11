@@ -147,6 +147,10 @@
 ;; Projectle sorting by recently opened
 (setq projectile-sort-order 'recently-active)
 
+;; Exclude autosave from recent files
+(after! recentf
+  (add-to-list 'recentf-exclude "\\autosave\\'"))
+
 ;; Define zenmode text scale
 (setq +zen-text-scale 1.25
       writeroom-width 70
