@@ -98,6 +98,24 @@
 (if (string-match "[0-9]" (battery))
     (display-battery-mode 1))
 
+;; Replace the default doom splash screen with amore subtle one
+(defun doom-dashboard-draw-ascii-banner-fn ()
+  (let* ((banner
+          '(",---.,-.-.,---.,---.,---."
+            "|---'| | |,---||    `---."
+            "`---'` ' '`---^`---'`---'"))
+         (longest-line (apply #'max (mapcar #'length banner))))
+    (put-text-property
+     (point)
+     (dolist (line banner (point))
+       (insert (+doom-dashboard--center
+                +doom-dashboard--width
+                (concat
+                 line (make-string (max 0 (- longest-line (length line)))
+                                   32)))
+               "\n"))
+     'face 'doom-dashboard-banner)))
+
 ;; Iterate through CamelCase words in programming buffers
 (add-hook! 'prog-mode-hook (subword-mode 1))
 
