@@ -336,13 +336,6 @@
         '((latex biblatex "ieee")
           (t csl "ieee.csl"))))
 
-;; Org-roam workflow settings
-(setq org-roam-directory "~/MEGA/PKM/"
-      org-roam-dailies-directory "journals/"
-      org-roam-index-file "pages/contents.org"
-      org-roam-file-exclude-regexp "Rubbish/")
-(setq deft-directory "~/MEGA/PKM/")
-
 ;; Unbind key and redefine as prefix to nest the bib commands under
 (map! :leader "n b" nil)
 (map! :leader (:prefix ("n b" . "bibliography")
@@ -350,6 +343,30 @@
                 "r" 'bibtex-actions-refresh
                 (:map org-mode-map
                   "i" 'org-cite-insert)))
+
+;; Org-roam workflow settings
+(setq org-roam-directory "~/MEGA/PKM/"
+      org-roam-dailies-directory "journals/"
+      org-roam-index-file "pages/contents.org"
+      org-roam-file-exclude-regexp "Rubbish/")
+(setq deft-directory "~/MEGA/PKM/")
+
+;; Define function to open index file
+(defun my/org-roam-open-index ()
+  "Opens the file specified in org-roam-index-file"
+  (interactive)
+  (find-file (expand-file-name org-roam-index-file org-roam-directory)))
+
+;; Map to keybinding
+(map! :desc "Open index" :leader "n r o" 'my/org-roam-open-index)
+
+;; Add to doom dashboard
+(setcdr +doom-dashboard-menu-sections
+        (cons
+         '("Open roam index"
+           :icon (all-the-icons-octicon "database" :face 'doom-dashboard-menu-title)
+           :action my/org-roam-open-index)
+         (cdr +doom-dashboard-menu-sections)))
 
 ;; Roam templates
 (setq org-roam-capture-templates
