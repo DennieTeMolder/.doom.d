@@ -146,6 +146,10 @@
       :desc "M-x" "SPC" 'execute-extended-command
       :desc "Evil ex command" ":" 'evil-ex)
 
+;; Use mouse buttons to go forward/backward in history
+(map! :n [mouse-8] #'better-jumper-jump-backward
+      :n [mouse-9] #'better-jumper-jump-forward)
+
 ;; Repeat last command using SPC r
 (map! :leader "r" 'repeat)
 
