@@ -27,17 +27,7 @@
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
-
-;; Set theme based on time
-(setq doom-theme
-      (let* ((light-theme 'doom-one-light)
-             (dark-theme 'doom-vibrant)
-             (start-time-light-theme 7)
-             (end-time-light-theme 18)
-             (hour (string-to-number (substring (current-time-string) 11 13))))
-        (if (member hour (number-sequence start-time-light-theme end-time-light-theme))
-            light-theme
-          dark-theme)))
+(setq doom-theme 'doom-vibrant)
 
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
