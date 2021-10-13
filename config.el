@@ -330,13 +330,9 @@
         '((latex biblatex "ieee")
           (t csl "ieee.csl"))))
 
-;; Unbind key and redefine as prefix to nest the bib commands under
-(map! :leader "n b" nil)
-(map! :leader (:prefix ("n b" . "bibliography")
-                "b" 'bibtex-actions-open-entry
-                "r" 'bibtex-actions-refresh
-                (:map org-mode-map
-                  "i" 'org-cite-insert)))
+;; Use old org-ref insert key
+;; Refresh citations (bibtex-actions-refresh) with embark C-; in menu
+(map! :map org-mode-map "C-c ]" 'org-cite-insert)
 
 ;; Org-roam workflow settings
 (setq org-roam-directory "~/MEGA/PKM/"
