@@ -333,7 +333,7 @@
 
 ;; Use old org-ref insert key
 ;; Refresh citations (bibtex-actions-refresh) with embark C-; in menu
-(map! :map org-mode-map "C-c ]" 'org-cite-insert)
+(after! org (map! :map org-mode-map "C-c ]" 'org-cite-insert))
 
 ;; Org-roam workflow settings
 (setq org-roam-directory "~/MEGA/PKM/"
