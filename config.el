@@ -338,7 +338,8 @@
 (setq org-roam-directory "~/MEGA/PKM/"
       org-roam-dailies-directory "journals/"
       org-roam-index-file "pages/contents.org"
-      org-roam-file-exclude-regexp "Rubbish/")
+      org-roam-file-exclude-regexp "Rubbish/"
+      org-roam-completion-everywhere nil)
 (setq deft-directory "~/MEGA/PKM/")
 
 ;; Define function to open index file
