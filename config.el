@@ -124,7 +124,7 @@
 (setq frame-title-format
     '(""
       (:eval
-       (if (s-contains-p (concat org-roam-directory "pages") (or buffer-file-name ""))
+       (if (s-contains-p (concat org-roam-directory "pages") (or buffer-file-truename ""))
            (replace-regexp-in-string ".*/[0-9]*-?" ">" buffer-file-name)
          "%b"))
       (:eval
