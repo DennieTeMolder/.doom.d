@@ -339,9 +339,11 @@
 (setq org-roam-directory "~/MEGA/PKM/"
       org-roam-dailies-directory "journals/"
       org-roam-index-file "pages/contents.org"
-      org-roam-file-exclude-regexp "Rubbish/"
-      org-roam-completion-everywhere nil)
+      org-roam-file-exclude-regexp "Rubbish/")
 (setq deft-directory "~/MEGA/PKM/")
+
+;; Disable completion everywhere as it overrides company completion
+(after! org-roam (setq org-roam-completion-everywhere nil))
 
 ;; Define function to open index file
 (defun my/org-roam-open-index ()
