@@ -93,7 +93,7 @@
   (let* ((banner
           '(",---.,-.-.,---.,---.,---."
             "|---'| | |,---||    `---."
-            "`---'` ' '`---^`---'`---'"
+            "`---'' ' '`---'`---'`---'"
             "                       DOOM"))
          (longest-line (apply #'max (mapcar #'length banner))))
     (put-text-property
