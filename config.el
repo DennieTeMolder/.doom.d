@@ -107,6 +107,9 @@
                "\n"))
      'face 'doom-dashboard-banner)))
 
+;; Increase horizontal scroll (shift + mwheel) sensitivity
+(setq mouse-wheel-scroll-amount-horizontal 12)
+
 ;; Iterate through CamelCase words in programming buffers
 (add-hook! 'prog-mode-hook (subword-mode 1))
 
