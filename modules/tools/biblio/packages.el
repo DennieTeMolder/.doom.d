@@ -7,6 +7,6 @@
 (when (featurep! :completion helm)
   (package! helm-bibtex :pin "bb47f355b0da8518aa3fb516019120c14c8747c9"))
 (when (featurep! :completion vertico)
-  (package! bibtex-actions :pin "8130de52d9bf246d56bda0299ffea08108f0463b"))
+  (package! bibtex-actions :pin "b96728a7ccaa578360f7275bb01080c28bebd216"))
 
-(package! citeproc :pin "91d7630de1ec61ff5d5e62c27d820207ec5bb1c6")
+(package! citeproc :pin "c8ff95862823cdff067e8cc9bb7f5ef537e8f1d9")

@@ -41,8 +41,6 @@
           (t csl))))
 
   ;;; Org-cite processors
-(use-package! oc-basic
-  :after oc)
 
 (use-package! oc-biblatex
   :after oc)
