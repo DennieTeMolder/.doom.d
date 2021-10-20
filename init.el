@@ -42,10 +42,10 @@
        minimap             ; show a map of the code on the side
        modeline            ; snazzy, Atom-inspired modeline, plus API
        nav-flash           ; blink cursor line after big motions
-       ;;neotree             ; a project drawer, like NERDTree for vim
+       ;;neotree           ; a project drawer, like NERDTree for vim
        ophints             ; highlight the region an operation acts on
        (popup              ; tame sudden yet inevitable temporary windows
-       ;; +all               ; catch all popups that start with an asterix
+       ;; +all             ; catch all popups that start with an asterix
         +defaults)         ; default popup rules
        ;;tabs              ; a tab bar for Emacs
        treemacs            ; a project drawer, like neotree but cooler
@@ -96,7 +96,7 @@
 
        :tools
        ;;ansible           ; a crucible for infrastructure as code
-       biblio              ; A collection of bibliographic reference tools
+       biblio              ; Writes a PhD for you (citation needed)
        debugger            ; FIXME stepping through code, to help you add bugs
        ;;direnv
        ;;docker
