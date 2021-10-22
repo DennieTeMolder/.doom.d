@@ -16,7 +16,7 @@
   :when (featurep! :completion vertico)
   :after embark bibtex-completion
   :config
-  (add-to-list 'embark-keymap-alist '(bibtex . bibtex-actions-map))
+  (add-to-list 'embark-keymap-alist '(bib-reference . bibtex-actions-map))
   (when (featurep! +roam2)
     setq bibtex-actions-file-note-org-include '(org-id org-roam-ref)))
 
@@ -59,6 +59,7 @@
   :after oc
   :demand t
   :config
+  (add-to-list 'embark-keymap-alist '(oc-citation . oc-bibtex-actions-buffer-map))
   (setq org-cite-insert-processor 'oc-bibtex-actions
         org-cite-follow-processor 'oc-bibtex-actions
         org-cite-activate-processor 'oc-bibtex-actions
