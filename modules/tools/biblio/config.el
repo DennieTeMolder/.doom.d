@@ -60,6 +60,9 @@
   :demand t
   :config
   (add-to-list 'embark-keymap-alist '(oc-citation . oc-bibtex-actions-buffer-map))
+  (when (featurep! :lang org +roam2)
+    ;; Include property drawer metadata for 'org-roam' v2.
+    (setq bibtex-actions-file-note-org-include '(org-id org-roam-ref)))
   (setq org-cite-insert-processor 'oc-bibtex-actions
         org-cite-follow-processor 'oc-bibtex-actions
         org-cite-activate-processor 'oc-bibtex-actions
