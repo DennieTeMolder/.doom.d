@@ -72,7 +72,6 @@
 (setq-default delete-by-moving-to-trash t
               tab-with 2
               uniquify-buffer-name-style 'forward
-              window-combination-resize t ; Consider all windows when resizing
               x-stretch-cursor t) ; stretch cursor to glyph size
 
 ;; Save and undo settings
