@@ -412,7 +412,9 @@
 (setq org-noter-hide-other nil ;; Don't fold headings when navigating
       org-noter-always-create-frame nil) ;; Only crete new frames for additional sessions
 
-(map! :map org-noter-doc-mode-map "C-c n" 'org-noter-insert-note)
+(map! :map org-noter-doc-mode-map
+      "C-c n" 'org-noter-insert-note
+      "C-c k" 'org-noter-kill-session)
 
 ;; Org-download settings
 (defun drestivo/org-download-method (link)
@@ -501,7 +503,7 @@ https://github.com/abo-abo/org-download/commit/137c3d2aa083283a3fc853f9ecbbc0303
         (message "Started GhostText Server"))))
 
   ;; Bind toggle
-  (map! :desc "Toggle GhostText Server" :leader "t G" 'my/atomic-chrome-toggle-server)
+  (map! :desc "Toggle GhostText server" :leader "t G" 'my/atomic-chrome-toggle-server)
 
   :config
   (setq atomic-chrome-buffer-open-style 'full)
