@@ -342,7 +342,6 @@
       org-roam-dailies-directory "journals/"
       org-roam-index-file "pages/contents.org"
       org-roam-file-exclude-regexp "Rubbish/")
-(setq deft-directory "~/MEGA/PKM/")
 
 ;; Disable completion everywhere as it overrides company completion
 (after! org-roam (setq org-roam-completion-everywhere nil))
@@ -407,6 +406,12 @@
 ;; Bibtex-actions note template
 (after! bibtex-actions
   (push '(note . "#+TITLE: ${=key=}: ${title}\n\n* Notes") bibtex-actions-templates))
+
+;; Deft settings
+(setq deft-directory org-roam-directory
+      deft-strip-summary-regexp ":PROPERTIES:\n\\(.+\n\\)+:END:\n"
+      deft-recursive t
+      deft-use-filename-as-title t)
 
 ;; Org-noter settings
 (setq org-noter-hide-other nil ;; Don't fold headings when navigating
