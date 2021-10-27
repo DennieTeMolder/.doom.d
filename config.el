@@ -406,7 +406,7 @@
 
 ;; Bibtex-actions note template
 (after! bibtex-actions
-  (push '(note . "#+TITLE: ${=key=}: ${title}\n#+FILETAGS: :lit:\n\n* Notes") bibtex-actions-templates))
+  (push '(note . "#+TITLE: ${=key=}: ${title}\n\n* Notes") bibtex-actions-templates))
 
 ;; Org-noter settings
 (setq org-noter-hide-other nil ;; Don't fold headings when navigating
