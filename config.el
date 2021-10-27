@@ -412,8 +412,7 @@
 (setq org-noter-hide-other nil ;; Don't fold headings when navigating
       org-noter-always-create-frame nil) ;; Only crete new frames for additional sessions
 
-(add-hook! 'org-noter-doc-mode-hook (lambda ()
-  (local-set-key (kbd "C-c n") 'org-noter-insert-note)))
+(map! :map org-noter-doc-mode-map "C-c n" 'org-noter-insert-note)
 
 ;; Org-download settings
 (defun drestivo/org-download-method (link)
