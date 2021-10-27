@@ -404,20 +404,16 @@
          :target (file+head "%<%Y_%m_%d>.org"
                             "#+title: %<%Y-%m-%d>\n#+DATE: %<%A %B %d, Week %W %Y>\n"))))
 
-;; Org-roam-bibtex
-;; (setq orb-templates
-;;       '(("r" "ref" plain
-;;          #'org-roam-capture--get-point "%?"
-;;          :file-name "notes/${slug}" :head "#+TITLE: ${=key=}: ${title}\n#+DATE: %<%Y-%m-%d>\n\n#+roam_key: ${ref}\n#+roam_tags: lit\n\n- tags ::\n- keywords :: ${keywords}\n\n\n* ${title}\n  :PROPERTIES:\n  :Custom_ID: ${=key=}\n  :URL: ${url}\n  :AUTHOR: ${author-or-editor}\n  :NOTER_DOCUMENT: %(orb-process-file-field \"${=key=}\")\n  :NOTER_PAGE: \n  :END:\n\n" :unnarrowed t)))
-;;
-;; (map! (:map org-mode-map "C-c n a" 'orb-note-actions))
+;; Bibtex-actions note template
+(after! bibtex-actions
+  (push '(note . "#+TITLE: ${=key=}: ${title}\n#+FILETAGS: :lit:\n\n* Notes") bibtex-actions-templates))
 
 ;; Org-noter settings
 (setq org-noter-hide-other nil ;; Don't fold headings when navigating
       org-noter-always-create-frame nil) ;; Only crete new frames for additional sessions
 
 (add-hook! 'org-noter-doc-mode-hook (lambda ()
-  (local-set-key (kbd "C-c a") 'org-noter-insert-note)))
+  (local-set-key (kbd "C-c n") 'org-noter-insert-note)))
 
 ;; Org-download settings
 (defun drestivo/org-download-method (link)
