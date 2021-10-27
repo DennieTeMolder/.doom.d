@@ -57,14 +57,26 @@
 (use-package! oc-bibtex-actions
   :when (featurep! :completion vertico)
   :after oc
-  :demand t
-  :config
-  (add-to-list 'embark-keymap-alist '(oc-citation . oc-bibtex-actions-buffer-map))
-  (when (featurep! :lang org +roam2)
-    ;; Include property drawer metadata for 'org-roam' v2.
-    (setq bibtex-actions-file-note-org-include '(org-id org-roam-ref)))
+  :defer t
+  :commands (oc-bibtex-actions-insert
+             oc-bibtex-actions-select-style
+             oc-bibtex-actions-follow
+             oc-bibtex-actions-activate)
+  :init
+  ;; While this processor is registered within 'oc-bibtex-actions', we do it here
+  ;; to avoid having to load it upfront.
+  (org-cite-register-processor 'oc-bibtex-actions
+    :insert (org-cite-make-insert-processor
+             #'oc-bibtex-actions-insert
+             #'oc-bibtex-actions-select-style)
+    :follow #'oc-bibtex-actions-follow
+    :activate #'oc-bibtex-actions-activate)
   (setq org-cite-insert-processor 'oc-bibtex-actions
         org-cite-follow-processor 'oc-bibtex-actions
         org-cite-activate-processor 'oc-bibtex-actions
         ;; The activate processor relies on shift-select, so we set to t.
-        org-support-shift-select t))
+        org-support-shift-select t)
+  :config
+  (when (featurep! :lang org +roam2)
+    ;; Include property drawer metadata for 'org-roam' v2.
+    (setq bibtex-actions-file-note-org-include '(org-id org-roam-ref))))
