@@ -58,10 +58,6 @@
   :when (featurep! :completion vertico)
   :after oc
   :defer t
-  :commands (oc-bibtex-actions-insert
-             oc-bibtex-actions-select-style
-             oc-bibtex-actions-follow
-             oc-bibtex-actions-activate)
   :init
   ;; While this processor is registered within 'oc-bibtex-actions', we do it here
   ;; to avoid having to load it upfront.
