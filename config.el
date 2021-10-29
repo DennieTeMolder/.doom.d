@@ -417,9 +417,10 @@
 (setq org-noter-hide-other nil ;; Don't fold headings when navigating
       org-noter-always-create-frame nil) ;; Only crete new frames for additional sessions
 
-(map! :map org-noter-doc-mode-map
-      "C-c n" 'org-noter-insert-note
-      "C-c k" 'org-noter-kill-session)
+;; The pdf-view major mode overwrites the i binding with =ignore= for all minor modes
+;; This works around that by incorporating the binding into the major mode
+(map! :map pdf-view-mode-map
+      :desc "Insert org note" :n "i" (cmd! (if org-noter-doc-mode (org-noter-insert-note) (ignore))))
 
 ;; Org-download settings
 (defun drestivo/org-download-method (link)
