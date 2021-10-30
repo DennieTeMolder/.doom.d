@@ -150,8 +150,8 @@
       :desc "Evil ex command" ":" 'evil-ex)
 
 ;; Use mouse buttons to go forward/backward in history
-(map! :n [mouse-8] #'better-jumper-jump-backward
-      :n [mouse-9] #'better-jumper-jump-forward)
+(map! :n [mouse-8] #'winner-undo
+      :n [mouse-9] #'winner-redo)
 
 ;; Repeat last command using SPC r
 (map! :leader "r" 'repeat)
@@ -523,3 +523,8 @@ https://github.com/abo-abo/org-download/commit/137c3d2aa083283a3fc853f9ecbbc0303
         '(("github\\.com" . gfm-mode)
           ("overleaf\\.com" . latex-mode)
           ("azuredatabricks\\.net" . python-mode))))
+
+;; Enable vertico mouse extension (included with vertico)
+(use-package! vertico-mouse
+  :after vertico
+  :config (vertico-mouse-mode 1))
