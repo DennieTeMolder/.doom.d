@@ -194,7 +194,10 @@
        :desc "Add Note" "a" 'pdf-annot-add-text-annotation
        :desc "Delete Annotation" "d" 'pdf-annot-delete))
 
-(map! :map pdf-history-minor-mode-map :nv "C-o" 'pdf-history-backward)
+(map! :map pdf-history-minor-mode-map
+      :nv "C-o" 'pdf-history-backward
+      :nv [mouse-8] 'pdf-history-backward
+      :nv [mouse-9] 'pdf-history-forward)
 
 ;; AucTex settings, inverse searching also requires config of the pdf reader
 (setq TeX-command-force "LatexMk"
