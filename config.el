@@ -330,14 +330,17 @@
        bibtex-completion-notes-path "~/MEGA/PKM/notes/")
 (setq! org-cite-csl-styles-dir "~/MEGA/Zotero/Styles")
 
+;; Binding to view bibliography
+(map! :leader "n b" 'citar-open-entry)
+
 ;; Org-cite settings
-(after! (oc org bibtex-completion bibtex-actions)
+(after! (oc org bibtex-completion citar)
   (setq org-cite-export-processors
         '((latex biblatex "ieee")
           (t csl "ieee.csl"))))
 
 ;; Use old org-ref insert key
-;; Refresh citations (bibtex-actions-refresh) with embark C-; in menu
+;; Refresh citations (citar-refresh) with embark C-; in menu
 (after! org (map! :map org-mode-map "C-c ]" 'org-cite-insert))
 
 ;; Org-roam workflow settings
@@ -406,9 +409,9 @@
          :target (file+head "%<%Y_%m_%d>.org"
                             "#+title: %<%Y-%m-%d>\n#+DATE: %<%A %B %d, Week %W %Y>\n"))))
 
-;; Bibtex-actions note template
-(after! bibtex-actions
-  (push '(note . "#+TITLE: ${=key=}: ${title}\n\n* Notes") bibtex-actions-templates))
+;; citar note template
+(after! citar
+  (push '(note . "#+TITLE: ${=key=}: ${title}\n\n* Notes") citar-templates))
 
 ;; Deft settings
 (setq deft-directory org-roam-directory
