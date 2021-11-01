@@ -432,7 +432,8 @@
 (map! :map pdf-view-mode-map
       :desc "Insert org note" :n "i" (cmd! (if org-noter-doc-mode
                                                (org-noter-insert-note)
-                                             (ignore))))
+                                             (ignore)))
+      :nv "C-e" 'pdf-view-scroll-down-or-previous-page)
 
 ;; Org-download settings
 (defun drestivo/org-download-method (link)
