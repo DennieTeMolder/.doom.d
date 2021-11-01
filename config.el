@@ -492,11 +492,11 @@ https://github.com/abo-abo/org-download/commit/137c3d2aa083283a3fc853f9ecbbc0303
   (defun my/toggle-bind-evil-smooth-scroll ()
     (if good-scroll-mode
         (progn
-          (define-key evil-normal-state-map (kbd "C-d") 'my/good-scroll-down-half)
-          (define-key evil-normal-state-map (kbd "C-u") 'my/good-scroll-up-half))
+          (map! :nv "C-d" 'my/good-scroll-down-half
+                :nv "C-u" 'my/good-scroll-up-half))
       (progn
-        (define-key evil-normal-state-map (kbd "C-d") 'evil-scroll-down)
-        (define-key evil-normal-state-map (kbd "C-u") 'evil-scroll-up))))
+        (map! :nv "C-d" 'evil-scroll-down
+              :nv "C-u" 'evil-scroll-up))))
 
   ;; Switch key map on mode enable/disable
   (add-hook! 'good-scroll-mode-hook #'my/toggle-bind-evil-smooth-scroll)
