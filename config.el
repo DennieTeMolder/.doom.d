@@ -325,9 +325,9 @@
           ("[X]"  . 9745))))
 
 ;; Default bibliography
-(setq! bibtex-completion-bibliography '("~/MEGA/Zotero/master.bib" "~/MEGA/library.bib")
-       bibtex-completion-library-path "~/MEGA/Zotero/"
-       bibtex-completion-notes-path "~/MEGA/PKM/notes/")
+(setq! citar-bibliography '("~/MEGA/Zotero/master.bib")
+       citar-library-paths '("~/MEGA/Zotero/")
+       citar-notes-paths '("~/MEGA/PKM/notes/"))
 (setq! org-cite-csl-styles-dir "~/MEGA/Zotero/Styles")
 
 ;; Binding to view bibliography
