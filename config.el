@@ -149,6 +149,9 @@
       :desc "M-x" "SPC" 'execute-extended-command
       :desc "Evil ex command" ":" 'evil-ex)
 
+;; Global keybindings
+(map! :leader "b D" 'kill-buffer-and-window)
+
 ;; Use mouse buttons to go forward/backward in history
 (map! :n [mouse-8] #'winner-undo
       :n [mouse-9] #'winner-redo)
