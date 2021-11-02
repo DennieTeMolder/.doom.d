@@ -470,7 +470,13 @@ https://github.com/abo-abo/org-download/commit/137c3d2aa083283a3fc853f9ecbbc0303
 
 ;; M-x interaction-log-mode shows all executed command for debugging/showcasing
 (use-package! interaction-log
-  :commands interaction-log-mode)
+  :commands interaction-log-mode
+  :config
+  ;; TODO prompt user to execute this function after interaction-log-mode
+  (defun interaction-log-show ()
+    "Creates an interaction log window if it doesn't exist"
+    (interactive)
+    (display-buffer ilog-buffer-name)))
 
 ;; Smooth scrolling
 (use-package! good-scroll
