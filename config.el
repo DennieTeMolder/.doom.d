@@ -337,7 +337,8 @@
 (map! :leader "n b" 'citar-open-entry)
 
 ;; Update citar cache when bib-file changes in during specified modes
-(after! citar (citar-filenotify-setup '(LaTeX-mode-hook org-mode-hook)))
+(after! bibtex-completion
+  (citar-filenotify-setup '(LaTeX-mode-hook org-mode-hook)))
 
 ;; Add roam id and ref to new literature notes
 (setq citar-file-note-org-include '(org-id org-roam-ref))
