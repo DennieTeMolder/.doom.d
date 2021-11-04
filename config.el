@@ -336,6 +336,9 @@
 ;; Binding to view bibliography
 (map! :leader "n b" 'citar-open-entry)
 
+;; Add roam id and ref to new literature notes
+(setq citar-file-note-org-include '(org-id org-roam-ref))
+
 ;; Org-cite settings
 (after! (oc org bibtex-completion citar)
   (setq org-cite-export-processors
