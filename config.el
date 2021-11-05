@@ -298,7 +298,13 @@
 (add-hook! 'org-mode-hook (setq-local company-idle-delay nil))
 
 ;; Enable auto-fill mode in org buffers
-(add-hook! 'org-mode-hook (auto-fill-mode 1))
+(add-hook! 'org-mode-hook
+  (auto-fill-mode 1)
+  (electric-quote-local-mode 1))
+
+;; Unbind the insert mode cdlatex-math-symbol binding
+;; This frees up the backtick for electric-quote-mode (`` -> “)
+(after! org (map! :map org-cdlatex-mode-map "`" nil))
 
 (after! org
   ;; Make headings bold and larger
