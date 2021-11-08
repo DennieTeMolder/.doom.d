@@ -290,6 +290,9 @@
                 ("\\.smk\\'" . python-mode))
               auto-mode-alist))
 
+(custom-set-variables
+ '(conda-anaconda-home "~/.local/miniconda3/"))
+
 ;; Org-mode settings
 (setq org-indent-indentation-per-level 1
       org-ellipsis " ▾")
