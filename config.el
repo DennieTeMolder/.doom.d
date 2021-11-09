@@ -231,12 +231,6 @@
   ;; Customize type faces
   (set-face-attribute 'ess-constant-face nil :weight 'bold :inherit font-lock-warning-face))
 
-;; Don't treat specific buffers as popups
-;; Otherwise the R subprocess would be closed when its popup is dismissed
-;;(set-popup-rule! "^\\*R\\(:.*\\)?\\*$" :ignore t)
-;;(set-popup-rule! "^\\*ess-describe\\*" :ignore t)
-;;(set-popup-rule! "^\\*R dired\\*" :ignore t)
-
 (defadvice! my/advice-ess-describe (orig-fn)
   "Switch to the REPL buffer after closing the *ess-describe* buffer"
   :around #'ess-describe-object-at-point
@@ -281,17 +275,20 @@
         :desc "View R object" :localleader "o" 'ess-view-data-print))
 
 ;; Python Settings
-;; Tab-indent for python
-(setq python-indent-offset 2)
-
-;; Snakefiles in python mode
-(setq auto-mode-alist
-      (append '(("Snakefile" . python-mode)
-                ("\\.smk\\'" . python-mode))
-              auto-mode-alist))
-
 (custom-set-variables
  '(conda-anaconda-home "~/.local/miniconda3/"))
+
+;; (map! :mode python-mode
+;;       :nv [C-return] (cmd! (python-shell-send-statement) (python-nav-forward-statement))
+;;       :localleader
+;;       :desc "Conda env" "c" 'conda-env-activate
+;;       :desc "Switch to REPL" "s" '+python/open-ipython-repl
+;;       :desc "Send line or region" "," 'python-shell-send-statement
+;;       :desc "Send buffer" "b" 'python-shell-send-buffer)
+
+;; Snakefiles in python mode
+(add-to-list 'auto-mode-alist '("Snakefile" . python-mode))
+(add-to-list 'auto-mode-alist '("\\.smk\\'" . python-mode))
 
 ;; Org-mode settings
 (setq org-indent-indentation-per-level 1
