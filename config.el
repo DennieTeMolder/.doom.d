@@ -278,13 +278,51 @@
 (custom-set-variables
  '(conda-anaconda-home "~/.local/miniconda3/"))
 
-;; (map! :mode python-mode
-;;       :nv [C-return] (cmd! (python-shell-send-statement) (python-nav-forward-statement))
-;;       :localleader
-;;       :desc "Conda env" "c" 'conda-env-activate
-;;       :desc "Switch to REPL" "s" '+python/open-ipython-repl
-;;       :desc "Send line or region" "," 'python-shell-send-statement
-;;       :desc "Send buffer" "b" 'python-shell-send-buffer)
+;; Python functions
+(defun my/python-shell-send-statment-and-step ()
+  "Send statement to python shell and move to next"
+  (interactive)
+  (python-shell-send-region
+          (save-excursion (python-nav-beginning-of-statement))
+          (save-excursion (python-nav-end-of-statement)))
+  (python-nav-forward-statement))
+
+(defun my/python-shell-send-block-and-step ()
+  "Send block to python shell and move to next statement"
+  (interactive)
+  (python-shell-send-region
+          (save-excursion (python-nav-beginning-of-block))
+          (save-excursion (python-nav-end-of-block)))
+  (python-nav-end-of-block)
+  (python-nav-forward-statement))
+
+(defun my/python-send-current-and-step ()
+  "Sends statement under point to python shell, if the statement starts a code
+block, send the entire code block."
+  (interactive)
+  ;; Ensure the python process is running
+  (if (not (python-shell-get-process))
+      (progn
+        (save-selected-window
+          (call-interactively #'+python/open-ipython-repl))
+        ;; Give python time to load the interaction module
+        (sleep-for .5)))
+  ;; Check for region, start of block, or other and act accordingly
+  (cond ((region-active-p)
+         (call-interactively #'python-shell-send-region))
+        ((python-info-statement-starts-block-p)
+         (call-interactively #'my/python-shell-send-block-and-step))
+        (t
+         (call-interactively #'my/python-shell-send-statment-and-step))))
+
+;; Python keybindings
+(map! :mode python-mode
+      :nv [C-return] 'my/python-send-current-and-step
+      :localleader
+      :desc "Conda env" "c" 'conda-env-activate
+      :desc "Open python REPL" [tab] '+python/open-ipython-repl
+      :desc "Send buffer to REPL" "b" 'python-shell-send-buffer
+      :desc "Send file to REPL" "f" 'python-shell-send-file)
 
 ;; Snakefiles in python mode
 (add-to-list 'auto-mode-alist '("Snakefile" . python-mode))
