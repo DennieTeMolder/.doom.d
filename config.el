@@ -278,6 +278,13 @@
 (custom-set-variables
  '(conda-anaconda-home "~/.local/miniconda3/"))
 
+(after! conda
+  ;; Default to base env if non is provided
+  (add-hook! 'conda-env-autoactivate-mode-hook
+    (if (and conda-env-autoactivate-mode (not conda-env-current-name))
+        (conda-env-activate "base")))
+  (conda-env-autoactivate-mode t))
+
 ;; Python functions
 (defun my/python-shell-send-statment-and-step ()
   "Send statement to python shell and move to next"
@@ -319,10 +326,12 @@ block, send the entire code block."
 (map! :mode python-mode
       :nv [C-return] 'my/python-send-current-and-step
       :localleader
-      :desc "Conda env" "c" 'conda-env-activate
       :desc "Open python REPL" [tab] '+python/open-ipython-repl
       :desc "Send buffer to REPL" "b" 'python-shell-send-buffer
-      :desc "Send file to REPL" "f" 'python-shell-send-file)
+      :desc "Send file to REPL" "f" 'python-shell-send-file
+      :prefix ("c". "Conda")
+       "a" 'conda-env-activate
+       "d" 'conda-env-deactivate)
 
 ;; Snakefiles in python mode
 (add-to-list 'auto-mode-alist '("Snakefile" . python-mode))
