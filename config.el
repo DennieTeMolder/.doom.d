@@ -84,8 +84,8 @@
 (when IS-WSL (add-to-list 'default-frame-alist '(fullscreen . maximized)))
 
 ;; On laptops it's nice to know how much power you have
-(if (string-match "[0-9]" (battery))
-    (display-battery-mode 1))
+(unless (equal "Battery status not available" (battery))
+  (display-battery-mode 1))
 
 ;; Replace the default doom splash screen with amore subtle one
 (defun doom-dashboard-draw-ascii-banner-fn ()
