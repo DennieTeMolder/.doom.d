@@ -84,8 +84,9 @@
 (when IS-WSL (add-to-list 'default-frame-alist '(fullscreen . maximized)))
 
 ;; On laptops it's nice to know how much power you have
-(after! battery
-  (unless (equal "unknown" (cdr (assoc 66 (battery-upower))))
+(use-package! battery
+  :config
+  (unless (equal "unknown" (cdr (assoc 66 (funcall battery-status-function))))
     (display-battery-mode 1)))
 
 ;; Replace the default doom splash screen with amore subtle one
