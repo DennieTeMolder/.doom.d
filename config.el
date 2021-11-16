@@ -288,7 +288,7 @@
     "Prompt the user if conda environment with ENV-NAME may be activated if not active"
     (if (and (not (equal env-name conda-env-current-name))
              (y-or-n-p (format "Activate conda env: %s?" env-name)))
-        (conda-env-activate (conda-env-name-to-dir env-name))))
+      (conda-env-activate (conda-env-name-to-dir env-name))))
 
   (defun my/conda-env-guess-prompt ()
     "Guess the currently relevant conda env and prompt user to activate it"
@@ -298,7 +298,8 @@
       (cond (candidate-env (my/conda-env-promt-activate candidate-env))
             ((not conda-env-current-name) (my/conda-env-promt-activate fallback-env)))))
 
-  (add-hook! 'python-mode-hook #'my/conda-env-guess-prompt))
+  (if (executable-find "conda")
+      (add-hook! 'python-mode-hook #'my/conda-env-guess-prompt)))
 
 ;; Python functions
 (after! python
