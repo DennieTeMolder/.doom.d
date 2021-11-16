@@ -281,12 +281,23 @@
 (custom-set-variables
  '(conda-anaconda-home "~/.local/miniconda3/"))
 
+(defun my/conda--env-promt-activate (env-name)
+  "Prompt the user if conda environment with ENV-NAME may be activated if not active"
+  (if (and (not (equal env-name conda-env-current-name))
+           (y-or-n-p (format "Activate conda env: %s?" env-name)))
+      (conda-env-activate (conda-env-name-to-dir env-name))))
+
+(defun my/conda-env-guess-prompt ()
+  "Guess the currently relevant conda env and prompt user to activate it"
+  (interactive)
+  (let ((candidate-env (conda--infer-env-from-buffer))
+        (fallback-env "base"))
+    (cond (candidate-env (my/conda--env-promt-activate candidate-env))
+          ((not conda-env-current-name) (my/conda--env-promt-activate fallback-env)))))
+
+;; Prompt use to change into a conda env
 (after! conda
-  ;; Default to base env if non is provided
-  (add-hook! 'conda-env-autoactivate-mode-hook
-    (if (and conda-env-autoactivate-mode (not conda-env-current-name))
-        (conda-env-activate "base")))
-  (conda-env-autoactivate-mode t))
+  (add-hook! 'python-mode-hook #'my/conda-env-guess-prompt))
 
 ;; Python functions
 (defun my/python-shell-send-statment-and-step ()
@@ -333,6 +344,7 @@ block, send the entire code block."
       :desc "Send buffer to REPL" "b" 'python-shell-send-buffer
       :desc "Send file to REPL" "f" 'python-shell-send-file
       :prefix ("c". "Conda")
+       :desc "Guess conda env" "g" 'my/conda-env-guess-prompt
        "a" 'conda-env-activate
        "d" 'conda-env-deactivate)
 
