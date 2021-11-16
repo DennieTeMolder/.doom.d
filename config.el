@@ -231,33 +231,34 @@
 (after! ess
   ;; Enable additional highlighting
   (add-to-list 'ess-R-font-lock-keywords '(ess-R-fl-keyword:F&T . t))
-  ;; Customize type faces
-  (set-face-attribute 'ess-constant-face nil :weight 'bold :inherit font-lock-warning-face))
+  (add-to-list 'ess-R-font-lock-keywords '(ess-fl-keyword:fun-calls . t))
+  ;; Customize type faces (used for F&T color)
+  (set-face-attribute 'ess-constant-face nil :weight 'bold :inherit font-lock-warning-face)
 
-(defadvice! my/advice-ess-describe (orig-fn)
-  "Switch to the REPL buffer after closing the *ess-describe* buffer"
-  :around #'ess-describe-object-at-point
-  (let ((starting-window (selected-window)))
-    (funcall orig-fn)
-    (ess-switch-to-ESS t)
-    (select-window starting-window)))
+  (defadvice! my/advice-ess-describe (orig-fn)
+    "Switch to the REPL buffer after closing the *ess-describe* buffer"
+    :around #'ess-describe-object-at-point
+    (let ((starting-window (selected-window)))
+      (funcall orig-fn)
+      (ess-switch-to-ESS t)
+      (select-window starting-window)))
 
-;; Define function to insert a pipe symbol for R mode
-(defun ess-insert-pipe (arg)
-  "Based on `ess-insert-assign', invoking the command twice reverts the insert"
-  (interactive "p")
-  (if (string= ess-language "S")
-      (let* ((pipe " %>% ")
-             (event (event-basic-type last-input-event))
-             (char (ignore-errors (format "%c" event))))
-        (cond ((and char (ess-inside-string-or-comment-p))
-               (insert char))
-              ((re-search-backward pipe (- (point) (length pipe)) t)
-               (if (and char (numberp event))
-                   (replace-match char t t)
-                 (replace-match "")))
-              (t (insert pipe))))
-    (funcall #'self-insert-command arg)))
+  ;; Define function to insert a pipe symbol for R mode
+  (defun ess-insert-pipe (arg)
+    "Based on `ess-insert-assign', invoking the command twice reverts the insert"
+    (interactive "p")
+    (if (string= ess-language "S")
+        (let* ((pipe " %>% ")
+               (event (event-basic-type last-input-event))
+               (char (ignore-errors (format "%c" event))))
+          (cond ((and char (ess-inside-string-or-comment-p))
+                 (insert char))
+                ((re-search-backward pipe (- (point) (length pipe)) t)
+                 (if (and char (numberp event))
+                     (replace-match char t t)
+                   (replace-match "")))
+                (t (insert pipe))))
+      (funcall #'self-insert-command arg))))
 
 ;; ESS R keybindings, make < add a <-, type twice to undo (same goes for >)
 (map! (:after ess
@@ -281,60 +282,62 @@
 (custom-set-variables
  '(conda-anaconda-home "~/.local/miniconda3/"))
 
-(defun my/conda--env-promt-activate (env-name)
-  "Prompt the user if conda environment with ENV-NAME may be activated if not active"
-  (if (and (not (equal env-name conda-env-current-name))
-           (y-or-n-p (format "Activate conda env: %s?" env-name)))
-      (conda-env-activate (conda-env-name-to-dir env-name))))
-
-(defun my/conda-env-guess-prompt ()
-  "Guess the currently relevant conda env and prompt user to activate it"
-  (interactive)
-  (let ((candidate-env (conda--infer-env-from-buffer))
-        (fallback-env "base"))
-    (cond (candidate-env (my/conda--env-promt-activate candidate-env))
-          ((not conda-env-current-name) (my/conda--env-promt-activate fallback-env)))))
-
 ;; Prompt use to change into a conda env
 (after! conda
+  (defun my/conda-env-promt-activate (env-name)
+    "Prompt the user if conda environment with ENV-NAME may be activated if not active"
+    (if (and (not (equal env-name conda-env-current-name))
+             (y-or-n-p (format "Activate conda env: %s?" env-name)))
+        (conda-env-activate (conda-env-name-to-dir env-name))))
+
+  (defun my/conda-env-guess-prompt ()
+    "Guess the currently relevant conda env and prompt user to activate it"
+    (interactive)
+    (let ((candidate-env (conda--infer-env-from-buffer))
+          (fallback-env "base"))
+      (cond (candidate-env (my/conda-env-promt-activate candidate-env))
+            ((not conda-env-current-name) (my/conda-env-promt-activate fallback-env)))))
+
   (add-hook! 'python-mode-hook #'my/conda-env-guess-prompt))
 
 ;; Python functions
-(defun my/python-shell-send-statment-and-step ()
-  "Send statement to python shell and move to next"
-  (interactive)
-  (python-shell-send-region
-          (save-excursion (python-nav-beginning-of-statement))
-          (save-excursion (python-nav-end-of-statement)))
-  (python-nav-forward-statement))
+(after! python
+  (defun my/python-shell-send-statment-and-step ()
+    "Send statement to python shell and move to next"
+    (interactive)
+    (python-shell-send-region
+     (save-excursion (python-nav-beginning-of-statement))
+     (save-excursion (python-nav-end-of-statement)))
+    (python-nav-forward-statement))
 
-(defun my/python-shell-send-block-and-step ()
-  "Send block to python shell and move to next statement"
-  (interactive)
-  (python-shell-send-region
-          (save-excursion (python-nav-beginning-of-block))
-          (save-excursion (python-nav-end-of-block)))
-  (python-nav-end-of-block)
-  (python-nav-forward-statement))
+  (defun my/python-shell-send-block-and-step ()
+    "Send block to python shell and move to next statement"
+    (interactive)
+    (python-shell-send-region
+     (save-excursion (python-nav-beginning-of-block))
+     (save-excursion (python-nav-end-of-block)))
+    (python-nav-end-of-block)
+    (python-nav-forward-statement))
 
-(defun my/python-send-current-and-step ()
-  "Sends statement under point to python shell, if the statement starts a code
+  (defun my/python-send-current-and-step ()
+    "Sends statement under point to python shell, if the statement starts a code
 block, send the entire code block."
-  (interactive)
-  ;; Ensure the python process is running
-  (if (not (python-shell-get-process))
-      (progn
-        (save-selected-window
-          (call-interactively #'+python/open-ipython-repl))
-        ;; Give python time to load the interaction module
-        (sleep-for .5)))
-  ;; Check for region, start of block, or other and act accordingly
-  (cond ((region-active-p)
-         (call-interactively #'python-shell-send-region))
-        ((python-info-statement-starts-block-p)
-         (call-interactively #'my/python-shell-send-block-and-step))
-        (t
-         (call-interactively #'my/python-shell-send-statment-and-step))))
+    (interactive)
+    ;; Ensure the python process is running
+    (if (not (python-shell-get-process))
+        (progn
+          (save-selected-window
+            (call-interactively #'+python/open-ipython-repl))
+          ;; Give python time to load the interaction module
+          (sleep-for .5)))
+    ;; Check for region, start of block, or other and act accordingly
+    (cond ((region-active-p)
+           (call-interactively #'python-shell-send-region))
+          ((python-info-statement-starts-block-p)
+           (call-interactively #'my/python-shell-send-block-and-step))
+          (t
+           (call-interactively #'my/python-shell-send-statment-and-step))))
+  )
 
 ;; Python keybindings
 (map! :mode python-mode
@@ -366,9 +369,9 @@ block, send the entire code block."
 
 ;; Unbind the insert mode cdlatex-math-symbol binding
 ;; This frees up the backtick for electric-quote-mode (`` -> “)
-(after! org (map! :map org-cdlatex-mode-map "`" nil))
-
 (after! org
+  (map! :map org-cdlatex-mode-map "`" nil)
+
   ;; Make headings bold and larger
   (dolist (face '((org-document-title . 1.2)
                   (org-level-1 . 1.2)
@@ -513,32 +516,32 @@ block, send the entire code block."
       :nv "C-e" 'pdf-view-scroll-down-or-previous-page)
 
 ;; Org-download settings
-(defun drestivo/org-download-method (link)
-  "This is an helper function for org-download.
+(after! org-download
+  (defun drestivo/org-download-method (link)
+    "This is an helper function for org-download.
 It creates an \"./Image\" folder within the same directory of the org file.
 File is named as: download name + timestamp + target org file
 Based on drestivo's answer to this post: https://github.com/abo-abo/org-download/issues/40.
 Which was based off this commit message:
 https://github.com/abo-abo/org-download/commit/137c3d2aa083283a3fc853f9ecbbc03039bf397b"
-  (let ((filename
-         (file-name-nondirectory
-          (car (url-path-and-query
-                (url-generic-parse-url link)))))
-        (dir "Images/"))
-    (progn
-      (setq filename-with-timestamp
-            (format "%s%s-<%s>.%s"
-                    (file-name-sans-extension filename)
-                    (format-time-string org-download-timestamp)
-                    (file-name-base (buffer-file-name))
-                    (file-name-extension filename)))
-      ;; Check if directory exists otherwise create it
-      (unless (file-exists-p dir)
-        (make-directory dir t))
-      (message "Image: %s saved!" (expand-file-name filename-with-timestamp dir))
-      (concat dir filename-with-timestamp))))
+    (let ((filename
+           (file-name-nondirectory
+            (car (url-path-and-query
+                  (url-generic-parse-url link)))))
+          (dir "Images/"))
+      (progn
+        (setq filename-with-timestamp
+              (format "%s%s-<%s>.%s"
+                      (file-name-sans-extension filename)
+                      (format-time-string org-download-timestamp)
+                      (file-name-base (buffer-file-name))
+                      (file-name-extension filename)))
+        ;; Check if directory exists otherwise create it
+        (unless (file-exists-p dir)
+          (make-directory dir t))
+        (message "Image: %s saved!" (expand-file-name filename-with-timestamp dir))
+        (concat dir filename-with-timestamp))))
 
-(after! org-download
   (setq org-download-method 'drestivo/org-download-method
         org-download-link-format "[[file:%s]]\n"))
 
