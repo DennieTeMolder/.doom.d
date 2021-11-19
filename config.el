@@ -619,3 +619,8 @@ https://github.com/abo-abo/org-download/commit/137c3d2aa083283a3fc853f9ecbbc0303
 (use-package! vertico-mouse
   :after vertico
   :config (vertico-mouse-mode 1))
+
+(after! csv-mode
+  ;; Ensure delimiters are not hidden when aligning
+  (add-hook! 'csv-mode-hook
+    (+word-wrap-mode -1) (setq-local buffer-invisibility-spec nil)))
