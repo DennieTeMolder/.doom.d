@@ -405,9 +405,6 @@ block, send the entire code block."
        citar-notes-paths '("~/MEGA/PKM/notes/"))
 (setq! org-cite-csl-styles-dir "~/MEGA/Zotero/Styles")
 
-;; Binding to view bibliography
-(map! :leader "n b" 'citar-open-entry)
-
 ;; Update citar cache when bib-file changes in during specified modes
 (after! bibtex-completion
   (citar-filenotify-setup '(LaTeX-mode-hook org-mode-hook)))
