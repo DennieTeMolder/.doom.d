@@ -413,9 +413,6 @@ block, send the entire code block."
 (after! citar
   (citar-filenotify-setup '(LaTeX-mode-hook org-mode-hook)))
 
-;; Add roam id and ref to new literature notes
-(setq citar-file-note-org-include '(org-id org-roam-ref))
-
 ;; Org-cite settings
 (after! oc
   (setq org-cite-export-processors
