@@ -163,13 +163,36 @@
 (map! :leader "r" 'repeat)
 
 ;; Increase auto-completion suggestion delay
-(setq company-idle-delay 0.4)
+(after! company
+  (setq company-idle-delay 0.4))
 
-;; Projectle sorting by recently opened
-(setq projectile-sort-order 'recently-active)
+(after! projectile
+  ;; Projectle sorting by recently opened
+  (setq projectile-sort-order 'recently-active)
 
-;; Exclude autosave from recent files
+  (defun my/project-ignored-p (project-root)
+    "Return non-nil if remote or temporary file or a straight package."
+    (or (file-remote-p project-root)
+        (file-in-directory-p project-root temporary-file-directory)
+        (file-in-directory-p project-root doom-local-dir)))
+
+  ;; Replace the doom-project-ignored-p function to ignore remote projects
+  (setq projectile-ignored-project-function #'my/project-ignored-p))
+
 (after! recentf
+  (defun my/recentf-keep-p (file)
+    "Return non-nil if FILE should be kept in the recent list."
+    (unless (file-remote-p file)
+      (file-readable-p file)))
+
+  ;;Exclude non-existent & remote files from recent files list after cleanup
+  (setq recentf-keep (list #'my/recentf-keep-p))
+
+  ;; Revert back to running cleanup on mode start instead of emacs shutdown
+  (remove-hook! 'kill-emacs-hook #'recentf-cleanup)
+  (setq recentf-auto-cleanup 'mode)
+
+  ;; Exclude autosave from recent files
   (add-to-list 'recentf-exclude "\\autosave\\'"))
 
 ;; Define zenmode text scale
@@ -400,8 +423,7 @@ block, send the entire code block."
           ("[X]"  . 9745))))
 
 ;; When using the biblio module, ox doesn't seem to be loaded in time
-(use-package! ox
-  :after org)
+(use-package! ox :after org)
 
 ;; Default bibliography
 (setq! citar-bibliography '("~/MEGA/Zotero/master.bib")
