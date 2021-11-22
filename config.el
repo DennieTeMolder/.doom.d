@@ -368,9 +368,9 @@ block, send the entire code block."
   (auto-fill-mode 1)
   (electric-quote-local-mode 1))
 
-;; Unbind the insert mode cdlatex-math-symbol binding
-;; This frees up the backtick for electric-quote-mode (`` -> “)
 (after! org
+  ;; Unbind the insert mode cdlatex-math-symbol binding
+  ;; This frees up the backtick for electric-quote-mode (`` -> “)
   (map! :map org-cdlatex-mode-map "`" nil)
 
   ;; Make headings bold and larger
@@ -399,6 +399,10 @@ block, send the entire code block."
           ("DONE" . 9745)
           ("[X]"  . 9745))))
 
+;; When using the biblio module, ox doesn't seem to be loaded in time
+(use-package! ox
+  :after org)
+
 ;; Default bibliography
 (setq! citar-bibliography '("~/MEGA/Zotero/master.bib")
        citar-library-paths '("~/MEGA/Zotero/")
@@ -406,14 +410,14 @@ block, send the entire code block."
 (setq! org-cite-csl-styles-dir "~/MEGA/Zotero/Styles")
 
 ;; Update citar cache when bib-file changes in during specified modes
-(after! bibtex-completion
+(after! citar
   (citar-filenotify-setup '(LaTeX-mode-hook org-mode-hook)))
 
 ;; Add roam id and ref to new literature notes
 (setq citar-file-note-org-include '(org-id org-roam-ref))
 
 ;; Org-cite settings
-(after! (oc org bibtex-completion citar)
+(after! oc
   (setq org-cite-export-processors
         '((latex biblatex "ieee")
           (t csl "ieee.csl"))))
