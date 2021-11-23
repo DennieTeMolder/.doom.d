@@ -386,8 +386,10 @@ block, send the entire code block."
 ;; Disable company auto pop-up in org, use C-SPC to trigger
 (add-hook! 'org-mode-hook (setq-local company-idle-delay nil))
 
-;; Enable auto-fill mode in org buffers
+;; Disable soft wrapping and enable hard wrapping
+;; Allow for double quoting using '' and ``
 (add-hook! 'org-mode-hook
+  (+word-wrap-mode -1)
   (auto-fill-mode 1)
   (electric-quote-local-mode 1))
 
