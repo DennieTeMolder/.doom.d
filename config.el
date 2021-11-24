@@ -177,18 +177,6 @@
 ;; Default major mode for scratch buffer
 (setq doom-scratch-initial-major-mode 'lisp-interaction-mode)
 
-;; Change window split direction
-(setq evil-vsplit-window-right t
-      evil-split-window-below t)
-
-;; Enable visual lines with word wrapping
-(global-visual-line-mode t)
-
-;; Make j/k move visual lines (gj/gk)
-(map!
- :nvm "j" 'evil-next-visual-line
- :nvm "k" 'evil-previous-visual-line)
-
 ;; Spacemacs style M-x
 ;; Old SPC SPC binding (projectile find file) also available under "SPC p f"
 ;; This frees up the "SPC :" to be another evil-ex because i am condition to hit SPC
@@ -211,12 +199,26 @@
 
 ;; Enable vertico mouse extension (included with vertico)
 (use-package! vertico-mouse
+  :when (featurep! :completion vertico)
   :after vertico
   :config (vertico-mouse-mode 1))
 
 ;;;; Doom Core Package Settings
-;; Increase auto-completion suggestion delay
+(after! evil
+  ;; Change window split direction
+  (setq evil-vsplit-window-right t
+        evil-split-window-below t)
+
+  ;; Enable visual lines with word wrapping
+  (global-visual-line-mode t)
+
+  ;; Make j/k move visual lines (gj/gk)
+  (map!
+   :nvm "j" 'evil-next-visual-line
+   :nvm "k" 'evil-previous-visual-line))
+
 (after! company
+  ;; Increase auto-completion suggestion delay
   (setq company-idle-delay 0.4)
 
   ;; Disable company auto pop-up in org, use C-SPC to trigger
@@ -323,9 +325,6 @@ https://github.com/abo-abo/org-download/commit/137c3d2aa083283a3fc853f9ecbbc0303
   (setq org-download-method 'drestivo/org-download-method
         org-download-link-format "[[file:%s]]\n"))
 
-;; When using the biblio module, ox doesn't seem to be loaded in time
-(use-package! ox :after org)
-
 ;; Org-cite settings
 (after! oc
   (setq org-cite-csl-styles-dir "~/MEGA/Zotero/Styles"
@@ -335,10 +334,14 @@ https://github.com/abo-abo/org-download/commit/137c3d2aa083283a3fc853f9ecbbc0303
   ;; Use old org-ref insert key
   (map! :map org-mode-map "C-c ]" 'org-cite-insert))
 
-;; Citar bibliography settings
-(setq! citar-bibliography '("~/MEGA/Zotero/master.bib")
-       citar-library-paths '("~/MEGA/Zotero/")
-       citar-notes-paths '("~/MEGA/PKM/notes/"))
+(when (featurep! :tools biblio)
+  ;; When using the biblio module, ox doesn't seem to be loaded in time
+  (use-package! ox :after org)
+
+  ;; Citar bibliography settings
+  (setq! citar-bibliography '("~/MEGA/Zotero/master.bib")
+         citar-library-paths '("~/MEGA/Zotero/")
+         citar-notes-paths '("~/MEGA/PKM/notes/")))
 
 (after! citar
   ;; citar note template
@@ -350,20 +353,21 @@ https://github.com/abo-abo/org-download/commit/137c3d2aa083283a3fc853f9ecbbc0303
   ;; Disable citation delete binding
   (map! :map citar-org-citation-map "C-d" nil))
 
-;; Org-roam-settings
-(setq org-roam-directory "~/MEGA/PKM/"
-      org-roam-dailies-directory "journals/"
-      org-roam-index-file "pages/contents.org"
-      org-roam-file-exclude-regexp "Rubbish/")
+;; Org-roam init settings
+(when (featurep! :lang org +roam2)
+  (setq org-roam-directory "~/MEGA/PKM/"
+        org-roam-dailies-directory "journals/"
+        org-roam-index-file "pages/contents.org"
+        org-roam-file-exclude-regexp "Rubbish/")
 
-;; Define function to open index file
-(defun my/org-roam-open-index ()
-  "Opens the file specified in org-roam-index-file"
-  (interactive)
-  (find-file (expand-file-name org-roam-index-file org-roam-directory)))
+  (defun my/org-roam-open-index ()
+    "Opens the file specified in org-roam-index-file"
+    (interactive)
+    (find-file (expand-file-name org-roam-index-file org-roam-directory)))
 
-;; Map to keybinding
-(map! :desc "Open index" :leader "n r o" 'my/org-roam-open-index)
+  ;; Map to keybinding
+  (map! :desc "Open index" :leader "n r o" 'my/org-roam-open-index)
+)
 
 (after! org-roam
   ;; Disable completion everywhere as it overrides company completion
@@ -479,7 +483,7 @@ https://github.com/abo-abo/org-download/commit/137c3d2aa083283a3fc853f9ecbbc0303
 
   ;; ESS R keybindings, make < add a <-, type twice to undo (same goes for >)
   (map! (:map ess-mode-map
-          :n [C-return] 'ess-eval-region-or-line-and-step)
+          :nv [C-return] 'ess-eval-region-or-line-and-step)
         (:map ess-r-mode-map
           "<" 'ess-insert-assign
           ">" 'my/ess-insert-pipe
@@ -556,7 +560,7 @@ block, send the entire code block."
 
 (after! conda
   (defun my/conda-env-promt-activate (env-name)
-    "Prompt the user if conda environment with ENV-NAME may be activated if not active"
+    "If conda environment with ENV-NAME is not activated, prompt the user to do so"
     (if (and (not (equal env-name conda-env-current-name))
              (y-or-n-p (format "Activate conda env: %s?" env-name)))
       (conda-env-activate (conda-env-name-to-dir env-name))))
@@ -587,7 +591,7 @@ block, send the entire code block."
   :commands interaction-log-mode
   :config
   ;; TODO prompt user to execute this function after interaction-log-mode
-  (defun interaction-log-show ()
+  (defun my/interaction-log-show ()
     "Creates an interaction log window if it doesn't exist"
     (interactive)
     (display-buffer ilog-buffer-name)))
