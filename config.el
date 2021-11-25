@@ -548,17 +548,16 @@ block, send the entire code block."
         :localleader
         :desc "Open python REPL" [tab] '+python/open-ipython-repl
         :desc "Send buffer to REPL" "b" 'python-shell-send-buffer
-        :desc "Send file to REPL" "f" 'python-shell-send-file
-        :prefix ("c". "Conda")
-        :desc "Guess conda env" "g" 'my/conda-env-guess-prompt
-        "a" 'conda-env-activate
-        "d" 'conda-env-deactivate))
+        :desc "Send file to REPL" "f" 'python-shell-send-file))
 
 ;; Snakefiles in python mode
 (add-to-list 'auto-mode-alist '("Snakefile" . python-mode))
 (add-to-list 'auto-mode-alist '("\\.smk\\'" . python-mode))
 
 (after! conda
+  (custom-set-variables
+   '(conda-anaconda-home "~/.local/miniconda3/"))
+
   (defun my/conda-env-promt-activate (env-name)
     "If conda environment with ENV-NAME is not activated, prompt the user to do so"
     (if (and (not (equal env-name conda-env-current-name))
@@ -577,8 +576,11 @@ block, send the entire code block."
   (if (executable-find "conda")
       (add-hook! 'python-mode-hook #'my/conda-env-guess-prompt))
 
-  (custom-set-variables
-   '(conda-anaconda-home "~/.local/miniconda3/")))
+  (map! :mode python-mode
+        :localleader :prefix ("c". "Conda")
+         :desc "Guess conda env" "g" 'my/conda-env-guess-prompt
+         "a" 'conda-env-activate
+         "d" 'conda-env-deactivate))
 
 (after! csv-mode
   ;; Ensure delimiters are not hidden when aligning
