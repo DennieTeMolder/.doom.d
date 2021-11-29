@@ -616,17 +616,17 @@ block, send the entire code block."
     (interactive)
     (good-scroll-move (/ (good-scroll--window-usable-height) -2)))
 
-  (defun my/toggle-bind-evil-smooth-scroll ()
+  (defun my/good-scroll-evil-override-hook ()
     (if good-scroll-mode
         (progn
-          (map! :nv "C-d" 'my/good-scroll-down-half
-                :nv "C-u" 'my/good-scroll-up-half))
+          (advice-add 'evil-scroll-down :override #'my/good-scroll-down-half)
+          (advice-add 'evil-scroll-up :override #'my/good-scroll-up-half))
       (progn
-        (map! :nv "C-d" 'evil-scroll-down
-              :nv "C-u" 'evil-scroll-up))))
+        (advice-remove 'evil-scroll-down #'my/good-scroll-down-half)
+        (advice-remove 'evil-scroll-up #'my/good-scroll-up-half))))
 
-  ;; Switch key map on mode enable/disable
-  (add-hook! 'good-scroll-mode-hook #'my/toggle-bind-evil-smooth-scroll)
+  ;; Override evil functions on mode activation, undo upon deactivation
+  (add-hook! 'good-scroll-mode-hook #'my/good-scroll-evil-override-hook)
 
   ;; Enable good-scroll
   (good-scroll-mode 1)
