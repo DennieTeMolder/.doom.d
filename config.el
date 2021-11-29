@@ -190,9 +190,12 @@
       :desc "Repeat last command" "r" 'repeat
       :desc "Adjust windows hydra" "w a" '+hydra/window-nav/body)
 
-;; Use mouse buttons to go forward/backward in history
+;; Use mouse buttons to go forward/backward trough window configs
 (map! :n [mouse-8] #'winner-undo
-      :n [mouse-9] #'winner-redo)
+      :n [mouse-9] #'winner-redo
+      (:map Info-mode-map
+       :n [mouse-8] #'Info-history-back
+       :n [mouse-9] #'Info-history-forward))
 
 ;; Increase horizontal scroll (shift + mwheel) sensitivity
 (setq mouse-wheel-scroll-amount-horizontal 12)
