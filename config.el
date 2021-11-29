@@ -282,17 +282,16 @@
   (add-hook! 'org-mode-hook
     (+word-wrap-mode -1)
     (auto-fill-mode 1)
-    (electric-quote-local-mode 1)))
+    (electric-quote-local-mode 1))
+
+  ;; Use old org-ref insert key
+  (map! :map org-mode-map "C-c ]" 'org-cite-insert))
 
 ;; Fancy org mode bullets
 (use-package! org-superstar
   :hook (org-mode . org-superstar-mode)
   :config
-  (setq org-superstar-headline-bullets-list '("◈" "●" "◉" "○" "■" "▣" "□" "▶")
-        org-superstar-todo-bullet-alist '(("TODO" . 9744)
-                                          ("[ ]"  . 9744)
-                                          ("DONE" . 9745)
-                                          ("[X]"  . 9745))))
+  (setq org-superstar-headline-bullets-list '("◈" "●" "◉" "○" "■" "▣" "□" "▶")))
 
 ;; Org-download settings
 (after! org-download
@@ -328,10 +327,7 @@ https://github.com/abo-abo/org-download/commit/137c3d2aa083283a3fc853f9ecbbc0303
 (after! oc
   (setq org-cite-csl-styles-dir "~/MEGA/Zotero/Styles"
         org-cite-export-processors '((latex biblatex "ieee")
-                                     (t csl "ieee.csl")))
-
-  ;; Use old org-ref insert key
-  (map! :map org-mode-map "C-c ]" 'org-cite-insert))
+                                     (t csl "ieee.csl"))))
 
 (when (featurep! :tools biblio)
   ;; When using the biblio module, ox doesn't seem to be loaded in time
@@ -365,8 +361,7 @@ https://github.com/abo-abo/org-download/commit/137c3d2aa083283a3fc853f9ecbbc0303
     (find-file (expand-file-name org-roam-index-file org-roam-directory)))
 
   ;; Map to keybinding
-  (map! :desc "Open index" :leader "n r o" 'my/org-roam-open-index)
-)
+  (map! :desc "Open index" :leader "n r o" 'my/org-roam-open-index))
 
 (after! org-roam
   ;; Disable completion everywhere as it overrides company completion
