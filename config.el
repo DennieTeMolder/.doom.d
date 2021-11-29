@@ -439,13 +439,23 @@ https://github.com/abo-abo/org-download/commit/137c3d2aa083283a3fc853f9ecbbc0303
 ;; Iterate through CamelCase words in programming buffers
 (add-hook! 'prog-mode-hook (subword-mode 1))
 
-(after! ess
-  ;; Use a default session name and auto scroll down in REPL windows
-  (setq ess-ask-for-ess-directory nil
+;; General interactive programming buffer settings
+(after! comint
+  (setq ansi-color-for-comint-mode 'filter
         comint-prompt-read-only t
         comint-scroll-to-bottom-on-input t
         comint-scroll-to-bottom-on-output t
-        comint-move-point-for-output t)
+        comint-move-point-for-output t))
+
+;; Proper number highlighting for R mode
+(after! highlight-numbers
+  (puthash 'ess-r-mode
+           "\\_<\\(?:[0-9]+\\)?\\(?:\\.[0-9]*\\)?\\(?:e-?[0-9]+\\)?\\_>"
+           highlight-numbers-modelist))
+
+(after! ess
+  ;; Use a default session name and auto scroll down in REPL windows
+  (setq ess-ask-for-ess-directory nil)
 
   ;; Enable additional highlighting
   (add-to-list 'ess-R-font-lock-keywords '(ess-R-fl-keyword:F&T . t))
