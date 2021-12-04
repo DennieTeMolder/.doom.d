@@ -439,7 +439,11 @@ https://github.com/abo-abo/org-download/commit/137c3d2aa083283a3fc853f9ecbbc0303
         comint-prompt-read-only t
         comint-scroll-to-bottom-on-input t
         comint-scroll-to-bottom-on-output t
-        comint-move-point-for-output t))
+        comint-move-point-for-output t)
+
+  ;; Shell style clear REPL binding
+  (map! :map comint-mode-map
+        "C-l" 'comint-clear-buffer))
 
 ;; Proper number highlighting for R mode
 (after! highlight-numbers
@@ -489,9 +493,7 @@ https://github.com/abo-abo/org-download/commit/137c3d2aa083283a3fc853f9ecbbc0303
           "<" 'ess-insert-assign
           ">" 'my/ess-insert-pipe
           :localleader
-           :desc "Environment list R objects" "e" 'ess-rdired)
-        (:map inferior-ess-mode-map
-         "C-l" 'comint-clear-buffer)))
+           :desc "Environment list R objects" "e" 'ess-rdired)))
 
 ;; Proper number highlighting for R mode
 (after! highlight-numbers
