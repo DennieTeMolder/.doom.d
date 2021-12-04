@@ -436,9 +436,6 @@ https://github.com/abo-abo/org-download/commit/137c3d2aa083283a3fc853f9ecbbc0303
         +zen-mixed-pitch-modes '(org-mode latex-mode markdown-mode)))
 
 ;;;; Programming Languages
-;; Iterate through CamelCase words in programming buffers
-(add-hook! 'prog-mode-hook (subword-mode 1))
-
 ;; General interactive programming buffer settings
 (after! comint
   (setq ansi-color-for-comint-mode 'filter
