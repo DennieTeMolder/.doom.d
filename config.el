@@ -212,9 +212,6 @@
   (setq evil-vsplit-window-right t
         evil-split-window-below t)
 
-  ;; Enable visual lines with word wrapping
-  (global-visual-line-mode t)
-
   ;; Make j/k move visual lines (gj/gk)
   (map!
    :nvm "j" 'evil-next-visual-line
