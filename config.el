@@ -495,12 +495,6 @@ https://github.com/abo-abo/org-download/commit/137c3d2aa083283a3fc853f9ecbbc0303
           :localleader
            :desc "Environment list R objects" "e" 'ess-rdired)))
 
-;; Proper number highlighting for R mode
-(after! highlight-numbers
-  (puthash 'ess-r-mode
-           "\\_<\\(?:[0-9]+\\)?\\(?:\\.[0-9]*\\)?\\(?:e-?[0-9]+\\)?\\_>"
-           highlight-numbers-modelist))
-
 (use-package! ess-view-data
   :commands ess-view-data-print
   :init
