@@ -291,7 +291,7 @@
 (use-package! org-superstar
   :hook (org-mode . org-superstar-mode)
   :config
-  (setq org-superstar-headline-bullets-list '("◈" "●" "◉" "○" "■" "▣" "□" "▶")))
+  (setq org-superstar-headline-bullets-list '("●" "◉" "○" "◉" "○" "◉" "○" "◉")))
 
 ;; Org-download settings
 (after! org-download
