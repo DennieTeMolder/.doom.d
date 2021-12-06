@@ -574,7 +574,7 @@ block, send the entire code block."
       (add-hook! 'python-mode-hook #'my/conda-env-guess-prompt))
 
   (map! :mode python-mode
-        :localleader :prefix ("c". "Conda")
+        :localleader :prefix ("c" . "Conda")
          :desc "Guess conda env" "g" 'my/conda-env-guess-prompt
          "a" 'conda-env-activate
          "d" 'conda-env-deactivate))
