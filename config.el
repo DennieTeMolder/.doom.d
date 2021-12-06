@@ -448,7 +448,7 @@ https://github.com/abo-abo/org-download/commit/137c3d2aa083283a3fc853f9ecbbc0303
 ;; Proper number highlighting for R mode
 (after! highlight-numbers
   (puthash 'ess-r-mode
-           "\\_<\\(?:[0-9]+\\)?\\(?:\\.[0-9]*\\)?\\(?:e-?[0-9]+\\)?\\_>"
+           "\\_<\\(?:[0-9]+\\)?\\(?:\\.[0-9]+\\)?\\(?:e-?[0-9]+\\)?\\_>"
            highlight-numbers-modelist))
 
 (after! ess
