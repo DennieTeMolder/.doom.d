@@ -445,6 +445,10 @@ https://github.com/abo-abo/org-download/commit/137c3d2aa083283a3fc853f9ecbbc0303
   (map! :map comint-mode-map
         "C-l" 'comint-clear-buffer))
 
+;; Actually clear buffer upon C-l
+(after! vterm
+  (setq 'vterm-clear-scrollback-when-clearing t))
+
 ;; Proper number highlighting for R mode
 (after! highlight-numbers
   (let ((expr "\\_<[0-9]*\\(?:\\.[0-9]+\\)?\\(?:[eE]-?[0-9]+\\)?\\_>"))
