@@ -447,9 +447,9 @@ https://github.com/abo-abo/org-download/commit/137c3d2aa083283a3fc853f9ecbbc0303
 
 ;; Proper number highlighting for R mode
 (after! highlight-numbers
-  (puthash 'ess-r-mode
-           "\\_<\\(?:[0-9]+\\)?\\(?:\\.[0-9]+\\)?\\(?:e-?[0-9]+\\)?\\_>"
-           highlight-numbers-modelist))
+  (let ((expr "\\_<[0-9]*\\(?:\\.[0-9]+\\)?\\(?:[eE]-?[0-9]+\\)?\\_>"))
+    (puthash 'ess-r-mode expr highlight-numbers-modelist)
+    (puthash 'python-mode expr highlight-numbers-modelist)))
 
 (after! ess
   ;; Use a default session name and auto scroll down in REPL windows
