@@ -584,6 +584,9 @@ block, send the entire code block."
          "d" 'conda-env-deactivate))
 
 (after! csv-mode
+  ;; Asume the first line of a csv is a header
+  (setq csv-header-lines 1)
+
   ;; Ensure delimiters are not hidden when aligning
   (add-hook! 'csv-mode-hook
     (+word-wrap-mode -1) (setq-local buffer-invisibility-spec nil)))
