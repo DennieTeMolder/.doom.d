@@ -181,16 +181,14 @@
 ;; Old SPC SPC binding (projectile find file) also available under "SPC p f"
 ;; This frees up the "SPC :" to be another evil-ex because i am condition to hit SPC
 (map! :leader
-      :desc "M-x" "SPC" #'execute-extended-command
-      :desc "Evil ex command" ":" #'evil-ex)
+      :desc "M-x" "SPC" 'execute-extended-command
+      :desc "Evil ex command" ":" 'evil-ex)
 
 ;; Global keybindings
 (map! :leader
-      "b D" #'kill-buffer-and-window
-      :desc "Repeat last command" "r" #'repeat
-      :desc "Adjust windows hydra" "w a" #'+hydra/window-nav/body
-      :desc "Load workspace from file" "TAB L" #'+workspace/load
-      :desc "Switch to last workspace" "TAB l" #'+workspace/other)
+      "b D" 'kill-buffer-and-window
+      :desc "Repeat last command" "r" 'repeat
+      :desc "Adjust windows hydra" "w a" '+hydra/window-nav/body)
 
 ;; Use mouse buttons to go forward/backward trough window configs
 (map! :n [mouse-8] #'winner-undo
@@ -216,8 +214,8 @@
 
   ;; Make j/k move visual lines (gj/gk)
   (map!
-   :nvm "j" #'evil-next-visual-line
-   :nvm "k" #'evil-previous-visual-line))
+   :nvm "j" 'evil-next-visual-line
+   :nvm "k" 'evil-previous-visual-line))
 
 (after! company
   ;; Increase auto-completion suggestion delay
@@ -238,7 +236,6 @@
 
   ;; Replace the doom-project-ignored-p function to ignore remote projects
   (setq projectile-ignored-project-function #'my/project-ignored-p))
-
 
 (after! recentf
   (defun my/recentf-keep-p (file)
@@ -288,13 +285,22 @@
     (electric-quote-local-mode 1))
 
   ;; Use old org-ref insert key
-  (map! :map org-mode-map "C-c ]" #'org-cite-insert))
+  (map! :map org-mode-map "C-c ]" 'org-cite-insert))
 
 ;; Fancy org mode bullets
 (use-package! org-superstar
   :hook (org-mode . org-superstar-mode)
   :config
   (setq org-superstar-headline-bullets-list '("●" "◉" "○" "◉" "○" "◉" "○" "◉")))
+
+(after! org-tree-slide
+  (add-hook! 'org-tree-slide-mode-hook
+    (setq-local display-line-numbers nil)
+    (if org-tree-slide-mode
+        (add-hook! 'pdf-view-mode-hook :append #'org-tree-slide-mode)
+      (remove-hook! 'pdf-view-mode-hook #'org-tree-slide-mode)))
+
+  (setq +org-present-text-scale 3))
 
 ;; Org-download settings
 (after! org-download
@@ -364,7 +370,7 @@ https://github.com/abo-abo/org-download/commit/137c3d2aa083283a3fc853f9ecbbc0303
     (find-file (expand-file-name org-roam-index-file org-roam-directory)))
 
   ;; Map to keybinding
-  (map! :desc "Open index" :leader "n r o" #'my/org-roam-open-index))
+  (map! :desc "Open index" :leader "n r o" 'my/org-roam-open-index))
 
 (after! org-roam
   ;; Disable completion everywhere as it overrides company completion
@@ -395,7 +401,7 @@ https://github.com/abo-abo/org-download/commit/137c3d2aa083283a3fc853f9ecbbc0303
 
   ;; Kill session map in line with other C-c bound pdf controls for one hand use
   (map! :map (org-noter-doc-mode-map org-noter-notes-mode-map)
-        "C-c q" #'org-noter-kill-session)
+        "C-c q" 'org-noter-kill-session)
 
   ;; The pdf-view major mode overwrites the i binding with =ignore= for all minor modes
   ;; This works around that by incorporating the binding into the major mode
@@ -406,18 +412,18 @@ https://github.com/abo-abo/org-download/commit/137c3d2aa083283a3fc853f9ecbbc0303
 
 (after! pdf-tools
   (map! :map pdf-view-mode-map
-        :nv "C-e" #'pdf-view-scroll-down-or-previous-page
-        :v "h" #'pdf-annot-add-highlight-markup-annotation
-        :v "s" #'pdf-annot-add-strikeout-markup-annotation
-        :v "u" #'pdf-annot-add-underline-markup-annotation
+        :nv "C-e" 'pdf-view-scroll-down-or-previous-page
+        :v "h" 'pdf-annot-add-highlight-markup-annotation
+        :v "s" 'pdf-annot-add-strikeout-markup-annotation
+        :v "u" 'pdf-annot-add-underline-markup-annotation
         (:prefix "C-c"
-         :desc "Add Note" "a" #'pdf-annot-add-text-annotation
-         :desc "Delete Annotation" "d" #'pdf-annot-delete))
+         :desc "Add Note" "a" 'pdf-annot-add-text-annotation
+         :desc "Delete Annotation" "d" 'pdf-annot-delete))
 
   (map! :map pdf-history-minor-mode-map
-        :nv "C-o" #'pdf-history-backward
-        :nv [mouse-8] #'pdf-history-backward
-        :nv [mouse-9] #'pdf-history-forward))
+        :nv "C-o" 'pdf-history-backward
+        :nv [mouse-8] 'pdf-history-backward
+        :nv [mouse-9] 'pdf-history-forward))
 
 ;; LaTeX settings
 (after! tex-mode
@@ -446,7 +452,7 @@ https://github.com/abo-abo/org-download/commit/137c3d2aa083283a3fc853f9ecbbc0303
 
   ;; Shell style clear REPL binding
   (map! :map comint-mode-map
-        "C-l" #'comint-clear-buffer))
+        "C-l" 'comint-clear-buffer))
 
 ;; Actually clear buffer upon C-l
 (after! vterm
@@ -495,18 +501,18 @@ https://github.com/abo-abo/org-download/commit/137c3d2aa083283a3fc853f9ecbbc0303
 
   ;; ESS R keybindings, make < add a <-, type twice to undo (same goes for >)
   (map! (:map ess-mode-map
-          :nv [C-return] #'ess-eval-region-or-line-and-step)
+          :nv [C-return] 'ess-eval-region-or-line-and-step)
         (:map ess-r-mode-map
-          "<" #'ess-insert-assign
-          ">" #'my/ess-insert-pipe
+          "<" 'ess-insert-assign
+          ">" 'my/ess-insert-pipe
           :localleader
-           :desc "Environment list R objects" "e" #'ess-rdired)))
+           :desc "Environment list R objects" "e" 'ess-rdired)))
 
 (use-package! ess-view-data
   :commands ess-view-data-print
   :init
   (map! :map ess-r-mode-map
-        :desc "View R object" :localleader "o" #'ess-view-data-print))
+        :desc "View R object" :localleader "o" 'ess-view-data-print))
 
 (after! python
   ;; Python functions
@@ -548,11 +554,11 @@ block, send the entire code block."
 
   ;; Python keybindings
   (map! :mode python-mode
-        :nv [C-return] #'my/python-send-current-and-step
+        :nv [C-return] 'my/python-send-current-and-step
         :localleader
-        :desc "Open python REPL" [tab] #'+python/open-ipython-repl
-        :desc "Send buffer to REPL" "b" #'python-shell-send-buffer
-        :desc "Send file to REPL" "f" #'python-shell-send-file))
+        :desc "Open python REPL" [tab] '+python/open-ipython-repl
+        :desc "Send buffer to REPL" "b" 'python-shell-send-buffer
+        :desc "Send file to REPL" "f" 'python-shell-send-file))
 
 ;; Snakefiles in python mode
 (add-to-list 'auto-mode-alist '("Snakefile" . python-mode))
@@ -582,9 +588,9 @@ block, send the entire code block."
 
   (map! :mode python-mode
         :localleader :prefix ("c" . "Conda")
-         :desc "Guess conda env" "g" #'my/conda-env-guess-prompt
-         "a" #'conda-env-activate
-         "d" #'conda-env-deactivate))
+         :desc "Guess conda env" "g" 'my/conda-env-guess-prompt
+         "a" 'conda-env-activate
+         "d" 'conda-env-deactivate))
 
 (after! csv-mode
   ;; Asume the first line of a csv is a header
@@ -615,7 +621,7 @@ block, send the entire code block."
         good-scroll-step (round (/ (display-pixel-height) 5)))
 
   ;; binding to toggle good scroll mode
-  (map! :desc "Toggle smooth scrolling" :leader "t S" #'good-scroll-mode)
+  (map! :desc "Toggle smooth scrolling" :leader "t S" 'good-scroll-mode)
 
   ;; Evil scrolling
   (defun my/good-scroll-down-half ()
@@ -658,7 +664,7 @@ block, send the entire code block."
         (message "Started GhostText Server"))))
 
   ;; Bind toggle
-  (map! :desc "Toggle GhostText server" :leader "t G" #'my/atomic-chrome-toggle-server)
+  (map! :desc "Toggle GhostText server" :leader "t G" 'my/atomic-chrome-toggle-server)
 
   :config
   (setq atomic-chrome-buffer-open-style 'full)
