@@ -294,7 +294,8 @@
   (setq org-superstar-headline-bullets-list '("●" "◉" "○" "◉" "○" "◉" "○" "◉")))
 
 (after! org-tree-slide
-  (setq +org-present-text-scale 4)
+  (setq +org-present-text-scale 4
+        org-tree-slide-fold-subtrees-skipped nil)
 
   (add-hook! 'org-tree-slide-mode-hook
     (hl-line-mode -1)
@@ -306,7 +307,10 @@
           (add-hook! 'pdf-view-mode-hook :append #'org-tree-slide-mode))
       (progn
         (setq-local buffer-read-only nil)
-        (remove-hook! 'pdf-view-mode-hook #'org-tree-slide-mode)))))
+        (remove-hook! 'pdf-view-mode-hook #'org-tree-slide-mode))))
+
+  (map! :map org-tree-slide-mode-map
+        :n [C-up] #'org-tree-slide-content))
 
 ;; Org-download settings
 (after! org-download
