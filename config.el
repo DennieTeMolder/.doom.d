@@ -496,6 +496,10 @@ https://github.com/abo-abo/org-download/commit/137c3d2aa083283a3fc853f9ecbbc0303
       (ess-switch-to-ESS t)
       (select-window starting-window)))
 
+  ;; Make evil tab width same as ESS offset
+  (add-hook! 'ess-mode-hook
+             (setq-local evil-shift-width 'ess-indent-offset))
+
   (defun my/ess-insert-string (mystr)
     "Insert string, undo if the same input event is issued twice"
     (let* ((event (event-basic-type last-input-event))
