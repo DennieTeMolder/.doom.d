@@ -304,7 +304,9 @@
                       buffer-read-only t
                       evil-normal-state-cursor 'hbar)
           (add-hook! 'pdf-view-mode-hook :append #'org-tree-slide-mode))
-      (remove-hook! 'pdf-view-mode-hook #'org-tree-slide-mode))))
+      (progn
+        (setq-local buffer-read-only nil)
+        (remove-hook! 'pdf-view-mode-hook #'org-tree-slide-mode)))))
 
 ;; Org-download settings
 (after! org-download
