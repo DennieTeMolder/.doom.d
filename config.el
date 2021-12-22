@@ -297,17 +297,21 @@
   (setq +org-present-text-scale 4
         org-tree-slide-fold-subtrees-skipped nil)
 
-  (add-hook! 'org-tree-slide-mode-hook
-    (hl-line-mode -1)
+  (defun my/org-tree-slide-present-toggles ()
+    "Toggles for several settings to prettify presentations"
     (if org-tree-slide-mode
         (progn
           (setq-local display-line-numbers nil
                       buffer-read-only t
                       evil-normal-state-cursor 'hbar)
+          (hl-line-mode -1)
           (add-hook! 'pdf-view-mode-hook :append #'org-tree-slide-mode))
       (progn
         (setq-local buffer-read-only nil)
         (remove-hook! 'pdf-view-mode-hook #'org-tree-slide-mode))))
+
+  (add-hook! 'org-tree-slide-mode-hook
+             #'my/org-tree-slide-present-toggles)
 
   (map! :map org-tree-slide-mode-map
         :n [C-up] #'org-tree-slide-content))
