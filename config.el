@@ -496,29 +496,34 @@ https://github.com/abo-abo/org-download/commit/137c3d2aa083283a3fc853f9ecbbc0303
       (ess-switch-to-ESS t)
       (select-window starting-window)))
 
-  ;; Define function to insert a pipe symbol for R mode
-  (defun my/ess-insert-pipe (arg)
+  (defun my/ess-insert-string (mystr)
+    "Insert string, undo if the same input event is issued twice"
+    (let* ((event (event-basic-type last-input-event))
+           (char (ignore-errors (format "%c" event))))
+      (cond ((and char (ess-inside-string-or-comment-p))
+             (insert char))
+            ((re-search-backward mystr (- (point) (length mystr)) t)
+             (if (and char (numberp event))
+                 (replace-match char t t)
+               (replace-match "")))
+            (t (insert mystr)))))
+
+  (defun my/ess-r-insert-assign (arg)
+    "Rewrite of `ess-insert-assign' that respects white space, invoke twice to undo"
+    (interactive "p")
+    (my/ess-insert-string " <- "))
+
+  (defun my/ess-r-insert-pipe (arg)
     "Based on `ess-insert-assign', invoking the command twice reverts the insert"
     (interactive "p")
-    (if (string= ess-language "S")
-        (let* ((pipe " %>% ")
-               (event (event-basic-type last-input-event))
-               (char (ignore-errors (format "%c" event))))
-          (cond ((and char (ess-inside-string-or-comment-p))
-                 (insert char))
-                ((re-search-backward pipe (- (point) (length pipe)) t)
-                 (if (and char (numberp event))
-                     (replace-match char t t)
-                   (replace-match "")))
-                (t (insert pipe))))
-      (funcall #'self-insert-command arg)))
+    (my/ess-insert-string " %>% "))
 
   ;; ESS R keybindings, make < add a <-, type twice to undo (same goes for >)
   (map! (:map ess-mode-map
           :nv [C-return] 'ess-eval-region-or-line-and-step)
         (:map ess-r-mode-map
-          "<" 'ess-insert-assign
-          ">" 'my/ess-insert-pipe
+          "<" 'my/ess-r-insert-assign
+          ">" 'my/ess-r-insert-pipe
           :localleader
            :desc "Environment list R objects" "e" 'ess-rdired)))
 
