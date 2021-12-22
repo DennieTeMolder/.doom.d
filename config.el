@@ -294,13 +294,17 @@
   (setq org-superstar-headline-bullets-list '("●" "◉" "○" "◉" "○" "◉" "○" "◉")))
 
 (after! org-tree-slide
-  (add-hook! 'org-tree-slide-mode-hook
-    (setq-local display-line-numbers nil)
-    (if org-tree-slide-mode
-        (add-hook! 'pdf-view-mode-hook :append #'org-tree-slide-mode)
-      (remove-hook! 'pdf-view-mode-hook #'org-tree-slide-mode)))
+  (setq +org-present-text-scale 4)
 
-  (setq +org-present-text-scale 3))
+  (add-hook! 'org-tree-slide-mode-hook
+    (hl-line-mode -1)
+    (if org-tree-slide-mode
+        (progn
+          (setq-local display-line-numbers nil
+                      buffer-read-only t
+                      evil-normal-state-cursor 'hbar)
+          (add-hook! 'pdf-view-mode-hook :append #'org-tree-slide-mode))
+      (remove-hook! 'pdf-view-mode-hook #'org-tree-slide-mode))))
 
 ;; Org-download settings
 (after! org-download
