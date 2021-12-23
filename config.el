@@ -529,6 +529,7 @@ https://github.com/abo-abo/org-download/commit/137c3d2aa083283a3fc853f9ecbbc0303
           "<" #'my/ess-r-insert-assign
           ">" #'my/ess-r-insert-pipe
           :localleader
+           :desc "Source current file" "s" #'ess-load-file
            :desc "Environment list R objects" "e" #'ess-rdired)))
 
 (use-package! ess-view-data
