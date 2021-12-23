@@ -523,14 +523,16 @@ https://github.com/abo-abo/org-download/commit/137c3d2aa083283a3fc853f9ecbbc0303
     (my/ess-insert-string " %>% "))
 
   ;; ESS R keybindings, make < add a <-, type twice to undo (same goes for >)
-  (map! (:map ess-mode-map
-          :nv [C-return] #'ess-eval-region-or-line-and-step)
-        (:map ess-r-mode-map
-          "<" #'my/ess-r-insert-assign
-          ">" #'my/ess-r-insert-pipe
-          :localleader
-           :desc "Source current file" "s" #'ess-load-file
-           :desc "Environment list R objects" "e" #'ess-rdired)))
+  (map! :map ess-mode-map
+        :nv [C-return] #'ess-eval-region-or-line-and-step)
+        :localleader
+         :desc "Source current file" "s" #'ess-load-file
+         "S" #'ess-switch-process)
+  (map! :map ess-r-mode-map
+        "<" #'my/ess-r-insert-assign
+        ">" #'my/ess-r-insert-pipe
+        :localleader
+         :desc "Environment list R objects" "e" #'ess-rdired))
 
 (use-package! ess-view-data
   :commands ess-view-data-print
