@@ -524,7 +524,7 @@ https://github.com/abo-abo/org-download/commit/137c3d2aa083283a3fc853f9ecbbc0303
 
   ;; ESS R keybindings, make < add a <-, type twice to undo (same goes for >)
   (map! :map ess-mode-map
-        :nv [C-return] #'ess-eval-region-or-line-and-step)
+        :nv [C-return] #'ess-eval-region-or-line-and-step
         :localleader
          :desc "Source current file" "s" #'ess-load-file
          "S" #'ess-switch-process)
