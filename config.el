@@ -468,9 +468,13 @@ https://github.com/abo-abo/org-download/commit/137c3d2aa083283a3fc853f9ecbbc0303
   (map! :map comint-mode-map
         "C-l" #'comint-clear-buffer))
 
-;; Actually clear buffer upon C-l
 (after! vterm
-  (setq vterm-clear-scrollback-when-clearing t))
+  ;; Actually clear buffer upon C-l
+  (setq vterm-clear-scrollback-when-clearing t)
+  ;; Initial insert mode cursor is broken, so start in normal state
+  (add-hook! 'vterm-mode-hook #'evil-normal-state)
+  ;; Restore normal evil cursor behavior
+  (remove-hook! 'vterm-mode-hook #'evil-collection-vterm-escape-stay))
 
 ;; Proper number highlighting for R mode
 (after! highlight-numbers
