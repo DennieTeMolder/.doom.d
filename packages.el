@@ -54,7 +54,3 @@
 (package! good-scroll)
 (package! atomic-chrome)
 (package! ess-view-data)
-
-;; The most recent version fixes a compile crash for the latest emacs
-;; See: https://github.com/akermu/emacs-libvterm/issues/559
-(unpin! vterm)
