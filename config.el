@@ -197,6 +197,21 @@
        :n [mouse-8] #'Info-history-back
        :n [mouse-9] #'Info-history-forward))
 
+;; Keybinding to toggle between trashing and permanently deleting files
+(defun my/toggle-trash-delete ()
+  "Toggle between trashing and deleting files"
+  (interactive)
+  (if delete-by-moving-to-trash
+      (progn
+        (setq delete-by-moving-to-trash nil)
+        (message "Now deleting files PERMANTLY"))
+    (progn
+      (setq delete-by-moving-to-trash t)
+      (message "Now moving deleted files to trash"))))
+
+(map! :leader
+      :desc "Toggle trashing/deleting files" "t T" #'my/toggle-trash-delete)
+
 ;; Increase horizontal scroll (shift + mwheel) sensitivity
 (setq mouse-wheel-scroll-amount-horizontal 12)
 
