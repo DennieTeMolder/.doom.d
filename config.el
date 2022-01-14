@@ -616,6 +616,12 @@ block, send the entire code block."
   (custom-set-variables
    '(conda-anaconda-home "~/.local/miniconda3/"))
 
+  (defadvice! my/anaconda-disable-on-remote (orig-fn)
+    "Only activate anaconda-mode if the buffer is local"
+    :around #'+python-init-anaconda-mode-maybe-h
+    (if (not (file-remote-p default-directory))
+        (funcall orig-fn)))
+
   (defun my/conda-env-promt-activate (env-name)
     "If conda environment with ENV-NAME is not activated, prompt the user to do so"
     (if (and (not (equal env-name conda-env-current-name))
@@ -632,9 +638,9 @@ block, send the entire code block."
 
   ;; Prompt user to change into a conda env
   (if (executable-find "conda")
-      (add-hook! 'python-mode-hook #'my/conda-env-guess-prompt))
+      (add-hook! 'anaconda-mode-hook #'my/conda-env-guess-prompt))
 
-  (map! :mode python-mode
+  (map! :mode anaconda-mode
         :localleader :prefix ("c" . "Conda")
          :desc "Guess conda env" "g" #'my/conda-env-guess-prompt
          "a" #'conda-env-activate
