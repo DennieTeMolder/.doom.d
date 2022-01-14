@@ -378,7 +378,7 @@ https://github.com/abo-abo/org-download/commit/137c3d2aa083283a3fc853f9ecbbc0303
 
 (after! citar
   ;; citar note template
-  (push '(note . "#+TITLE: ${=key=}: ${title}\n\n* Notes") citar-templates)
+  (push '(note . "${=key=}: ${title}\n\n* Notes") citar-templates)
 
   ;; Update citar cache when bib-file changes in during specified modes
   (citar-filenotify-setup '(LaTeX-mode-hook org-mode-hook))
