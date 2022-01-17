@@ -193,6 +193,9 @@
 ;; Make "Z" bindings only kill buffers not the session
 (map! :n "ZQ" #'kill-buffer-and-window
       :n "ZZ" #'doom/save-and-kill-buffer)
+(map! :map with-editor-mode-map
+      :n "ZQ" #'with-editor-cancel
+      :n "ZZ" #'with-editor-finish)
 
 ;; Use mouse buttons to go forward/backward trough window configs
 (map! :n [mouse-8] #'winner-undo
