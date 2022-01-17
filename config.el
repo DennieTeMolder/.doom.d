@@ -190,6 +190,11 @@
       :desc "Repeat last command" "r" #'repeat
       :desc "Adjust windows hydra" "w a" #'+hydra/window-nav/body)
 
+;; Make "Z" bindings only kill buffers not the session
+(map! :map evil-normal-state-map
+      "Z Q" #'kill-buffer-and-window
+      "Z Z" #'doom/save-and-kill-buffer)
+
 ;; Use mouse buttons to go forward/backward trough window configs
 (map! :n [mouse-8] #'winner-undo
       :n [mouse-9] #'winner-redo
