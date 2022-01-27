@@ -200,3 +200,5 @@
        :config
        ;;literate
        (default +bindings +smartparens))
+
+(setq! citar-bibliography '("~/MEGA/Zotero/master.bib"))
