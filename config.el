@@ -246,15 +246,6 @@
   ;; Disable company auto pop-up in org, use C-SPC to trigger
   (add-hook! 'org-mode-hook (setq-local company-idle-delay nil)))
 
-;; `evil-goggles--show-p' loads evil-mc causing its keymap to overwrite the
-;; evil-pop commands, clear this keybinding to keep them available.
-(after! evil-mc
-  (map! :map evil-mc-key-map
-        :nv "C-n" nil
-        :nv "C-N" nil
-        :nv "C-p" nil
-        :nv "C-P" nil))
-
 (after! projectile
   ;; Projectle sorting by recently opened
   (setq projectile-sort-order 'recently-active)
@@ -285,8 +276,9 @@
   (add-to-list 'recentf-exclude "\\autosave\\'"))
 
 ;; Writing/Organizing Tools
-;; Personal ispell library
-(setq ispell-personal-dictionary "~/MEGA/Dictionary/personal_dict.pws")
+(when (featurep! :checkers spell)
+  ;; Personal ispell library
+  (setq ispell-personal-dictionary "~/MEGA/Dictionary/personal_dict.pws"))
 
 ;; Org-mode settings
 (after! org
