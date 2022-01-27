@@ -380,10 +380,12 @@ https://github.com/abo-abo/org-download/commit/137c3d2aa083283a3fc853f9ecbbc0303
   (use-package! ox :after org)
 
   ;; Citar bibliography settings
-  (setq! citar-library-paths '("~/MEGA/Zotero/")
-         ;; Due to biblio's config this needs to be set in init.el
-         ;; citar-bibliography '("~/MEGA/Zotero/master.bib")
-         citar-notes-paths '("~/MEGA/PKM/notes/")))
+  (setq! citar-bibliography '("~/MEGA/Zotero/master.bib")
+         citar-library-paths '("~/MEGA/Zotero/")
+         citar-notes-paths '("~/MEGA/PKM/notes/"))
+
+  ;; Use the same bib for org-cite
+  (setq! org-cite-global-bibliography citar-bibliography))
 
 (after! citar
   ;; citar note template
