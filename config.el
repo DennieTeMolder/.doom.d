@@ -70,7 +70,7 @@
 ;; Rudimentary settings
 (setq-default delete-by-moving-to-trash t
               tab-with 2
-              text-scale-mode-step 1.1
+              text-scale-mode-step (/ 20.0 18)
               uniquify-buffer-name-style 'forward
               x-stretch-cursor t) ; stretch cursor to glyph size
 
