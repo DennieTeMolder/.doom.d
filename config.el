@@ -276,10 +276,12 @@
   ;; Exclude autosave from recent files
   (add-to-list 'recentf-exclude "\\autosave\\'"))
 
-;; Writing/Organizing Tools
+;;;; Writing/Organization Tools
+;; Spell checking
 (when (featurep! :checkers spell)
-  ;; Personal ispell library
-  (setq ispell-personal-dictionary "~/MEGA/Dictionary/personal_dict.pws"))
+  ;; Global and personal ispell library
+  (setq ispell-dictionary "en_GB"
+        ispell-personal-dictionary "~/MEGA/Dictionary/personal_dict.pws"))
 
 ;; Org-mode settings
 (after! org
