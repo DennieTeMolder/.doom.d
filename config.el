@@ -231,6 +231,10 @@
 
 ;;;; Doom Core Package Settings
 (after! evil
+  ;; Repeat ignore commands because they freeze emacs
+  (evil-add-command-properties '+workspace/switch-left :repeat nil)
+  (evil-add-command-properties '+workspace/switch-right :repeat nil)
+
   ;; Change window split direction
   (setq evil-vsplit-window-right t
         evil-split-window-below t)
