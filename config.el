@@ -419,6 +419,18 @@ https://github.com/abo-abo/org-download/commit/137c3d2aa083283a3fc853f9ecbbc0303
   ;; Disable completion everywhere as it overrides company completion
   (setq org-roam-completion-everywhere nil)
 
+  ;; Custom org-roam buffer preview function
+  (defun my/org-element-get-content-at-point ()
+    "Return the current element's content without properties.
+
+Based on `org-mark-element' and `org-roam-preview-default-function'."
+    (let* ((element (org-element-at-point))
+           (beg (org-element-property :begin element))
+           (end (org-element-property :end element)))
+      (string-trim (buffer-substring-no-properties beg end))))
+
+  (setq org-roam-preview-function #'my/org-element-get-content-at-point)
+
   ;; Roam templates
   (setq org-roam-capture-templates
         '(("d" "default" plain "%?"
