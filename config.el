@@ -420,16 +420,19 @@ https://github.com/abo-abo/org-download/commit/137c3d2aa083283a3fc853f9ecbbc0303
   (setq org-roam-completion-everywhere nil)
 
   ;; Custom org-roam buffer preview function
-  (defun my/org-element-get-content-at-point ()
+  (defun my/org-element-at-point-get-content ()
     "Return the current element's content without properties.
 
 Based on `org-mark-element' and `org-roam-preview-default-function'."
+    ;; Move to beginning of item to include children
+    (if (org-in-item-p)
+        (org-beginning-of-item))
     (let* ((element (org-element-at-point))
            (beg (org-element-property :begin element))
            (end (org-element-property :end element)))
       (string-trim (buffer-substring-no-properties beg end))))
 
-  (setq org-roam-preview-function #'my/org-element-get-content-at-point)
+  (setq org-roam-preview-function #'my/org-element-at-point-get-content)
 
   ;; Roam templates
   (setq org-roam-capture-templates
