@@ -19,10 +19,10 @@
 ;;
 ;; They all accept either a font-spec, font string ("Input Mono-12"), or xlfd
 ;; font string. You generally only need these two:
-(setq doom-font (font-spec :family "JuliaMono" :size 18)
-      doom-big-font (font-spec :family "JuliaMono" :size 30)
+(setq doom-font (font-spec :family "Hasklig" :size 19)
+      doom-big-font (font-spec :family "Hasklig" :size 25)
       ;; doom-serif-font (font-spec :family "Nimbus Serif")
-      doom-variable-pitch-font (font-spec :family "Lora" :size 18))
+      doom-variable-pitch-font (font-spec :family "Lora" :size 19))
 
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
@@ -70,7 +70,7 @@
 ;; Rudimentary settings
 (setq-default delete-by-moving-to-trash t
               tab-with 2
-              text-scale-mode-step (/ 20.0 18)
+              text-scale-mode-step 1.1
               uniquify-buffer-name-style 'forward
               x-stretch-cursor t) ; stretch cursor to glyph size
 
@@ -498,7 +498,7 @@ Based on `org-mark-element' and `org-roam-preview-default-function'."
 
 (after! writeroom-mode
   ;; Define zenmode text scale
-  (setq +zen-text-scale 1.25
+  (setq +zen-text-scale 1.1
         writeroom-width 70
         writeroom-mode-line t
         +zen-mixed-pitch-modes '(org-mode latex-mode markdown-mode)))
