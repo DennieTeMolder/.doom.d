@@ -484,6 +484,7 @@ Based on `org-mark-element' and `org-roam-preview-default-function'."
 
   (map! :map pdf-history-minor-mode-map
         :nv "C-o" #'pdf-history-backward
+        :nv "C-i" #'pdf-history-forward
         :nv [mouse-8] #'pdf-history-backward
         :nv [mouse-9] #'pdf-history-forward))
 
