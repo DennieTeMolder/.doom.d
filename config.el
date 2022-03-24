@@ -376,6 +376,10 @@ https://github.com/abo-abo/org-download/commit/137c3d2aa083283a3fc853f9ecbbc0303
   (setq org-download-method 'drestivo/org-download-method
         org-download-link-format "[[file:%s]]\n"))
 
+;; Org-pomodor settings
+(after! org-pomodoro
+  (setq org-pomodoro-manual-break t))
+
 ;; Org-cite settings
 (after! oc
   (setq org-cite-csl-styles-dir "~/MEGA/Zotero/Styles"
