@@ -277,8 +277,9 @@
   (remove-hook! 'kill-emacs-hook #'recentf-cleanup)
   (setq recentf-auto-cleanup 'mode)
 
-  ;; Exclude autosave from recent files
-  (add-to-list 'recentf-exclude "\\autosave\\'"))
+  ;; Exclude autosave file/folder and root from recent files
+  (add-to-list 'recentf-exclude "/autosave/?\\'")
+  (add-to-list 'recentf-exclude "\\`/\\'"))
 
 ;;;; Writing/Organization Tools
 ;; Spell checking
