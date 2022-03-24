@@ -150,15 +150,15 @@
          (:inherit
           (doom-dashboard-menu-title bold))
          :action doom/quickload-session)
+        ("Recently opened files" :icon
+         (all-the-icons-octicon "file-text" :face 'doom-dashboard-menu-title)
+         :action recentf-open-files)
         ("Open roam index" :icon
          (all-the-icons-octicon "database" :face 'doom-dashboard-menu-title)
          :action my/org-roam-open-index)
         ("Open roam today" :icon
          (all-the-icons-octicon "calendar" :face 'doom-dashboard-menu-title)
          :action org-roam-dailies-goto-today)
-        ("Recently opened files" :icon
-         (all-the-icons-octicon "file-text" :face 'doom-dashboard-menu-title)
-         :action recentf-open-files)
         ("Open project" :icon
          (all-the-icons-octicon "briefcase" :face 'doom-dashboard-menu-title)
          :action projectile-switch-project)
