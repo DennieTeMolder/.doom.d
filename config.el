@@ -387,6 +387,11 @@ https://github.com/abo-abo/org-download/commit/137c3d2aa083283a3fc853f9ecbbc0303
         org-cite-export-processors '((latex biblatex "ieee")
                                      (t csl "ieee.csl"))))
 
+(after! ox-odt
+  ;; Ensure latest styles are used for ODT export
+  (setq org-odt-styles-dir (expand-file-name "straight/repos/org/etc/styles" doom-local-dir)
+        org-odt-preferred-output-format "doc"))
+
 (when (featurep! :tools biblio)
   ;; When using the biblio module, ox doesn't seem to be loaded in time
   (use-package! ox :after org)
