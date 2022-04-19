@@ -123,7 +123,7 @@
 
 ;; On laptops it's nice to know how much power you have
 (use-package! battery
-  :defer 3
+  :defer 8
   :config
   (unless (equal "unknown" (cdr (assoc 66 (funcall battery-status-function))))
     (display-battery-mode 1)))
