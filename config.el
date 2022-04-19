@@ -29,8 +29,11 @@
 ;; refresh your font settings. If Emacs still can't find your font, it likely
 ;; wasn't installed correctly. Font issues are rarely Doom issues!
 
-;; Determine font-size based of screen resolution
-(setq my/base-font-size (if (<= (display-pixel-height) 1080) 17 19))
+;; Check if running on WSL
+(setq IS-WSL (if (string-match "-[Mm]icrosoft" (shell-command-to-string "uname -a")) t nil))
+
+;; Determine font-size based of screen resolution and OS
+(setq my/base-font-size (if (and (<= (display-pixel-height) 1080) (not IS-WSL)) 17 19))
 
 (setq doom-font (font-spec :family "Hasklig" :size my/base-font-size)
       doom-big-font (font-spec :family "Hasklig" :size (+ my/base-font-size 6))
@@ -85,10 +88,6 @@
 ;;
 ;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
 ;; they are implemented.
-
-;;;; Checks
-;; Check if running on WSL
-(setq IS-WSL (if (string-match "-[Mm]icrosoft" (shell-command-to-string "uname -a")) t nil))
 
 ;;;; Basic Settings
 ;; Quit without confirmation
