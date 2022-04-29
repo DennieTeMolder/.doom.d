@@ -204,6 +204,9 @@
 ;; Default major mode for scratch buffer
 (setq doom-scratch-initial-major-mode 'lisp-interaction-mode)
 
+;; Disable visual line mode as it can be expensive on long lines
+(remove-hook! 'text-mode-hook #'visual-line-mode)
+
 ;; Spacemacs style M-x
 ;; Old SPC SPC binding (projectile find file) also available under "SPC p f"
 ;; This frees up the "SPC :" to be another evil-ex because i am condition to hit SPC
@@ -337,9 +340,9 @@
   ;; Disable soft wrapping and enable hard wrapping
   ;; Allow for double quoting using '' and `` (`` -> “)
   (add-hook! 'org-mode-hook
-    (+word-wrap-mode -1)
-    (auto-fill-mode 1)
-    (electric-quote-local-mode 1))
+    (visual-line-mode -1)
+    (auto-fill-mode +1)
+    (electric-quote-local-mode +1))
 
   ;; Use old org-ref insert key
   (map! :map org-mode-map "C-c ]" #'org-cite-insert))
@@ -726,7 +729,7 @@ block, send the entire code block."
 
   ;; Ensure delimiters are not hidden when aligning
   (add-hook! 'csv-mode-hook
-    (+word-wrap-mode -1) (setq-local buffer-invisibility-spec nil)))
+    (setq-local buffer-invisibility-spec nil)))
 
 ;;;; Misc Packages
 ;; M-x interaction-log-mode shows all executed command for debugging/showcasing
