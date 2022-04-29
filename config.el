@@ -274,11 +274,11 @@
    :nvm "k" #'evil-previous-visual-line))
 
 (after! company
-  ;; Increase auto-completion suggestion delay
-  (setq company-idle-delay 0.4)
+  ;; Disable company auto pop-up as it can be expensive, use C-SPC to trigger
+  (setq company-idle-delay nil)
 
-  ;; Disable company auto pop-up in org, use C-SPC to trigger
-  (add-hook! 'org-mode-hook (setq-local company-idle-delay nil)))
+  ;; Enable in elisp mode at is not as expensive
+  (add-hook! 'emacs-lisp-mode-hook (setq-local company-idle-delay 0.2)))
 
 (after! projectile
   ;; Projectle sorting by recently opened
