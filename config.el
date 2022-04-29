@@ -126,7 +126,7 @@
   :defer 8
   :config
   (unless (equal "unknown" (cdr (assoc 66 (funcall battery-status-function))))
-    (display-battery-mode 1)))
+    (display-battery-mode +1)))
 
 ;; Simplify window title and give a visual indication if file is edited
 (setq frame-title-format
@@ -256,7 +256,7 @@
 (use-package! vertico-mouse
   :when (featurep! :completion vertico)
   :after vertico
-  :config (vertico-mouse-mode 1))
+  :config (vertico-mouse-mode +1))
 
 ;;;; Doom Core Package Settings
 (after! evil
@@ -776,7 +776,7 @@ block, send the entire code block."
   (add-hook! 'good-scroll-mode-hook #'my/good-scroll-evil-override-hook)
 
   ;; Enable good-scroll
-  (good-scroll-mode 1)
+  (good-scroll-mode +1)
 )
 
 ;; Package for interacting with text fields, requires GhostText browser extension
