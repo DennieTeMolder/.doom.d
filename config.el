@@ -123,7 +123,7 @@
 
 ;; On laptops it's nice to know how much power you have
 (use-package! battery
-  :defer 8
+  :defer 3
   :config
   (unless (equal "unknown" (cdr (assoc 66 (funcall battery-status-function))))
     (display-battery-mode +1)))
@@ -632,6 +632,11 @@ https://github.com/akermu/emacs-libvterm/issues/313#issuecomment-867525845"
         ">" #'my/ess-r-insert-pipe
         :localleader
          :desc "Environment list R objects" "e" #'ess-rdired))
+
+(after! ess-s-lang
+  ;; Imenu search entries, best invoked with =consult-imenu= (SPC s i)
+  (add-to-list 'ess-imenu-S-generic-expression
+               '("Outline" "^\\(#+ .+\\) ---+" 1)))
 
 (use-package! ess-view-data
   :commands ess-view-data-print
