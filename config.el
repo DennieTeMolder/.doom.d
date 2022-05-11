@@ -587,13 +587,19 @@ https://github.com/akermu/emacs-libvterm/issues/313#issuecomment-867525845"
   ;; Customize type faces (used for F&T color)
   (set-face-attribute 'ess-constant-face nil :weight 'bold :inherit font-lock-warning-face)
 
-  (defadvice! my/advice-ess-describe (orig-fn)
-    "Switch to the REPL buffer after closing the *ess-describe* buffer"
-    :around #'ess-describe-object-at-point
-    (let ((starting-window (selected-window)))
-      (funcall orig-fn)
-      (ess-switch-to-ESS t)
-      (select-window starting-window)))
+  (defadvice! my/advice-ess-switch (orig-fn TOGGLE-EOB)
+    "Only switch to the REPL if it was already visible"
+    :around #'ess-switch-to-inferior-or-script-buffer
+    (let* ((starting-window (selected-window))
+           (ess-current-process (get-process ess-current-process-name))
+           (ess-buffer-visible
+            (if ess-current-process
+                (doom-visible-buffer-p (buffer-name
+                                        (process-buffer ess-current-process))))))
+      (funcall orig-fn TOGGLE-EOB)
+      (evil-normal-state)
+      (if (not ess-buffer-visible)
+          (select-window starting-window))))
 
   ;; Make evil tab width same as ESS offset
   (add-hook! 'ess-mode-hook
@@ -627,6 +633,8 @@ https://github.com/akermu/emacs-libvterm/issues/313#issuecomment-867525845"
         :localleader
          :desc "Source current file" "s" #'ess-load-file
          "S" #'ess-switch-process)
+  (map! :map inferior-ess-mode-map
+        :localleader "TAB" #'ess-switch-to-inferior-or-script-buffer)
   (map! :map ess-r-mode-map
         "<" #'my/ess-r-insert-assign
         ">" #'my/ess-r-insert-pipe
