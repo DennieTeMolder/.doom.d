@@ -625,11 +625,11 @@ https://www.reddit.com/r/emacs/comments/op4fcm/send_command_to_vterm_and_execute
     "Only switch to the REPL if it was already visible"
     :around #'ess-switch-to-inferior-or-script-buffer
     (let* ((starting-window (selected-window))
-           (ess-current-process (get-process ess-current-process-name))
            (ess-buffer-visible
-            (if ess-current-process
-                (doom-visible-buffer-p (buffer-name
-                                        (process-buffer ess-current-process))))))
+            (if ess-current-process-name
+                (doom-visible-buffer-p
+                 (buffer-name (process-buffer
+                               (get-process ess-current-process-name)))))))
       (funcall orig-fn TOGGLE-EOB)
       (evil-normal-state)
       (if (not ess-buffer-visible)
