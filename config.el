@@ -593,8 +593,7 @@ https://www.reddit.com/r/emacs/comments/op4fcm/send_command_to_vterm_and_execute
                 (display-buffer vterm-buffer-name t))
               (switch-to-buffer-other-window vterm-buffer-name))
           (progn
-            (evil-window-split)
-            (+vterm/here t)
+            (vterm-other-window)
             (evil-normal-state)))
         (vterm--goto-line -1)
         (vterm-send-string command)
