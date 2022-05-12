@@ -571,6 +571,41 @@ https://github.com/akermu/emacs-libvterm/issues/313#issuecomment-867525845"
     :after #'vterm--redraw
     (evil-refresh-cursor evil-state)))
 
+(after! sh-script
+  (defun thegodzeye/vterm-execute-current-line ()
+    "Insert text of current line in vterm and execute.
+Based off:
+https://www.reddit.com/r/emacs/comments/op4fcm/send_command_to_vterm_and_execute_it/"
+    (interactive)
+    (require 'vterm)
+    (let ((command (buffer-substring
+                    (save-excursion
+                      (beginning-of-line)
+                      (point))
+                    (save-excursion
+                      (end-of-line)
+                      (point)))))
+      (let ((cbuf (current-buffer))
+            (vbuf (get-buffer vterm-buffer-name)))
+        (if vbuf
+            (progn
+              (unless (doom-visible-buffer-p vbuf)
+                (display-buffer vterm-buffer-name t))
+              (switch-to-buffer-other-window vterm-buffer-name))
+          (progn
+            (evil-window-split)
+            (+vterm/here t)
+            (evil-normal-state)))
+        (vterm--goto-line -1)
+        (vterm-send-string command)
+        (vterm-send-return)
+        (switch-to-buffer-other-window cbuf)
+        (next-line)
+        )))
+
+  (map! :map sh-mode-map
+        :nv [C-return] #'thegodzeye/vterm-execute-current-line))
+
 ;; Proper number highlighting for R mode
 (after! highlight-numbers
   (let ((expr "\\_<[0-9]*\\(?:\\.[0-9]+\\)?\\(?:[eE]-?[0-9]+\\)?\\_>"))
