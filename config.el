@@ -668,7 +668,9 @@ https://www.reddit.com/r/emacs/comments/op4fcm/send_command_to_vterm_and_execute
          :desc "Source current file" "s" #'ess-load-file
          "S" #'ess-switch-process)
   (map! :map inferior-ess-mode-map
-        :localleader "TAB" #'ess-switch-to-inferior-or-script-buffer)
+        :localleader
+         "TAB" #'ess-switch-to-inferior-or-script-buffer
+         "x r" #'inferior-ess-reload)
   (map! :map ess-r-mode-map
         "<" #'my/ess-r-insert-assign
         ">" #'my/ess-r-insert-pipe
