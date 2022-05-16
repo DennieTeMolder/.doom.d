@@ -545,7 +545,12 @@ Based on `org-mark-element' and `org-roam-preview-default-function'."
   (setq +zen-text-scale 1.1
         writeroom-width 70
         writeroom-mode-line t
-        +zen-mixed-pitch-modes '(org-mode latex-mode markdown-mode)))
+        +zen-mixed-pitch-modes '(org-mode latex-mode markdown-mode))
+
+  (add-hook! 'writeroom-mode-enable-hook
+             (setq-local display-line-numbers nil))
+  (add-hook! 'writeroom-mode-disable-hook
+             (setq-local display-line-numbers display-line-numbers-type)))
 
 ;;;; Programming Languages
 ;; General interactive programming buffer settings
