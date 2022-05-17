@@ -283,6 +283,10 @@
    :nvm "j" #'evil-next-visual-line
    :nvm "k" #'evil-previous-visual-line))
 
+(after! evil-snipe
+  ;; Make snipe commands (bound to f,F,t,T,s,S) go beyond the current line
+  (setq evil-snipe-scope 'visible))
+
 (after! company
   ;; Disable company auto pop-up as it can be expensive, use C-SPC to trigger
   (setq company-idle-delay nil)
