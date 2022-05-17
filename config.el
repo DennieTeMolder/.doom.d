@@ -875,3 +875,17 @@ block, send the entire code block."
         '(("github\\.com" . gfm-mode)
           ("overleaf\\.com" . latex-mode)
           ("azuredatabricks\\.net" . python-mode))))
+
+(use-package! vundo
+  :commands vundo
+  :init
+  (map! :desc "Show undo history" :leader "b h" #'vundo)
+  :config
+  (setq vundo-glyph-alist vundo-unicode-symbols)
+  (map! :map vundo-mode-map
+        "h" #'vundo-backward
+        "j" #'vundo-next
+        "k" #'vundo-previous
+        "l" #'vundo-forward
+        "H" #'vundo-stem-root
+        "L" #'vundo-stem-end))

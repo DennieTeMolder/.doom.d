@@ -54,6 +54,7 @@
 (package! good-scroll)
 (package! atomic-chrome)
 (package! ess-view-data)
+(package! vundo)
 ;; Byte compiling tablist creates an error in `pdf-annot-list-annotations'
 ;; https://github.com/vedang/pdf-tools/issues/89
 (package! tablist :recipe (:build (:not compile)))
