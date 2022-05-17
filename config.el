@@ -361,7 +361,9 @@
       (visual-line-mode -1)
       (auto-fill-mode +1)
       (add-hook! 'evil-insert-state-exit-hook :local
-        (when auto-fill-function (org-fill-paragraph)))))
+        (when auto-fill-function
+          (unless (eq (org-element-type (org-element-at-point)) 'src-block)
+            (org-fill-paragraph))))))
 
   ;; Use old org-ref insert key
   (map! :map org-mode-map "C-c ]" #'org-cite-insert))
