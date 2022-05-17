@@ -110,12 +110,6 @@
               uniquify-buffer-name-style 'forward
               x-stretch-cursor t) ; stretch cursor to glyph size
 
-;; Save and undo settings
-(setq undo-limit 80000000 ; Raise undo-limit to 80Mb
-      auto-save-default t ; Enable auto save
-      evil-want-fine-undo t ; Granular undo in insert mode
-      inhibit-compacting-font-caches t) ; Keep all glyphs in memory
-
 ;; Save clipboard to kill ring before deleting text
 ;; Cyle kill ring using <C-p> or <C-n> after pasting
 (setq save-interprogram-paste-before-kill t)
@@ -275,12 +269,13 @@
 
 ;;;; Doom Core Package Settings
 (after! evil
-  ;; Repeat ignore commands because they freeze emacs
+  ;; Indicate `repeat' to ignore certain commands because they freeze emacs
   (evil-add-command-properties '+workspace/switch-left :repeat nil)
   (evil-add-command-properties '+workspace/switch-right :repeat nil)
 
-  ;; Change window split direction
-  (setq evil-vsplit-window-right t
+  ;; Enable granular undo (remembers delete actions during insert state)
+  (setq evil-want-fine-undo t
+        evil-vsplit-window-right t
         evil-split-window-below t)
 
   ;; Make j/k move visual lines (gj/gk)
@@ -324,6 +319,10 @@
   ;; Exclude autosave file/folder and root from recent files
   (add-to-list 'recentf-exclude "/autosave/?\\'")
   (add-to-list 'recentf-exclude "\\`/\\'"))
+
+(after! undo-fu
+  ;; Raise undo limit do 10 Mb (doom default: 40kb)
+  (setq undo-limit 10000000))
 
 ;;;; Writing/Organization Tools
 ;; Spell checking
