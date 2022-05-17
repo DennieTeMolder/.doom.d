@@ -146,8 +146,13 @@
            (replace-regexp-in-string ".*/[0-9]*-?" ">" buffer-file-name)
          "%b"))
       (:eval
-       (let ((project-name (if (string= "-" (projectile-project-name)) "Doom Emacs" (projectile-project-name))))
-         (format (if (buffer-modified-p)  " + | %s" " | %s") project-name)))))
+       (let ((project-name (if (string= "-" (projectile-project-name))
+                               "Doom Emacs"
+                             (projectile-project-name))))
+         (format (if (buffer-modified-p)
+                     " + | %s"
+                   " | %s")
+          project-name)))))
 
 (defun my/doom-ascii-banner-fn ()
   (let* ((banner
@@ -384,8 +389,7 @@
         (setq-local buffer-read-only nil)
         (remove-hook! 'pdf-view-mode-hook #'org-tree-slide-mode))))
 
-  (add-hook! 'org-tree-slide-mode-hook
-             #'my/org-tree-slide-present-toggles)
+  (add-hook! 'org-tree-slide-mode-hook #'my/org-tree-slide-present-toggles)
 
   (map! :map org-tree-slide-mode-map
         :n [C-up] #'org-tree-slide-content))
@@ -482,8 +486,8 @@ https://github.com/abo-abo/org-download/commit/137c3d2aa083283a3fc853f9ecbbc0303
 
 Based on `org-mark-element' and `org-roam-preview-default-function'."
     ;; Move to beginning of item to include children
-    (if (org-in-item-p)
-        (org-beginning-of-item))
+    (when (org-in-item-p)
+      (org-beginning-of-item))
     (let* ((element (org-element-at-point))
            (beg (org-element-property :begin element))
            (end (org-element-property :end element)))
@@ -645,14 +649,14 @@ https://www.reddit.com/r/emacs/comments/op4fcm/send_command_to_vterm_and_execute
     :around #'ess-switch-to-inferior-or-script-buffer
     (let* ((starting-window (selected-window))
            (ess-buffer-visible
-            (if ess-current-process-name
-                (doom-visible-buffer-p
-                 (buffer-name (process-buffer
-                               (get-process ess-current-process-name)))))))
+            (when ess-current-process-name
+              (doom-visible-buffer-p
+               (buffer-name (process-buffer
+                             (get-process ess-current-process-name)))))))
       (funcall orig-fn TOGGLE-EOB)
       (evil-normal-state)
-      (if (not ess-buffer-visible)
-          (select-window starting-window))))
+      (unless ess-buffer-visible
+        (select-window starting-window))))
 
   ;; Make evil tab width same as ESS offset
   (add-hook! 'ess-mode-hook
@@ -731,12 +735,10 @@ https://www.reddit.com/r/emacs/comments/op4fcm/send_command_to_vterm_and_execute
 block, send the entire code block."
     (interactive)
     ;; Ensure the python process is running
-    (if (not (python-shell-get-process))
-        (progn
-          (save-selected-window
-            (call-interactively #'+python/open-ipython-repl))
-          ;; Give python time to load the interaction module
-          (sleep-for .5)))
+    (unless (python-shell-get-process)
+      (save-selected-window (call-interactively #'+python/open-ipython-repl))
+      ;; Give python time to load the interaction module
+      (sleep-for .5))
     ;; Check for region, start of block, or other and act accordingly
     (cond ((region-active-p)
            (call-interactively #'python-shell-send-region))
@@ -764,8 +766,8 @@ block, send the entire code block."
   (defadvice! my/anaconda-disable-on-remote (orig-fn)
     "Only activate anaconda-mode if the buffer is local"
     :around #'+python-init-anaconda-mode-maybe-h
-    (if (not (file-remote-p default-directory))
-        (funcall orig-fn)))
+    (unless (file-remote-p default-directory)
+      (funcall orig-fn)))
 
   (defun my/conda-env-promt-activate (env-name)
     "If conda environment with ENV-NAME is not activated, prompt the user to do so"
@@ -782,7 +784,7 @@ block, send the entire code block."
             ((not conda-env-current-name) (my/conda-env-promt-activate fallback-env)))))
 
   ;; Prompt user to change into a conda env
-  (if (executable-find "conda")
+  (when (executable-find "conda")
       (add-hook! 'anaconda-mode-hook #'my/conda-env-guess-prompt))
 
   (map! :mode anaconda-mode
