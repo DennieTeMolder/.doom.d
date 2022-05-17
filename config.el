@@ -365,7 +365,9 @@
             (org-fill-paragraph))))))
 
   ;; Use old org-ref insert key
-  (map! :map org-mode-map "C-c ]" #'org-cite-insert))
+  (map! :map org-mode-map
+        "C-c ]" #'org-cite-insert
+        :desc "Toggle pretty visuals" :localleader "v" #'+org-pretty-mode))
 
 ;; Fancy org mode bullets
 (use-package! org-superstar
