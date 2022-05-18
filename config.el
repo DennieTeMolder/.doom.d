@@ -573,9 +573,11 @@ Based on `org-mark-element' and `org-roam-preview-default-function'."
         +zen-mixed-pitch-modes '(org-mode latex-mode markdown-mode))
 
   (add-hook! 'writeroom-mode-enable-hook
-             (setq-local display-line-numbers nil))
+             (setq-local display-line-numbers nil)
+             (+org-pretty-mode +1))
   (add-hook! 'writeroom-mode-disable-hook
-             (setq-local display-line-numbers display-line-numbers-type)))
+             (setq-local display-line-numbers display-line-numbers-type)
+             (+org-pretty-mode -1)))
 
 ;;;; Programming Languages
 ;; General interactive programming buffer settings
