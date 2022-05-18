@@ -269,7 +269,7 @@
 
 ;;;; Doom Core Package Settings
 (after! evil
-  ;; Indicate `repeat' to ignore certain commands because they freeze emacs
+  ;; Indicate `evil-repeat' to ignore certain commands because they freeze emacs
   (evil-add-command-properties '+workspace/switch-left :repeat nil)
   (evil-add-command-properties '+workspace/switch-right :repeat nil)
 
