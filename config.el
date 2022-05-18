@@ -47,8 +47,8 @@
 (setq doom-theme
       (let ((light-theme 'doom-one-light)
              (dark-theme 'doom-vibrant)
-             (start-time-light-theme 7)
-             (end-time-light-theme 18)
+             (start-time-light-theme 8)
+             (end-time-light-theme 17)
              (hour (string-to-number (substring (current-time-string) 11 13))))
         (if (member hour (number-sequence start-time-light-theme end-time-light-theme))
             light-theme
