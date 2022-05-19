@@ -363,9 +363,15 @@
     (visual-line-mode -1)
     (refill-mode +1))
 
+  (defadvice! my/after-org-return ()
+    "Indicate to fill commands that an insert was performed"
+    :after #'+org/return
+    (setq this-command 'newline-and-indent))
+
   ;; Use old org-ref insert key
   (map! :map org-mode-map
         "C-c ]" #'org-cite-insert
+        :nv "C-j" #'+org/return
         :desc "Toggle pretty visuals" :localleader "v" #'+org-pretty-mode))
 
 ;; Fancy org mode bullets
