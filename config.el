@@ -231,14 +231,16 @@
 
 ;; Make "Z" bindings only kill buffers not the session
 (map! :n "ZQ" #'kill-buffer-and-window
-      :n "ZZ" #'doom/save-and-kill-buffer)
-(map! :map with-editor-mode-map
-      :n "ZQ" #'with-editor-cancel
-      :n "ZZ" #'with-editor-finish)
+      :n "ZZ" #'doom/save-and-kill-buffer
+
+      (:map with-editor-mode-map
+       :n "ZQ" #'with-editor-cancel
+       :n "ZZ" #'with-editor-finish))
 
 ;; Use mouse buttons to go forward/backward trough window configs
 (map! :n [mouse-8] #'winner-undo
       :n [mouse-9] #'winner-redo
+
       (:map Info-mode-map
        :n [mouse-8] #'Info-history-back
        :n [mouse-9] #'Info-history-forward))
@@ -533,20 +535,20 @@ Based on `org-mark-element' and `org-roam-preview-default-function'."
                                                (ignore)))))
 
 (after! pdf-tools
-  (map! :map pdf-view-mode-map
-        :nv "C-e" #'pdf-view-scroll-down-or-previous-page
-        :v "h" #'pdf-annot-add-highlight-markup-annotation
-        :v "s" #'pdf-annot-add-strikeout-markup-annotation
-        :v "u" #'pdf-annot-add-underline-markup-annotation
-        (:prefix "C-c"
-         :desc "Add Note" "a" #'pdf-annot-add-text-annotation
-         :desc "Delete Annotation" "d" #'pdf-annot-delete))
+  (map! (:map pdf-view-mode-map
+         :nv "C-e" #'pdf-view-scroll-down-or-previous-page
+         :v "h" #'pdf-annot-add-highlight-markup-annotation
+         :v "s" #'pdf-annot-add-strikeout-markup-annotation
+         :v "u" #'pdf-annot-add-underline-markup-annotation
+         (:prefix "C-c"
+          :desc "Add Note" "a" #'pdf-annot-add-text-annotation
+          :desc "Delete Annotation" "d" #'pdf-annot-delete))
 
-  (map! :map pdf-history-minor-mode-map
-        :nv "C-o" #'pdf-history-backward
-        :nv "C-i" #'pdf-history-forward
-        :nv [mouse-8] #'pdf-history-backward
-        :nv [mouse-9] #'pdf-history-forward))
+        (:map pdf-history-minor-mode-map
+         :nv "C-o" #'pdf-history-backward
+         ;; `pdf-history-forward' is bound to TAB
+         :nv [mouse-8] #'pdf-history-backward
+         :nv [mouse-9] #'pdf-history-forward)))
 
 ;; LaTeX settings
 (after! tex-mode
@@ -686,20 +688,22 @@ https://www.reddit.com/r/emacs/comments/op4fcm/send_command_to_vterm_and_execute
     (my/ess-insert-string " %>% "))
 
   ;; ESS R keybindings, make < add a <-, type twice to undo (same goes for >)
-  (map! :map ess-mode-map
-        :nv [C-return] #'ess-eval-region-or-line-and-step
-        :localleader
+  (map! (:map ess-mode-map
+         :nv [C-return] #'ess-eval-region-or-line-and-step
+         :localleader
          :desc "Source current file" "s" #'ess-load-file
          "S" #'ess-switch-process)
-  (map! :map inferior-ess-mode-map
-        :localleader
+
+        (:map inferior-ess-mode-map
+         :localleader
          "TAB" #'ess-switch-to-inferior-or-script-buffer
          "x r" #'inferior-ess-reload)
-  (map! :map ess-r-mode-map
-        "<" #'my/ess-r-insert-assign
-        ">" #'my/ess-r-insert-pipe
-        :localleader
-         :desc "Environment list R objects" "e" #'ess-rdired))
+
+        (:map ess-r-mode-map
+         "<" #'my/ess-r-insert-assign
+         ">" #'my/ess-r-insert-pipe
+         :localleader
+         :desc "Environment list R objects" "e" #'ess-rdired)))
 
 (after! ess-s-lang
   ;; Imenu search entries, best invoked with =consult-imenu= (SPC s i)
