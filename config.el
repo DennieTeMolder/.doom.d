@@ -440,7 +440,7 @@ https://github.com/abo-abo/org-download/commit/137c3d2aa083283a3fc853f9ecbbc0303
 ;; Org-cite settings
 (after! oc
   (setq org-cite-csl-styles-dir "~/MEGA/Zotero/Styles"
-        org-cite-export-processors '((latex biblatex "ieee")
+        org-cite-export-processors '((latex biblatex "ieee/numeric-comp")
                                      (t csl "ieee.csl"))))
 
 (after! ox-odt
