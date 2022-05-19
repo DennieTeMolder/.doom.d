@@ -513,7 +513,7 @@ Based on `org-mark-element' and `org-roam-preview-default-function'."
            :unnarrowed t)))
   (setq org-roam-dailies-capture-templates
         '(("d" "default" entry "* %?"
-           :target (file+head "%<%Y_%m_%d>.org"
+           :target (file+head "%<%Y-%m-%d>.org"
                               "#+title: %<%Y-%m-%d>\n#+DATE: %<%A %B %d, Week %W %Y>\n\n* Agenda\n")))))
 
 ;; Org-noter settings
