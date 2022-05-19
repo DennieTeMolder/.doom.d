@@ -46,17 +46,17 @@
 ;; Set theme based on time
 (setq doom-theme
       (let ((light-theme 'doom-one-light)
-             (dark-theme 'doom-vibrant)
-             (start-time-light-theme 8)
-             (end-time-light-theme 17)
-             (hour (string-to-number (substring (current-time-string) 11 13))))
+            (dark-theme 'doom-vibrant)
+            (start-time-light-theme 8)
+            (end-time-light-theme 17)
+            (hour (string-to-number (substring (current-time-string) 11 13))))
         (if (member hour (number-sequence start-time-light-theme end-time-light-theme))
             light-theme
           dark-theme)))
 
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
-(setq org-directory "~/Org/")
+(setq org-directory (concat doom-etc-dir "org/"))
 
 ;; Make sure the org dir exists (important for id hash-tables)
 (unless (file-exists-p org-directory)
