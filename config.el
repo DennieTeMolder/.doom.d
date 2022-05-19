@@ -887,3 +887,24 @@ block, send the entire code block."
         "l" #'vundo-forward
         "H" #'vundo-stem-root
         "L" #'vundo-stem-end))
+
+(defadvice! my/fix-emacs-lisp-eval (beg end)
+  "Fixes a type error when evaluating elisp in the *scratch* buffer"
+  :override #'+emacs-lisp-eval
+  (+eval-display-results
+   (string-trim-right
+    (condition-case-unless-debug e
+        (let ((result
+               (let* ((buffer-file-name (buffer-file-name (buffer-base-buffer)))
+                      (buffer-file-truename (when buffer-file-name
+                                              (file-truename buffer-file-name)))
+                      (doom--current-module
+                       (ignore-errors (doom-module-from-path buffer-file-name)))
+                      (debug-on-error t))
+                 (eval (read (format "(progn %s)"
+                                     (buffer-substring-no-properties beg end)))
+                       lexical-binding))))
+          (require 'pp)
+          (replace-regexp-in-string "\\\\n" "\n" (pp-to-string result)))
+      (error (error-message-string e))))
+   (current-buffer)))
