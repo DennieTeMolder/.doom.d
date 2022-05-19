@@ -625,8 +625,7 @@ https://www.reddit.com/r/emacs/comments/op4fcm/send_command_to_vterm_and_execute
         (vterm-send-string command)
         (vterm-send-return)
         (switch-to-buffer-other-window cbuf)
-        (next-line)
-        )))
+        (forward-line))))
 
   (map! :map sh-mode-map
         :nv [C-return] #'thegodzeye/vterm-execute-current-line))
