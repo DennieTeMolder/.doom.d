@@ -516,17 +516,6 @@ Based on `org-mark-element' and `org-roam-preview-default-function'."
            :target (file+head "%<%Y_%m_%d>.org"
                               "#+title: %<%Y-%m-%d>\n#+DATE: %<%A %B %d, Week %W %Y>\n\n* Agenda\n")))))
 
-;; Some functionality for dailies is now shipped with roam2 as an extension
-(use-package! org-roam-dailies
-  :after org-roam)
-
-;; Deft settings
-(after! deft
-  (setq deft-directory org-roam-directory
-        deft-strip-summary-regexp ":PROPERTIES:\n\\(.+\n\\)+:END:\n"
-        deft-recursive t
-        deft-use-filename-as-title t))
-
 ;; Org-noter settings
 (after! org-noter
   (setq org-noter-hide-other nil ;; Don't fold headings when navigating
