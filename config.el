@@ -378,7 +378,8 @@
 (use-package! org-superstar
   :hook (org-mode . org-superstar-mode)
   :config
-  (setq org-superstar-headline-bullets-list '("●" "◉" "○" "◉" "○" "◉" "○" "◉")))
+  (setq org-superstar-headline-bullets-list '("●" "◉" "○" "◉" "○" "◉" "○" "◉")
+        org-superstar-item-bullet-alist '((42 . 8226) (43 . 8227) (45. 8208))))
 
 (after! org-tree-slide
   (setq +org-present-text-scale 4
