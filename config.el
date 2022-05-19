@@ -775,11 +775,10 @@ block, send the entire code block."
   (custom-set-variables
    '(conda-anaconda-home "~/.local/miniconda3/"))
 
-  (defadvice! my/anaconda-disable-on-remote (orig-fn)
+  (defadvice! my/anaconda-disable-on-remote ()
     "Only activate anaconda-mode if the buffer is local"
-    :around #'+python-init-anaconda-mode-maybe-h
-    (unless (file-remote-p default-directory)
-      (funcall orig-fn)))
+    :before-while #'+python-init-anaconda-mode-maybe-h
+    (not (file-remote-p default-directory)))
 
   (defun my/conda-env-promt-activate (env-name)
     "If conda environment with ENV-NAME is not activated, prompt the user to do so"
