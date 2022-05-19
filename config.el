@@ -439,6 +439,7 @@ https://github.com/abo-abo/org-download/commit/137c3d2aa083283a3fc853f9ecbbc0303
 
 ;; Org-cite settings
 (after! oc
+  ;; according to the `oc-biblatex.el' you should use bibstyle/citestyle
   (setq org-cite-csl-styles-dir "~/MEGA/Zotero/Styles"
         org-cite-export-processors '((latex biblatex "ieee/numeric-comp")
                                      (t csl "ieee.csl"))))
