@@ -358,15 +358,9 @@
   ;; Allow for double quoting using '' and `` (`` -> “)
   ;; Disable soft wrapping and enable hard wrapping
   (add-hook! 'org-mode-hook
-    (defun my/org-mode-hook-fun ()
-      "Enable electric quoting and auto-fill-mode (also hooked to insert mode exit)"
-      (electric-quote-local-mode +1)
-      (visual-line-mode -1)
-      (auto-fill-mode +1)
-      (add-hook! 'evil-insert-state-exit-hook :local
-        (when auto-fill-function
-          (unless (eq (org-element-type (org-element-at-point)) 'src-block)
-            (org-fill-paragraph))))))
+    (electric-quote-local-mode +1)
+    (visual-line-mode -1)
+    (refill-mode +1))
 
   ;; Use old org-ref insert key
   (map! :map org-mode-map
