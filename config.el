@@ -338,7 +338,8 @@
 ;; Org-mode settings
 (after! org
   (setq org-indent-indentation-per-level 1
-        org-ellipsis " ▾")
+        org-ellipsis " ▾"
+        org-list-demote-modify-bullet '(("+" . "-") ("-" . "+") ("*" . "+")))
 
   ;; Make headings bold and larger
   (dolist (face '((org-document-title . 1.3)
