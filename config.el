@@ -358,16 +358,22 @@
   ;; Give ellipsis same color as text
   (set-face-attribute 'org-ellipsis nil :foreground nil :background nil :weight 'regular)
 
-  ;; Allow for double quoting using '' and `` (`` -> “)
-  ;; Disable soft wrapping and enable hard wrapping
-  (add-hook! 'org-mode-hook
-    (electric-quote-local-mode +1)
-    (visual-line-mode -1)
-    (auto-fill-mode +1)
-    (add-hook! 'evil-insert-state-exit-hook :local
+  (defun my/insert-exit-fill-paragraph ()
+    "Perform `org-fill-paragraph' after some contextual checks"
+      ;; Check if `auto-fill-mode' is active
       (when auto-fill-function
         (unless (eq (org-element-type (org-element-at-point)) 'src-block)
-          (org-fill-paragraph)))))
+          (org-fill-paragraph))))
+
+  ;; Allow for double quoting using '' and `` (`` -> “)
+  (add-hook! 'org-mode-hook
+    (defun my/org-mode-hook ()
+      "Disables soft-wrapping, enables hard wrapping and electric quotes"
+      (electric-quote-local-mode +1)
+      (visual-line-mode -1)
+      (auto-fill-mode +1)
+      (add-hook! 'evil-insert-state-exit-hook
+                 :local #'my/insert-exit-fill-paragraph)))
 
   ;; Use old org-ref insert key
   (map! :map org-mode-map
