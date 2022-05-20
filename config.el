@@ -363,12 +363,11 @@
   (add-hook! 'org-mode-hook
     (electric-quote-local-mode +1)
     (visual-line-mode -1)
-    (refill-mode +1))
-
-  (defadvice! my/after-org-return ()
-    "Indicate to fill commands that an insert was performed"
-    :after #'+org/return
-    (setq this-command 'newline-and-indent))
+    (auto-fill-mode +1)
+    (add-hook! 'evil-insert-state-exit-hook :local
+      (when auto-fill-function
+        (unless (eq (org-element-type (org-element-at-point)) 'src-block)
+          (org-fill-paragraph)))))
 
   ;; Use old org-ref insert key
   (map! :map org-mode-map
