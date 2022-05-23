@@ -357,6 +357,8 @@
 
   ;; Give ellipsis same color as text
   (set-face-attribute 'org-ellipsis nil :foreground nil :background nil :weight 'regular)
+  ;; Strike trough completed tasks
+  (set-face-attribute 'org-headline-done nil :strike-through t)
 
   (defun my/insert-exit-fill-paragraph ()
     "Perform `org-fill-paragraph' after some contextual checks"
