@@ -709,7 +709,8 @@ https://www.reddit.com/r/emacs/comments/op4fcm/send_command_to_vterm_and_execute
          "<" #'my/ess-r-insert-assign
          ">" #'my/ess-r-insert-pipe
          :localleader
-         :desc "Environment list R objects" "e" #'ess-rdired)))
+         :desc "Eval reg|func|para" "e" #'ess-eval-region-or-function-or-paragraph
+         :desc "Environment list R objects" "E" #'ess-rdired)))
 
 (after! ess-s-lang
   ;; Imenu search entries, best invoked with =consult-imenu= (SPC s i)
