@@ -265,7 +265,6 @@
 
 ;; Enable vertico mouse extension (included with vertico)
 (use-package! vertico-mouse
-  :when (featurep! :completion vertico)
   :after vertico
   :config (vertico-mouse-mode +1))
 
@@ -332,7 +331,7 @@
 
 ;;;; Writing/Organization Tools
 ;; Spell checking
-(when (featurep! :checkers spell)
+(after! ispell
   ;; Global and personal ispell library
   (setq ispell-dictionary "en_GB"
         ispell-personal-dictionary "~/MEGA/Dictionary/personal_dict.pws"))
