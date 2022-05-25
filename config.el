@@ -455,19 +455,12 @@ https://github.com/abo-abo/org-download/commit/137c3d2aa083283a3fc853f9ecbbc0303
   (setq org-odt-styles-dir (expand-file-name "straight/repos/org/etc/styles" doom-local-dir)
         org-odt-preferred-output-format "doc"))
 
-(when (featurep! :tools biblio)
-  ;; When using the biblio module, ox doesn't seem to be loaded in time
-  (use-package! ox :after org)
-
+(after! citar
   ;; Citar bibliography settings
   (setq! citar-bibliography '("~/MEGA/Zotero/master.bib")
          citar-library-paths '("~/MEGA/Zotero/")
          citar-notes-paths '("~/MEGA/PKM/notes/"))
 
-  ;; Use the same bib for org-cite
-  (setq! org-cite-global-bibliography citar-bibliography))
-
-(after! citar
   ;; citar note template
   (push '(note . "${=key=}: ${title}\n\n* Notes") citar-templates)
 
