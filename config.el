@@ -344,21 +344,19 @@
         org-list-demote-modify-bullet '(("+" . "-") ("-" . "+") ("*" . "+")))
 
   ;; Make headings bold and larger
-  (dolist (face '((org-document-title . 1.3)
-                  (org-level-1 . 1.2)
-                  (org-level-2 . 1.1)
-                  (org-level-3 . 1.05)
-                  (org-level-4 . 1.0)
-                  (org-level-5 . 1.0)
-                  (org-level-6 . 1.0)
-                  (org-level-7 . 1.0)
-                  (org-level-8 . 1.0)))
-    (set-face-attribute (car face) nil :weight 'semi-bold :height (cdr face)))
+  (custom-set-faces!
+    '((org-document-title outline-1 outline-2 outline-3 outline-4 outline-5
+       outline-6 outline-7 outline-8)
+      :weight semi-bold)
+    '(org-document-title :height 1.3)
+    '(outline-1 :height 1.2)
+    '(outline-2 :height 1.1)
+    '(outline-3 :height 1.05))
 
   ;; Give ellipsis same color as text
-  (set-face-attribute 'org-ellipsis nil :foreground nil :background nil :weight 'regular)
-  ;; Strike trough completed tasks
-  (set-face-attribute 'org-headline-done nil :strike-through t)
+  (custom-set-faces!
+    '(org-ellipsis :foreground nil :background nil :weight regular)
+    '(org-headline-done :strike-through t))
 
   (defun my/insert-exit-fill-paragraph ()
     "Perform `org-fill-paragraph' after some contextual checks"
@@ -651,7 +649,7 @@ https://www.reddit.com/r/emacs/comments/op4fcm/send_command_to_vterm_and_execute
   (add-to-list 'ess-R-font-lock-keywords '(ess-R-fl-keyword:F&T . t))
   (add-to-list 'ess-R-font-lock-keywords '(ess-fl-keyword:fun-calls . t))
   ;; Customize type faces (used for F&T color)
-  (set-face-attribute 'ess-constant-face nil :weight 'bold :inherit font-lock-warning-face)
+  (custom-set-faces! '(ess-constant-face :weight bold :inherit font-lock-warning-face))
 
   (defadvice! my/advice-ess-switch (orig-fn TOGGLE-EOB)
     "Only switch to the REPL if it was already visible"
