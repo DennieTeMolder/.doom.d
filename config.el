@@ -464,8 +464,10 @@ https://github.com/abo-abo/org-download/commit/137c3d2aa083283a3fc853f9ecbbc0303
   ;; citar note template
   (push '(note . "${=key=}: ${title}\n\n* Notes") citar-templates)
 
-  ;; Update citar cache when bib-file changes in during specified modes
+  ;; Update citar cache when bib-file changes during specified modes
   (citar-filenotify-setup '(LaTeX-mode-hook org-mode-hook))
+  ;; Skip looking for local bibliographies if buffer has no file associated
+  (advice-add 'citar-filenotify-local-watches :before-while 'buffer-file-name)
 
   ;; Disable citation delete binding
   (map! :map citar-org-citation-map "C-d" nil))
