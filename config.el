@@ -455,12 +455,13 @@ https://github.com/abo-abo/org-download/commit/137c3d2aa083283a3fc853f9ecbbc0303
   (setq org-odt-styles-dir (expand-file-name "straight/repos/org/etc/styles" doom-local-dir)
         org-odt-preferred-output-format "doc"))
 
-(after! citar
+(when (featurep! :tools biblio)
   ;; Citar bibliography settings
   (setq! citar-bibliography '("~/MEGA/Zotero/master.bib")
          citar-library-paths '("~/MEGA/Zotero/")
-         citar-notes-paths '("~/MEGA/PKM/notes/"))
+         citar-notes-paths '("~/MEGA/PKM/notes/")))
 
+(after! citar
   ;; citar note template
   (push '(note . "${=key=}: ${title}\n\n* Notes") citar-templates)
 
