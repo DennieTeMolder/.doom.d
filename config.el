@@ -480,9 +480,14 @@ https://github.com/abo-abo/org-download/commit/137c3d2aa083283a3fc853f9ecbbc0303
         org-roam-index-file "pages/contents.org"
         org-roam-file-exclude-regexp "Rubbish/")
 
+  (defun my/org-roam-goto-workspace (&rest _)
+    "Open/create the dedicated org-roam workspace"
+    (+workspace-switch "*roam*" t))
+
   (defun my/org-roam-open-index ()
     "Opens the file specified in org-roam-index-file"
     (interactive)
+    (my/org-roam-goto-workspace)
     (find-file (expand-file-name org-roam-index-file org-roam-directory)))
 
   ;; Map to keybinding
@@ -506,6 +511,13 @@ Based on `org-mark-element' and `org-roam-preview-default-function'."
       (string-trim (buffer-substring-no-properties beg end))))
 
   (setq org-roam-preview-function #'my/org-element-at-point-get-content)
+
+  ;; Open all roam buffers in a dedicated workspace
+  (dolist (symbol '(org-roam-node-find
+                    org-roam-node-random
+                    org-roam-buffer-display-dedicated
+                    org-roam-buffer-toggle))
+    (advice-add symbol :before #'my/org-roam-goto-workspace))
 
   ;; Roam templates
   (setq org-roam-capture-templates
