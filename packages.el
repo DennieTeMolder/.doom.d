@@ -58,5 +58,3 @@
 ;; Byte compiling tablist creates an error in `pdf-annot-list-annotations'
 ;; https://github.com/vedang/pdf-tools/issues/89
 (package! tablist :recipe (:build (:not compile)))
-;; Solves error of missing poppler-private header
-(package! pdf-tools :pin "ab61b0472980200f52e2e23782bc07255baebe72")
