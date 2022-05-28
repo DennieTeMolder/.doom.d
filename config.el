@@ -268,6 +268,18 @@
   :after vertico
   :config (vertico-mouse-mode +1))
 
+;; Open private config files in a dedicated workspace
+(defun my/doom-private-goto-workspace ()
+  "Open/create the dedicated private config workspace"
+  (+workspace-switch "*config*" t))
+
+(dolist (symbol '(doom/open-private-config
+                  doom/find-file-in-private-config
+                  doom/goto-private-init-file
+                  doom/goto-private-config-file
+                  doom/goto-private-packages-file))
+  (advice-add symbol :before #'my/doom-private-goto-workspace))
+
 ;;;; Doom Core Package Settings
 (after! evil
   ;; Indicate `evil-repeat' to ignore certain commands because they freeze emacs
