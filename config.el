@@ -257,8 +257,9 @@
       (setq delete-by-moving-to-trash t)
       (message "Now moving deleted files to trash"))))
 
-(map! :leader
-      :desc "Toggle trashing/deleting files" "t T" #'my/toggle-trash-delete)
+(map! :leader :prefix "t"
+      :desc "Trash deleted files" "T" #'my/toggle-trash-delete
+      :desc "Auto linebreaks" "a" #'auto-fill-mode)
 
 ;; Increase horizontal scroll (shift + mwheel) sensitivity
 (setq mouse-wheel-scroll-amount-horizontal 12)
@@ -851,7 +852,7 @@ block, send the entire code block."
         good-scroll-step (round (/ (display-pixel-height) 5)))
 
   ;; binding to toggle good scroll mode
-  (map! :desc "Toggle smooth scrolling" :leader "t S" #'good-scroll-mode)
+  (map! :desc "Smooth scrolling" :leader "t S" #'good-scroll-mode)
 
   ;; Evil scrolling
   (defun my/good-scroll-down-half ()
@@ -894,7 +895,7 @@ block, send the entire code block."
         (message "Started GhostText Server"))))
 
   ;; Bind toggle
-  (map! :desc "Toggle GhostText server" :leader "t G" #'my/atomic-chrome-toggle-server)
+  (map! :desc "GhostText server" :leader "t G" #'my/atomic-chrome-toggle-server)
 
   :config
   (setq atomic-chrome-buffer-open-style 'full)
