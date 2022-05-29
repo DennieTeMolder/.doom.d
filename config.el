@@ -531,6 +531,7 @@ Based on `org-mark-element' and `org-roam-preview-default-function'."
   ;; Open all roam buffers in a dedicated workspace
   (dolist (symbol '(org-roam-node-find
                     org-roam-node-random
+                    org-roam-ref-find
                     org-roam-dailies--capture
                     org-roam-buffer-display-dedicated
                     org-roam-buffer-toggle))
