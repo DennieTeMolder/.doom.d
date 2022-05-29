@@ -393,6 +393,18 @@
         :nv "C-j" #'+org/return
         :desc "Toggle pretty visuals" :localleader "v" #'+org-pretty-mode))
 
+;; Org-cite settings
+(after! oc
+  ;; according to the `oc-biblatex.el' you should use bibstyle/citestyle
+  (setq org-cite-csl-styles-dir "~/MEGA/Zotero/Styles"
+        org-cite-export-processors '((latex biblatex "ieee/numeric-comp")
+                                     (t csl "ieee.csl"))))
+
+(after! ox-odt
+  ;; Ensure latest styles are used for ODT export
+  (setq org-odt-styles-dir (expand-file-name "straight/repos/org/etc/styles" doom-local-dir)
+        org-odt-preferred-output-format "doc"))
+
 ;; Fancy org mode bullets
 (use-package! org-superstar
   :hook (org-mode . org-superstar-mode)
@@ -452,42 +464,9 @@ https://github.com/abo-abo/org-download/commit/137c3d2aa083283a3fc853f9ecbbc0303
   (setq org-download-method 'drestivo/org-download-method
         org-download-link-format "[[file:%s]]\n"))
 
-;; Org-pomodor settings
+;; Org-pomodoro settings
 (after! org-pomodoro
   (setq org-pomodoro-manual-break t))
-
-;; Org-cite settings
-(after! oc
-  ;; according to the `oc-biblatex.el' you should use bibstyle/citestyle
-  (setq org-cite-csl-styles-dir "~/MEGA/Zotero/Styles"
-        org-cite-export-processors '((latex biblatex "ieee/numeric-comp")
-                                     (t csl "ieee.csl"))))
-
-(after! ox-odt
-  ;; Ensure latest styles are used for ODT export
-  (setq org-odt-styles-dir (expand-file-name "straight/repos/org/etc/styles" doom-local-dir)
-        org-odt-preferred-output-format "doc"))
-
-(when (featurep! :tools biblio)
-  ;; Citar bibliography settings
-  (setq! citar-bibliography '("~/MEGA/Zotero/master.bib")
-         citar-library-paths '("~/MEGA/Zotero/")
-         citar-notes-paths '("~/MEGA/PKM/notes/")))
-
-(after! citar
-  ;; citar note template
-  (push '(note . "${=key=}: ${title}\n\n* Notes") citar-templates)
-
-  ;; Open notes in roam workspace
-  (advice-add 'citar-open-notes :before #'my/org-roam-goto-workspace)
-
-  ;; Update citar cache when bib-file changes during specified modes
-  (citar-filenotify-setup '(LaTeX-mode-hook org-mode-hook))
-  ;; Skip looking for local bibliographies if buffer has no file associated
-  (advice-add 'citar-filenotify-local-watches :before-while #'buffer-file-name)
-
-  ;; Disable citation delete binding
-  (map! :map citar-org-citation-map "C-d" nil))
 
 ;; Org-roam init settings
 (when (featurep! :lang org +roam2)
@@ -547,6 +526,27 @@ Based on `org-mark-element' and `org-roam-preview-default-function'."
         '(("d" "default" entry "* %?"
            :target (file+head "%<%Y-%m-%d>.org"
                               "#+title: %<%Y-%m-%d>\n#+DATE: %<%A %B %d, Week %W %Y>\n \n* Agenda\n")))))
+
+(when (featurep! :tools biblio)
+  ;; Citar bibliography settings
+  (setq! citar-bibliography '("~/MEGA/Zotero/master.bib")
+         citar-library-paths '("~/MEGA/Zotero/")
+         citar-notes-paths '("~/MEGA/PKM/notes/")))
+
+(after! citar
+  ;; citar note template
+  (push '(note . "${=key=}: ${title}\n\n* Notes") citar-templates)
+
+  ;; Open notes in roam workspace
+  (advice-add 'citar-open-notes :before #'my/org-roam-goto-workspace)
+
+  ;; Update citar cache when bib-file changes during specified modes
+  (citar-filenotify-setup '(LaTeX-mode-hook org-mode-hook))
+  ;; Skip looking for local bibliographies if buffer has no file associated
+  (advice-add 'citar-filenotify-local-watches :before-while #'buffer-file-name)
+
+  ;; Disable citation delete binding
+  (map! :map citar-org-citation-map "C-d" nil))
 
 ;; Org-noter settings
 (after! org-noter
