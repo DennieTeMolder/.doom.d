@@ -565,6 +565,9 @@ Based on `org-mark-element' and `org-roam-preview-default-function'."
                                                (ignore)))))
 
 (after! pdf-tools
+  ;; Distinguish current match
+  (custom-set-faces! '(pdf-isearch-match :inherit highlight))
+
   (map! (:map pdf-view-mode-map
          :nv "C-e" #'pdf-view-scroll-down-or-previous-page
          :v "h" #'pdf-annot-add-highlight-markup-annotation
