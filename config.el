@@ -569,7 +569,7 @@ Based on `org-mark-element' and `org-roam-preview-default-function'."
   (custom-set-faces! '(pdf-isearch-match :inherit highlight))
 
   (map! (:map pdf-view-mode-map
-         :nv "C-e" #'pdf-view-scroll-down-or-previous-page
+         :gn "C-e" #'pdf-view-scroll-down-or-previous-page
          :v "h" #'pdf-annot-add-highlight-markup-annotation
          :v "s" #'pdf-annot-add-strikeout-markup-annotation
          :v "u" #'pdf-annot-add-underline-markup-annotation
@@ -578,10 +578,10 @@ Based on `org-mark-element' and `org-roam-preview-default-function'."
           :desc "Delete Annotation" "d" #'pdf-annot-delete))
 
         (:map pdf-history-minor-mode-map
-         :nv "C-o" #'pdf-history-backward
-         ;; `pdf-history-forward' is bound to TAB
-         :nv [mouse-8] #'pdf-history-backward
-         :nv [mouse-9] #'pdf-history-forward)))
+         :gn "C-o" #'pdf-history-backward
+         :gn "C-S-o" #'pdf-history-forward
+         :gn [mouse-8] #'pdf-history-backward
+         :gn [mouse-9] #'pdf-history-forward)))
 
 ;; LaTeX settings
 (after! tex-mode
