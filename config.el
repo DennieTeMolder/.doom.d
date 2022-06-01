@@ -466,7 +466,8 @@ https://github.com/abo-abo/org-download/commit/137c3d2aa083283a3fc853f9ecbbc0303
 
 ;; Org-pomodoro settings
 (after! org-pomodoro
-  (setq org-pomodoro-manual-break t))
+  (setq org-pomodoro-manual-break t
+        org-pomodoro-keep-killed-pomodoro-time t))
 
 ;; Org-roam init settings
 (when (featurep! :lang org +roam2)
