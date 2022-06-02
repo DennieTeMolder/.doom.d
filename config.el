@@ -733,11 +733,13 @@ https://www.reddit.com/r/emacs/comments/op4fcm/send_command_to_vterm_and_execute
          "x r" #'inferior-ess-reload)
 
         (:map ess-r-mode-map
-         "<" #'my/ess-r-insert-assign
-         ">" #'my/ess-r-insert-pipe
          :localleader
          :desc "Eval reg|func|para" "e" #'ess-eval-region-or-function-or-paragraph
-         :desc "Environment list R objects" "E" #'ess-rdired)))
+         :desc "Environment list R objects" "E" #'ess-rdired)
+
+        (:map (ess-r-mode-map inferior-ess-r-mode-map)
+         :i "<" #'my/ess-r-insert-assign
+         :i ">" #'my/ess-r-insert-pipe)))
 
 (after! ess-s-lang
   ;; Imenu search entries, best invoked with =consult-imenu= (SPC s i)
