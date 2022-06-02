@@ -569,6 +569,8 @@ Based on `org-mark-element' and `org-roam-preview-default-function'."
   ;; Distinguish current match
   (custom-set-faces! '(pdf-isearch-match :inherit highlight))
 
+  (setq pdf-view-resize-factor 1.1)
+
   (map! (:map pdf-view-mode-map
          :gn "C-e" #'pdf-view-scroll-down-or-previous-page
          :v "h" #'pdf-annot-add-highlight-markup-annotation
