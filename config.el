@@ -597,7 +597,7 @@ Based on `org-mark-element' and `org-roam-preview-default-function'."
 
 (after! writeroom-mode
   ;; Define zenmode text scale
-  (setq +zen-text-scale 1.1
+  (setq +zen-text-scale 2
         writeroom-width 70
         writeroom-mode-line t
         +zen-mixed-pitch-modes '(org-mode latex-mode markdown-mode))
