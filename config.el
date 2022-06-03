@@ -673,8 +673,13 @@ https://www.reddit.com/r/emacs/comments/op4fcm/send_command_to_vterm_and_execute
     (puthash 'python-mode expr highlight-numbers-modelist)))
 
 (after! ess
-  ;; Use a default session name and auto scroll down in REPL windows
+  ;; Use current dir for session
   (setq ess-ask-for-ess-directory nil)
+
+  ;; Add company-R-library backend, currently part of this pull request:
+  ;; https://github.com/doomemacs/doomemacs/pull/6421/commits/16b4023f0d1e97ff32da581546360770dff800f6
+  (set-company-backend! 'ess-r-mode
+    '(company-R-args company-R-objects company-R-library company-dabbrev-code :separate))
 
   ;; Enable additional highlighting
   (add-to-list 'ess-R-font-lock-keywords '(ess-R-fl-keyword:F&T . t))
