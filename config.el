@@ -136,17 +136,17 @@
 (setq frame-title-format
     '(""
       (:eval
-       (if (s-contains-p (concat org-roam-directory "pages") (or buffer-file-truename ""))
+       (if (s-contains-p (abbreviate-file-name (concat org-roam-directory "pages"))
+                         (or buffer-file-truename ""))
            (replace-regexp-in-string ".*/[0-9]*-?" ">" buffer-file-name)
          "%b"))
       (:eval
        (let ((project-name (if (string= "-" (projectile-project-name))
-                               "Doom Emacs"
+                               "doom emacs"
                              (projectile-project-name))))
-         (format (if (buffer-modified-p)
-                     " + | %s"
-                   " | %s")
-          project-name)))))
+         (format "%s | %s"
+                 (if (buffer-modified-p) " +" "")
+                 project-name)))))
 
 (defun my/doom-ascii-banner-fn ()
   (let* ((banner
@@ -316,7 +316,7 @@
       (file-readable-p file)))
 
   ;;Exclude non-existent & remote files from recent files list after cleanup
-  (setq recentf-keep (list #'my/recentf-keep-p))
+  (setq recentf-keep '(my/recentf-keep-p))
 
   ;; Revert back to running cleanup on mode start instead of emacs shutdown
   (remove-hook! 'kill-emacs-hook #'recentf-cleanup)
