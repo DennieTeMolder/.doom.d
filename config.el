@@ -269,18 +269,6 @@
   :after vertico
   :config (vertico-mouse-mode +1))
 
-;; Open private config files in a dedicated workspace
-(defun my/doom-private-goto-workspace ()
-  "Open/create the dedicated private config workspace"
-  (+workspace-switch "*config*" t))
-
-(dolist (symbol '(doom/open-private-config
-                  doom/find-file-in-private-config
-                  doom/goto-private-init-file
-                  doom/goto-private-config-file
-                  doom/goto-private-packages-file))
-  (advice-add symbol :before #'my/doom-private-goto-workspace))
-
 ;;;; Doom Core Package Settings
 (after! evil
   ;; Indicate `evil-repeat' to ignore certain commands because they freeze emacs
@@ -341,6 +329,48 @@
 (after! undo-fu
   ;; Raise undo limit do 10 Mb (doom default: 40kb)
   (setq undo-limit 10000000))
+
+(after! persp-mode
+  (defun my/workspace-switch-maybe (name)
+    "Switch to workspace NAME if not already current"
+    (unless (equal name (+workspace-current-name))
+      (+workspace-switch name t)
+      (+workspace/display)))
+
+  ;; Open private config files in a dedicated workspace
+  (defun my/doom-private-goto-workspace ()
+    "Open/create the dedicated private config workspace"
+    (my/workspace-switch-maybe "*config*"))
+
+  (dolist (symbol '(doom/open-private-config
+                    doom/find-file-in-private-config
+                    doom/goto-private-init-file
+                    doom/goto-private-config-file
+                    doom/goto-private-packages-file))
+    (advice-add symbol :before #'my/doom-private-goto-workspace))
+
+  ;; Functions and binding to move buffers between workspaces
+  (defun my/buffer-move-to-workspace (buffer name)
+    "Move BUFFER from the original workspace to NAME and switch"
+    (let ((origin (+workspace-current-name)))
+      (+workspace-switch name t)
+      (persp-add-buffer buffer (+workspace-get name) t nil)
+      (+workspace-switch origin)
+      (persp-remove-buffer buffer (+workspace-get origin) nil t nil nil)
+      (+workspace-switch name)
+      (+workspace/display)))
+
+  (defun my/buffer-move-to-workspace-prompt ()
+    "Move current buffer from the current to the selected workspace"
+    (interactive)
+    (let ((buffer (current-buffer))
+          (name (completing-read
+                   "Move current buffer to workspace:"
+                   (+workspace-list-names))))
+      (my/buffer-move-to-workspace buffer name)))
+
+  (map! :leader
+        :desc "Move buffer to workspace" "b TAB" #'my/buffer-move-to-workspace-prompt))
 
 ;;;; Writing/Organization Tools
 ;; Spell checking
@@ -478,7 +508,7 @@ https://github.com/abo-abo/org-download/commit/137c3d2aa083283a3fc853f9ecbbc0303
 
   (defun my/org-roam-goto-workspace (&rest _)
     "Open/create the dedicated org-roam workspace"
-    (+workspace-switch "*roam*" t))
+    (my/workspace-switch-maybe "*roam*"))
 
   (defun my/org-roam-open-index ()
     "Opens the file specified in org-roam-index-file"
