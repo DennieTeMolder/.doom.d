@@ -785,7 +785,7 @@ https://www.reddit.com/r/emacs/comments/op4fcm/send_command_to_vterm_and_execute
 (after! ess-s-lang
   ;; Imenu search entries, best invoked with =consult-imenu= (SPC s i)
   (add-to-list 'ess-imenu-S-generic-expression
-               '("Outline" "^\\(#+ .+\\) ---+" 1)))
+               '("Outline" "^\\(#+ [^\n]+\\) ----+" 1)))
 
 (use-package! ess-view-data
   :commands ess-view-data-print
