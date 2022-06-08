@@ -613,7 +613,10 @@ Based on `org-mark-element' and `org-roam-preview-default-function'."
 
         (:map pdf-history-minor-mode-map
          :gn "C-o" #'pdf-history-backward
-         :gn "C-S-o" #'pdf-history-forward
+         ;; Use "< >" because otherwise C-i is considered identical to TAB
+         :gn "<C-i>" #'pdf-history-forward
+         :gn "<tab>" #'pdf-history-backward
+         :gn "<backtab>" #'pdf-history-forward
          :gn [mouse-8] #'pdf-history-backward
          :gn [mouse-9] #'pdf-history-forward)))
 
