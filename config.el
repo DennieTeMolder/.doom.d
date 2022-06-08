@@ -965,6 +965,11 @@ block, send the entire code block."
         "H" #'vundo-stem-root
         "L" #'vundo-stem-end))
 
+(use-package! indent-tools
+  :commands indent-tools-hydra/body
+  :init
+  (map! :desc "Indentation hydra" :leader ">" #'indent-tools-hydra/body))
+
 (defadvice! my/fix-emacs-lisp-eval (beg end)
   "Fixes a type error when evaluating elisp in the *scratch* buffer"
   :override #'+emacs-lisp-eval
