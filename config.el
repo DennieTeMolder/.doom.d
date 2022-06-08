@@ -105,7 +105,8 @@
 
 ;; Rudimentary settings
 (setq-default delete-by-moving-to-trash t
-              tab-with 2
+              standard-indent 2
+              tab-width 2
               text-scale-mode-step 1.1
               uniquify-buffer-name-style 'forward
               x-stretch-cursor t) ; stretch cursor to glyph size
