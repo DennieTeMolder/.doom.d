@@ -972,7 +972,17 @@ block, send the entire code block."
 (use-package! indent-tools
   :commands indent-tools-hydra/body
   :init
-  (map! :desc "Indentation hydra" :leader ">" #'indent-tools-hydra/body))
+  (map! :desc "Indentation hydra" :leader ">" #'indent-tools-hydra/body)
+  :config
+  ;; Add potentially large movements to jump list
+  (dolist (symbol '(indent-tools-goto-next-sibling
+                    indent-tools-goto-previous-sibling
+                    indent-tools-goto-parent
+                    indent-tools-goto-parent
+                    indent-tools-goto-child
+                    indent-tools-goto-child
+                    indent-tools-goto-end-of-tree))
+    (advice-add symbol :around #'doom-set-jump-maybe-a)))
 
 (defadvice! my/fix-emacs-lisp-eval (beg end)
   "Fixes a type error when evaluating elisp in the *scratch* buffer"
