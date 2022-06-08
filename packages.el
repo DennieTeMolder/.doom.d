@@ -53,8 +53,10 @@
 (package! interaction-log)
 (package! good-scroll)
 (package! atomic-chrome)
-(package! ess-view-data)
 (package! vundo)
+;; Replace the stale ess-R-data-view with the newer ess-view-data
+(package! ess-R-data-view :disable t)
+(package! ess-view-data)
 ;; Byte compiling tablist creates an error in `pdf-annot-list-annotations'
 ;; https://github.com/vedang/pdf-tools/issues/89
 (package! tablist :recipe (:build (:not compile)))
