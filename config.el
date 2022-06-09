@@ -571,6 +571,42 @@ Based on `org-mark-element' and `org-roam-preview-default-function'."
            :target (file+head "%<%Y-%m-%d>.org"
                               "#+title: %<%Y-%m-%d>\n#+DATE: %<%A %B %d, Week %W %Y>\n \n* Agenda\n")))))
 
+(use-package! org-roam-dailies
+  :after org-roam
+  :config
+  (defun my-org-roam-dailes-active-files ()
+    "Return list of daily files corresponding to TODAY or later"
+    (let ((files (org-roam-dailies--list-files))
+          (today (calendar-absolute-from-gregorian (calendar-current-date))))
+      (while
+          (< (calendar-absolute-from-gregorian
+              (org-roam-dailies-calendar--file-to-date (car files)))
+             today)
+        (pop files))
+      files))
+
+  ;; Add all active daily files to the org agenda
+  (setq org-agenda-files (append org-agenda-files
+                                 (my-org-roam-dailes-active-files)))
+
+  ;; Nifty timeblock function
+  (defun my/org-roam-dailies-insert-timeblock ()
+    "Inserts an org roam headline for each hour in START to END with a timestamp.
+The DATE is derived from the #+title which must match the Org date format."
+    (interactive)
+    (let ((date (car (cdar (org-collect-keywords '("TITLE")))))
+          (start (read-number "Start time (hour): " 8))
+          (end (read-number "End time (hour): " 17)))
+      (end-of-line)
+      (newline)
+      (insert "* Schedule")
+      (dolist (hour (number-sequence start end))
+        (newline)
+        (insert "** EMPTY BLOCK")
+        (org-schedule nil (concat date " " (number-to-string hour) ":00"))
+        (line-move 1)
+        (end-of-line)))))
+
 (when (featurep! :tools biblio)
   ;; Citar bibliography settings
   (setq! citar-bibliography '("~/MEGA/Zotero/master.bib")
