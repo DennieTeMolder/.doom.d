@@ -565,11 +565,13 @@ Based on `org-mark-element' and `org-roam-preview-default-function'."
         '(("d" "default" plain "%?"
            :target (file+head "pages/%<%Y%m%d%H%M%S>-${slug}.org"
                               "#+title: ${title}\n")
-           :unnarrowed t)))
+           :unnarrowed t
+           :empty-lines 1)))
   (setq org-roam-dailies-capture-templates
         '(("d" "default" entry "* %?"
            :target (file+head "%<%Y-%m-%d>.org"
-                              "#+title: %<%Y-%m-%d>\n#+DATE: %<%A %B %d, Week %W %Y>\n \n* Agenda\n")))))
+                              "#+title: %<%Y-%m-%d>\n#+date: %<%A %B %d, Week %W %Y>\n \n* Agenda\n")
+           :empty-lines 1))))
 
 (use-package! org-roam-dailies
   :after org-roam
