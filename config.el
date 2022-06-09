@@ -149,7 +149,7 @@
                  (if (buffer-modified-p) " +" "")
                  project-name)))))
 
-(defun my/doom-ascii-banner-fn ()
+(defun my-doom-ascii-banner-fn ()
   (let* ((banner
           '(",---.,-.-.,---.,---.,---."
             "|---'| | |,---||    `---."
@@ -168,7 +168,7 @@
      'face 'doom-dashboard-banner)))
 
 ;; Replace the default doom splash screen with amore subtle one
-(setq +doom-dashboard-ascii-banner-fn #'my/doom-ascii-banner-fn)
+(setq +doom-dashboard-ascii-banner-fn #'my-doom-ascii-banner-fn)
 
 ;; Customize dashboard menu options to include org roam
 (setq +doom-dashboard-menu-sections
@@ -301,23 +301,23 @@
   ;; Projectle sorting by recently opened
   (setq projectile-sort-order 'recently-active)
 
-  (defun my/project-ignored-p (project-root)
+  (defun my-project-ignored-p (project-root)
     "Return non-nil if remote or temporary file or a straight package."
     (or (file-remote-p project-root)
         (file-in-directory-p project-root temporary-file-directory)
         (file-in-directory-p project-root doom-local-dir)))
 
   ;; Replace the doom-project-ignored-p function to ignore remote projects
-  (setq projectile-ignored-project-function #'my/project-ignored-p))
+  (setq projectile-ignored-project-function #'my-project-ignored-p))
 
 (after! recentf
-  (defun my/recentf-keep-p (file)
+  (defun my-recentf-keep-p (file)
     "Return non-nil if FILE should be kept in the recent list."
     (unless (file-remote-p file)
       (file-readable-p file)))
 
   ;;Exclude non-existent & remote files from recent files list after cleanup
-  (setq recentf-keep '(my/recentf-keep-p))
+  (setq recentf-keep '(my-recentf-keep-p))
 
   ;; Revert back to running cleanup on mode start instead of emacs shutdown
   (remove-hook! 'kill-emacs-hook #'recentf-cleanup)
@@ -332,7 +332,7 @@
   (setq undo-limit 10000000))
 
 (after! persp-mode
-  (defun my/workspace-switch-maybe (name)
+  (defun my-workspace-switch-maybe (name)
     "Switch to workspace NAME if not already current"
     (unless (equal name (+workspace-current-name))
       (+workspace-switch name t)
@@ -341,7 +341,7 @@
   ;; Open private config files in a dedicated workspace
   (defun my/doom-private-goto-workspace ()
     "Open/create the dedicated private config workspace"
-    (my/workspace-switch-maybe "*config*"))
+    (my-workspace-switch-maybe "*config*"))
 
   (dolist (symbol '(doom/open-private-config
                     doom/find-file-in-private-config
@@ -351,7 +351,7 @@
     (advice-add symbol :before #'my/doom-private-goto-workspace))
 
   ;; Functions and binding to move buffers between workspaces
-  (defun my/buffer-move-to-workspace (buffer name)
+  (defun my-buffer-move-to-workspace (buffer name)
     "Move BUFFER from the original workspace to NAME and switch"
     (let ((origin (+workspace-current-name)))
       (+workspace-switch name t)
@@ -368,13 +368,14 @@
           (name (completing-read
                    "Move current buffer to workspace:"
                    (+workspace-list-names))))
-      (my/buffer-move-to-workspace buffer name)))
+      (my-buffer-move-to-workspace buffer name)))
 
   (map! :leader
         :desc "Move buffer to workspace" "b TAB" #'my/buffer-move-to-workspace-prompt))
 
 (after! dired
   (defun my/dired-ediff ()
+    "Compare file under cursor to file selected in prompt using Ediff"
     (interactive)
     (let* ((file (dired-get-filename t))
            (dir (dired-current-directory))
@@ -413,7 +414,7 @@
     '(org-ellipsis :foreground nil :background nil :weight regular)
     '(org-headline-done :strike-through t))
 
-  (defun my/insert-exit-fill-paragraph ()
+  (defun my-insert-exit-fill-paragraph ()
     "Perform `org-fill-paragraph' after some contextual checks"
       ;; Check if `auto-fill-mode' is active
       (when auto-fill-function
@@ -422,13 +423,13 @@
 
   ;; Allow for double quoting using '' and `` (`` -> “)
   (add-hook! 'org-mode-hook
-    (defun my/org-mode-hook ()
+    (defun my-org-mode-hook ()
       "Disables soft-wrapping, enables hard wrapping and electric quotes"
       (electric-quote-local-mode +1)
       (visual-line-mode -1)
       (auto-fill-mode +1)
       (add-hook! 'evil-insert-state-exit-hook
-                 :local #'my/insert-exit-fill-paragraph)))
+                 :local #'my-insert-exit-fill-paragraph)))
 
   ;; Use old org-ref insert key
   (map! :map org-mode-map
@@ -459,27 +460,26 @@
   (setq +org-present-text-scale 4
         org-tree-slide-fold-subtrees-skipped nil)
 
-  (defun my/org-tree-slide-present-toggles ()
-    "Toggles for several settings to prettify presentations"
-    (if org-tree-slide-mode
+  (add-hook! 'org-tree-slide-mode-hook
+    (defun my-org-tree-slide-present-toggles ()
+      "Toggles for several settings to prettify presentations"
+      (if org-tree-slide-mode
+          (progn
+            (setq-local display-line-numbers nil
+                        buffer-read-only t
+                        evil-normal-state-cursor 'hbar)
+            (hl-line-mode -1)
+            (add-hook! 'pdf-view-mode-hook :append #'org-tree-slide-mode))
         (progn
-          (setq-local display-line-numbers nil
-                      buffer-read-only t
-                      evil-normal-state-cursor 'hbar)
-          (hl-line-mode -1)
-          (add-hook! 'pdf-view-mode-hook :append #'org-tree-slide-mode))
-      (progn
-        (setq-local buffer-read-only nil)
-        (remove-hook! 'pdf-view-mode-hook #'org-tree-slide-mode))))
-
-  (add-hook! 'org-tree-slide-mode-hook #'my/org-tree-slide-present-toggles)
+          (setq-local buffer-read-only nil)
+          (remove-hook! 'pdf-view-mode-hook #'org-tree-slide-mode)))))
 
   (map! :map org-tree-slide-mode-map
         :n [C-up] #'org-tree-slide-content))
 
 ;; Org-download settings
 (after! org-download
-  (defun drestivo/org-download-method (link)
+  (defun drestivo-org-download-method (link)
     "This is an helper function for org-download.
 It creates an \"./Image\" folder within the same directory of the org file.
 File is named as: download name + timestamp + target org file
@@ -519,14 +519,14 @@ https://github.com/abo-abo/org-download/commit/137c3d2aa083283a3fc853f9ecbbc0303
         org-roam-index-file "pages/contents.org"
         org-roam-file-exclude-regexp "Rubbish/")
 
-  (defun my/org-roam-goto-workspace (&rest _)
+  (defun my-org-roam-goto-workspace (&rest _)
     "Open/create the dedicated org-roam workspace"
-    (my/workspace-switch-maybe "*roam*"))
+    (my-workspace-switch-maybe "*roam*"))
 
   (defun my/org-roam-open-index ()
     "Opens the file specified in org-roam-index-file"
     (interactive)
-    (my/org-roam-goto-workspace)
+    (my-org-roam-goto-workspace)
     (find-file (expand-file-name org-roam-index-file org-roam-directory)))
 
   ;; Map to keybinding
@@ -537,9 +537,8 @@ https://github.com/abo-abo/org-download/commit/137c3d2aa083283a3fc853f9ecbbc0303
   (setq org-roam-completion-everywhere nil)
 
   ;; Custom org-roam buffer preview function
-  (defun my/org-element-at-point-get-content ()
+  (defun my-org-element-at-point-get-content ()
     "Return the current element's content without properties.
-
 Based on `org-mark-element' and `org-roam-preview-default-function'."
     ;; Move to beginning of item to include children
     (when (org-in-item-p)
@@ -549,7 +548,7 @@ Based on `org-mark-element' and `org-roam-preview-default-function'."
            (end (org-element-property :end element)))
       (string-trim (buffer-substring-no-properties beg end))))
 
-  (setq org-roam-preview-function #'my/org-element-at-point-get-content)
+  (setq org-roam-preview-function #'my-org-element-at-point-get-content)
 
   ;; Open all roam buffers in a dedicated workspace
   (dolist (symbol '(org-roam-node-find
@@ -558,7 +557,7 @@ Based on `org-mark-element' and `org-roam-preview-default-function'."
                     org-roam-dailies--capture
                     org-roam-buffer-display-dedicated
                     org-roam-buffer-toggle))
-    (advice-add symbol :before #'my/org-roam-goto-workspace))
+    (advice-add symbol :before #'my-org-roam-goto-workspace))
 
   ;; Roam templates
   (setq org-roam-capture-templates
@@ -620,7 +619,7 @@ The DATE is derived from the #+title which must match the Org date format."
   (push '(note . "${=key=}: ${title}\n\n* Notes") citar-templates)
 
   ;; Open notes in roam workspace
-  (advice-add 'citar-open-notes :before #'my/org-roam-goto-workspace)
+  (advice-add 'citar-open-notes :before #'my-org-roam-goto-workspace)
 
   ;; Update citar cache when bib-file changes during specified modes
   (citar-filenotify-setup '(LaTeX-mode-hook org-mode-hook))
@@ -789,7 +788,7 @@ https://www.reddit.com/r/emacs/comments/op4fcm/send_command_to_vterm_and_execute
   (add-hook! 'ess-mode-hook
              (setq-local evil-shift-width 'ess-indent-offset))
 
-  (defun my/ess-insert-string (mystr)
+  (defun my-ess-insert-string (mystr)
     "Insert string, undo if the same input event is issued twice"
     (let* ((event (event-basic-type last-input-event))
            (char (ignore-errors (format "%c" event))))
@@ -804,12 +803,12 @@ https://www.reddit.com/r/emacs/comments/op4fcm/send_command_to_vterm_and_execute
   (defun my/ess-r-insert-assign (arg)
     "Rewrite of `ess-insert-assign' that respects white space, invoke twice to undo"
     (interactive "p")
-    (my/ess-insert-string " <- "))
+    (my-ess-insert-string " <- "))
 
   (defun my/ess-r-insert-pipe (arg)
     "Based on `ess-insert-assign', invoking the command twice reverts the insert"
     (interactive "p")
-    (my/ess-insert-string " %>% "))
+    (my-ess-insert-string " %>% "))
 
   ;; ESS R keybindings, make < add a <-, type twice to undo (same goes for >)
   (map! (:map ess-mode-map
@@ -900,7 +899,7 @@ block, send the entire code block."
     :before-while #'+python-init-anaconda-mode-maybe-h
     (not (file-remote-p default-directory)))
 
-  (defun my/conda-env-promt-activate (env-name)
+  (defun my-conda-env-promt-activate (env-name)
     "If conda environment with ENV-NAME is not activated, prompt the user to do so"
     (if (and (not (equal env-name conda-env-current-name))
              (y-or-n-p (format "Activate conda env: %s?" env-name)))
@@ -911,8 +910,8 @@ block, send the entire code block."
     (interactive)
     (let ((candidate-env (conda--infer-env-from-buffer))
           (fallback-env "base"))
-      (cond (candidate-env (my/conda-env-promt-activate candidate-env))
-            ((not conda-env-current-name) (my/conda-env-promt-activate fallback-env)))))
+      (cond (candidate-env (my-conda-env-promt-activate candidate-env))
+            ((not conda-env-current-name) (my-conda-env-promt-activate fallback-env)))))
 
   ;; Prompt user to change into a conda env
   (when (executable-find "conda")
@@ -964,17 +963,17 @@ block, send the entire code block."
     (interactive)
     (good-scroll-move (/ (good-scroll--window-usable-height) -2)))
 
-  (defun my/good-scroll-evil-override-hook ()
-    (if good-scroll-mode
-        (progn
-          (advice-add 'evil-scroll-down :override #'my/good-scroll-down-half)
-          (advice-add 'evil-scroll-up :override #'my/good-scroll-up-half))
-      (progn
-        (advice-remove 'evil-scroll-down #'my/good-scroll-down-half)
-        (advice-remove 'evil-scroll-up #'my/good-scroll-up-half))))
 
   ;; Override evil functions on mode activation, undo upon deactivation
-  (add-hook! 'good-scroll-mode-hook #'my/good-scroll-evil-override-hook)
+  (add-hook! 'good-scroll-mode-hook
+    (defun my-good-scroll-evil-override-hook ()
+      (if good-scroll-mode
+          (progn
+            (advice-add 'evil-scroll-down :override #'my/good-scroll-down-half)
+            (advice-add 'evil-scroll-up :override #'my/good-scroll-up-half))
+        (progn
+          (advice-remove 'evil-scroll-down #'my/good-scroll-down-half)
+          (advice-remove 'evil-scroll-up #'my/good-scroll-up-half)))))
 
   ;; Enable good-scroll
   (good-scroll-mode +1)
