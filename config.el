@@ -373,6 +373,18 @@
   (map! :leader
         :desc "Move buffer to workspace" "b TAB" #'my/buffer-move-to-workspace-prompt))
 
+(after! dired
+  (defun my/dired-ediff ()
+    (interactive)
+    (let* ((file (dired-get-filename t))
+           (dir (dired-current-directory))
+           (default nil)
+           (target (read-file-name (format-prompt "Diff %s with" default file)
+                                   default nil t)))
+      (ediff (expand-file-name file dir) target)))
+
+  (map! :map (dired-mode-map ranger-mode-map) [remap dired-diff] #'my/dired-ediff))
+
 ;;;; Writing/Organization Tools
 ;; Spell checking
 (after! ispell
