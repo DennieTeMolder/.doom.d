@@ -606,7 +606,20 @@ The DATE is derived from the #+title which must match the Org date format."
         (insert "** EMPTY BLOCK")
         (org-schedule nil (concat date " " (number-to-string hour) ":00"))
         (line-move 1)
-        (end-of-line)))))
+        (end-of-line))))
+
+  (defun my/org-roam-dailies-schedule-time ()
+    "Wrapper around `org-schedule' that only prompts for time.
+The DATE is derived from the #+title which must match the Org date format."
+    (interactive)
+    (unless (org-roam-dailies--daily-note-p)
+      (user-error "Not in a daily-note"))
+    (let ((date (car (cdar (org-collect-keywords '("TITLE")))))
+          (time (read-string "Schedule headline at (HH:MM): ")))
+      (org-schedule nil (concat date " " time (when (length< time 3) ":00")))))
+
+  (map! :map org-mode-map :localleader
+        :desc "Roam daily schedule" "d r" #'my/org-roam-dailies-schedule-time))
 
 (when (featurep! :tools biblio)
   ;; Citar bibliography settings
