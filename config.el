@@ -597,7 +597,7 @@ The DATE is derived from the #+title which must match the Org date format."
     (interactive)
     (let ((date (car (cdar (org-collect-keywords '("TITLE")))))
           (start (read-number "Start time (hour): " 8))
-          (end (read-number "End time (hour): " 17)))
+          (end (- (read-number "End time (hour): " 17) 1)))
       (end-of-line)
       (newline)
       (insert "* Schedule")
