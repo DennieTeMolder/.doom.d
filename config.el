@@ -400,7 +400,9 @@
 (after! org
   (setq org-indent-indentation-per-level 1
         org-ellipsis " ▾"
-        org-list-demote-modify-bullet '(("+" . "-") ("-" . "+") ("*" . "+")))
+        org-list-demote-modify-bullet '(("+" . "-") ("-" . "+") ("*" . "+"))
+        org-agenda-span 14
+        org-agenda-start-day nil)
 
   ;; Make headings bold and larger
   (custom-set-faces!
