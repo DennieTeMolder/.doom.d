@@ -308,7 +308,10 @@
         (file-in-directory-p project-root doom-local-dir)))
 
   ;; Replace the doom-project-ignored-p function to ignore remote projects
-  (setq projectile-ignored-project-function #'my-project-ignored-p))
+  (setq projectile-ignored-project-function #'my-project-ignored-p)
+
+  ;; Define a generic project as .projectile is not synced by MEGA
+  (projectile-register-project-type 'generic '("PROJECT") :project-file "PROJECT"))
 
 (after! recentf
   (defun my-recentf-keep-p (file)
