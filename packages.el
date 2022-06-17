@@ -49,6 +49,16 @@
 ;; ...Or *all* packages (NOT RECOMMENDED; will likely break things)
 ;(unpin! t)
 
+;;; Doom modifications
+;; Evil-escape will exit insert state after a key sequence ("jk")
+;; Disable it as I am not using it and might create typing delay
+(package! evil-escape :disable t)
+
+;; Byte compiling tablist creates an error in `pdf-annot-list-annotations'
+;; https://github.com/vedang/pdf-tools/issues/89
+(package! tablist :recipe (:build (:not compile)))
+
+;;; Custom packages
 (package! org-superstar)
 (package! interaction-log)
 (package! good-scroll)
@@ -60,7 +70,3 @@
 ;; Replace the stale ess-R-data-view with the newer ess-view-data
 (package! ess-R-data-view :disable t)
 (package! ess-view-data)
-
-;; Byte compiling tablist creates an error in `pdf-annot-list-annotations'
-;; https://github.com/vedang/pdf-tools/issues/89
-(package! tablist :recipe (:build (:not compile)))
