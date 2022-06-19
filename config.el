@@ -398,8 +398,7 @@
 
 ;; Org-mode settings
 (after! org
-  (setq org-indent-indentation-per-level 1
-        org-ellipsis " ▾"
+  (setq org-ellipsis " ▾"
         org-list-demote-modify-bullet '(("+" . "-") ("-" . "+") ("*" . "+"))
         org-agenda-span 14
         org-agenda-start-day nil)
@@ -454,12 +453,21 @@
   (setq org-odt-styles-dir (expand-file-name "straight/repos/org/etc/styles" doom-local-dir)
         org-odt-preferred-output-format "doc"))
 
-;; Fancy org mode bullets
-(use-package! org-superstar
-  :hook (org-mode . org-superstar-mode)
+(use-package! org-modern
+  :hook (org-mode . org-modern-mode)
+  :hook (org-agenda-finalize . org-modern-agenda)
   :config
-  (setq org-superstar-headline-bullets-list '("●" "◉" "○" "◉" "○" "◉" "○" "◉")
-        org-superstar-item-bullet-alist '((42 . 8226) (43 . 8250) (45. 8208))))
+  (setq org-modern-checkbox nil
+        org-modern-progress nil
+        org-modern-timestamp nil
+        org-modern-priority nil
+        org-modern-todo nil
+        org-modern-tag nil
+        org-modern-statistics nil
+        org-modern-star ["●" "◉" "○" "◉" "○" "◉" "○" "◉"]
+        org-modern-list '((?+ . 8226)
+                          (?- . 8250)
+                          (?* . 8208))))
 
 (after! org-tree-slide
   (setq +org-present-text-scale 4

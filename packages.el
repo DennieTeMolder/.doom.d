@@ -59,7 +59,7 @@
 (package! tablist :recipe (:build (:not compile)))
 
 ;;; Custom packages
-(package! org-superstar)
+(package! org-modern)
 (package! interaction-log)
 (package! good-scroll)
 (package! atomic-chrome)
