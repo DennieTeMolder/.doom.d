@@ -399,6 +399,7 @@
 ;; Org-mode settings
 (after! org
   (setq org-ellipsis " ▾"
+        org-indent-indentation-per-level 1
         org-list-demote-modify-bullet '(("+" . "-") ("-" . "+") ("*" . "+"))
         org-agenda-span 14
         org-agenda-start-day nil)
@@ -456,8 +457,21 @@
 (use-package! org-modern
   :hook (org-mode . org-modern-mode)
   :hook (org-agenda-finalize . org-modern-agenda)
+  :init
+  (defadvice! my-org-indent-modern-heading ()
+    "Correctly indents heading assuming leading stars are fully hidden (not invisible)."
+    :after #'org-indent--compute-prefixes
+    (dotimes (n org-indent--deepest-level)
+      (unless (= n 0)
+        (let* ((indentation (* org-indent-indentation-per-level (1- n)))
+               (heading-prefix (make-string indentation ?\s)))
+	  (aset org-indent--heading-line-prefixes
+	        n
+	        (org-add-props heading-prefix nil 'face 'org-indent))))))
+
   :config
-  (setq org-modern-checkbox nil
+  (setq org-modern-variable-pitch nil
+        org-modern-checkbox nil
         org-modern-progress nil
         org-modern-timestamp nil
         org-modern-priority nil
