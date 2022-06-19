@@ -111,6 +111,7 @@
        ;;taskrunner        ; taskrunner for all your projects
        ;;terraform         ; infrastructure as code
        ;;tmux              ; an API for interacting with tmux
+       tree-sitter         ; syntax and parsing, sitting in a tree...
        ;;upload            ; map local to remote projects via ssh/ftp
 
        :os
@@ -144,10 +145,11 @@
        ;;(haskell +dante)  ; a language that's lazier than I am
        ;;hy                ; readability of scheme w/ speed of python
        ;;idris             ; a language you can depend on
-       ;;json              ; At least it ain't XML
+       ;;(json             ; At least it ain't XML
+       ;; +tree-sitter)
        ;;(java +meghanada) ; the poster child for carpal tunnel syndrome
        ;;javascript        ; all(hope(abandon(ye(who(enter(here))))))
-       julia               ; Python, R, and MATLAB in a blender
+       (julia +tree-sitter); Python, R, and MATLAB in a blender
        ;;kotlin            ; a better, slicker Java(Script)
        (latex              ; writing papers in Emacs has never been so fun
         +latexmk)          ; what else would you use?
@@ -167,7 +169,9 @@
        ;;php               ; perl's insecure younger brother
        ;;plantuml          ; diagrams for confusing people more
        ;;purescript        ; javascript, but functional
-       (python +conda)     ; beautiful is better than ugly
+       (python             ; beautiful is better than ugly
+        +tree-sitter
+        +conda)
        ;;qt                ; the 'cutest' gui framework ever
        ;;racket            ; a DSL for DSLs
        ;;raku              ; the artist formerly known as perl6
@@ -177,12 +181,12 @@
        ;;rust              ; Fe2O3.unwrap().unwrap().unwrap().unwrap()
        ;;scala             ; java, but good
        ;;scheme            ; a fully conniving family of lisps
-       sh                  ; she sells {ba,z,fi}sh shells on the C xor
+       (sh +tree-sitter)   ; she sells {ba,z,fi}sh shells on the C xor
        ;;sml
        ;;solidity          ; do you need a blockchain? No.
        ;;swift             ; who asked for emoji variables?
        ;;terra             ; Earth and Moon in alignment for performance.
-       ;;web               ; the tubes
+       ;;(web +tree-sitter); the tubes
        yaml                ; JSON, but readable
        ;;zig               ; C, but simpler
 
