@@ -35,9 +35,9 @@
 ;; Determine font-size based of screen resolution and OS
 (setq my/base-font-size (if (and (<= (display-pixel-height) 1080) (not IS-WSL)) 17 19))
 
-(setq doom-font (font-spec :family "Hasklig" :size my/base-font-size)
-      doom-big-font (font-spec :family "Hasklig" :size (+ my/base-font-size 6))
-      doom-variable-pitch-font (font-spec :family "Lora" :size my/base-font-size))
+(setq doom-font (font-spec :family "Iosevka" :width 'expanded :size my/base-font-size)
+      doom-big-font (font-spec :family "Iosevka" :width 'expanded :size (+ my/base-font-size 6))
+      doom-variable-pitch-font (font-spec :family "Iosevka Aile" :size my/base-font-size))
 
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
@@ -470,15 +470,7 @@
 	        (org-add-props heading-prefix nil 'face 'org-indent))))))
 
   :config
-  (setq org-modern-variable-pitch nil
-        org-modern-checkbox nil
-        org-modern-progress nil
-        org-modern-timestamp nil
-        org-modern-priority nil
-        org-modern-todo nil
-        org-modern-tag nil
-        org-modern-statistics nil
-        org-modern-star ["●" "◉" "○" "◉" "○" "◉" "○" "◉"]
+  (setq org-modern-star ["●" "◉" "○" "◉" "○" "◉" "○" "◉"]
         org-modern-list '((?+ . 8226)
                           (?- . 8250)
                           (?* . 8208))))
@@ -720,7 +712,7 @@ The DATE is derived from the #+title which must match the Org date format."
 
 (after! writeroom-mode
   ;; Define zenmode text scale
-  (setq +zen-text-scale 2
+  (setq +zen-text-scale 1
         writeroom-width 70
         writeroom-mode-line t
         +zen-mixed-pitch-modes '(org-mode latex-mode markdown-mode))
