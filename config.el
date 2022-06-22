@@ -292,7 +292,8 @@
 
 (after! company
   ;; Disable company auto pop-up as it can be expensive, use C-SPC to trigger
-  (setq company-idle-delay nil)
+  (setq company-idle-delay nil
+        company-selection-wrap-around t)
 
   ;; Enable in elisp mode at is not as expensive
   (add-hook! 'emacs-lisp-mode-hook (setq-local company-idle-delay 0.2)))
