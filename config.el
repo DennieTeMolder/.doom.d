@@ -403,6 +403,7 @@
 (after! org
   (setq org-ellipsis " ▾"
         org-indent-indentation-per-level 1
+        my-org-line-spacing 0.1
         org-list-demote-modify-bullet '(("+" . "-") ("-" . "+") ("*" . "+"))
         org-agenda-span 14
         org-agenda-start-day nil)
@@ -434,7 +435,7 @@
   (add-hook! 'org-mode-hook
     (defun my-org-mode-hook ()
       "Personal org-mode customisation's after mode startup"
-      (setq-local line-spacing 0.1)
+      (setq-local line-spacing my-org-line-spacing)
       (electric-quote-local-mode +1)
       (visual-line-mode -1)
       (auto-fill-mode +1)
@@ -470,12 +471,13 @@
       (unless (= n 0)
         (let* ((indentation (* org-indent-indentation-per-level (1- n)))
                (heading-prefix (make-string indentation ?\s)))
-	  (aset org-indent--heading-line-prefixes
-	        n
-	        (org-add-props heading-prefix nil 'face 'org-indent))))))
+          (aset org-indent--heading-line-prefixes
+                n
+                (org-add-props heading-prefix nil 'face 'org-indent))))))
 
   :config
-  (setq org-modern-star ["●" "◉" "○" "◉" "○" "◉" "○" "◉"]
+  (setq org-modern-label-border my-org-line-spacing
+        org-modern-star ["●" "◉" "○" "◉" "○" "◉" "○" "◉"]
         org-modern-list '((?+ . 8226)
                           (?- . 8250)
                           (?* . 8208))))
