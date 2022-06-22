@@ -426,13 +426,15 @@
     "Perform `org-fill-paragraph' after some contextual checks"
       ;; Check if `auto-fill-mode' is active
       (when auto-fill-function
-        (unless (eq (org-element-type (org-element-at-point)) 'src-block)
+        (unless (eq (org-element-type (org-element-at-point))
+                    'src-block)
           (org-fill-paragraph))))
 
   ;; Allow for double quoting using '' and `` (`` -> “)
   (add-hook! 'org-mode-hook
     (defun my-org-mode-hook ()
-      "Disables soft-wrapping, enables hard wrapping and electric quotes"
+      "Personal org-mode customisation's after mode startup"
+      (setq-local line-spacing 0.1)
       (electric-quote-local-mode +1)
       (visual-line-mode -1)
       (auto-fill-mode +1)
