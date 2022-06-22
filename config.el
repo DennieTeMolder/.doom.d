@@ -606,16 +606,11 @@ Based on `org-mark-element' and `org-roam-preview-default-function'."
         (pop files))
       files))
 
-  (defun my/org-roam-dailies-sync-agenda ()
+  (defadvice! my-org-roam-dailies-sync-agenda (&rest _)
     "Scan the dailies-directory and add current and future dates to agenda."
-    (interactive)
+    :before #'org-agenda
     (mapc (lambda (x) (cl-pushnew x org-agenda-files :test #'string=))
-          (my-org-roam-dailes-active-files))
-    (when (interactive-p)
-      (message "Successfully synced org-roam-dailies with org-agenda")))
-
-  ;; Add all active daily files to the org agenda
-  (my/org-roam-dailies-sync-agenda)
+          (my-org-roam-dailes-active-files)))
 
   (defun my-org-get-title-value ()
     "Returns the value of #+TITLE for the current document"
