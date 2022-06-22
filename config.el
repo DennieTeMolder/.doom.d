@@ -142,12 +142,7 @@
            (replace-regexp-in-string ".*/[0-9]*-?" ">" buffer-file-name)
          "%b"))
       (:eval
-       (let ((project-name (if (string= "-" (projectile-project-name))
-                               "doom emacs"
-                             (projectile-project-name))))
-         (format "%s | %s"
-                 (if (buffer-modified-p) " +" "")
-                 project-name)))))
+       (if (buffer-modified-p) " +" ""))))
 
 (defun my-doom-ascii-banner-fn ()
   (let* ((banner
@@ -309,7 +304,17 @@
   (setq projectile-ignored-project-function #'my-project-ignored-p)
 
   ;; Define a generic project as .projectile is not synced by MEGA
-  (projectile-register-project-type 'generic '("PROJECT") :project-file "PROJECT"))
+  (projectile-register-project-type 'generic '("PROJECT") :project-file "PROJECT")
+
+  ;; Append the project name to the title frame format
+  (add-to-list 'frame-title-format
+               '(:eval
+                 (let* ((project-name (projectile-project-name))
+                        (project-name (if (string= "-" project-name)
+                                          "Emacs"
+                                        project-name)))
+                   (concat " | " project-name)))
+               t))
 
 (after! recentf
   (defun my-recentf-keep-p (file)
