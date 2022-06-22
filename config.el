@@ -495,8 +495,13 @@
           (progn
             (setq-local display-line-numbers nil
                         buffer-read-only t
-                        evil-normal-state-cursor 'hbar)
+                        evil-normal-state-cursor 'hbar
+                        org-modern-table nil)
             (hl-line-mode -1)
+            ;; Redraw table as "plain" org, because horizontal lines miss-align
+            (when (bound-and-true-p org-modern-mode)
+              (org-modern-mode -1)
+              (org-modern-mode +1))
             (add-hook! 'pdf-view-mode-hook :append #'org-tree-slide-mode))
         (progn
           (setq-local buffer-read-only nil)
