@@ -207,9 +207,6 @@
          (all-the-icons-octicon "book" :face 'doom-dashboard-menu-title)
          :action doom/help)))
 
-;; Don't use the variable pitch font for treemacs
-(setq doom-themes-treemacs-enable-variable-pitch nil)
-
 ;;;; General Doom Settings/Bindings
 ;; Default major mode for scratch buffer
 (setq doom-scratch-initial-major-mode 'lisp-interaction-mode)
