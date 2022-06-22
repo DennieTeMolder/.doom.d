@@ -713,7 +713,7 @@ The DATE is derived from the #+title which must match the Org date format."
 (after! writeroom-mode
   ;; Define zenmode text scale
   (setq +zen-text-scale 1
-        writeroom-width 70
+        writeroom-width 75
         writeroom-mode-line t
         +zen-mixed-pitch-modes '(org-mode latex-mode markdown-mode))
 
