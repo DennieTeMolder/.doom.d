@@ -119,12 +119,12 @@
 ;; Start emacs maximized on WSL
 (when IS-WSL (add-to-list 'default-frame-alist '(fullscreen . maximized)))
 
-;; Only display encoding in modeline when it's not UTF-8
-(defun doom-modeline-conditional-buffer-encoding ()
-  (setq-local doom-modeline-buffer-encoding
-              (unless (or (eq buffer-file-coding-system 'utf-8-unix)
-                          (eq buffer-file-coding-system 'utf-8)))))
-(add-hook! 'after-change-major-mode-hook #'doom-modeline-conditional-buffer-encoding)
+(add-hook! 'after-change-major-mode-hook
+  (defun my-doom-modeline-conditional-buffer-encoding ()
+    "Only display encoding in modeline when it's not UTF-8"
+    (setq-local doom-modeline-buffer-encoding
+                (unless (or (eq buffer-file-coding-system 'utf-8-unix)
+                            (eq buffer-file-coding-system 'utf-8))))))
 
 ;; On laptops it's nice to know how much power you have
 (use-package! battery
