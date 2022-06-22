@@ -477,6 +477,7 @@
 
   :config
   (setq org-modern-label-border my-org-line-spacing
+        org-modern-statistics nil
         org-modern-star ["●" "◉" "○" "◉" "○" "◉" "○" "◉"]
         org-modern-list '((?+ . 8226)
                           (?- . 8250)
