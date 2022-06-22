@@ -606,16 +606,27 @@ Based on `org-mark-element' and `org-roam-preview-default-function'."
         (pop files))
       files))
 
+  (defun my/org-roam-dailies-sync-agenda ()
+    "Scan the dailies-directory and add current and future dates to agenda."
+    (interactive)
+    (mapc (lambda (x) (cl-pushnew x org-agenda-files :test #'string=))
+          (my-org-roam-dailes-active-files))
+    (when (interactive-p)
+      (message "Successfully synced org-roam-dailies with org-agenda")))
+
   ;; Add all active daily files to the org agenda
-  (setq org-agenda-files (append org-agenda-files
-                                 (my-org-roam-dailes-active-files)))
+  (my/org-roam-dailies-sync-agenda)
+
+  (defun my-org-get-title-value ()
+    "Returns the value of #+TITLE for the current document"
+    (car (cdar (org-collect-keywords '("TITLE")))))
 
   ;; Nifty timeblock function
   (defun my/org-roam-dailies-insert-timeblock ()
     "Inserts an org roam headline for each hour in START to END with a timestamp.
 The DATE is derived from the #+title which must match the Org date format."
     (interactive)
-    (let ((date (car (cdar (org-collect-keywords '("TITLE")))))
+    (let ((date (my-org-get-title-value))
           (start (read-number "Start time (hour): " 8))
           (end (- (read-number "End time (hour): " 17) 1)))
       (end-of-line)
@@ -634,12 +645,12 @@ The DATE is derived from the #+title which must match the Org date format."
     (interactive)
     (unless (org-roam-dailies--daily-note-p)
       (user-error "Not in a daily-note"))
-    (let ((date (car (cdar (org-collect-keywords '("TITLE")))))
+    (let ((date (my-org-get-title-value))
           (time (read-string "Schedule headline at (HH:MM): ")))
       (org-schedule nil (concat date " " time (when (length< time 3) ":00")))))
 
-  (map! :map org-mode-map :localleader
-        :desc "Roam daily schedule" "d r" #'my/org-roam-dailies-schedule-time))
+  (map! :map org-roam-dailies-map :leader
+        :desc "Schedule headline" "n r d s" #'my/org-roam-dailies-schedule-time))
 
 (when (featurep! :tools biblio)
   ;; Citar bibliography settings
