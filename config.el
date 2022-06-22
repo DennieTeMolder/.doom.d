@@ -442,9 +442,10 @@
       (add-hook! 'evil-insert-state-exit-hook
                  :local #'my-insert-exit-fill-paragraph)))
 
-  ;; Use old org-ref insert key
+  ;; Use old org-ref insert key, remove `org-agenda-file-to-front' binding
   (map! :map org-mode-map
         "C-c ]" #'org-cite-insert
+        "C-c [" nil
         :nv "C-j" #'+org/return
         :desc "Toggle pretty visuals" :localleader "v" #'+org-pretty-mode))
 
