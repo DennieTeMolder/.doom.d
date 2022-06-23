@@ -303,7 +303,7 @@
   ;; Replace the doom-project-ignored-p function to ignore remote projects
   (setq projectile-ignored-project-function #'my-project-ignored-p)
 
-  ;; Define a generic project as .projectile is not synced by MEGA
+  ;; Define a generic project as .projectile is not synced by Nextcloud
   (projectile-register-project-type 'generic '("PROJECT") :project-file "PROJECT")
 
   ;; Append the project name to the title frame format
@@ -397,7 +397,7 @@
 (after! ispell
   ;; Global and personal ispell library
   (setq ispell-dictionary "en_GB"
-        ispell-personal-dictionary "~/MEGA/Dictionary/personal_dict.pws"))
+        ispell-personal-dictionary "~/Nextcloud/Dictionary/personal_dict.pws"))
 
 ;; Org-mode settings
 (after! org
@@ -452,7 +452,7 @@
 ;; Org-cite settings
 (after! oc
   ;; according to the `oc-biblatex.el' you should use bibstyle/citestyle
-  (setq org-cite-csl-styles-dir "~/MEGA/Zotero/Styles"
+  (setq org-cite-csl-styles-dir "~/Nextcloud/Zotero/Styles"
         org-cite-export-processors '((latex biblatex "ieee/numeric-comp")
                                      (t csl "ieee.csl"))))
 
@@ -548,7 +548,7 @@ https://github.com/abo-abo/org-download/commit/137c3d2aa083283a3fc853f9ecbbc0303
 
 ;; Org-roam init settings
 (when (featurep! :lang org +roam2)
-  (setq org-roam-directory "~/MEGA/PKM/"
+  (setq org-roam-directory "~/Nextcloud/PKM/"
         org-roam-dailies-directory "journals/"
         org-roam-index-file "pages/contents.org"
         org-roam-file-exclude-regexp "Rubbish/")
@@ -663,9 +663,9 @@ The DATE is derived from the #+title which must match the Org date format."
 
 (when (featurep! :tools biblio)
   ;; Citar bibliography settings
-  (setq! citar-bibliography '("~/MEGA/Zotero/master.bib")
-         citar-library-paths '("~/MEGA/Zotero/")
-         citar-notes-paths '("~/MEGA/PKM/notes/")))
+  (setq! citar-bibliography '("~/Nextcloud/Zotero/master.bib")
+         citar-library-paths '("~/Nextcloud/Zotero/")
+         citar-notes-paths '("~/Nextcloud/PKM/notes/")))
 
 (after! citar
   ;; citar note template
