@@ -475,8 +475,9 @@
           (aset org-indent--heading-line-prefixes
                 n
                 (org-add-props heading-prefix nil 'face 'org-indent))))))
-
   :config
+  (set-face-attribute 'org-modern-symbol nil :font doom-font)
+
   (setq org-modern-label-border my-org-line-spacing
         org-modern-statistics nil
         org-modern-star ["●" "◉" "○" "◉" "○" "◉" "○" "◉"]
