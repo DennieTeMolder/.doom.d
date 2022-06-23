@@ -476,7 +476,7 @@
                 n
                 (org-add-props heading-prefix nil 'face 'org-indent))))))
   :config
-  (set-face-attribute 'org-modern-symbol nil :font doom-font)
+  (set-face-attribute 'org-modern-symbol nil :family "Iosevka")
 
   (setq org-modern-label-border my-org-line-spacing
         org-modern-statistics nil
