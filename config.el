@@ -486,7 +486,7 @@
                           (?* . 8208))))
 
 (after! org-tree-slide
-  (setq +org-present-text-scale 4
+  (setq +org-present-text-scale 8
         org-tree-slide-fold-subtrees-skipped nil)
 
   (add-hook! 'org-tree-slide-mode-hook
@@ -1028,8 +1028,7 @@ block, send the entire code block."
           (advice-remove 'evil-scroll-up #'my/good-scroll-up-half)))))
 
   ;; Enable good-scroll
-  (good-scroll-mode +1)
-)
+  (good-scroll-mode +1))
 
 ;; Package for interacting with text fields, requires GhostText browser extension
 (use-package! atomic-chrome
