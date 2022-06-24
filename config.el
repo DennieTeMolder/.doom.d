@@ -714,9 +714,6 @@ The DATE is derived from the #+title which must match the Org date format."
           :desc "Delete Annotation" "d" #'pdf-annot-delete))
 
         (:map pdf-history-minor-mode-map
-         :gn "C-o" #'pdf-history-backward
-         ;; Use "< >" because otherwise C-i is considered identical to TAB
-         :gn "<C-i>" #'pdf-history-forward
          :gn "<tab>" #'pdf-history-backward
          :gn "<backtab>" #'pdf-history-forward
          :gn [mouse-8] #'pdf-history-backward
