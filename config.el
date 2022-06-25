@@ -29,15 +29,10 @@
 ;; refresh your font settings. If Emacs still can't find your font, it likely
 ;; wasn't installed correctly. Font issues are rarely Doom issues!
 
-;; Check if running on WSL
-(setq IS-WSL (if (string-match "-[Mm]icrosoft" (shell-command-to-string "uname -a")) t nil))
-
-;; Determine font-size based of screen resolution and OS
-(setq my/base-font-size (if (and (<= (display-pixel-height) 1080) (not IS-WSL)) 17 19))
-
-(setq doom-font (font-spec :family "Iosevka" :width 'expanded :size my/base-font-size)
-      doom-big-font (font-spec :family "Iosevka" :width 'expanded :size (+ my/base-font-size 6))
-      doom-variable-pitch-font (font-spec :family "Iosevka Aile" :size my/base-font-size))
+;; Use float for size as it indicates point size rather then pixels (better scaling)
+(setq doom-font (font-spec :family "Iosevka" :width 'expanded :size 14.0)
+      doom-big-font (font-spec :family "Iosevka" :width 'expanded :size 19.0)
+      doom-variable-pitch-font (font-spec :family "Iosevka Aile" :size 14.0))
 
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
@@ -98,6 +93,10 @@
 ;;
 ;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
 ;; they are implemented.
+
+;;;; Checks
+;; Running on WSL
+(setq IS-WSL (when (string-match "-[Mm]icrosoft" (shell-command-to-string "uname -a")) t))
 
 ;;;; Basic Settings
 ;; Quit without confirmation
