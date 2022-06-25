@@ -704,8 +704,24 @@ The DATE is derived from the #+title which must match the Org date format."
 
   (setq pdf-view-resize-factor 1.1)
 
+  (add-to-list 'evil-snipe-disabled-modes 'pdf-view-mode)
+
+  (defun my/pdf-view-fit-half-height ()
+    "Fit PDF height to 2x window (minus 0.1 to fix scrolling)"
+    (interactive)
+    (pdf-view-fit-height-to-window)
+    (let* ((size (pdf-view-image-size))
+           (pagesize (pdf-cache-pagesize
+                      (pdf-view-current-page)))
+           (scale (/ (float (car size))
+                     (float (car pagesize)))))
+      (setq pdf-view-display-size
+            (- (* 2 scale) 0.1))
+      (pdf-view-redisplay t)))
+
   (map! (:map pdf-view-mode-map
          :gn "C-e" #'pdf-view-scroll-down-or-previous-page
+         :gn "S" #'my/pdf-view-fit-half-height
          :v "h" #'pdf-annot-add-highlight-markup-annotation
          :v "s" #'pdf-annot-add-strikeout-markup-annotation
          :v "u" #'pdf-annot-add-underline-markup-annotation
