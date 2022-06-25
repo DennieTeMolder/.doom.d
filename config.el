@@ -217,10 +217,12 @@
       :desc "Evil ex command" ":" #'evil-ex)
 
 ;; Global keybindings
-(map! :leader
-      "b D" #'kill-buffer-and-window
-      :desc "Repeat last command" "r" #'repeat
-      :desc "Adjust windows hydra" "w a" #'+hydra/window-nav/body)
+(map! "C-s" #'isearch-forward-word
+      (:leader
+       "b D" #'kill-buffer-and-window
+       :desc "Repeat last command" "r" #'repeat
+       :desc "Adjust windows hydra" "w a" #'+hydra/window-nav/body))
+
 
 ;; Make "Z" bindings only kill buffers not the session
 (map! :n "ZQ" #'kill-buffer-and-window
