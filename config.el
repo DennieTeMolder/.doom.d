@@ -393,6 +393,9 @@
 
   (map! :map (dired-mode-map ranger-mode-map) [remap dired-diff] #'my/dired-ediff))
 
+(after! which-key
+  (setq which-key-ellipsis ".."))
+
 ;;;; Writing/Organization Tools
 ;; Spell checking
 (after! ispell
