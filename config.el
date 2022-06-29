@@ -726,6 +726,10 @@ The DATE is derived from the #+title which must match the Org date format."
   (map! (:map pdf-view-mode-map
          :gn "C-e" #'pdf-view-scroll-down-or-previous-page
          :gn "S" #'my/pdf-view-fit-half-height
+         :gn "s r" #'image-rotate
+         :desc "Slice original" :gn "s o" #'pdf-view-reset-slice
+         :desc "Slice bounding box" :gn "s b" #'pdf-view-set-slice-from-bounding-box
+         :desc "Slice using mouse" :gn "s m" #'pdf-view-set-slice-using-mouse
          :v "h" #'pdf-annot-add-highlight-markup-annotation
          :v "s" #'pdf-annot-add-strikeout-markup-annotation
          :v "u" #'pdf-annot-add-underline-markup-annotation
