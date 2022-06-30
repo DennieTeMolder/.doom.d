@@ -403,6 +403,11 @@
 (after! which-key
   (setq which-key-ellipsis ".."))
 
+(after! all-the-icons
+  ;; A lower scaling factor works better with the Iosevka font
+  ;; Ref: https://github.com/doomemacs/doomemacs/issues/2967
+  (setq all-the-icons-scale-factor 1.1))
+
 ;;;; Writing/Organization Tools
 ;; Spell checking
 (after! ispell
