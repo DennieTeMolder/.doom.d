@@ -5,7 +5,7 @@
 
 ;;;; Flags
 ;; Determine if running on a laptop based on env variable (must be set by user)
-(setq IS-LAPTOP (getenv "IS_LAPTOP"))
+(setq IS-LAPTOP (string= "yes" (getenv "IS_LAPTOP")))
 
 ;;;; Doom preamble
 ;; Some functionality uses this to identify you, e.g. GPG configuration, email
@@ -120,6 +120,9 @@
 (setq save-interprogram-paste-before-kill t)
 
 ;;;; UI Settings
+(when (string= "yes" (getenv "MAXIMIZE_EMACS"))
+  (add-to-list 'default-frame-alist '(fullscreen . maximized)))
+
 (add-hook! 'after-change-major-mode-hook
   (defun my-doom-modeline-conditional-buffer-encoding ()
     "Only display encoding in modeline when it's not UTF-8"
