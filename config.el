@@ -3,7 +3,16 @@
 ;; Place your private configuration here! Remember, you do not need to run 'doom
 ;; sync' after modifying this file!
 
+;;;; Checks
+;; Running on WSL
+(setq IS-WSL (when (string-match "-[Mm]icrosoft" (shell-command-to-string "uname -a")) t))
 
+;; Laptops have a battery
+(require 'battery)
+(setq IS-LAPTOP (not (equal (cdr (assoc 66 (funcall battery-status-function)))
+                            "unknown")))
+
+;;;; Doom preamble
 ;; Some functionality uses this to identify you, e.g. GPG configuration, email
 ;; clients, file templates and snippets. It is optional.
 (setq user-full-name nil
@@ -29,10 +38,15 @@
 ;; refresh your font settings. If Emacs still can't find your font, it likely
 ;; wasn't installed correctly. Font issues are rarely Doom issues!
 
+(setq my-base-font-size (if (and (<= (display-pixel-height) 1080)
+                                 (not IS-LAPTOP))
+                            13.0 14.0))
+
 ;; Use float for size as it indicates point size rather then pixels (better scaling)
-(setq doom-font (font-spec :family "Iosevka" :width 'expanded :size 14.0)
-      doom-big-font (font-spec :family "Iosevka" :width 'expanded :size 19.0)
-      doom-variable-pitch-font (font-spec :family "Iosevka Aile" :size 14.0))
+(setq doom-font (font-spec :family "Iosevka" :width 'expanded :size my-base-font-size)
+      doom-big-font (font-spec :family "Iosevka" :width 'expanded :size (+ my-base-font-size 5))
+      doom-serif-font (font-spec :family "Iosevka Slab" :width 'expanded :size my-base-font-size)
+      doom-variable-pitch-font (font-spec :family "Iosevka Aile" :size my-base-font-size))
 
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
@@ -94,10 +108,6 @@
 ;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
 ;; they are implemented.
 
-;;;; Checks
-;; Running on WSL
-(setq IS-WSL (when (string-match "-[Mm]icrosoft" (shell-command-to-string "uname -a")) t))
-
 ;;;; Basic Settings
 ;; Quit without confirmation
 (setq confirm-kill-emacs nil)
@@ -126,11 +136,8 @@
                             (eq buffer-file-coding-system 'utf-8))))))
 
 ;; On laptops it's nice to know how much power you have
-(use-package! battery
-  :defer 3
-  :config
-  (unless (equal "unknown" (cdr (assoc 66 (funcall battery-status-function))))
-    (display-battery-mode +1)))
+(after! battery
+  (when IS-LAPTOP (display-battery-mode +1)))
 
 ;; Simplify window title and give a visual indication if file is edited
 (setq frame-title-format
