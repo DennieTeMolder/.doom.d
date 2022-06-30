@@ -3,14 +3,9 @@
 ;; Place your private configuration here! Remember, you do not need to run 'doom
 ;; sync' after modifying this file!
 
-;;;; Checks
-;; Running on WSL
-(setq IS-WSL (when (string-match "-[Mm]icrosoft" (shell-command-to-string "uname -a")) t))
-
-;; Laptops have a battery
-(require 'battery)
-(setq IS-LAPTOP (not (equal (cdr (assoc 66 (funcall battery-status-function)))
-                            "unknown")))
+;;;; Flags
+;; Determine if running on a laptop based on env variable (must be set by user)
+(setq IS-LAPTOP (getenv "IS_LAPTOP"))
 
 ;;;; Doom preamble
 ;; Some functionality uses this to identify you, e.g. GPG configuration, email
@@ -125,19 +120,12 @@
 (setq save-interprogram-paste-before-kill t)
 
 ;;;; UI Settings
-;; Start emacs maximized on WSL
-(when IS-WSL (add-to-list 'default-frame-alist '(fullscreen . maximized)))
-
 (add-hook! 'after-change-major-mode-hook
   (defun my-doom-modeline-conditional-buffer-encoding ()
     "Only display encoding in modeline when it's not UTF-8"
     (setq-local doom-modeline-buffer-encoding
                 (unless (or (eq buffer-file-coding-system 'utf-8-unix)
                             (eq buffer-file-coding-system 'utf-8))))))
-
-;; On laptops it's nice to know how much power you have
-(after! battery
-  (when IS-LAPTOP (display-battery-mode +1)))
 
 ;; Simplify window title and give a visual indication if file is edited
 (setq frame-title-format
@@ -341,10 +329,6 @@
   (add-to-list 'recentf-exclude "/autosave/?\\'")
   (add-to-list 'recentf-exclude "\\`/\\'"))
 
-(after! undo-fu
-  ;; Raise undo limit do 10 Mb (doom default: 40kb)
-  (setq undo-limit 10000000))
-
 (after! persp-mode
   (defun my-workspace-switch-maybe (name)
     "Switch to workspace NAME if not already current"
@@ -399,6 +383,15 @@
       (ediff (expand-file-name file dir) target)))
 
   (map! :map (dired-mode-map ranger-mode-map) [remap dired-diff] #'my/dired-ediff))
+
+(after! undo-fu
+  ;; Raise undo limit do 10 Mb (doom default: 40kb)
+  (setq undo-limit 10000000))
+
+(use-package! battery
+  :if IS-LAPTOP
+  :config
+  (display-battery-mode +1))
 
 (after! which-key
   (setq which-key-ellipsis ".."))
@@ -1029,7 +1022,7 @@ block, send the entire code block."
 
 ;; Smooth scrolling
 (use-package! good-scroll
-  :if (not IS-WSL)
+  :unless IS-LAPTOP
   :config
   ;; Increase animation time and mouse scrolling sensitivity
   (setq good-scroll-duration .25
