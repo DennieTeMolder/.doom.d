@@ -64,6 +64,7 @@
 (package! good-scroll)
 (package! atomic-chrome)
 (package! vundo)
+(package! trashed)
 (package! indent-tools
   :recipe (:host github :repo "DennieTeMolder/indent-tools"))
 

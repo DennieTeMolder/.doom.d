@@ -1111,3 +1111,6 @@ block, send the entire code block."
                     indent-tools-goto-child
                     indent-tools-goto-end-of-tree))
     (advice-add symbol :around #'doom-set-jump-maybe-a)))
+
+(use-package! trashed
+  :commands trashed)
