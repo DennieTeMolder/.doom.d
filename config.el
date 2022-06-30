@@ -521,7 +521,9 @@
           (remove-hook! 'pdf-view-mode-hook #'org-tree-slide-mode)))))
 
   (map! :map org-tree-slide-mode-map
-        :n [C-up] #'org-tree-slide-content))
+        :gn [left] #'org-tree-slide-move-previous-tree
+        :gn [right] #'org-tree-slide-move-next-tree
+        :gn [C-up] #'org-tree-slide-content))
 
 ;; Org-download settings
 (after! org-download
