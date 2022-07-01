@@ -5,7 +5,8 @@
 
 ;;;; Flags
 ;; Determine if running on a laptop based on env variable (must be set by user)
-(setq IS-LAPTOP (string= "yes" (getenv "IS_LAPTOP")))
+(defvar IS-LAPTOP (string= "yes" (getenv "IS_LAPTOP")))
+(defvar MAXIMIZE (string= "yes" (getenv "MAXIMIZE_EMACS")))
 
 ;;;; Doom preamble
 ;; Some functionality uses this to identify you, e.g. GPG configuration, email
@@ -70,7 +71,6 @@
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
 (setq display-line-numbers-type t)
 
-
 ;; Whenever you reconfigure a package, make sure to wrap your config in an
 ;; `after!' block, otherwise Doom's defaults may override your settings. E.g.
 ;;
@@ -103,6 +103,7 @@
 ;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
 ;; they are implemented.
 
+
 ;;;; Basic Settings
 ;; Quit without confirmation
 (setq confirm-kill-emacs nil)
@@ -120,7 +121,7 @@
 (setq save-interprogram-paste-before-kill t)
 
 ;;;; UI Settings
-(when (string= "yes" (getenv "MAXIMIZE_EMACS"))
+(when MAXIMIZE
   (add-to-list 'default-frame-alist '(fullscreen . maximized)))
 
 (add-hook! 'after-change-major-mode-hook
