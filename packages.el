@@ -71,3 +71,7 @@
 ;; Replace the stale ess-R-data-view with the newer ess-view-data
 (package! ess-R-data-view :disable t)
 (package! ess-view-data)
+
+;; Replacement of the zen module
+(package! visual-fill-column)
+(package! mixed-pitch)

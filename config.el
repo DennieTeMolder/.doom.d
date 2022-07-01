@@ -774,18 +774,36 @@ The DATE is derived from the #+title which must match the Org date format."
   ;; Compatibility with multi-file documents
   (setq-default TeX-master nil))
 
-(after! writeroom-mode
-  ;; Define zenmode text scale
-  (setq +zen-text-scale 1
-        writeroom-mode-line t
-        +zen-mixed-pitch-modes '(org-mode latex-mode markdown-mode))
+;; Zen writing mode config
+(use-package! visual-fill-column
+  :commands visual-fill-column-mode
+  :init
+  (map! :desc "Zen writing mode" :leader "t z" #'visual-fill-column-mode)
+  :config
+  ;; Text scaling is bugged: https://codeberg.org/joostkremers/visual-fill-column/issues/1
+  (setq visual-fill-column-width 100
+        visual-fill-column-center-text t
+        visual-fill-column-extra-text-width '(-5 . 5)
+        visual-fill-column-adjust-for-text-scale nil)
 
-  (add-hook! 'writeroom-mode-enable-hook
-             (setq-local display-line-numbers nil)
-             (+org-pretty-mode +1))
-  (add-hook! 'writeroom-mode-disable-hook
-             (setq-local display-line-numbers display-line-numbers-type)
-             (+org-pretty-mode -1)))
+  (add-hook! 'visual-fill-column-mode-hook
+    (defun my-visual-fill-column-customise ()
+        (if visual-fill-column-mode
+              (my-hide-line-numbers)
+          (my-restore-line-numbers))
+        (text-scale-set (if visual-fill-column-mode 1 0))
+        (visual-fill-column-adjust)
+        (+org-pretty-mode (if visual-fill-column-mode +1 -1)))))
+
+(use-package! mixed-pitch
+  :hook (visual-fill-column-mode . my-enable-mixed-pitch-mode-h)
+  :init
+  (defvar my-mixed-pitch-modes '(adoc-mode rst-mode markdown-mode org-mode))
+  :config
+  (defun my-enable-mixed-pitch-mode-h ()
+    "Enable `mixed-pitch-mode' when in `my-mixed-pitch-modes'."
+    (when (apply #'derived-mode-p my-mixed-pitch-modes)
+      (mixed-pitch-mode (if visual-fill-column-mode +1 -1)))))
 
 ;;;; Programming Languages
 ;; General interactive programming buffer settings
