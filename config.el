@@ -524,9 +524,11 @@
                         buffer-read-only t
                         evil-normal-state-cursor 'hbar)
             (hl-line-mode -1)
+            (mixed-pitch-mode +1)
             (add-hook! 'pdf-view-mode-hook :append #'org-tree-slide-mode))
         (progn
           (setq-local buffer-read-only nil)
+          (mixed-pitch-mode -1)
           (remove-hook! 'pdf-view-mode-hook #'org-tree-slide-mode)))))
 
   (map! :map org-tree-slide-mode-map
