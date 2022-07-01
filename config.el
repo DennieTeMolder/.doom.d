@@ -199,6 +199,18 @@
          (all-the-icons-octicon "book" :face 'doom-dashboard-menu-title)
          :action doom/help)))
 
+;; Hiding/restoring line numbers w/o cycling
+(defvar my-display-line-numbers-previous-state display-line-numbers-type)
+
+(defun my-hide-line-numbers ()
+  "Hides line numbers while recording `my-display-line-numbers-previous-state'"
+  (setq-local my-display-line-numbers-previous-state display-line-numbers)
+  (setq display-line-numbers nil))
+
+(defun my-restore-line-numbers ()
+  "Restores line numbers to `my-display-line-numbers-previous-state'"
+  (setq display-line-numbers my-display-line-numbers-previous-state))
+
 ;;;; General Doom Settings/Bindings
 ;; Default major mode for scratch buffer
 (setq doom-scratch-initial-major-mode 'lisp-interaction-mode)
