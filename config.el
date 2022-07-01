@@ -33,9 +33,9 @@
 ;; refresh your font settings. If Emacs still can't find your font, it likely
 ;; wasn't installed correctly. Font issues are rarely Doom issues!
 
-(setq my-base-font-size (if (and (<= (display-pixel-height) 1080)
-                                 (not IS-LAPTOP))
-                            13.0 14.0))
+(defvar my-base-font-size (if (and (<= (display-pixel-height) 1080)
+                                   (not IS-LAPTOP))
+                              13.0 14.0))
 
 ;; Use float for size as it indicates point size rather then pixels (better scaling)
 (setq doom-font (font-spec :family "Iosevka" :width 'expanded :size my-base-font-size)
@@ -415,10 +415,11 @@
 (after! org
   (setq org-ellipsis " ▾"
         org-indent-indentation-per-level 1
-        my-org-line-spacing 0.1
         org-list-demote-modify-bullet '(("+" . "-") ("-" . "+") ("*" . "+"))
         org-agenda-span 14
         org-agenda-start-day nil)
+
+  (defvar my-org-line-spacing 0.1)
 
   ;; Make headings bold and larger
   (custom-set-faces!
@@ -560,18 +561,19 @@ https://github.com/abo-abo/org-download/commit/137c3d2aa083283a3fc853f9ecbbc0303
 (when (featurep! :lang org +roam2)
   (setq org-roam-directory "~/Nextcloud/PKM/"
         org-roam-dailies-directory "journals/"
-        org-roam-index-file "pages/contents.org"
         org-roam-file-exclude-regexp "Rubbish/")
+
+  (defvar my-org-roam-index-file "pages/contents.org")
 
   (defun my-org-roam-goto-workspace (&rest _)
     "Open/create the dedicated org-roam workspace"
     (my-workspace-switch-maybe "*roam*"))
 
   (defun my/org-roam-open-index ()
-    "Opens the file specified in org-roam-index-file"
+    "Opens the file specified in my-org-roam-index-file"
     (interactive)
     (my-org-roam-goto-workspace)
-    (find-file (expand-file-name org-roam-index-file org-roam-directory)))
+    (find-file (expand-file-name my-org-roam-index-file org-roam-directory)))
 
   ;; Map to keybinding
   (map! :desc "Open index" :leader "n r o" #'my/org-roam-open-index))
