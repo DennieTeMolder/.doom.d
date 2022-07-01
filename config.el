@@ -492,6 +492,7 @@
 
   (setq org-modern-label-border my-org-line-spacing
         org-modern-statistics nil
+        org-modern-table nil ;; Ref: https://github.com/minad/org-modern/issues/69
         org-modern-star ["●" "◉" "○" "◉" "○" "◉" "○" "◉"]
         org-modern-list '((?+ . 8226)
                           (?- . 8250)
@@ -508,13 +509,8 @@
           (progn
             (setq-local display-line-numbers nil
                         buffer-read-only t
-                        evil-normal-state-cursor 'hbar
-                        org-modern-table nil)
+                        evil-normal-state-cursor 'hbar)
             (hl-line-mode -1)
-            ;; Redraw table as "plain" org, because horizontal lines miss-align
-            (when (bound-and-true-p org-modern-mode)
-              (org-modern-mode -1)
-              (org-modern-mode +1))
             (add-hook! 'pdf-view-mode-hook :append #'org-tree-slide-mode))
         (progn
           (setq-local buffer-read-only nil)
