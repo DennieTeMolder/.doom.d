@@ -1174,17 +1174,18 @@ block, send the entire code block."
   :after persp-mode ; To restrict popups to workspaces
   :config
   (setq popper-reference-buffers
-        '("\\*Messages\\*"
-          "Output\\*$"
-          "\\*Async Shell Command\\*"
-          "\\*doom eval\\*"
-          help-mode
-          helpful-mode
-          apropos-mode
-          occur-mode
-          compilation-mode
-          eshell-mode
-          vterm-mode
+        '("\\*Async Shell Command\\*"
+          "^\\*Local variables\\*$"
+          "^\\*info\\*$"
+          "^\\*Customize"
+          "^\\*Warnings"
+          "^\\*Backtrace"
+          "^\\*Calc"
+          "^\\*\\(?:Proced\\|timer-list\\|Abbrevs\\|Output\\|Occur\\|unsent mail.*?\\|message\\)\\*"
+          "^\\*\\(?:[Cc]ompil\\(?:ation\\|e-Log\\)\\|Messages\\)"
+          "^\\*\\(?:doom[: ]\\|Pp E\\)"
+          "^\\*\\([Hh]elp\\|Apropos\\)"
+          "^\\*\\(?:Wo\\)?Man "
           (lambda (buf) (with-current-buffer buf
                      (derived-mode-p 'comint-mode 'term-mode)))))
 
