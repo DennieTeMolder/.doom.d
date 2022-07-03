@@ -1209,6 +1209,16 @@ block, send the entire code block."
             (pop-to-buffer buf))
         (popper-toggle-type))))
 
+  (defun my/popper-raise-popup ()
+    "Raise open popup to its own dedicated window"
+    (interactive)
+    (with-selected-window (selected-window)
+      (evil-window-bottom-right)
+      (when (or (not popper-popup-status)
+                (eq 'raised popper-popup-status))
+        (user-error "No open popups!"))
+      (popper-toggle-type)))
+
   ;; Group popups by workspace
   (setq popper-group-function #'+workspace-current-name
         popper-echo-transform-function #'my-popper-echo-transform
@@ -1218,12 +1228,12 @@ block, send the entire code block."
 
   ;; Unbind `+default/search-project' (also bound to "SPC s p")
   (map! :leader "/" nil)
-
   (map! :leader :prefix ("/" . "popup")
         :desc "Show/hide" "/" #'popper-toggle-latest
-        :desc "Toggle popup/dedicated" "t" #'my/popper-toggle-type
         :desc "Next" "n" #'popper-cycle
-        :desc "Kill" "k" #'popper-kill-latest-popup)
+        :desc "Kill" "k" #'popper-kill-latest-popup
+        :desc "Toggle popup/dedicated" "t" #'my/popper-toggle-type
+        :desc "Raise" "r" #'my/popper-raise-popup)
 
   (popper-mode +1)
   (popper-echo-mode +1))
