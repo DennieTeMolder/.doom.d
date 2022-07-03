@@ -456,7 +456,8 @@
   (add-hook! 'org-mode-hook
     (defun my-org-mode-hook ()
       "Personal org-mode customisation's after mode startup"
-      (setq-local line-spacing my-org-line-spacing)
+      (setq-local line-spacing my-org-line-spacing
+                  auto-hscroll-mode nil)
       (electric-quote-local-mode +1)
       (visual-line-mode -1)
       (auto-fill-mode +1)
