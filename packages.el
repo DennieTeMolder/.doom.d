@@ -65,6 +65,7 @@
 (package! atomic-chrome)
 (package! vundo)
 (package! trashed)
+(package! xr)
 (package! indent-tools
   :recipe (:host github :repo "DennieTeMolder/indent-tools"))
 

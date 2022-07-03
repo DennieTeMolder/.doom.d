@@ -1159,3 +1159,7 @@ block, send the entire code block."
 
 (use-package! trashed
   :commands trashed)
+
+;; Reverse `rx' operation, for turning regex into lisp
+(use-package! xr
+  :commands xr)
