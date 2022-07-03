@@ -206,3 +206,7 @@
        :config
        ;;literate
        (default +bindings +smartparens))
+
+;;; Early settings
+;; Make j/k move visual lines (gj/gk)
+(setq evil-respect-visual-line-mode t)

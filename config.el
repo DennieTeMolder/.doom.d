@@ -283,12 +283,7 @@
   ;; Enable granular undo (remembers delete actions during insert state)
   (setq evil-want-fine-undo t
         evil-vsplit-window-right t
-        evil-split-window-below t)
-
-  ;; Make j/k move visual lines (gj/gk)
-  (map!
-   :nvm "j" #'evil-next-visual-line
-   :nvm "k" #'evil-previous-visual-line))
+        evil-split-window-below t))
 
 (after! evil-snipe
   ;; Make snipe commands (bound to f,F,t,T,s,S) go beyond the current line
