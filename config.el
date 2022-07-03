@@ -121,6 +121,31 @@
 (setq save-interprogram-paste-before-kill t)
 
 ;;;; UI Settings
+;; Global functions/vars
+(defun my/window-double-height ()
+  "Double height of active window"
+  (interactive)
+  (enlarge-window (window-height)))
+
+(defun my/window-half-height ()
+  "Halves height of active window"
+  (interactive)
+  (enlarge-window (/ (window-height) -2)))
+
+(defvar my-display-line-numbers-previous-state display-line-numbers-type)
+
+(defun my/hide-line-numbers ()
+  "Hides line numbers while recording `my-display-line-numbers-previous-state'"
+  (interactive)
+  (setq-local my-display-line-numbers-previous-state display-line-numbers)
+  (setq-local display-line-numbers nil))
+
+(defun my/restore-line-numbers ()
+  "Restores line numbers to `my-display-line-numbers-previous-state'"
+  (interactive)
+  (setq-local display-line-numbers my-display-line-numbers-previous-state))
+
+;; Maximise emacs if specified in shell ENV
 (when MAXIMIZE
   (add-to-list 'default-frame-alist '(fullscreen . maximized)))
 
@@ -200,18 +225,6 @@
          (all-the-icons-octicon "book" :face 'doom-dashboard-menu-title)
          :action doom/help)))
 
-;; Hiding/restoring line numbers w/o cycling
-(defvar my-display-line-numbers-previous-state display-line-numbers-type)
-
-(defun my-hide-line-numbers ()
-  "Hides line numbers while recording `my-display-line-numbers-previous-state'"
-  (setq-local my-display-line-numbers-previous-state display-line-numbers)
-  (setq display-line-numbers nil))
-
-(defun my-restore-line-numbers ()
-  "Restores line numbers to `my-display-line-numbers-previous-state'"
-  (setq display-line-numbers my-display-line-numbers-previous-state))
-
 ;;;; General Doom Settings/Bindings
 ;; Default major mode for scratch buffer
 (setq doom-scratch-initial-major-mode 'lisp-interaction-mode)
@@ -231,8 +244,10 @@
       (:leader
        "b D" #'kill-buffer-and-window
        :desc "Repeat last command" "r" #'repeat
-       :desc "Adjust windows hydra" "w a" #'+hydra/window-nav/body))
-
+       (:prefix "w"
+        :desc "Adjust windows hydra" "a" #'+hydra/window-nav/body
+        :desc "Enlarge double height" "e" #'my/window-double-height
+        :desc "Halve height" "E" #'my/window-half-height)))
 
 ;; Make "Z" bindings only kill buffers not the session
 (map! :n "ZQ" #'kill-buffer-and-window
@@ -786,8 +801,8 @@ The DATE is derived from the #+title which must match the Org date format."
   (add-hook! 'visual-fill-column-mode-hook
     (defun my-visual-fill-column-customise ()
         (if visual-fill-column-mode
-              (my-hide-line-numbers)
-          (my-restore-line-numbers))
+              (my/hide-line-numbers)
+          (my/restore-line-numbers))
         (text-scale-set (if visual-fill-column-mode 1 0))
         (visual-fill-column-adjust)
         (+org-pretty-mode (if visual-fill-column-mode +1 -1)))))
