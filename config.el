@@ -830,9 +830,14 @@ The DATE is derived from the #+title which must match the Org date format."
   (map! :map comint-mode-map
         "C-l" #'comint-clear-buffer))
 
+(after! eshell
+  (remove-hook 'eshell-mode-hook #'hide-mode-line-mode))
+
 (after! vterm
   ;; Actually clear buffer upon C-l
   (setq vterm-clear-scrollback-when-clearing t)
+
+  (remove-hook 'vterm-mode-hook #'hide-mode-line-mode)
 
   (defadvice! tiku91/vterm-redraw-cursor (args)
     "Redraw evil cursor with vterm to keep it consistent with the current state.
@@ -1163,3 +1168,61 @@ block, send the entire code block."
 ;; Reverse `rx' operation, for turning regex into lisp
 (use-package! xr
   :commands xr)
+
+;; Custom popup management
+(use-package! popper
+  :after persp-mode ; To restrict popups to workspaces
+  :config
+  (setq popper-reference-buffers
+        '("\\*Messages\\*"
+          "Output\\*$"
+          "\\*Async Shell Command\\*"
+          "\\*doom eval\\*"
+          help-mode
+          helpful-mode
+          apropos-mode
+          occur-mode
+          compilation-mode
+          eshell-mode
+          vterm-mode
+          (lambda (buf) (with-current-buffer buf
+                     (derived-mode-p 'comint-mode 'term-mode)))))
+
+  (defun my-popper-echo-transform (str)
+    "Remove apostrophes and descriptions before \":\" from STR."
+    (let ((regex (rx (or (seq bol "*")
+                         (seq "*" eol)
+                         (seq (one-or-more nonl) ":" (opt space))))))
+    (replace-regexp-in-string regex "" str)))
+
+  (defun my/popper-toggle-type ()
+    "Extension of `popper-toggle-type' that also works on side-windows"
+    (interactive)
+    (let ((win (selected-window))
+          (buf (current-buffer)))
+      ;; If current buffer is in a side-window but not a popup, give it a new window
+      (if (and (window-parameter win 'window-side)
+               (not popper-popup-status))
+          (progn
+            (delete-window win)
+            (pop-to-buffer buf))
+        (popper-toggle-type))))
+
+  ;; Group popups by workspace
+  (setq popper-group-function #'+workspace-current-name
+        popper-echo-transform-function #'my-popper-echo-transform
+        popper-mode-line
+        '(:eval
+          (propertize " POP " 'face 'doom-modeline-notification)))
+
+  ;; Unbind `+default/search-project' (also bound to "SPC s p")
+  (map! :leader "/" nil)
+
+  (map! :leader :prefix ("/" . "popup")
+        :desc "Show/hide" "/" #'popper-toggle-latest
+        :desc "Toggle popup/dedicated" "t" #'my/popper-toggle-type
+        :desc "Next" "n" #'popper-cycle
+        :desc "Kill" "k" #'popper-kill-latest-popup)
+
+  (popper-mode +1)
+  (popper-echo-mode +1))

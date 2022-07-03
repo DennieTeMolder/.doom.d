@@ -49,6 +49,7 @@
 ;; ...Or *all* packages (NOT RECOMMENDED; will likely break things)
 ;(unpin! t)
 
+
 ;;; Doom modifications
 ;; Evil-escape will exit insert state after a key sequence ("jk")
 ;; Disable it as I am not using it and might create typing delay
@@ -57,6 +58,18 @@
 ;; Byte compiling tablist creates an error in `pdf-annot-list-annotations'
 ;; https://github.com/vedang/pdf-tools/issues/89
 (package! tablist :recipe (:build (:not compile)))
+
+;; Replace the stale ess-R-data-view with the newer ess-view-data
+(package! ess-R-data-view :disable t)
+(package! ess-view-data)
+
+;; Replacement of the zen module
+(package! visual-fill-column)
+(package! mixed-pitch)
+
+;; Replacement of the popup module
+(package! popper)
+
 
 ;;; Custom packages
 (package! org-modern)
@@ -68,11 +81,3 @@
 (package! xr)
 (package! indent-tools
   :recipe (:host github :repo "DennieTeMolder/indent-tools"))
-
-;; Replace the stale ess-R-data-view with the newer ess-view-data
-(package! ess-R-data-view :disable t)
-(package! ess-view-data)
-
-;; Replacement of the zen module
-(package! visual-fill-column)
-(package! mixed-pitch)
