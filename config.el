@@ -1199,9 +1199,7 @@ block, send the entire code block."
   ;; Group popups by workspace
   (setq popper-group-function #'+workspace-current-name
         popper-echo-transform-function #'my-popper-echo-transform
-        popper-mode-line
-        '(:eval
-          (propertize " POP " 'face 'doom-modeline-notification)))
+        popper-mode-line nil)
 
   (defun my-is-popup-p ()
     "Returns `popper-popup-status' unless it equals raised"
