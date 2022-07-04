@@ -1009,7 +1009,7 @@ block, send the entire code block."
            (call-interactively #'my/python-shell-send-statment-and-step))))
 
   ;; Python keybindings
-  (map! :mode python-mode
+  (map! :map python-mode-map
         :nv [C-return] #'my/python-send-current-and-step
         :localleader
         :desc "Open python REPL" [tab] #'+python/open-ipython-repl
@@ -1047,7 +1047,7 @@ block, send the entire code block."
   (when (executable-find "conda")
       (add-hook! 'anaconda-mode-hook #'my/conda-env-guess-prompt))
 
-  (map! :mode anaconda-mode
+  (map! :map (python-mode-map inferior-python-mode-map)
         :localleader :prefix ("c" . "Conda")
          :desc "Guess conda env" "g" #'my/conda-env-guess-prompt
          "a" #'conda-env-activate
