@@ -815,7 +815,10 @@ The DATE is derived from the #+title which must match the Org date format."
   (defun my-enable-mixed-pitch-mode-h ()
     "Enable `mixed-pitch-mode' when in `my-mixed-pitch-modes'."
     (when (apply #'derived-mode-p my-mixed-pitch-modes)
-      (mixed-pitch-mode (if visual-fill-column-mode +1 -1)))))
+      (mixed-pitch-mode (if visual-fill-column-mode +1 -1))))
+
+  (pushnew! mixed-pitch-fixed-pitch-faces
+            'solaire-line-number-face))
 
 ;;;; Programming Languages
 ;; General interactive programming buffer settings
