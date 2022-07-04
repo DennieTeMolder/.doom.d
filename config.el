@@ -1209,13 +1209,18 @@ block, send the entire code block."
             (pop-to-buffer buf))
         (popper-toggle-type))))
 
+  (defun my-is-popup-p ()
+    "Returns `popper-popup-status' unless it equals raised"
+    (when (boundp 'popper-popup-status)
+        (unless (eq 'raised popper-popup-status)
+          popper-popup-status)))
+
   (defun my/popper-raise-popup ()
     "Raise open popup to its own dedicated window"
     (interactive)
     (with-selected-window (selected-window)
       (evil-window-bottom-right)
-      (when (or (not popper-popup-status)
-                (eq 'raised popper-popup-status))
+      (when (not (my-is-popup-p))
         (user-error "No open popups!"))
       (popper-toggle-type)))
 
