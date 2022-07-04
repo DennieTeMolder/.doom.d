@@ -1196,6 +1196,19 @@ block, send the entire code block."
                          (seq (one-or-more nonl) ":" (opt space))))))
     (replace-regexp-in-string regex "" str)))
 
+  ;; Group popups by workspace
+  (setq popper-group-function #'+workspace-current-name
+        popper-echo-transform-function #'my-popper-echo-transform
+        popper-mode-line
+        '(:eval
+          (propertize " POP " 'face 'doom-modeline-notification)))
+
+  (defun my-is-popup-p ()
+    "Returns `popper-popup-status' unless it equals raised"
+    (when (boundp 'popper-popup-status)
+        (unless (eq 'raised popper-popup-status)
+          popper-popup-status)))
+
   (defun my/popper-toggle-type ()
     "Extension of `popper-toggle-type' that also works on side-windows"
     (interactive)
@@ -1209,12 +1222,6 @@ block, send the entire code block."
             (pop-to-buffer buf))
         (popper-toggle-type))))
 
-  (defun my-is-popup-p ()
-    "Returns `popper-popup-status' unless it equals raised"
-    (when (boundp 'popper-popup-status)
-        (unless (eq 'raised popper-popup-status)
-          popper-popup-status)))
-
   (defun my/popper-raise-popup ()
     "Raise open popup to its own dedicated window"
     (interactive)
@@ -1224,19 +1231,19 @@ block, send the entire code block."
         (user-error "No open popups!"))
       (popper-toggle-type)))
 
-  ;; Group popups by workspace
-  (setq popper-group-function #'+workspace-current-name
-        popper-echo-transform-function #'my-popper-echo-transform
-        popper-mode-line
-        '(:eval
-          (propertize " POP " 'face 'doom-modeline-notification)))
+  (defun my/popper-kill-latest-popup-keep-open ()
+    "Kill latest popup but keep popup window open"
+    (interactive)
+    (popper-kill-latest-popup)
+    (popper-toggle-latest))
 
   ;; Unbind `+default/search-project' (also bound to "SPC s p")
   (map! :leader "/" nil)
   (map! :leader :prefix ("/" . "popup")
         :desc "Show/hide" "/" #'popper-toggle-latest
         :desc "Next" "n" #'popper-cycle
-        :desc "Kill" "k" #'popper-kill-latest-popup
+        :desc "Kill" "k" #'my/popper-kill-latest-popup-keep-open
+        :desc "Quit" "q" #'popper-kill-latest-popup
         :desc "Toggle popup/dedicated" "t" #'my/popper-toggle-type
         :desc "Raise" "r" #'my/popper-raise-popup)
 
