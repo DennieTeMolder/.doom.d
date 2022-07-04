@@ -1175,8 +1175,8 @@ block, send the entire code block."
   :config
   (setq popper-reference-buffers
         '("\\*Async Shell Command\\*"
-          "^\\*Local variables\\*$"
-          "^\\*info\\*$"
+          "\\*Local variables\\*"
+          "\\*info\\*"
           "^\\*Customize"
           "^\\*Warnings"
           "^\\*Backtrace"
@@ -1187,7 +1187,7 @@ block, send the entire code block."
           "^\\*\\([Hh]elp\\|Apropos\\)"
           "^\\*\\(?:Wo\\)?Man "
           (lambda (buf) (with-current-buffer buf
-                     (derived-mode-p 'comint-mode 'term-mode)))))
+                     (derived-mode-p 'comint-mode 'term-mode 'compilation-mode)))))
 
   (defun my-popper-echo-transform (str)
     "Remove apostrophes and descriptions before \":\" from STR."
