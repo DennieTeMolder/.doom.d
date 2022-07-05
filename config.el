@@ -1187,7 +1187,7 @@ block, send the entire code block."
           "^\\*\\(?:Proced\\|timer-list\\|Abbrevs\\|Output\\|Occur\\|unsent mail.*?\\|message\\)\\*"
           "^\\*\\(?:[Cc]ompil\\(?:ation\\|e-Log\\)\\|Messages\\)"
           "^\\*\\(?:doom[: ]\\|Pp E\\)"
-          "^\\*\\([Hh]elp\\|Apropos\\)"
+          "^\\*\\([Hh]elp\\|Apropos\\|refs\\)"
           "^\\*\\(?:Wo\\)?Man "
           (lambda (buf) (with-current-buffer buf
                      (derived-mode-p 'comint-mode 'term-mode 'compilation-mode)))))
