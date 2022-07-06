@@ -444,8 +444,12 @@
   (setq org-ellipsis " ▾"
         org-indent-indentation-per-level 1
         org-list-demote-modify-bullet '(("+" . "-") ("-" . "+") ("*" . "+"))
+        org-agenda-start-day nil
         org-agenda-span 14
-        org-agenda-start-day nil)
+        org-agenda-time-grid '((daily today require-timed)
+                               (759 1159 1300 1700)
+                               " ┄┄┄┄┄ " "┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄")
+        org-agenda-current-time-string "⭠ now ─────────")
 
   (defvar my-org-line-spacing 0.1)
 
