@@ -1197,8 +1197,9 @@ block, send the entire code block."
     "Remove apostrophes and descriptions before \":\" from STR."
     (let ((regex (rx (or (seq bol "*")
                          (seq "*" eol)
-                         (seq (one-or-more nonl) ":" (opt space))))))
-    (replace-regexp-in-string regex "" str)))
+                         (seq (group nonl) (zero-or-more nonl)
+                              (group ":") (opt space))))))
+    (replace-regexp-in-string regex "\\1\\2" str)))
 
   ;; Group popups by workspace
   (setq popper-group-function #'+workspace-current-name
