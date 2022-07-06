@@ -1204,11 +1204,6 @@ block, send the entire code block."
   (setq popper-echo-transform-function #'my-popper-echo-transform
         popper-mode-line nil)
 
-  (defun my-is-popup-p ()
-    "Returns `popper-popup-status' unless it equals raised"
-    (when (boundp 'popper-popup-status)
-        (unless (eq 'raised popper-popup-status)
-          popper-popup-status)))
   ;; Let popper handle hiding/unhiding mode lines
   (remove-hook! '(completion-list-mode-hook Man-mode-hook)
                 #'hide-mode-line-mode)
@@ -1224,22 +1219,22 @@ block, send the entire code block."
           (progn
             (delete-window win)
             (pop-to-buffer buf))
-        (popper-toggle-type))))
+        (popper-toggle-type buf))))
 
   (defun my/popper-raise-popup ()
     "Raise open popup to its own dedicated window"
     (interactive)
-    (with-selected-window (selected-window)
-      (evil-window-bottom-right)
-      (when (not (my-is-popup-p))
+    (let ((pop-win (caar popper-open-popup-alist)))
+      (unless pop-win
         (user-error "No open popups!"))
-      (popper-toggle-type)))
+      (with-selected-window pop-win
+        (popper-toggle-type))))
 
   (defun my/popper-kill-latest-popup-keep-open ()
     "Kill latest popup but keep popup window open"
     (interactive)
     (popper-kill-latest-popup)
-    (popper-toggle-latest))
+    (popper-open-latest))
 
   ;; Unbind `+default/search-project' (also bound to "SPC s p")
   (map! :leader "/" nil)
