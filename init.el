@@ -54,6 +54,7 @@
         +numbers)
        workspaces          ; tab emulation, persistence & separate workspaces
        ;;zen               ; distraction-free coding or writing
+       zen-light           ; Custom slimmed down alternative for zen module
 
        :editor
        (evil +everywhere)  ; come to the dark side, we have cookies

@@ -63,9 +63,6 @@
 (package! ess-R-data-view :disable t)
 (package! ess-view-data)
 
-;; Replacement of the zen module
-(package! visual-fill-column)
-(package! mixed-pitch)
 
 ;; Replacement of the popup module
 (package! popper)
