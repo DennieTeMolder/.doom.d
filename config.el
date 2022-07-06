@@ -1209,6 +1209,9 @@ block, send the entire code block."
     (when (boundp 'popper-popup-status)
         (unless (eq 'raised popper-popup-status)
           popper-popup-status)))
+  ;; Let popper handle hiding/unhiding mode lines
+  (remove-hook! '(completion-list-mode-hook Man-mode-hook)
+                #'hide-mode-line-mode)
 
   (defun my/popper-toggle-type ()
     "Extension of `popper-toggle-type' that also works on side-windows"
