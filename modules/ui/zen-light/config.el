@@ -8,8 +8,6 @@
 
 (use-package! visual-fill-column
   :commands visual-fill-column-mode
-  :init
-  (map! :desc "Zen writing mode" :leader "t z" #'visual-fill-column-mode)
   :config
   ;; Text scaling is bugged: https://codeberg.org/joostkremers/visual-fill-column/issues/1
   (setq visual-fill-column-width 100

@@ -21,16 +21,6 @@
           (lambda (buf) (with-current-buffer buf
                      (derived-mode-p 'comint-mode 'compilation-mode)))))
 
-  ;; Unbind `+default/search-project' (also bound to "SPC s p")
-  (map! :leader "/" nil)
-  (map! :leader :prefix ("/" . "popup")
-        :desc "Show/hide" "/" #'popper-toggle-latest
-        :desc "Next" "n" #'popper-cycle
-        :desc "Kill" "k" #'my/popper-kill-latest-popup-keep-open
-        :desc "Quit" "q" #'popper-kill-latest-popup
-        :desc "Toggle popup/buffer" "t" #'my/popper-toggle-type
-        :desc "Raise" "r" #'my/popper-raise-popup)
-
   (popper-mode +1))
 
 (use-package! popper-echo

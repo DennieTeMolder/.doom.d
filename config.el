@@ -1139,3 +1139,5 @@ block, send the entire code block."
 ;; Reverse `rx' operation, for turning regex into lisp
 (use-package! xr
   :commands xr)
+
+(load! "+keybindings")
