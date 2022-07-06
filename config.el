@@ -1175,7 +1175,6 @@ block, send the entire code block."
 
 ;; Custom popup management
 (use-package! popper
-  :after persp-mode ; To restrict popups to workspaces
   :config
   (setq popper-reference-buffers
         '("\\*Async Shell Command\\*"
@@ -1201,9 +1200,8 @@ block, send the entire code block."
                               (group ":") (opt space))))))
     (replace-regexp-in-string regex "\\1\\2" str)))
 
-  ;; Group popups by workspace
-  (setq popper-group-function #'+workspace-current-name
-        popper-echo-transform-function #'my-popper-echo-transform
+  ;; Strip buffer names and hide mode lines
+  (setq popper-echo-transform-function #'my-popper-echo-transform
         popper-mode-line nil)
 
   (defun my-is-popup-p ()
