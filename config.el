@@ -417,8 +417,7 @@
   (display-battery-mode +1))
 
 (after! which-key
-  (setq which-key-popup-type 'minibuffer
-        which-key-idle-delay 0.5
+  (setq which-key-idle-delay 0.5
         which-key-ellipsis ".."))
 
 (after! all-the-icons
