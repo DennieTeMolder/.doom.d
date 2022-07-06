@@ -63,11 +63,6 @@
 (package! ess-R-data-view :disable t)
 (package! ess-view-data)
 
-
-;; Replacement of the popup module
-(package! popper)
-
-
 ;;; Custom packages
 (package! org-modern)
 (package! interaction-log)

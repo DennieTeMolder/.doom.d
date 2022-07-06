@@ -45,6 +45,7 @@
        ;;neotree           ; a project drawer, like NERDTree for vim
        ophints             ; highlight the region an operation acts on
        ;;(popup +defaults) ; tame sudden yet inevitable temporary windows
+       popper              ; custom popup management module based on popper
        ;;tabs              ; a tab bar for Emacs
        treemacs            ; a project drawer, like neotree but cooler
        ;;unicode           ; extended unicode support for various languages
