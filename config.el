@@ -70,7 +70,7 @@
 
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
-(setq display-line-numbers-type t)
+(setq display-line-numbers-type 'relative)
 
 ;; Whenever you reconfigure a package, make sure to wrap your config in an
 ;; `after!' block, otherwise Doom's defaults may override your settings. E.g.
@@ -149,6 +149,9 @@
 ;; Maximise emacs if specified in shell ENV
 (when MAXIMIZE
   (add-to-list 'default-frame-alist '(fullscreen . maximized)))
+
+;; Disable global hl-line-mode
+(remove-hook! 'doom-first-buffer-hook #'global-hl-line-mode)
 
 (add-hook! 'after-change-major-mode-hook
   (defun my-doom-modeline-conditional-buffer-encoding ()
@@ -242,6 +245,7 @@
 
 ;; Global keybindings
 (map! "C-s" #'isearch-forward-word
+      "C-l" #'+nav-flash/blink-cursor
       (:leader
        "b D" #'kill-buffer-and-window
        :desc "Repeat last command" "r" #'repeat
@@ -536,7 +540,7 @@
             (setq-local display-line-numbers nil
                         buffer-read-only t
                         evil-normal-state-cursor 'hbar)
-            (hl-line-mode -1)
+            (when hl-line-mode (hl-line-mode -1))
             (mixed-pitch-mode +1)
             (add-hook! 'pdf-view-mode-hook :append #'org-tree-slide-mode))
         (progn
