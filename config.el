@@ -843,13 +843,13 @@ The DATE is derived from the #+title which must match the Org date format."
         "C-l" #'comint-clear-buffer))
 
 (after! eshell
-  (remove-hook 'eshell-mode-hook #'hide-mode-line-mode))
+  (remove-hook! 'eshell-mode-hook #'hide-mode-line-mode))
 
 (after! vterm
   ;; Actually clear buffer upon C-l
   (setq vterm-clear-scrollback-when-clearing t)
 
-  (remove-hook 'vterm-mode-hook #'hide-mode-line-mode)
+  (remove-hook! 'vterm-mode-hook #'hide-mode-line-mode)
 
   (defadvice! tiku91/vterm-redraw-cursor (args)
     "Redraw evil cursor with vterm to keep it consistent with the current state.
@@ -1183,8 +1183,11 @@ block, send the entire code block."
 
 ;; Custom popup management
 (use-package! popper
+  :commands popper-mode
+  :init (add-hook! 'doom-init-ui-hook :append #'popper-mode)
   :config
-  (setq popper-reference-buffers
+  (setq popper-mode-line nil ; hides mode-line in popups
+        popper-reference-buffers
         '("\\*Async Shell Command\\*"
           "\\*Local variables\\*"
           "\\*info\\*"
@@ -1199,18 +1202,6 @@ block, send the entire code block."
           "^\\*\\(?:Wo\\)?Man "
           (lambda (buf) (with-current-buffer buf
                      (derived-mode-p 'comint-mode 'compilation-mode)))))
-
-  (defun my-popper-echo-transform (str)
-    "Remove apostrophes and descriptions before \":\" from STR."
-    (let ((regex (rx (or (seq bol "*")
-                         (seq "*" eol)
-                         (seq (group nonl) (zero-or-more nonl)
-                              (group ":") (opt space))))))
-    (replace-regexp-in-string regex "\\1\\2" str)))
-
-  ;; Strip buffer names and hide mode lines
-  (setq popper-echo-transform-function #'my-popper-echo-transform
-        popper-mode-line nil)
 
   ;; Let popper handle hiding/unhiding mode lines
   (remove-hook! '(completion-list-mode-hook Man-mode-hook)
@@ -1251,8 +1242,21 @@ block, send the entire code block."
         :desc "Next" "n" #'popper-cycle
         :desc "Kill" "k" #'my/popper-kill-latest-popup-keep-open
         :desc "Quit" "q" #'popper-kill-latest-popup
-        :desc "Toggle popup/dedicated" "t" #'my/popper-toggle-type
+        :desc "Toggle popup/buffer" "t" #'my/popper-toggle-type
         :desc "Raise" "r" #'my/popper-raise-popup)
 
-  (popper-mode +1)
+  (popper-mode +1))
+
+(use-package! popper-echo
+  :after popper
+  :defer 3
+  :config
+  (defun my-popper-echo-transform (str)
+    "Removes apostrophes and truncates descriptions before \":\" from STR."
+    (replace-regexp-in-string  "^\\*\\|\\*$\\|\\(.\\).*\\(:\\)[[:space:]]?"
+                               "\\1\\2"
+                               str))
+
+  (setq popper-echo-transform-function #'my-popper-echo-transform)
+
   (popper-echo-mode +1))
