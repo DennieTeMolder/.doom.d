@@ -1260,3 +1260,8 @@ block, send the entire code block."
   (setq popper-echo-transform-function #'my-popper-echo-transform)
 
   (popper-echo-mode +1))
+
+;; Fix treemacs window not being accessible with `evil-window-left'
+(unless (featurep! :ui popup)
+  (after! treemacs
+    (setq treemacs-is-never-other-window nil)))
