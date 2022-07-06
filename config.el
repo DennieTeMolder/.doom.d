@@ -1191,7 +1191,7 @@ block, send the entire code block."
           "^\\*\\([Hh]elp\\|Apropos\\|refs\\)"
           "^\\*\\(?:Wo\\)?Man "
           (lambda (buf) (with-current-buffer buf
-                     (derived-mode-p 'comint-mode 'term-mode 'compilation-mode)))))
+                     (derived-mode-p 'comint-mode 'compilation-mode)))))
 
   (defun my-popper-echo-transform (str)
     "Remove apostrophes and descriptions before \":\" from STR."
