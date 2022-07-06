@@ -122,23 +122,9 @@
 (setq save-interprogram-paste-before-kill t)
 
 ;;;; UI Settings
-;; Global functions/vars
-(defun my/window-double-height ()
-  "Double height of active window"
-  (interactive)
-  (enlarge-window (window-height)))
-
-(defun my/window-half-height ()
-  "Halves height of active window"
-  (interactive)
-  (enlarge-window (/ (window-height) -2)))
-
 ;; Maximise emacs if specified in shell ENV
 (when MAXIMIZE
   (add-to-list 'default-frame-alist '(fullscreen . maximized)))
-
-;; Disable global hl-line-mode
-(remove-hook! 'doom-first-buffer-hook #'global-hl-line-mode)
 
 (add-hook! 'after-change-major-mode-hook
   (defun my-doom-modeline-conditional-buffer-encoding ()
@@ -223,6 +209,13 @@
 ;; Disable visual line mode as it can be expensive on long lines
 (remove-hook! 'text-mode-hook #'visual-line-mode)
 
+;; Disable global hl-line-mode
+(remove-hook! 'doom-first-buffer-hook #'global-hl-line-mode)
+
+;; Don't hide mode line when outside of popup
+(remove-hook! '(completion-list-mode-hook Man-mode-hook)
+              #'hide-mode-line-mode)
+
 ;; Spacemacs style M-x
 ;; Old SPC SPC binding (projectile find file) also available under "SPC p f"
 ;; This frees up the "SPC :" to be another evil-ex because i am condition to hit SPC
@@ -234,12 +227,8 @@
 (map! "C-s" #'isearch-forward-word
       "C-l" #'+nav-flash/blink-cursor
       (:leader
-       "b D" #'kill-buffer-and-window
        :desc "Repeat last command" "r" #'repeat
-       (:prefix "w"
-        :desc "Adjust windows hydra" "a" #'+hydra/window-nav/body
-        :desc "Enlarge double height" "e" #'my/window-double-height
-        :desc "Halve height" "E" #'my/window-half-height)))
+       "b D" #'kill-buffer-and-window))
 
 ;; Make "Z" bindings only kill buffers not the session
 (map! :n "ZQ" #'kill-buffer-and-window
@@ -257,7 +246,23 @@
        :n [mouse-8] #'Info-history-back
        :n [mouse-9] #'Info-history-forward))
 
-;; Keybinding to toggle between trashing and permanently deleting files
+;; Window management functions/bindings
+(defun my/window-double-height ()
+  "Double height of active window"
+  (interactive)
+  (enlarge-window (window-height)))
+
+(defun my/window-half-height ()
+  "Halves height of active window"
+  (interactive)
+  (enlarge-window (/ (window-height) -2)))
+
+(map! :leader :prefix "w"
+      :desc "Adjust windows hydra" "a" #'+hydra/window-nav/body
+      :desc "Enlarge double height" "e" #'my/window-double-height
+      :desc "Halve height" "E" #'my/window-half-height)
+
+;; Extra toggle functions/bindings
 (defun my/toggle-trash-delete ()
   "Toggle between trashing and deleting files"
   (interactive)
@@ -412,7 +417,9 @@
   (display-battery-mode +1))
 
 (after! which-key
-  (setq which-key-ellipsis ".."))
+  (setq which-key-popup-type 'minibuffer
+        which-key-idle-delay 0.5
+        which-key-ellipsis ".."))
 
 (after! all-the-icons
   ;; A lower scaling factor works better with the Iosevka font
