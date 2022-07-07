@@ -14,7 +14,7 @@
           "^\\*Backtrace"
           "^\\*Calc"
           "^\\*\\(?:Proced\\|timer-list\\|Abbrevs\\|Output\\|Occur\\|unsent mail.*?\\|message\\)\\*"
-          "^\\*\\(?:[Cc]ompil\\(?:ation\\|e-Log\\)\\|Messages\\)"
+          "^\\*\\(?:[Cc]ompil\\(?:ation\\|e-Log\\)\\|Messages\\|Install\\)"
           "^\\*\\(?:doom[: ]\\|Pp E\\)"
           "^\\*\\([Hh]elp\\|Apropos\\|refs\\)"
           "^\\*\\(?:Wo\\)?Man "
