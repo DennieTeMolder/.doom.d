@@ -30,13 +30,13 @@
   :after popper
   :defer 3
   :config
-  (defun my-popper-echo-transform (str)
+  (defun +popper-echo-transform (str)
     "Removes apostrophes and truncates descriptions before \":\" from STR."
     (replace-regexp-in-string  "^\\*\\|\\*$\\|\\(.\\).*\\(:\\)[[:space:]]?"
                                "\\1\\2"
                                str))
 
-  (setq popper-echo-transform-function #'my-popper-echo-transform)
+  (setq popper-echo-transform-function #'+popper-echo-transform)
 
   (popper-echo-mode +1))
 

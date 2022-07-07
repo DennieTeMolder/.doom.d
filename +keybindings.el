@@ -9,7 +9,7 @@
        (:prefix ("/" . "popup")
         :desc "Show/hide"           "/" #'popper-toggle-latest
         :desc "Next"                "n" #'popper-cycle
-        :desc "Kill"                "k" #'my/popper-kill-latest-popup-keep-open
+        :desc "Kill"                "k" #'+popper/kill-latest-popup-keep-open
         :desc "Quit"                "q" #'popper-kill-latest-popup
-        :desc "Toggle popup/buffer" "t" #'my/popper-toggle-type
-        :desc "Raise"               "r" #'my/popper-raise-popup)))
+        :desc "Toggle popup/buffer" "t" #'+popper/toggle-type
+        :desc "Raise"               "r" #'+popper/raise-popup)))
