@@ -8,6 +8,7 @@
         popper-reference-buffers
         '("\\*Async Shell Command\\*"
           "\\*Local variables\\*"
+          "\\*Calendar\\*"
           "\\*info\\*"
           "^\\*Customize"
           "^\\*Warnings"
