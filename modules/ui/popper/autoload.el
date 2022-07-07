@@ -36,3 +36,10 @@
     "Reloads popper forcing all buffers to be reevaluated."
     (interactive)
     (popper-mode +1))
+
+;;;###autoload
+(defun +popper-echo-transform (str)
+  "Removes apostrophes and truncates descriptions before \":\" from STR."
+  (replace-regexp-in-string  "^\\*\\|\\*$\\|\\(.\\).*\\(:\\)[[:space:]]?"
+                             "\\1\\2"
+                             str))

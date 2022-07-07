@@ -22,20 +22,11 @@
                      (derived-mode-p 'comint-mode 'compilation-mode)))))
 
   (when (featurep! :ui workspaces)
-    (advice-add 'persp-load-state-from-file :after #'+popper/reload))
-
-  (popper-mode +1))
+    (advice-add 'persp-load-state-from-file :after #'+popper/reload)))
 
 (use-package! popper-echo
-  :after popper
-  :defer 3
+  :after-call popper-open-latest
   :config
-  (defun +popper-echo-transform (str)
-    "Removes apostrophes and truncates descriptions before \":\" from STR."
-    (replace-regexp-in-string  "^\\*\\|\\*$\\|\\(.\\).*\\(:\\)[[:space:]]?"
-                               "\\1\\2"
-                               str))
-
   (setq popper-echo-transform-function #'+popper-echo-transform)
 
   (popper-echo-mode +1))
