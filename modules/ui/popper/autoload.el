@@ -30,3 +30,9 @@
   (interactive)
   (popper-kill-latest-popup)
   (popper-open-latest))
+
+;;;###autoload
+(defun +popper/reload (&rest _)
+    "Reloads popper forcing all buffers to be reevaluated."
+    (interactive)
+    (popper-mode +1))

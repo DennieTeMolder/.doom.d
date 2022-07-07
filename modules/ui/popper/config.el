@@ -21,6 +21,9 @@
           (lambda (buf) (with-current-buffer buf
                      (derived-mode-p 'comint-mode 'compilation-mode)))))
 
+  (when (featurep! :ui workspaces)
+    (advice-add 'persp-load-state-from-file :after #'+popper/reload))
+
   (popper-mode +1))
 
 (use-package! popper-echo
