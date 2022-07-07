@@ -246,34 +246,13 @@
        :n [mouse-8] #'Info-history-back
        :n [mouse-9] #'Info-history-forward))
 
-;; Window management functions/bindings
-(defun my/window-double-height ()
-  "Double height of active window"
-  (interactive)
-  (enlarge-window (window-height)))
-
-(defun my/window-half-height ()
-  "Halves height of active window"
-  (interactive)
-  (enlarge-window (/ (window-height) -2)))
-
+;; Window management bindings
 (map! :leader :prefix "w"
       :desc "Adjust windows hydra" "a" #'+hydra/window-nav/body
       :desc "Enlarge double height" "e" #'my/window-double-height
       :desc "Halve height" "E" #'my/window-half-height)
 
-;; Extra toggle functions/bindings
-(defun my/toggle-trash-delete ()
-  "Toggle between trashing and deleting files"
-  (interactive)
-  (if delete-by-moving-to-trash
-      (progn
-        (setq delete-by-moving-to-trash nil)
-        (message "Now deleting files PERMANTLY"))
-    (progn
-      (setq delete-by-moving-to-trash t)
-      (message "Now moving deleted files to trash"))))
-
+;; Extra toggle bindings
 (map! :leader :prefix "t"
       :desc "Trash deleted files" "T" #'my/toggle-trash-delete
       :desc "Auto linebreaks" "a" #'auto-fill-mode)
@@ -311,16 +290,9 @@
 
 (after! projectile
   ;; Projectle sorting by recently opened
-  (setq projectile-sort-order 'recently-active)
-
-  (defun my-project-ignored-p (project-root)
-    "Return non-nil if remote or temporary file or a straight package."
-    (or (file-remote-p project-root)
-        (file-in-directory-p project-root temporary-file-directory)
-        (file-in-directory-p project-root doom-local-dir)))
-
-  ;; Replace the doom-project-ignored-p function to ignore remote projects
-  (setq projectile-ignored-project-function #'my-project-ignored-p)
+  (setq projectile-sort-order 'recently-active
+        ;; Replace the doom-project-ignored-p function to ignore remote projects
+        projectile-ignored-project-function #'my-project-ignored-p)
 
   ;; Define a generic project as .projectile is not synced by Nextcloud
   (projectile-register-project-type 'generic '("PROJECT") :project-file "PROJECT")
@@ -336,13 +308,8 @@
                t))
 
 (after! recentf
-  (defun my-recentf-keep-p (file)
-    "Return non-nil if FILE should be kept in the recent list."
-    (unless (file-remote-p file)
-      (file-readable-p file)))
-
   ;;Exclude non-existent & remote files from recent files list after cleanup
-  (setq recentf-keep '(my-recentf-keep-p))
+  (setq recentf-keep '(my-file-local-readable-p))
 
   ;; Revert back to running cleanup on mode start instead of emacs shutdown
   (remove-hook! 'kill-emacs-hook #'recentf-cleanup)
@@ -353,17 +320,7 @@
   (add-to-list 'recentf-exclude "\\`/\\'"))
 
 (after! persp-mode
-  (defun my-workspace-switch-maybe (name)
-    "Switch to workspace NAME if not already current"
-    (unless (equal name (+workspace-current-name))
-      (+workspace-switch name t)
-      (+workspace/display)))
-
   ;; Open private config files in a dedicated workspace
-  (defun my/doom-private-goto-workspace ()
-    "Open/create the dedicated private config workspace"
-    (my-workspace-switch-maybe "*config*"))
-
   (dolist (symbol '(doom/open-private-config
                     doom/find-file-in-private-config
                     doom/goto-private-init-file
@@ -382,29 +339,10 @@
       (+workspace-switch name)
       (+workspace/display)))
 
-  (defun my/buffer-move-to-workspace-prompt ()
-    "Move current buffer from the current to the selected workspace"
-    (interactive)
-    (let ((buffer (current-buffer))
-          (name (completing-read
-                   "Move current buffer to workspace:"
-                   (+workspace-list-names))))
-      (my-buffer-move-to-workspace buffer name)))
-
   (map! :leader
         :desc "Move buffer to workspace" "b TAB" #'my/buffer-move-to-workspace-prompt))
 
 (after! dired
-  (defun my/dired-ediff ()
-    "Compare file under cursor to file selected in prompt using Ediff"
-    (interactive)
-    (let* ((file (dired-get-filename t))
-           (dir (dired-current-directory))
-           (default nil)
-           (target (read-file-name (format-prompt "Diff %s with" default file)
-                                   default nil t)))
-      (ediff (expand-file-name file dir) target)))
-
   (map! :map (dired-mode-map ranger-mode-map) [remap dired-diff] #'my/dired-ediff))
 
 (after! undo-fu
@@ -460,14 +398,6 @@
   (custom-set-faces!
     '(org-ellipsis :foreground nil :background nil :weight regular)
     '(org-headline-done :strike-through t))
-
-  (defun my-insert-exit-fill-paragraph ()
-    "Perform `org-fill-paragraph' after some contextual checks"
-      ;; Check if `auto-fill-mode' is active
-      (when auto-fill-function
-        (unless (eq (org-element-type (org-element-at-point))
-                    'src-block)
-          (org-fill-paragraph))))
 
   ;; Allow for double quoting using '' and `` (`` -> “)
   (add-hook! 'org-mode-hook
@@ -552,31 +482,6 @@
 
 ;; Org-download settings
 (after! org-download
-  (defun drestivo-org-download-method (link)
-    "This is an helper function for org-download.
-It creates an \"./Image\" folder within the same directory of the org file.
-File is named as: download name + timestamp + target org file
-Based on drestivo's answer to this post: https://github.com/abo-abo/org-download/issues/40.
-Which was based off this commit message:
-https://github.com/abo-abo/org-download/commit/137c3d2aa083283a3fc853f9ecbbc03039bf397b"
-    (let ((filename
-           (file-name-nondirectory
-            (car (url-path-and-query
-                  (url-generic-parse-url link)))))
-          (dir "Images/"))
-      (progn
-        (setq filename-with-timestamp
-              (format "%s%s-<%s>.%s"
-                      (file-name-sans-extension filename)
-                      (format-time-string org-download-timestamp)
-                      (file-name-base (buffer-file-name))
-                      (file-name-extension filename)))
-        ;; Check if directory exists otherwise create it
-        (unless (file-exists-p dir)
-          (make-directory dir t))
-        (message "Image: %s saved!" (expand-file-name filename-with-timestamp dir))
-        (concat dir filename-with-timestamp))))
-
   (setq org-download-method 'drestivo/org-download-method
         org-download-link-format "[[file:%s]]\n"))
 
@@ -593,16 +498,6 @@ https://github.com/abo-abo/org-download/commit/137c3d2aa083283a3fc853f9ecbbc0303
 
   (defvar my-org-roam-index-file "pages/contents.org")
 
-  (defun my-org-roam-goto-workspace (&rest _)
-    "Open/create the dedicated org-roam workspace"
-    (my-workspace-switch-maybe "*roam*"))
-
-  (defun my/org-roam-open-index ()
-    "Opens the file specified in my-org-roam-index-file"
-    (interactive)
-    (my-org-roam-goto-workspace)
-    (find-file (expand-file-name my-org-roam-index-file org-roam-directory)))
-
   ;; Map to keybinding
   (map! :desc "Open index" :leader "n r o" #'my/org-roam-open-index))
 
@@ -611,17 +506,6 @@ https://github.com/abo-abo/org-download/commit/137c3d2aa083283a3fc853f9ecbbc0303
   (setq org-roam-completion-everywhere nil)
 
   ;; Custom org-roam buffer preview function
-  (defun my-org-element-at-point-get-content ()
-    "Return the current element's content without properties.
-Based on `org-mark-element' and `org-roam-preview-default-function'."
-    ;; Move to beginning of item to include children
-    (when (org-in-item-p)
-      (org-beginning-of-item))
-    (let* ((element (org-element-at-point))
-           (beg (org-element-property :begin element))
-           (end (org-element-property :end element)))
-      (string-trim (buffer-substring-no-properties beg end))))
-
   (setq org-roam-preview-function #'my-org-element-at-point-get-content)
 
   ;; Open all roam buffers in a dedicated workspace
@@ -649,54 +533,7 @@ Based on `org-mark-element' and `org-roam-preview-default-function'."
 (use-package! org-roam-dailies
   :after org-roam
   :config
-  (defun my-org-roam-dailes-active-files ()
-    "Return list of daily files corresponding to TODAY or later"
-    (let ((files (org-roam-dailies--list-files))
-          (today (calendar-absolute-from-gregorian (calendar-current-date))))
-      (while
-          (< (calendar-absolute-from-gregorian
-              (org-roam-dailies-calendar--file-to-date (car files)))
-             today)
-        (pop files))
-      files))
-
-  (defadvice! my-org-roam-dailies-sync-agenda (&rest _)
-    "Scan the dailies-directory and add current and future dates to agenda."
-    :before #'org-agenda
-    (mapc (lambda (x) (cl-pushnew x org-agenda-files :test #'string=))
-          (my-org-roam-dailes-active-files)))
-
-  (defun my-org-get-title-value ()
-    "Returns the value of #+TITLE for the current document"
-    (car (cdar (org-collect-keywords '("TITLE")))))
-
-  ;; Nifty timeblock function
-  (defun my/org-roam-dailies-insert-timeblock ()
-    "Inserts an org roam headline for each hour in START to END with a timestamp.
-The DATE is derived from the #+title which must match the Org date format."
-    (interactive)
-    (let ((date (my-org-get-title-value))
-          (start (read-number "Start time (hour): " 8))
-          (end (- (read-number "End time (hour): " 17) 1)))
-      (end-of-line)
-      (newline)
-      (insert "* Schedule")
-      (dolist (hour (number-sequence start end))
-        (newline)
-        (insert "** EMPTY BLOCK")
-        (org-schedule nil (concat date " " (number-to-string hour) ":00"))
-        (line-move 1)
-        (end-of-line))))
-
-  (defun my/org-roam-dailies-schedule-time ()
-    "Wrapper around `org-schedule' that only prompts for time.
-The DATE is derived from the #+title which must match the Org date format."
-    (interactive)
-    (unless (org-roam-dailies--daily-note-p)
-      (user-error "Not in a daily-note"))
-    (let ((date (my-org-get-title-value))
-          (time (read-string "Schedule headline at (HH:MM): ")))
-      (org-schedule nil (concat date " " time (when (length< time 3) ":00")))))
+  (advice-add 'org-agenda :before #'my-org-roam-dailies-sync-agenda)
 
   (map! :map org-roam-dailies-map :leader
         :desc "Schedule headline" "n r d s" #'my/org-roam-dailies-schedule-time))
@@ -745,19 +582,6 @@ The DATE is derived from the #+title which must match the Org date format."
   (setq pdf-view-resize-factor 1.1)
 
   (add-to-list 'evil-snipe-disabled-modes 'pdf-view-mode)
-
-  (defun my/pdf-view-fit-half-height ()
-    "Fit PDF height to 2x window (minus 0.1 to fix scrolling)"
-    (interactive)
-    (pdf-view-fit-height-to-window)
-    (let* ((size (pdf-view-image-size))
-           (pagesize (pdf-cache-pagesize
-                      (pdf-view-current-page)))
-           (scale (/ (float (car size))
-                     (float (car pagesize)))))
-      (setq pdf-view-display-size
-            (- (* 2 scale) 0.1))
-      (pdf-view-redisplay t)))
 
   (map! (:map pdf-view-mode-map
          :gn "C-e" #'pdf-view-scroll-down-or-previous-page
@@ -810,43 +634,10 @@ The DATE is derived from the #+title which must match the Org date format."
 
   (remove-hook! 'vterm-mode-hook #'hide-mode-line-mode)
 
-  (defadvice! tiku91/vterm-redraw-cursor (args)
-    "Redraw evil cursor with vterm to keep it consistent with the current state.
-Fix by tiku91:
-https://github.com/akermu/emacs-libvterm/issues/313#issuecomment-867525845"
-    :after #'vterm--redraw
-    (evil-refresh-cursor evil-state)))
+  ;; Fix evil cursor getting out of sync
+  (advice-add 'vterm--redraw :after #'tiku91/vterm-redraw-cursor))
 
 (after! sh-script
-  (defun thegodzeye/vterm-execute-current-line ()
-    "Insert text of current line in vterm and execute.
-Based off:
-https://www.reddit.com/r/emacs/comments/op4fcm/send_command_to_vterm_and_execute_it/"
-    (interactive)
-    (require 'vterm)
-    (let ((command (buffer-substring
-                    (save-excursion
-                      (beginning-of-line)
-                      (point))
-                    (save-excursion
-                      (end-of-line)
-                      (point)))))
-      (let ((cbuf (current-buffer))
-            (vbuf (get-buffer vterm-buffer-name)))
-        (if vbuf
-            (progn
-              (unless (doom-visible-buffer-p vbuf)
-                (display-buffer vterm-buffer-name t))
-              (switch-to-buffer-other-window vterm-buffer-name))
-          (progn
-            (vterm-other-window)
-            (evil-normal-state)))
-        (vterm--goto-line -1)
-        (vterm-send-string command)
-        (vterm-send-return)
-        (switch-to-buffer-other-window cbuf)
-        (forward-line))))
-
   (map! :map sh-mode-map
         :nv [C-return] #'thegodzeye/vterm-execute-current-line))
 
@@ -871,45 +662,11 @@ https://www.reddit.com/r/emacs/comments/op4fcm/send_command_to_vterm_and_execute
   ;; Customize type faces (used for F&T color)
   (custom-set-faces! '(ess-constant-face :weight bold :inherit font-lock-warning-face))
 
-  (defadvice! my/advice-ess-switch (orig-fn TOGGLE-EOB)
-    "Only switch to the REPL if it was already visible"
-    :around #'ess-switch-to-inferior-or-script-buffer
-    (let* ((starting-window (selected-window))
-           (ess-process (when ess-current-process-name
-                          (get-process ess-current-process-name)))
-           (ess-buffer-visible (when ess-process
-                                 (doom-visible-buffer-p
-                                  (buffer-name (process-buffer ess-process))))))
-      (funcall orig-fn TOGGLE-EOB)
-      (evil-normal-state)
-      (unless ess-buffer-visible
-        (select-window starting-window))))
+  (advice-add 'ess-switch-to-inferior-or-script-buffer :around #'my-ess-switch-maybe-a)
 
   ;; Make evil tab width same as ESS offset
   (add-hook! 'ess-mode-hook
              (setq-local evil-shift-width 'ess-indent-offset))
-
-  (defun my-ess-insert-string (mystr)
-    "Insert string, undo if the same input event is issued twice"
-    (let* ((event (event-basic-type last-input-event))
-           (char (ignore-errors (format "%c" event))))
-      (cond ((and char (ess-inside-string-or-comment-p))
-             (insert char))
-            ((re-search-backward mystr (- (point) (length mystr)) t)
-             (if (and char (numberp event))
-                 (replace-match char t t)
-               (replace-match "")))
-            (t (insert mystr)))))
-
-  (defun my/ess-r-insert-assign (arg)
-    "Rewrite of `ess-insert-assign' that respects white space, invoke twice to undo"
-    (interactive "p")
-    (my-ess-insert-string " <- "))
-
-  (defun my/ess-r-insert-pipe (arg)
-    "Based on `ess-insert-assign', invoking the command twice reverts the insert"
-    (interactive "p")
-    (my-ess-insert-string " %>% "))
 
   ;; ESS R keybindings, make < add a <-, type twice to undo (same goes for >)
   (map! (:map ess-mode-map
@@ -944,41 +701,6 @@ https://www.reddit.com/r/emacs/comments/op4fcm/send_command_to_vterm_and_execute
         :desc "View R object" :localleader "o" #'ess-view-data-print))
 
 (after! python
-  ;; Python functions
-  (defun my/python-shell-send-statment-and-step ()
-    "Send statement to python shell and move to next"
-    (interactive)
-    (python-shell-send-region
-     (save-excursion (python-nav-beginning-of-statement))
-     (save-excursion (python-nav-end-of-statement)))
-    (python-nav-forward-statement))
-
-  (defun my/python-shell-send-block-and-step ()
-    "Send block to python shell and move to next statement"
-    (interactive)
-    (python-shell-send-region
-     (save-excursion (python-nav-beginning-of-block))
-     (save-excursion (python-nav-end-of-block)))
-    (python-nav-end-of-block)
-    (python-nav-forward-statement))
-
-  (defun my/python-send-current-and-step ()
-    "Sends statement under point to python shell, if the statement starts a code
-block, send the entire code block."
-    (interactive)
-    ;; Ensure the python process is running
-    (unless (python-shell-get-process)
-      (save-selected-window (call-interactively #'+python/open-ipython-repl))
-      ;; Give python time to load the interaction module
-      (sleep-for .5))
-    ;; Check for region, start of block, or other and act accordingly
-    (cond ((region-active-p)
-           (call-interactively #'python-shell-send-region))
-          ((python-info-statement-starts-block-p)
-           (call-interactively #'my/python-shell-send-block-and-step))
-          (t
-           (call-interactively #'my/python-shell-send-statment-and-step))))
-
   ;; Python keybindings
   (map! :map python-mode-map
         :nv [C-return] #'my/python-send-current-and-step
@@ -995,24 +717,7 @@ block, send the entire code block."
   (custom-set-variables
    '(conda-anaconda-home "~/.local/miniconda3/"))
 
-  (defadvice! my/anaconda-disable-on-remote ()
-    "Only activate anaconda-mode if the buffer is local"
-    :before-while #'+python-init-anaconda-mode-maybe-h
-    (not (file-remote-p default-directory)))
-
-  (defun my-conda-env-promt-activate (env-name)
-    "If conda environment with ENV-NAME is not activated, prompt the user to do so"
-    (if (and (not (equal env-name conda-env-current-name))
-             (y-or-n-p (format "Activate conda env: %s?" env-name)))
-      (conda-env-activate (conda-env-name-to-dir env-name))))
-
-  (defun my/conda-env-guess-prompt ()
-    "Guess the currently relevant conda env and prompt user to activate it"
-    (interactive)
-    (let ((candidate-env (conda--infer-env-from-buffer))
-          (fallback-env "base"))
-      (cond (candidate-env (my-conda-env-promt-activate candidate-env))
-            ((not conda-env-current-name) (my-conda-env-promt-activate fallback-env)))))
+  (advice-add '+python-init-anaconda-mode-maybe-h :before-until #'my-remote-buffer-p)
 
   ;; Prompt user to change into a conda env
   (when (executable-find "conda")
@@ -1064,7 +769,6 @@ block, send the entire code block."
     (interactive)
     (good-scroll-move (/ (good-scroll--window-usable-height) -2)))
 
-
   ;; Override evil functions on mode activation, undo upon deactivation
   (add-hook! 'good-scroll-mode-hook
     (defun my-good-scroll-evil-override-hook ()
@@ -1083,20 +787,7 @@ block, send the entire code block."
 (use-package! atomic-chrome
   :commands atomic-chrome-start-server
   :init
-  ;; Function to make atomic chrome server toggleable
-  (defun my/atomic-chrome-toggle-server ()
-    (interactive)
-    (if (bound-and-true-p global-atomic-chrome-edit-mode)
-        (progn
-          (atomic-chrome-stop-server)
-          (message "Stopped GhostText Server"))
-      (progn
-        (atomic-chrome-start-server)
-        (message "Started GhostText Server"))))
-
-  ;; Bind toggle
   (map! :desc "GhostText server" :leader "t G" #'my/atomic-chrome-toggle-server)
-
   :config
   (setq atomic-chrome-buffer-open-style 'full)
   (setq atomic-chrome-url-major-mode-alist
