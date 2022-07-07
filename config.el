@@ -827,6 +827,12 @@
 (use-package! trashed
   :commands trashed)
 
+(use-package! dired-du
+  :after ranger
+  :bind (:map ranger-mode-map ("d u" . dired-du-mode))
+  :config
+  (setq dired-du-size-format t))
+
 ;; Reverse `rx' operation, for turning regex into lisp
 (use-package! xr
   :commands xr)
