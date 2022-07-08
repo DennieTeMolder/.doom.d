@@ -61,8 +61,8 @@
   "Perform `org-fill-paragraph' unless el at point is a src block"
   ;; Check if `auto-fill-mode' is active
   (when auto-fill-function
-    (unless (eq (org-element-type (org-element-at-point))
-                'src-block)
+    (unless (memq (org-element-type (org-element-at-point))
+                  '(src-block comment-block))
       (org-fill-paragraph))))
 
 ;;;###autoload
