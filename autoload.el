@@ -343,6 +343,37 @@ Fix by tiku91:
 https://github.com/akermu/emacs-libvterm/issues/313#issuecomment-867525845"
   (evil-refresh-cursor evil-state))
 
+;;; Theme recommendations
+;;;###autoload
+(defun my--theme-which-inactive (theme1 theme2)
+  "Return THEME1 of not currently active, else return THEME2"
+  (if (eq theme1 (car custom-enabled-themes)) theme2 theme1))
+
+;;;###autoload
+(defun my-recommend-theme ()
+  "Recommend a NEW theme to use based on context and time of day."
+ (if (bound-and-true-p org-tree-slide-mode)
+     my-presentation-theme
+   (let ((hour (string-to-number (substring (current-time-string) 11 13))))
+     (if (member hour (number-sequence my-first-hour-of-day my-last-hour-of-day))
+         (my--theme-which-inactive my-day-theme my-solarized-theme)
+       (my--theme-which-inactive my-night-theme my-dark-theme)))))
+
+;;;###autoload
+(defun my--load-theme-confirm (theme)
+  "Load THEME after user confirmation."
+  (when (y-or-n-p (format "Activate \"%s\" theme?" theme))
+    (mapc #'disable-theme custom-enabled-themes)
+    (if (custom-theme-p theme)
+        (enable-theme theme)
+      (load-theme theme :no-confirm))))
+
+;;;###autoload
+(defun my/load-recommended-theme ()
+  "Load the theme returned by `my-recommend-theme' after user confirmation."
+  (interactive)
+  (my--load-theme-confirm (my-recommend-theme)))
+
 ;;; Misc
 ;;;###autoload
 (defun my/toggle-trash-delete ()

@@ -48,17 +48,18 @@
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
 
-;; Set theme based on time
-(setq doom-theme
-      (let ((light-theme 'doom-flatwhite)
-            (dark-theme 'doom-vibrant)
-            (start-time-light-theme 8)
-            (end-time-light-theme 17)
-            (hour (string-to-number (substring (current-time-string) 11 13))))
-        (if (member hour (number-sequence start-time-light-theme end-time-light-theme))
-            light-theme
-          dark-theme))
-      doom-flatwhite-no-highlight-variables t)
+;; Settings use by `my/recommend-theme' to determine theme
+(defvar my-first-hour-of-day 8)
+(defvar my-last-hour-of-day 17)
+(defvar my-day-theme 'doom-one-light)
+(defvar my-night-theme 'doom-vibrant)
+(defvar my-presentation-theme 'doom-ayu-light)
+(defvar my-solarized-theme 'doom-flatwhite)
+(defvar my-dark-theme 'doom-monokai-ristretto)
+
+;; Load theme based on custom function
+(setq doom-flatwhite-no-highlight-variables t
+      doom-theme (my-recommend-theme))
 
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
