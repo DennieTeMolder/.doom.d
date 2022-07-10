@@ -28,6 +28,16 @@
     (file-readable-p file)))
 
 ;;; Workspaces/perspectives
+(defun my-buffer-move-to-workspace (buffer name)
+  "Move BUFFER from the original workspace to NAME and switch"
+  (let ((origin (+workspace-current-name)))
+    (+workspace-switch name t)
+    (persp-add-buffer buffer (+workspace-get name) t nil)
+    (+workspace-switch origin)
+    (persp-remove-buffer buffer (+workspace-get origin) nil t nil nil)
+    (+workspace-switch name)
+    (+workspace/display)))
+
 ;;;###autoload
 (defun my/buffer-move-to-workspace-prompt ()
   "Move current buffer from the current to the selected workspace"
@@ -38,7 +48,6 @@
                (+workspace-list-names))))
     (my-buffer-move-to-workspace buffer name)))
 
-;;;###autoload
 (defun my-workspace-switch-maybe (name)
   "Switch to workspace NAME if not already current"
   (unless (equal name (+workspace-current-name))
@@ -55,7 +64,7 @@
   "Open/create the dedicated org-roam workspace"
   (my-workspace-switch-maybe "*roam*"))
 
-;;; Org
+;;; Org-mode
 ;;;###autoload
 (defun my-insert-exit-fill-paragraph ()
   "Perform `org-fill-paragraph' unless el at point is a src block"
@@ -65,7 +74,6 @@
                   '(src-block comment-block))
       (org-fill-paragraph))))
 
-;;;###autoload
 (defun my-org-get-title-value ()
   "Returns the value of #+TITLE for the current document"
   (car (cdar (org-collect-keywords '("TITLE")))))
@@ -282,7 +290,6 @@ https://www.reddit.com/r/emacs/comments/op4fcm/send_command_to_vterm_and_execute
       (forward-line))))
 
 ;;; ESS/R
-;;;###autoload
 (defun my-ess-insert-string (mystr)
   "Insert string, undo if the same input event is issued twice"
   (let* ((event (event-basic-type last-input-event))
@@ -360,8 +367,7 @@ block, send the entire code block."
          (call-interactively #'my/python-shell-send-statment-and-step))))
 
 ;;; Conda
-;;;###autoload
-(defun my-conda-env-promt-activate (env-name)
+(defun my--conda-env-promt-activate (env-name)
   "If conda environment with ENV-NAME is not activated, prompt the user to do so"
   (if (and (not (equal env-name conda-env-current-name))
            (y-or-n-p (format "Activate conda env: %s?" env-name)))
@@ -373,8 +379,8 @@ block, send the entire code block."
   (interactive)
   (let ((candidate-env (conda--infer-env-from-buffer))
         (fallback-env "base"))
-    (cond (candidate-env (my-conda-env-promt-activate candidate-env))
-          ((not conda-env-current-name) (my-conda-env-promt-activate fallback-env)))))
+    (cond (candidate-env (my--conda-env-promt-activate candidate-env))
+          ((not conda-env-current-name) (my--conda-env-promt-activate fallback-env)))))
 
 ;;;###autoload
 (defun my-remote-buffer-p (&optional buf)
@@ -404,7 +410,6 @@ https://github.com/akermu/emacs-libvterm/issues/313#issuecomment-867525845"
   (evil-refresh-cursor evil-state))
 
 ;;; Theme recommendations
-;;;###autoload
 (defun my--theme-which-inactive (theme1 theme2)
   "Return THEME1 of not currently active, else return THEME2"
   (if (eq theme1 (car custom-enabled-themes)) theme2 theme1))
@@ -419,7 +424,6 @@ https://github.com/akermu/emacs-libvterm/issues/313#issuecomment-867525845"
          (my--theme-which-inactive my-day-theme my-solarized-theme)
        (my--theme-which-inactive my-night-theme my-dark-theme)))))
 
-;;;###autoload
 (defun my--load-theme-confirm (theme)
   "Load THEME after user confirmation."
   (when (y-or-n-p (format "Activate \"%s\" theme?" theme))

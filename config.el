@@ -329,17 +329,6 @@
                     doom/goto-private-packages-file))
     (advice-add symbol :before #'my/doom-private-goto-workspace))
 
-  ;; Functions and binding to move buffers between workspaces
-  (defun my-buffer-move-to-workspace (buffer name)
-    "Move BUFFER from the original workspace to NAME and switch"
-    (let ((origin (+workspace-current-name)))
-      (+workspace-switch name t)
-      (persp-add-buffer buffer (+workspace-get name) t nil)
-      (+workspace-switch origin)
-      (persp-remove-buffer buffer (+workspace-get origin) nil t nil nil)
-      (+workspace-switch name)
-      (+workspace/display)))
-
   (map! :leader
         :desc "Move buffer to workspace" "b TAB" #'my/buffer-move-to-workspace-prompt))
 
