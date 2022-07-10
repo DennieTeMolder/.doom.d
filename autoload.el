@@ -117,6 +117,62 @@ Based on `org-mark-element' and `org-roam-preview-default-function'."
     (string-trim (buffer-substring-no-properties beg end))))
 
 ;;;###autoload
+(defun hlissner-org-roam-add-preamble-a (string)
+  "Add information about current node to top of org roam buffer."
+  (let ((node org-roam-buffer-current-node))
+    (insert
+     (format "%-10s %s\n" (propertize "ID:" 'face 'bold)
+             (org-roam-node-id node))
+     (format "%-10s %s\n" (propertize "Type:" 'face 'bold)
+             (if-let (type (org-roam-node-doom-type node))
+                 (capitalize type)
+               "-"))
+     (format "%-10s %s\n" (propertize "Tags:" 'face 'bold)
+             (if-let (tags (org-roam-node-tags node))
+                 (mapconcat (lambda (tag)
+                              (propertize (concat "#" tag) 'face 'org-tag))
+                            tags " ")
+               "-"))
+     (format "%-10s %s\n" (propertize "Aliases:" 'face 'bold)
+             (if-let (aliases (org-roam-node-aliases node))
+                 (string-join aliases ", ")
+               "-"))
+     ?\n)))
+
+(defvar org-roam-old-slug nil)
+
+(defun hlissner-org-roam-update-slug-h ()
+  "Rename the current file if #+title has changed.
+Will ask for confirmation if the new filename already exists."
+  (when (org-roam-buffer-p)
+    (when-let* ((node (org-roam-node-at-point))
+                (new-slug (org-roam-node-slug node))
+                (old-slug org-roam-old-slug)
+                (old-slug-re (concat "/[^/]*\\(" (regexp-quote old-slug) "\\)[^/]*\\.org$"))
+                (file-name (org-roam-node-file node))
+                ((not (equal old-slug new-slug)))
+                ((string-match-p old-slug-re file-name)))
+      (setq org-roam-old-slug new-slug)
+      (condition-case _
+          (let ((new-file-name
+                 (replace-regexp-in-string
+                  old-slug-re (regexp-quote new-slug)
+                  file-name nil nil 1)))
+            (message "Updating slug in filename (%S -> %S)" old-slug new-slug)
+            (rename-file file-name new-file-name 1)
+            (set-visited-file-name new-file-name t t)
+            (org-roam-db-autosync--setup-file-h))
+        (error
+         (setq org-roam-old-slug old-slug))))))
+
+;;;###autoload
+(defun hlissner-org-roam-update-slug-on-save-h ()
+  "Set up auto-updating for the current node's filename.
+Calls `hlissner-org-roam-update-slug-h' on `after-save-hook'."
+  (setq-local org-roam-old-slug (ignore-errors (org-roam-node-slug (org-roam-node-at-point))))
+  (add-hook 'after-save-hook #'hlissner-org-roam-update-slug-h
+            'append 'local))
+
 ;;; Org-roam-dailies
 (defun my-org-roam-dailes-calendar--file-to-absolute (file)
   "Convert file name (with gregorian date format) to absolute time"

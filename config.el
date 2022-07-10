@@ -509,6 +509,15 @@
   ;; Custom org-roam buffer preview function
   (setq org-roam-preview-function #'my-org-element-at-point-get-content)
 
+  ;; Automatically update the slug in the filename when #+title: has changed.
+  (add-hook 'org-roam-find-file-hook #'hlissner-org-roam-update-slug-on-save-h)
+
+  ;; Make the backlinks buffer easier to peruse by folding leaves by default.
+  (add-hook 'org-roam-buffer-postrender-functions #'magit-section-show-level-2)
+
+  ;; Add ID, Type, Tags, and Aliases to top of backlinks buffer.
+  (advice-add #'org-roam-buffer-set-header-line-format :after #'hlissner-org-roam-add-preamble-a)
+
   ;; Open all roam buffers in a dedicated workspace
   (dolist (symbol '(org-roam-node-find
                     org-roam-node-random
