@@ -117,14 +117,18 @@ Based on `org-mark-element' and `org-roam-preview-default-function'."
     (string-trim (buffer-substring-no-properties beg end))))
 
 ;;;###autoload
+;;; Org-roam-dailies
+(defun my-org-roam-dailes-calendar--file-to-absolute (file)
+  "Convert file name (with gregorian date format) to absolute time"
+  (calendar-absolute-from-gregorian (org-roam-dailies-calendar--file-to-date file)))
+
 (defun my-org-roam-dailes-active-files ()
   "Return list of daily files corresponding to TODAY or later"
   (let ((files (org-roam-dailies--list-files))
         (today (calendar-absolute-from-gregorian (calendar-current-date))))
-    (while
-        (< (calendar-absolute-from-gregorian
-            (org-roam-dailies-calendar--file-to-date (car files)))
-           today)
+    (while (and files
+                (< (my-org-roam-dailes-calendar--file-to-absolute (car files))
+                   today))
       (pop files))
     files))
 
