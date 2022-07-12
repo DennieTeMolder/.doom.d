@@ -395,7 +395,7 @@ Also used by `org-modern-mode' to calculate heights.")
 
   ;; Allow for double quoting using '' and `` (`` -> “)
   (add-hook! 'org-mode-hook
-    (defun my-org-mode-hook ()
+    (defun my-org-mode-setup-h ()
       "Personal org-mode customisation's after mode startup"
       (setq-local line-spacing my-org-line-spacing
                   auto-hscroll-mode nil)
@@ -777,7 +777,7 @@ Also used by `org-modern-mode' to calculate heights.")
 
   ;; Override evil functions on mode activation, undo upon deactivation
   (add-hook! 'good-scroll-mode-hook
-    (defun my-good-scroll-evil-override-hook ()
+    (defun my-good-scroll-evil-override-h ()
       (if good-scroll-mode
           (progn
             (advice-add 'evil-scroll-down :override #'my/good-scroll-down-half)
