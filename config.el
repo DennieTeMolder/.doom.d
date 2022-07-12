@@ -443,11 +443,11 @@ Also used by `org-modern-mode' to calculate heights.")
 
   (setq org-modern-label-border my-org-line-spacing
         org-modern-statistics nil
-        org-modern-table nil ;; Ref: https://github.com/minad/org-modern/issues/69
+        org-modern-table nil ; Ref: https://github.com/minad/org-modern/issues/69
         org-modern-star ["●" "◉" "○" "◉" "○" "◉" "○" "◉"]
-        org-modern-list '((?+ . 8226)
-                          (?- . 8250)
-                          (?* . 8208))))
+        org-modern-list '((?+ . "›")
+                          (?- . "‒")
+                          (?* . "•"))))
 
 (after! org-tree-slide
   (setq +org-present-text-scale 6)
