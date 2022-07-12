@@ -104,6 +104,24 @@ https://github.com/abo-abo/org-download/commit/137c3d2aa083283a3fc853f9ecbbc0303
       (message "Image: %s saved!" (expand-file-name filename-with-timestamp dir))
       (concat dir filename-with-timestamp))))
 
+;;; Org-tree-slide
+;;;###autoload
+(defun my-org-tree-slide-no-squiggles-a (orig-fn &optional ARG)
+  "Toggle modes that litter the buffer with squiggly lines."
+  (let ((ARG (if (memq ARG '(nil toggle))
+                 (if org-tree-slide-mode -1 +1)
+               ARG)))
+    (if (< 0 ARG)
+        (progn
+          (outline-show-all)
+          (flycheck-mode -1)
+          (spell-fu-mode -1)
+          (funcall orig-fn ARG))
+      (funcall orig-fn ARG)
+      (outline-show-all)
+      (flycheck-mode +1)
+      (spell-fu-mode +1))))
+
 ;;; Org-roam
 ;;;###autoload
 (defun my/org-roam-open-index ()

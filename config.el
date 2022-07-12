@@ -465,6 +465,9 @@
           (mixed-pitch-mode -1)
           (remove-hook! 'pdf-view-mode-hook #'org-tree-slide-mode)))))
 
+  ;; Disable `flycheck-mode' and `spell-fu-mode' when presenting
+  (advice-add 'org-tree-slide-mode :around #'my-org-tree-slide-no-squiggles-a)
+
   (map! :map org-tree-slide-mode-map
         :gn [left] #'org-tree-slide-move-previous-tree
         :gn [right] #'org-tree-slide-move-next-tree
