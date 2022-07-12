@@ -8,16 +8,18 @@
         popper-reference-buffers
         '("\\*Async Shell Command\\*"
           "\\*Local variables\\*"
+          "\\*Flycheck errors\\*"
           "\\*Calendar\\*"
           "\\*info\\*"
           "^\\*Customize"
-          "^\\*Warnings"
           "^\\*Backtrace"
+          "^\\*Warnings"
+          "^\\*Install"
           "^\\*Calc"
           "^\\*\\(?:Proced\\|timer-list\\|Abbrevs\\|Output\\|Occur\\|unsent mail.*?\\|message\\)\\*"
-          "^\\*\\(?:[Cc]ompil\\(?:ation\\|e-Log\\)\\|Messages\\|Install\\)"
-          "^\\*\\(?:doom[: ]\\|Pp E\\)"
+          "^\\*\\(?:[Cc]ompil\\(?:ation\\|e-Log\\)\\|Messages\\)"
           "^\\*\\([Hh]elp\\|Apropos\\|refs\\)"
+          "^\\*\\(?:doom[: ]\\|Pp E\\)"
           "^\\*\\(?:Wo\\)?Man "
           (lambda (buf) (with-current-buffer buf
                      (derived-mode-p 'comint-mode 'compilation-mode)))))
