@@ -448,7 +448,10 @@ https://github.com/akermu/emacs-libvterm/issues/313#issuecomment-867525845"
     (mapc #'disable-theme custom-enabled-themes)
     (if (custom-theme-p theme)
         (enable-theme theme)
-      (load-theme theme :no-confirm))))
+      (load-theme theme :no-confirm))
+    ;; Reload silently to remove artefacts
+    (let ((inhibit-message t))
+      (doom/reload-theme))))
 
 ;;;###autoload
 (defun my/load-recommended-theme ()
