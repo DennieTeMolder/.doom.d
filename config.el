@@ -446,24 +446,24 @@
                           (?* . 8208))))
 
 (after! org-tree-slide
-  (setq +org-present-text-scale 8
-        org-tree-slide-fold-subtrees-skipped nil)
+  (setq +org-present-text-scale 6)
 
-  (add-hook! 'org-tree-slide-mode-hook
-    (defun my-org-tree-slide-present-toggles ()
-      "Toggles for several settings to prettify presentations"
+  (add-hook! 'org-tree-slide-mode-hook :append
+    (defun my-org-tree-slide-setup-h ()
+      "Additional settings to prettify presentations"
       (if org-tree-slide-mode
           (progn
-            (setq-local display-line-numbers nil
-                        buffer-read-only t
+            (setq-local buffer-read-only t
                         evil-normal-state-cursor 'hbar)
-            (when hl-line-mode (hl-line-mode -1))
+            (display-line-numbers-mode -1)
+            (hl-line-mode -1)
             (mixed-pitch-mode +1)
             (add-hook! 'pdf-view-mode-hook :append #'org-tree-slide-mode))
         (progn
           (setq-local buffer-read-only nil)
           (mixed-pitch-mode -1)
-          (remove-hook! 'pdf-view-mode-hook #'org-tree-slide-mode)))))
+          (remove-hook! 'pdf-view-mode-hook #'org-tree-slide-mode)))
+      (redraw-display)))
 
   ;; Disable `flycheck-mode' and `spell-fu-mode' when presenting
   (advice-add 'org-tree-slide-mode :around #'my-org-tree-slide-no-squiggles-a)
