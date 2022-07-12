@@ -361,18 +361,22 @@
         ispell-personal-dictionary "~/Nextcloud/Dictionary/personal_dict.pws"))
 
 ;; Org-mode settings
+(defvar my-org-line-spacing 0.1
+  "`line-spacing' used in `org-mode'.
+Also used by `org-modern-mode' to calculate heights.")
+
 (after! org
   (setq org-ellipsis " ▾"
         org-indent-indentation-per-level 1
         org-list-demote-modify-bullet '(("+" . "-") ("-" . "+") ("*" . "+"))
+        org-use-property-inheritance t ; can cause slowdown when searching
+        org-image-actual-width '(800) ; default if not ATTR is provided
         org-agenda-start-day nil
         org-agenda-span 14
         org-agenda-time-grid '((daily today require-timed)
                                (759 1159 1300 1700)
                                " ┄┄┄┄┄ " "┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄")
         org-agenda-current-time-string "⭠ now ─────────")
-
-  (defvar my-org-line-spacing 0.1)
 
   ;; Make headings bold and larger
   (custom-set-faces!
