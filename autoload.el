@@ -28,6 +28,19 @@
     (file-readable-p file)))
 
 ;;; Workspaces/perspectives
+;;;###autoload
+(defun my/load-session (file)
+  "Stripped down `doom/load-session' with proper default value.
+Also checks if FILE exists."
+  (interactive
+   (let ((session-file (doom-session-file)))
+     (list (read-file-name "Session to restore: "
+                           (file-name-directory session-file)
+                           session-file
+                           t))))
+  (doom-load-session file)
+  (message "Session restored. Welcome back."))
+
 (defun my-buffer-move-to-workspace (buffer name)
   "Move BUFFER from the original workspace to NAME and switch"
   (let ((origin (+workspace-current-name)))

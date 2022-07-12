@@ -168,20 +168,11 @@
 
 ;; Customize dashboard menu options to include org roam
 (setq +doom-dashboard-menu-sections
-      '(("Reload last session" :icon
+      '(("Restore previous session" :icon
          (all-the-icons-octicon "history" :face 'doom-dashboard-menu-title)
-         :when
-         (cond
-          ((featurep! :ui workspaces)
-           (file-exists-p
-            (expand-file-name persp-auto-save-fname persp-save-dir)))
-          ((require 'desktop nil t)
-           (file-exists-p
-            (desktop-full-file-name))))
-         :face
-         (:inherit
-          (doom-dashboard-menu-title bold))
-         :action doom/quickload-session)
+         :when (file-exists-p (doom-session-file))
+         :face (:inherit (doom-dashboard-menu-title bold))
+         :action my/load-session)
         ("Recently opened files" :icon
          (all-the-icons-octicon "file-text" :face 'doom-dashboard-menu-title)
          :action recentf-open-files)
@@ -328,6 +319,8 @@
                     doom/goto-private-config-file
                     doom/goto-private-packages-file))
     (advice-add symbol :before #'my/doom-private-goto-workspace))
+
+  (map! [remap doom/load-session] #'my/load-session)
 
   (map! :leader
         :desc "Move buffer to workspace" "b TAB" #'my/buffer-move-to-workspace-prompt))
