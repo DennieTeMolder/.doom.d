@@ -16,7 +16,7 @@
 
 ;;;###autoload
 (defun +popper/raise-popup ()
-  "Raise open popup to its own dedicated window"
+  "Raise open popup to become a regular buffer"
   (interactive)
   (let ((pop-win (caar popper-open-popup-alist)))
     (unless pop-win
@@ -33,13 +33,13 @@
 
 ;;;###autoload
 (defun +popper/reload (&rest _)
-    "Reloads popper forcing all buffers to be reevaluated."
-    (interactive)
-    (popper-mode +1))
+  "Reload popper forcing all buffers to be reevaluated."
+  (interactive)
+  (popper-mode +1))
 
 ;;;###autoload
 (defun +popper-echo-transform (str)
-  "Removes apostrophes and truncates descriptions before \":\" from STR."
+  "Remove apostrophes and truncate descriptions before \":\" from STR."
   (replace-regexp-in-string  "^\\*\\|\\*$\\|\\(.\\).*\\(:\\)[[:space:]]?"
                              "\\1\\2"
                              str))
