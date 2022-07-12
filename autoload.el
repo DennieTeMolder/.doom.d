@@ -135,6 +135,11 @@ https://github.com/abo-abo/org-download/commit/137c3d2aa083283a3fc853f9ecbbc0303
       (flycheck-mode +1)
       (spell-fu-mode +1))))
 
+;;; Org-appear
+(defun my-org-pretty-use-appear-a ()
+  "Activate `org-appear-mode' based on `org-pretty-entities'."
+  (org-appear-mode (if org-pretty-entities +1 -1)))
+
 ;;; Org-roam
 ;;;###autoload
 (defun my/org-roam-open-index ()

@@ -417,6 +417,15 @@ Also used by `org-modern-mode' to calculate heights.")
   (setq org-odt-styles-dir (expand-file-name "straight/repos/org/etc/styles" doom-local-dir)
         org-odt-preferred-output-format "doc"))
 
+(use-package! org-appear
+  :commands org-appear-mode
+  :init
+  (advice-add 'org-toggle-pretty-entities :after #'my-org-pretty-use-appear-a)
+  :config
+  (setq org-appear-autosubmarkers t
+        org-appear-autoemphasis t
+        org-appear-autoentities t))
+
 (use-package! org-modern
   :hook (org-mode . org-modern-mode)
   :hook (org-agenda-finalize . org-modern-agenda)
@@ -455,6 +464,7 @@ Also used by `org-modern-mode' to calculate heights.")
             (display-line-numbers-mode -1)
             (hl-line-mode -1)
             (mixed-pitch-mode +1)
+            (org-appear-mode -1)
             (add-hook! 'pdf-view-mode-hook :append #'org-tree-slide-mode))
         (progn
           (setq-local buffer-read-only nil)

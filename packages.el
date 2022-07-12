@@ -72,5 +72,7 @@
 (package! trashed)
 (package! dired-du)
 (package! xr)
+(package! org-appear
+  :recipe (:host github :repo "awth13/org-appear"))
 (package! indent-tools
   :recipe (:host github :repo "DennieTeMolder/indent-tools"))
