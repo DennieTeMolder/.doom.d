@@ -17,22 +17,15 @@
 
   (add-hook! 'visual-fill-column-mode-hook
     (defun +zenl-visual-fill-column-h ()
-        (if visual-fill-column-mode
-              (+zenl/hide-line-numbers)
-          (+zenl/restore-line-numbers))
+        (display-line-numbers-mode (if visual-fill-column-mode -1 +1))
         (text-scale-set (if visual-fill-column-mode +zenl-text-scale 0))
-        (visual-fill-column-adjust)
-        (when (featurep! :lang org)
-          (+org-pretty-mode (if visual-fill-column-mode +1 -1))))))
+        (when (and (eq major-mode 'org-mode)
+                   (featurep! :lang org))
+          (+org-pretty-mode (if visual-fill-column-mode +1 -1)))
+        (visual-fill-column-adjust))))
 
 (use-package! mixed-pitch
   :hook (visual-fill-column-mode . +zenl-enable-mixed-pitch-mode-h)
-  :init
   :config
-  (defun +zenl-enable-mixed-pitch-mode-h ()
-    "Enable `mixed-pitch-mode' when in `+zenl-mixed-pitch-modes'."
-    (when (apply #'derived-mode-p +zenl-mixed-pitch-modes)
-      (mixed-pitch-mode (if visual-fill-column-mode +1 -1))))
-
   (pushnew! mixed-pitch-fixed-pitch-faces
             'solaire-line-number-face))

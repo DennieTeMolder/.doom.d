@@ -1,18 +1,7 @@
 ;;; ui/zen-light/autoload.el -*- lexical-binding: t; -*-
 
 ;;;###autoload
-(defvar +zenl-display-line-numbers-previous-state nil)
-
-;;;###autoload
-(defun +zenl/hide-line-numbers ()
-  "Hides line numbers while recording `+zenl-display-line-numbers-previous-state'"
-  (interactive)
-  (setq-local +zenl-display-line-numbers-previous-state display-line-numbers
-              display-line-numbers nil))
-
-;;;###autoload
-(defun +zenl/restore-line-numbers ()
-  "Restores line numbers to `+zenl-display-line-numbers-previous-state'"
-  (interactive)
-  (when +zenl-display-line-numbers-previous-state
-    (setq-local display-line-numbers +zenl-display-line-numbers-previous-state)))
+(defun +zenl-enable-mixed-pitch-mode-h ()
+  "Enable `mixed-pitch-mode' when in `+zenl-mixed-pitch-modes'."
+  (when (apply #'derived-mode-p +zenl-mixed-pitch-modes)
+    (mixed-pitch-mode (if visual-fill-column-mode +1 -1))))
