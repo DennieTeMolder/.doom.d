@@ -466,6 +466,7 @@ Also used by `org-modern-mode' to calculate heights.")
   (advice-add 'org-tree-slide-mode :around #'my-org-tree-slide-no-squiggles-a)
 
   (map! :map org-tree-slide-mode-map
+        :gn "q" (cmd! (org-tree-slide-mode -1))
         :gn [left] #'org-tree-slide-move-previous-tree
         :gn [right] #'org-tree-slide-move-next-tree
         :gn [C-up] #'org-tree-slide-content))
