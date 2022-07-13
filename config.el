@@ -864,4 +864,8 @@ Also used by `org-modern-mode' to calculate heights.")
 (use-package! xr
   :commands xr)
 
+;; Add colours to info pages to make them more readable
+(use-package! info-colors
+    :hook (Info-selection . info-colors-fontify-node))
+
 (load! "+keybindings")
