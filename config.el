@@ -211,6 +211,20 @@
 (remove-hook! '(completion-list-mode-hook Man-mode-hook)
               #'hide-mode-line-mode)
 
+;; Search options for "SPC s o" (`+lookup/online')
+(setq +lookup-provider-url-alist
+      '(("DuckDuckGo"        +lookup--online-backend-duckduckgo "https://duckduckgo.com/?q=%s")
+        ("Wikipedia"         "https://wikipedia.org/search-redirect.php?language=en&go=Go&search=%s")
+        ("Youtube"           "https://youtube.com/results?aq=f&oq=&search_query=%s")
+        ("Github"            "https://github.com/search?ref=simplesearch&q=%s")
+        ("StackOverflow"     "https://stackoverflow.com/search?q=%s")
+        ("Arch wiki"         "https://wiki.archlinux.org/index.php?search=%s")
+        ("Doom Emacs issues" "https://github.com/hlissner/doom-emacs/issues?q=is%%3Aissue+%s")
+        ("Ubuntu packages"   "https://packages.ubuntu.com/search?suite=focal&arch=arm64&keywords=%s")
+        ("Manjaro packages"  "https://packages.manjaro.org/?query=%s")
+        ("AUR"               "https://aur.archlinux.org/packages?O=0&K=%s")
+        ("Anaconda packages" "https://anaconda.org/search?q=%s")))
+
 ;; Spacemacs style M-x
 ;; Old SPC SPC binding (projectile find file) also available under "SPC p f"
 ;; This frees up the "SPC :" to be another evil-ex because i am condition to hit SPC
