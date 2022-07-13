@@ -201,6 +201,9 @@
 ;; Disable visual line mode as it can be expensive on long lines
 (remove-hook! 'text-mode-hook #'visual-line-mode)
 
+;; Automatically load changes (should mostly be in log files)
+(add-hook! 'text-mode-hook (auto-revert-mode +1))
+
 ;; Disable global hl-line-mode
 (remove-hook! 'doom-first-buffer-hook #'global-hl-line-mode)
 
