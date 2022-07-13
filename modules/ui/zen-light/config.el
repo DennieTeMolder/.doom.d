@@ -1,6 +1,7 @@
 ;;; ui/zen-light/config.el -*- lexical-binding: t; -*-
 
-(defvar +zenl-mixed-pitch-modes '(adoc-mode rst-mode markdown-mode org-mode)
+(defvar +zenl-mixed-pitch-modes
+  '(org-mode LaTeX-mode markdown-mode gfm-mode Info-mode adoc-mode rst-mode)
   "What major-modes to enable `mixed-pitch-mode' in with `visual-fill-column-mode'.")
 
 (defvar +zenl-text-scale 1
