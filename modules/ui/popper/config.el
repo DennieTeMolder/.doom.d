@@ -15,7 +15,7 @@
           "^\\*Backtrace"
           "^\\*Warnings"
           "^\\*Install"
-          "^\\*Calc"
+          ;; "^\\*Calc" ; *Calc trail* is not handled by popper funs
           "^\\*\\(?:Proced\\|timer-list\\|Abbrevs\\|Output\\|Occur\\|unsent mail.*?\\|message\\)\\*"
           "^\\*\\(?:[Cc]ompil\\(?:ation\\|e-Log\\)\\|Messages\\)"
           "^\\*\\([Hh]elp\\|Apropos\\|refs\\)"
