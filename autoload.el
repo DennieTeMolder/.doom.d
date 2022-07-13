@@ -1,5 +1,64 @@
 ;;; private/my-config/autoloads.el -*- lexical-binding: t; -*-
 
+;;; Theme recommendations
+(defun my--theme-which-inactive (theme1 theme2)
+  "Return THEME1 of not currently active, else return THEME2"
+  (if (eq theme1 (car custom-enabled-themes)) theme2 theme1))
+
+;;;###autoload
+(defun my-recommend-theme ()
+  "Recommend a NEW theme to use based on context and time of day."
+ (if (bound-and-true-p org-tree-slide-mode)
+     my-presentation-theme
+   (let ((hour (string-to-number (substring (current-time-string) 11 13))))
+     (if (member hour (number-sequence my-first-hour-of-day my-last-hour-of-day))
+         (my--theme-which-inactive my-day-theme my-solarized-theme)
+       (my--theme-which-inactive my-night-theme my-dark-theme)))))
+
+(defun my--load-theme-confirm (theme)
+  "Load THEME after user confirmation."
+  (when (y-or-n-p (format "Activate \"%s\" theme?" theme))
+    (mapc #'disable-theme custom-enabled-themes)
+    (if (custom-theme-p theme)
+        (enable-theme theme)
+      (load-theme theme :no-confirm))
+    ;; Reload silently to remove artefacts
+    (let ((inhibit-message t))
+      (doom/reload-theme))))
+
+;;;###autoload
+(defun my/load-recommended-theme ()
+  "Load the theme returned by `my-recommend-theme' after user confirmation."
+  (interactive)
+  (my--load-theme-confirm (my-recommend-theme)))
+
+;;; UI
+;;;###autoload
+(defun my-doom-modeline-conditional-buffer-encoding ()
+  "Only display encoding in modeline when it's not UTF-8"
+  (setq-local doom-modeline-buffer-encoding
+              (unless (or (eq buffer-file-coding-system 'utf-8-unix)
+                          (eq buffer-file-coding-system 'utf-8)))))
+
+;;;###autoload
+(defun my-doom-ascii-banner-fn ()
+  (let* ((banner
+          '(",---.,-.-.,---.,---.,---."
+            "|---'| | |,---||    `---."
+            "`---'' ' '`---'`---'`---'"
+            "                       DOOM"))
+         (longest-line (apply #'max (mapcar #'length banner))))
+    (put-text-property
+     (point)
+     (dolist (line banner (point))
+       (insert (+doom-dashboard--center
+                +doom-dashboard--width
+                (concat
+                 line (make-string (max 0 (- longest-line (length line)))
+                                   32)))
+               "\n"))
+     'face 'doom-dashboard-banner)))
+
 ;;; Window management
 ;;;###autoload
 (defun my/window-double-height ()
@@ -77,7 +136,30 @@ Also checks if FILE exists."
   "Open/create the dedicated org-roam workspace"
   (my-workspace-switch-maybe "*roam*"))
 
+;;; Dired
+;;;###autoload
+(defun my/dired-ediff ()
+  "Compare file under cursor to file selected in prompt using Ediff"
+  (interactive)
+  (let* ((file (dired-get-filename t))
+         (dir (dired-current-directory))
+         (default nil)
+         (target (read-file-name (format-prompt "Diff %s with" default file)
+                                 default nil t)))
+    (ediff (expand-file-name file dir) target)))
+
 ;;; Org-mode
+;;;###autoload
+(defun my-org-mode-setup-h ()
+  "Personal org-mode customisation's after mode startup"
+  (setq-local line-spacing my-org-line-spacing
+              auto-hscroll-mode nil)
+  (electric-quote-local-mode +1)
+  (visual-line-mode -1)
+  (auto-fill-mode +1)
+  (add-hook! 'evil-insert-state-exit-hook
+             :local #'my-insert-exit-fill-paragraph))
+
 ;;;###autoload
 (defun my-insert-exit-fill-paragraph ()
   "Perform `org-fill-paragraph' unless el at point is a src block"
@@ -117,7 +199,37 @@ https://github.com/abo-abo/org-download/commit/137c3d2aa083283a3fc853f9ecbbc0303
       (message "Image: %s saved!" (expand-file-name filename-with-timestamp dir))
       (concat dir filename-with-timestamp))))
 
+;;; Org-modern
+;;;###autoload
+(defun my-org--modern-indent-heading ()
+  "Correctly indents heading assuming leading stars are fully hidden (not invisible)."
+  (dotimes (n org-indent--deepest-level)
+    (unless (= n 0)
+      (let* ((indentation (* org-indent-indentation-per-level (1- n)))
+             (heading-prefix (make-string indentation ?\s)))
+        (aset org-indent--heading-line-prefixes
+              n
+              (org-add-props heading-prefix nil 'face 'org-indent))))))
+
 ;;; Org-tree-slide
+;;;###autoload
+(defun my-org-tree-slide-setup-h ()
+  "Additional settings to prettify presentations"
+  (if org-tree-slide-mode
+      (progn
+        (setq-local buffer-read-only t
+                    evil-normal-state-cursor 'hbar)
+        (display-line-numbers-mode -1)
+        (hl-line-mode -1)
+        (mixed-pitch-mode +1)
+        (org-appear-mode -1)
+        (add-hook! 'pdf-view-mode-hook :append #'org-tree-slide-mode))
+    (progn
+      (setq-local buffer-read-only nil)
+      (mixed-pitch-mode -1)
+      (remove-hook! 'pdf-view-mode-hook #'org-tree-slide-mode)))
+  (redraw-display))
+
 ;;;###autoload
 (defun my-org-tree-slide-no-squiggles-a (orig-fn &optional ARG)
   "Toggle modes that litter the buffer with squiggly lines."
@@ -267,18 +379,6 @@ The DATE is derived from the #+title which must match the Org date format."
       (line-move 1)
       (end-of-line))))
 
-;;; Dired
-;;;###autoload
-(defun my/dired-ediff ()
-  "Compare file under cursor to file selected in prompt using Ediff"
-  (interactive)
-  (let* ((file (dired-get-filename t))
-         (dir (dired-current-directory))
-         (default nil)
-         (target (read-file-name (format-prompt "Diff %s with" default file)
-                                 default nil t)))
-    (ediff (expand-file-name file dir) target)))
-
 ;;; Pdf-tools
 ;;;###autoload
 (defun my/pdf-view-fit-half-height ()
@@ -293,6 +393,14 @@ The DATE is derived from the #+title which must match the Org date format."
     (setq pdf-view-display-size
           (- (* 2 scale) 0.1))
     (pdf-view-redisplay t)))
+
+;;; Vterm
+;;;###autoload
+(defun tiku91/vterm-redraw-cursor (args)
+  "Redraw evil cursor with vterm to keep it consistent with the current state.
+Fix by tiku91:
+https://github.com/akermu/emacs-libvterm/issues/313#issuecomment-867525845"
+  (evil-refresh-cursor evil-state))
 
 ;;; Sh-mode
 ;;;###autoload
@@ -437,45 +545,38 @@ block, send the entire code block."
       (atomic-chrome-start-server)
       (message "Started GhostText Server"))))
 
-;;; Vterm
+;;; Interaction-log-mode
 ;;;###autoload
-(defun tiku91/vterm-redraw-cursor (args)
-  "Redraw evil cursor with vterm to keep it consistent with the current state.
-Fix by tiku91:
-https://github.com/akermu/emacs-libvterm/issues/313#issuecomment-867525845"
-  (evil-refresh-cursor evil-state))
-
-;;; Theme recommendations
-(defun my--theme-which-inactive (theme1 theme2)
-  "Return THEME1 of not currently active, else return THEME2"
-  (if (eq theme1 (car custom-enabled-themes)) theme2 theme1))
-
-;;;###autoload
-(defun my-recommend-theme ()
-  "Recommend a NEW theme to use based on context and time of day."
- (if (bound-and-true-p org-tree-slide-mode)
-     my-presentation-theme
-   (let ((hour (string-to-number (substring (current-time-string) 11 13))))
-     (if (member hour (number-sequence my-first-hour-of-day my-last-hour-of-day))
-         (my--theme-which-inactive my-day-theme my-solarized-theme)
-       (my--theme-which-inactive my-night-theme my-dark-theme)))))
-
-(defun my--load-theme-confirm (theme)
-  "Load THEME after user confirmation."
-  (when (y-or-n-p (format "Activate \"%s\" theme?" theme))
-    (mapc #'disable-theme custom-enabled-themes)
-    (if (custom-theme-p theme)
-        (enable-theme theme)
-      (load-theme theme :no-confirm))
-    ;; Reload silently to remove artefacts
-    (let ((inhibit-message t))
-      (doom/reload-theme))))
-
-;;;###autoload
-(defun my/load-recommended-theme ()
-  "Load the theme returned by `my-recommend-theme' after user confirmation."
+(defun my/interaction-log-mode-w-buffer ()
+  "Toggles `interaction-log-mode' and shows/hides its buffer"
   (interactive)
-  (my--load-theme-confirm (my-recommend-theme)))
+  (call-interactively #'interaction-log-mode)
+  (if interaction-log-mode
+      (progn
+        (sleep-for .1)
+        (display-buffer ilog-buffer-name))
+    (when-let ((window (get-buffer-window ilog-buffer-name)))
+      (delete-window window))
+    (kill-buffer ilog-buffer-name)))
+
+;;; Good-scroll-mode
+(defun my/good-scroll-down-half ()
+  (interactive)
+  (good-scroll-move (/ (good-scroll--window-usable-height) 2)))
+
+(defun my/good-scroll-up-half ()
+  (interactive)
+  (good-scroll-move (/ (good-scroll--window-usable-height) -2)))
+
+;;;###autoload
+(defun my-good-scroll-evil-override-h ()
+  (if good-scroll-mode
+      (progn
+        (advice-add 'evil-scroll-down :override #'my/good-scroll-down-half)
+        (advice-add 'evil-scroll-up :override #'my/good-scroll-up-half))
+    (progn
+      (advice-remove 'evil-scroll-down #'my/good-scroll-down-half)
+      (advice-remove 'evil-scroll-up #'my/good-scroll-up-half))))
 
 ;;; Misc
 ;;;###autoload

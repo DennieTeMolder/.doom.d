@@ -127,12 +127,8 @@
 (when MAXIMIZE
   (add-to-list 'default-frame-alist '(fullscreen . maximized)))
 
-(add-hook! 'after-change-major-mode-hook
-  (defun my-doom-modeline-conditional-buffer-encoding ()
-    "Only display encoding in modeline when it's not UTF-8"
-    (setq-local doom-modeline-buffer-encoding
-                (unless (or (eq buffer-file-coding-system 'utf-8-unix)
-                            (eq buffer-file-coding-system 'utf-8))))))
+;; Only display encoding in modeline when it's not UTF-8
+(add-hook! 'after-change-major-mode-hook #'my-doom-modeline-conditional-buffer-encoding)
 
 ;; Simplify window title and give a visual indication if file is edited
 (setq frame-title-format
@@ -144,24 +140,6 @@
          "%b"))
       (:eval
        (if (buffer-modified-p) " +" ""))))
-
-(defun my-doom-ascii-banner-fn ()
-  (let* ((banner
-          '(",---.,-.-.,---.,---.,---."
-            "|---'| | |,---||    `---."
-            "`---'' ' '`---'`---'`---'"
-            "                       DOOM"))
-         (longest-line (apply #'max (mapcar #'length banner))))
-    (put-text-property
-     (point)
-     (dolist (line banner (point))
-       (insert (+doom-dashboard--center
-                +doom-dashboard--width
-                (concat
-                 line (make-string (max 0 (- longest-line (length line)))
-                                   32)))
-               "\n"))
-     'face 'doom-dashboard-banner)))
 
 ;; Replace the default doom splash screen with amore subtle one
 (setq +doom-dashboard-ascii-banner-fn #'my-doom-ascii-banner-fn)
@@ -403,17 +381,9 @@ Also used by `org-modern-mode' to calculate heights.")
     '(org-ellipsis :foreground nil :background nil :weight regular)
     '(org-headline-done :strike-through t))
 
+  ;; Enable hard wrapping and automate paragraph filling
   ;; Allow for double quoting using '' and `` (`` -> “)
-  (add-hook! 'org-mode-hook
-    (defun my-org-mode-setup-h ()
-      "Personal org-mode customisation's after mode startup"
-      (setq-local line-spacing my-org-line-spacing
-                  auto-hscroll-mode nil)
-      (electric-quote-local-mode +1)
-      (visual-line-mode -1)
-      (auto-fill-mode +1)
-      (add-hook! 'evil-insert-state-exit-hook
-                 :local #'my-insert-exit-fill-paragraph)))
+  (add-hook! 'org-mode-hook #'my-org-mode-setup-h)
 
   ;; Use old org-ref insert key, remove `org-agenda-file-to-front' binding
   (map! :map org-mode-map
@@ -446,48 +416,30 @@ Also used by `org-modern-mode' to calculate heights.")
 (use-package! org-modern
   :hook (org-mode . org-modern-mode)
   :hook (org-agenda-finalize . org-modern-agenda)
-  :init
-  (defadvice! my-org-indent-modern-heading ()
-    "Correctly indents heading assuming leading stars are fully hidden (not invisible)."
-    :after #'org-indent--compute-prefixes
-    (dotimes (n org-indent--deepest-level)
-      (unless (= n 0)
-        (let* ((indentation (* org-indent-indentation-per-level (1- n)))
-               (heading-prefix (make-string indentation ?\s)))
-          (aset org-indent--heading-line-prefixes
-                n
-                (org-add-props heading-prefix nil 'face 'org-indent))))))
   :config
-  (set-face-attribute 'org-modern-symbol nil :family "Iosevka")
-
   (setq org-modern-label-border my-org-line-spacing
         org-modern-statistics nil
         org-modern-table nil ; Ref: https://github.com/minad/org-modern/issues/69
         org-modern-star ["●" "◉" "○" "◉" "○" "◉" "○" "◉"]
         org-modern-list '((?+ . "›")
                           (?- . "‒")
-                          (?* . "•"))))
+                          (?* . "•")))
+
+  ;; Ensure symbols do not change when switching fonts
+  (set-face-attribute 'org-modern-symbol nil :family "Iosevka")
+
+  ;; Correct indentation of headings
+  (advice-add 'org-indent--compute-prefixes :after #'my-org--modern-indent-heading)
+
+  ;; Refresh `org-indent-mode' to apply advice
+  (when org-indent-mode
+    (org-indent-mode +1)))
 
 (after! org-tree-slide
   (setq +org-present-text-scale 6)
 
-  (add-hook! 'org-tree-slide-mode-hook :append
-    (defun my-org-tree-slide-setup-h ()
-      "Additional settings to prettify presentations"
-      (if org-tree-slide-mode
-          (progn
-            (setq-local buffer-read-only t
-                        evil-normal-state-cursor 'hbar)
-            (display-line-numbers-mode -1)
-            (hl-line-mode -1)
-            (mixed-pitch-mode +1)
-            (org-appear-mode -1)
-            (add-hook! 'pdf-view-mode-hook :append #'org-tree-slide-mode))
-        (progn
-          (setq-local buffer-read-only nil)
-          (mixed-pitch-mode -1)
-          (remove-hook! 'pdf-view-mode-hook #'org-tree-slide-mode)))
-      (redraw-display)))
+  ;; Make presentations even prettier
+  (add-hook! 'org-tree-slide-mode-hook :append #'my-org-tree-slide-setup-h)
 
   ;; Disable `flycheck-mode' and `spell-fu-mode' when presenting
   (advice-add 'org-tree-slide-mode :around #'my-org-tree-slide-no-squiggles-a)
@@ -768,12 +720,8 @@ Also used by `org-modern-mode' to calculate heights.")
 ;; M-x interaction-log-mode shows all executed command for debugging/showcasing
 (use-package! interaction-log
   :commands interaction-log-mode
-  :config
-  ;; TODO prompt user to execute this function after interaction-log-mode
-  (defun my/interaction-log-show ()
-    "Creates an interaction log window if it doesn't exist"
-    (interactive)
-    (display-buffer ilog-buffer-name)))
+  :init
+  (map! :desc "Log interactions" :leader "t L" #'my/interaction-log-mode-w-buffer))
 
 ;; Smooth scrolling
 (use-package! good-scroll
@@ -787,25 +735,8 @@ Also used by `org-modern-mode' to calculate heights.")
   ;; binding to toggle good scroll mode
   (map! :desc "Smooth scrolling" :leader "t S" #'good-scroll-mode)
 
-  ;; Evil scrolling
-  (defun my/good-scroll-down-half ()
-    (interactive)
-    (good-scroll-move (/ (good-scroll--window-usable-height) 2)))
-
-  (defun my/good-scroll-up-half ()
-    (interactive)
-    (good-scroll-move (/ (good-scroll--window-usable-height) -2)))
-
   ;; Override evil functions on mode activation, undo upon deactivation
-  (add-hook! 'good-scroll-mode-hook
-    (defun my-good-scroll-evil-override-h ()
-      (if good-scroll-mode
-          (progn
-            (advice-add 'evil-scroll-down :override #'my/good-scroll-down-half)
-            (advice-add 'evil-scroll-up :override #'my/good-scroll-up-half))
-        (progn
-          (advice-remove 'evil-scroll-down #'my/good-scroll-down-half)
-          (advice-remove 'evil-scroll-up #'my/good-scroll-up-half)))))
+  (add-hook! 'good-scroll-mode-hook #'my-good-scroll-evil-override-h)
 
   ;; Enable good-scroll
   (good-scroll-mode +1))
