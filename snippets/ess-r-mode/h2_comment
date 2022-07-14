@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: h1 comment
+# uuid: h1c
+# key: ###
+# condition: t
+# --
+### $1 ------
+$0
