@@ -640,11 +640,13 @@ Also used by `org-modern-mode' to calculate heights.")
   ;; Customize type faces (used for F&T color)
   (custom-set-faces! '(ess-constant-face :weight bold :inherit font-lock-warning-face))
 
+  ;; Make inferior buffer not take focus on startup
   (advice-add 'ess-switch-to-inferior-or-script-buffer :around #'my-ess-switch-maybe-a)
 
   ;; Make evil tab width same as ESS offset
-  (add-hook! 'ess-mode-hook
-             (setq-local evil-shift-width 'ess-indent-offset))
+  (add-hook! 'ess-mode-hook (setq-local evil-shift-width 'ess-indent-offset))
+
+  (add-hook! 'inferior-ess-r-mode-hook (visual-line-mode +1))
 
   ;; ESS R keybindings, make < add a <-, type twice to undo (same goes for >)
   (map! (:map ess-mode-map
