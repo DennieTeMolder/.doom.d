@@ -333,8 +333,7 @@
   (display-battery-mode +1))
 
 (after! which-key
-  (setq which-key-idle-delay 0.5
-        which-key-ellipsis ".."))
+  (setq which-key-ellipsis ".."))
 
 (after! all-the-icons
   ;; A lower scaling factor works better with the Iosevka font
