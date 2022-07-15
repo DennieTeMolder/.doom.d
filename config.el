@@ -297,10 +297,30 @@
   ;; Ref: https://github.com/doomemacs/doomemacs/issues/2967
   (setq all-the-icons-scale-factor 1.1))
 
+;;;; Doom core package extentions
+;; Add colours to info pages to make them more readable
+(use-package! info-colors
+    :hook (Info-selection . info-colors-fontify-node))
+
+;; On-demand listing of directory sizes in dired
+(use-package! dired-du
+  :after ranger
+  :bind (:map ranger-mode-map ("d u" . dired-du-mode))
+  :config
+  (setq dired-du-size-format t))
+
 ;; Enable vertico mouse extension (included with vertico)
 (use-package! vertico-mouse
   :after vertico
   :config (vertico-mouse-mode +1))
+
+;; Manage trash folder inside emacs
+(use-package! trashed
+  :commands trashed)
+
+;; Reverse `rx' operation, for turning regex into lisp
+(use-package! xr
+  :commands xr)
 
 ;;;; Writing/Organization Tools
 ;; Spell checking
@@ -727,22 +747,5 @@ Also used by `org-modern-mode' to calculate heights.")
                     indent-tools-goto-child
                     indent-tools-goto-end-of-tree))
     (advice-add symbol :around #'doom-set-jump-maybe-a)))
-
-(use-package! trashed
-  :commands trashed)
-
-(use-package! dired-du
-  :after ranger
-  :bind (:map ranger-mode-map ("d u" . dired-du-mode))
-  :config
-  (setq dired-du-size-format t))
-
-;; Reverse `rx' operation, for turning regex into lisp
-(use-package! xr
-  :commands xr)
-
-;; Add colours to info pages to make them more readable
-(use-package! info-colors
-    :hook (Info-selection . info-colors-fontify-node))
 
 (load! "+keybindings")
