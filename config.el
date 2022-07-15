@@ -122,10 +122,19 @@
 ;; Cyle kill ring using <C-p> or <C-n> after pasting
 (setq save-interprogram-paste-before-kill t)
 
+;; Increase horizontal scroll (shift + mwheel) sensitivity
+(setq mouse-wheel-scroll-amount-horizontal 12)
+
 ;;;; UI Settings
 ;; Maximise emacs if specified in shell ENV
 (when MAXIMIZE
   (add-to-list 'default-frame-alist '(fullscreen . maximized)))
+
+;; Display battery status on laptops
+(use-package! battery
+  :if IS-LAPTOP
+  :config
+  (display-battery-mode +1))
 
 ;; Only display encoding in modeline when it's not UTF-8
 (add-hook! 'after-change-major-mode-hook #'my-doom-modeline-conditional-buffer-encoding)
@@ -327,11 +336,6 @@
   ;; Raise undo limit do 10 Mb (doom default: 40kb)
   (setq undo-limit 10000000))
 
-(use-package! battery
-  :if IS-LAPTOP
-  :config
-  (display-battery-mode +1))
-
 (after! which-key
   (setq which-key-ellipsis ".."))
 
@@ -339,6 +343,11 @@
   ;; A lower scaling factor works better with the Iosevka font
   ;; Ref: https://github.com/doomemacs/doomemacs/issues/2967
   (setq all-the-icons-scale-factor 1.1))
+
+;; Enable vertico mouse extension (included with vertico)
+(use-package! vertico-mouse
+  :after vertico
+  :config (vertico-mouse-mode +1))
 
 ;;;; Writing/Organization Tools
 ;; Spell checking
@@ -495,6 +504,9 @@ Also used by `org-modern-mode' to calculate heights.")
                     org-roam-buffer-toggle))
     (advice-add symbol :before #'my-org-roam-goto-workspace))
 
+  ;; Sync org-agenda with org-roam dailies
+  (advice-add 'org-agenda :before #'my-org-roam-dailies-sync-agenda)
+
   ;; Roam templates
   (setq org-roam-capture-templates
         '(("d" "default" plain "%?"
@@ -511,8 +523,6 @@ Also used by `org-modern-mode' to calculate heights.")
 (use-package! org-roam-dailies
   :after org-roam
   :config
-  (advice-add 'org-agenda :before #'my-org-roam-dailies-sync-agenda)
-
   (map! :map org-roam-dailies-map :leader
         :desc "Schedule headline" "n r d s" #'my/org-roam-dailies-schedule-time))
 
