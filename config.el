@@ -278,8 +278,12 @@
   ;; Fix default input value for `doom/load-session'
   (global-set-key [remap doom/load-session] #'my/load-session))
 
+;; Use ediff in dired instead of diff
 (after! dired
-  (map! :map dired-mode-map [remap dired-diff] #'my/dired-ediff))
+  (define-key dired-mode-map [remap dired-diff] #'my/dired-ediff))
+
+(after! ranger
+  (define-key ranger-mode-map [remap dired-diff] #'my/dired-ediff))
 
 (after! undo-fu
   ;; Raise undo limit do 10 Mb (doom default: 40kb)
