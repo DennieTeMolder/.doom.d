@@ -603,7 +603,7 @@ Also used by `org-modern-mode' to calculate heights.")
 (after! ess
   ;; Use current dir for session
   (setq ess-ask-for-ess-directory nil
-        ess-indent-with-fancy-comments nil)
+        ess-style 'RStudio)
 
   ;; Add company-R-library backend, currently part of this pull request:
   ;; https://github.com/doomemacs/doomemacs/pull/6421/commits/16b4023f0d1e97ff32da581546360770dff800f6
