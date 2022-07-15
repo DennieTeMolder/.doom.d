@@ -35,10 +35,6 @@
                                        "b D"   #'kill-buffer-and-window
       :desc "Show undo history"        "b h"   #'vundo
 
-      ;; Quit/session
-      ;; Fix default input value for `doom/load-session'
-      [remap doom/load-session] #'my/load-session
-
       ;; Window management
       (:prefix "w"
        :desc "Adjust windows hydra"  "a" #'+hydra/window-nav/body

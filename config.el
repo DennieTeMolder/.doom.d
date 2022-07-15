@@ -273,7 +273,10 @@
                     doom/goto-private-init-file
                     doom/goto-private-config-file
                     doom/goto-private-packages-file))
-    (advice-add symbol :before #'my/doom-private-goto-workspace)))
+    (advice-add symbol :before #'my/doom-private-goto-workspace))
+
+  ;; Fix default input value for `doom/load-session'
+  (global-set-key [remap doom/load-session] #'my/load-session))
 
 (after! dired
   (map! :map dired-mode-map [remap dired-diff] #'my/dired-ediff))
