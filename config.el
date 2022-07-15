@@ -181,7 +181,7 @@
          (all-the-icons-octicon "book" :face 'doom-dashboard-menu-title)
          :action doom/help)))
 
-;;;; General Doom Settings/Bindings
+;;;; General Doom Settings
 ;; Default major mode for scratch buffer
 (setq doom-scratch-initial-major-mode 'lisp-interaction-mode)
 
@@ -211,55 +211,6 @@
         ("Manjaro packages"  "https://packages.manjaro.org/?query=%s")
         ("AUR"               "https://aur.archlinux.org/packages?O=0&K=%s")
         ("Anaconda packages" "https://anaconda.org/search?q=%s")))
-
-;; Spacemacs style M-x
-;; Old SPC SPC binding (projectile find file) also available under "SPC p f"
-;; This frees up the "SPC :" to be another evil-ex because i am condition to hit SPC
-(map! :leader
-      :desc "M-x" "SPC" #'execute-extended-command
-      :desc "Evil ex command" ":" #'evil-ex)
-
-;; Global keybindings
-(map! "C-s" #'isearch-forward-word
-      "C-l" #'+nav-flash/blink-cursor
-      (:leader
-       :desc "Repeat last command" "r" #'repeat
-       "b D" #'kill-buffer-and-window))
-
-;; Make "Z" bindings only kill buffers not the session
-(map! :n "ZQ" #'kill-buffer-and-window
-      :n "ZZ" #'doom/save-and-kill-buffer
-
-      (:map with-editor-mode-map
-       :n "ZQ" #'with-editor-cancel
-       :n "ZZ" #'with-editor-finish))
-
-;; Use mouse buttons to go forward/backward trough window configs
-(map! :n [mouse-8] #'winner-undo
-      :n [mouse-9] #'winner-redo
-
-      (:map Info-mode-map
-       :n [mouse-8] #'Info-history-back
-       :n [mouse-9] #'Info-history-forward))
-
-;; Window management bindings
-(map! :leader :prefix "w"
-      :desc "Adjust windows hydra" "a" #'+hydra/window-nav/body
-      :desc "Enlarge double height" "e" #'my/window-double-height
-      :desc "Halve height" "E" #'my/window-half-height)
-
-;; Extra toggle bindings
-(map! :leader :prefix "t"
-      :desc "Trash deleted files" "T" #'my/toggle-trash-delete
-      :desc "Auto linebreaks" "a" #'auto-fill-mode)
-
-;; Increase horizontal scroll (shift + mwheel) sensitivity
-(setq mouse-wheel-scroll-amount-horizontal 12)
-
-;; Enable vertico mouse extension (included with vertico)
-(use-package! vertico-mouse
-  :after vertico
-  :config (vertico-mouse-mode +1))
 
 ;;;; Doom Core Package Settings
 (after! evil
@@ -322,15 +273,10 @@
                     doom/goto-private-init-file
                     doom/goto-private-config-file
                     doom/goto-private-packages-file))
-    (advice-add symbol :before #'my/doom-private-goto-workspace))
-
-  (map! [remap doom/load-session] #'my/load-session)
-
-  (map! :leader
-        :desc "Move buffer to workspace" "b TAB" #'my/buffer-move-to-workspace-prompt))
+    (advice-add symbol :before #'my/doom-private-goto-workspace)))
 
 (after! dired
-  (map! :map (dired-mode-map ranger-mode-map) [remap dired-diff] #'my/dired-ediff))
+  (map! :map dired-mode-map [remap dired-diff] #'my/dired-ediff))
 
 (after! undo-fu
   ;; Raise undo limit do 10 Mb (doom default: 40kb)
@@ -474,10 +420,7 @@ Also used by `org-modern-mode' to calculate heights.")
         org-roam-dailies-directory "journals/"
         org-roam-file-exclude-regexp "Rubbish/")
 
-  (defvar my-org-roam-index-file "pages/contents.org")
-
-  ;; Map to keybinding
-  (map! :desc "Open index" :leader "n r o" #'my/org-roam-open-index))
+  (defvar my-org-roam-index-file "pages/contents.org"))
 
 (after! org-roam
   ;; Disable completion everywhere as it overrides company completion
@@ -519,12 +462,6 @@ Also used by `org-modern-mode' to calculate heights.")
            :target (file+head "%<%Y-%m-%d>.org"
                               "#+title: %<%Y-%m-%d>\n#+date: %<%A %B %d, Week %W %Y>\n \n* Agenda\n")
            :empty-lines 1))))
-
-(use-package! org-roam-dailies
-  :after org-roam
-  :config
-  (map! :map org-roam-dailies-map :leader
-        :desc "Schedule headline" "n r d s" #'my/org-roam-dailies-schedule-time))
 
 (when (featurep! :tools biblio)
   ;; Citar bibliography settings
@@ -573,23 +510,24 @@ Also used by `org-modern-mode' to calculate heights.")
 
   (map! (:map pdf-view-mode-map
          :gn "C-e" #'pdf-view-scroll-down-or-previous-page
-         :gn "S" #'my/pdf-view-fit-half-height
+         :gn "S"   #'my/pdf-view-fit-half-height
          :gn "s r" #'image-rotate
-         :desc "Slice original" :gn "s o" #'pdf-view-reset-slice
-         :desc "Slice bounding box" :gn "s b" #'pdf-view-set-slice-from-bounding-box
-         :desc "Slice using mouse" :gn "s m" #'pdf-view-set-slice-using-mouse
-         :v "h" #'pdf-annot-add-highlight-markup-annotation
-         :v "s" #'pdf-annot-add-strikeout-markup-annotation
-         :v "u" #'pdf-annot-add-underline-markup-annotation
+         :v  "h"   #'pdf-annot-add-highlight-markup-annotation
+         :v  "s"   #'pdf-annot-add-strikeout-markup-annotation
+         :v  "u"   #'pdf-annot-add-underline-markup-annotation
+         (:prefix "s"
+          :desc "Slice original"     :gn "o" #'pdf-view-reset-slice
+          :desc "Slice bounding box" :gn "b" #'pdf-view-set-slice-from-bounding-box
+          :desc "Slice using mouse"  :gn "m" #'pdf-view-set-slice-using-mouse)
          (:prefix "C-c"
-          :desc "Add Note" "a" #'pdf-annot-add-text-annotation
+          :desc "Add Note"          "a" #'pdf-annot-add-text-annotation
           :desc "Delete Annotation" "d" #'pdf-annot-delete))
 
         (:map pdf-history-minor-mode-map
-         :gn "<tab>" #'pdf-history-backward
+         :gn "<tab>"     #'pdf-history-backward
          :gn "<backtab>" #'pdf-history-forward
-         :gn [mouse-8] #'pdf-history-backward
-         :gn [mouse-9] #'pdf-history-forward)))
+         :gn [mouse-8]   #'pdf-history-backward
+         :gn [mouse-9]   #'pdf-history-forward)))
 
 ;; LaTeX settings
 (after! tex-mode
@@ -730,9 +668,7 @@ Also used by `org-modern-mode' to calculate heights.")
 ;;;; Misc Packages
 ;; M-x interaction-log-mode shows all executed command for debugging/showcasing
 (use-package! interaction-log
-  :commands interaction-log-mode
-  :init
-  (map! :desc "Log interactions" :leader "t L" #'my/interaction-log-mode-w-buffer))
+  :commands interaction-log-mode)
 
 ;; Smooth scrolling
 (use-package! good-scroll
@@ -743,9 +679,6 @@ Also used by `org-modern-mode' to calculate heights.")
         good-scroll-algorithm 'good-scroll-linear
         good-scroll-step (round (/ (display-pixel-height) 5)))
 
-  ;; binding to toggle good scroll mode
-  (map! :desc "Smooth scrolling" :leader "t S" #'good-scroll-mode)
-
   ;; Override evil functions on mode activation, undo upon deactivation
   (add-hook! 'good-scroll-mode-hook #'my-good-scroll-evil-override-h)
 
@@ -755,8 +688,6 @@ Also used by `org-modern-mode' to calculate heights.")
 ;; Package for interacting with text fields, requires GhostText browser extension
 (use-package! atomic-chrome
   :commands atomic-chrome-start-server
-  :init
-  (map! :desc "GhostText server" :leader "t G" #'my/atomic-chrome-toggle-server)
   :config
   (setq atomic-chrome-buffer-open-style 'full)
   (setq atomic-chrome-url-major-mode-alist
@@ -766,8 +697,6 @@ Also used by `org-modern-mode' to calculate heights.")
 
 (use-package! vundo
   :commands vundo
-  :init
-  (map! :desc "Show undo history" :leader "b h" #'vundo)
   :config
   (setq vundo-glyph-alist vundo-unicode-symbols)
   (map! :map vundo-mode-map
@@ -780,8 +709,6 @@ Also used by `org-modern-mode' to calculate heights.")
 
 (use-package! indent-tools
   :commands indent-tools-hydra/body
-  :init
-  (map! :desc "Indentation hydra" :leader ">" #'indent-tools-hydra/body)
   :config
   ;; Add potentially large movements to jump list
   (dolist (symbol '(indent-tools-goto-next-sibling
