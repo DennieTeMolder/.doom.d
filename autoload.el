@@ -136,6 +136,19 @@ Also checks if FILE exists."
   "Open/create the dedicated org-roam workspace"
   (my-workspace-switch-maybe "*roam*"))
 
+;;; Ediff
+;;;###autoload
+(defun my/ediff-this-file ()
+  "Ediff file associated with current buffer to file selected in prompt."
+  (interactive)
+  (when (and (buffer-modified-p)
+             (y-or-n-p "Save current buffer?"))
+    (save-buffer))
+  (let ((current (buffer-file-name (current-buffer))))
+    (unless current
+      (user-error "No file associated with current buffer!"))
+    (ediff current (read-file-name "Diff current file with:" nil nil t))))
+
 ;;; Dired
 ;;;###autoload
 (defun my/dired-ediff ()
