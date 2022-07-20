@@ -280,6 +280,8 @@
 
 ;; Use ediff in dired instead of diff
 (after! dired
+  (setq dired-clean-confirm-killing-deleted-buffers nil)
+
   (define-key dired-mode-map [remap dired-diff] #'my/dired-ediff))
 
 (after! ranger
