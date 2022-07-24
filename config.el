@@ -624,6 +624,8 @@ Also used by `org-modern-mode' to calculate heights.")
   ;; Enable additional highlighting
   (add-to-list 'ess-R-font-lock-keywords '(ess-R-fl-keyword:F&T . t))
   (add-to-list 'ess-R-font-lock-keywords '(ess-fl-keyword:fun-calls . t))
+  (add-to-list 'ess-R-font-lock-keywords '(ess-fl-keyword:operators . t))
+
   ;; Customize type faces (used for F&T color)
   (custom-set-faces! '(ess-constant-face :weight bold :inherit font-lock-warning-face))
 
