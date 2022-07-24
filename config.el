@@ -299,6 +299,11 @@
   ;; Ref: https://github.com/doomemacs/doomemacs/issues/2967
   (setq all-the-icons-scale-factor 1.1))
 
+(after! avy
+  ;; Make "g s s" search al windows (C-u to limit to current)
+  (setq avy-all-windows t
+        avy-all-windows-alt nil))
+
 ;;;; Doom core package extentions
 ;; Add colours to info pages to make them more readable
 (use-package! info-colors
