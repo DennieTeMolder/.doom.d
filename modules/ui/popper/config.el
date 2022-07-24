@@ -18,7 +18,7 @@
           ;; "^\\*Calc" ; *Calc trail* is not handled by popper funs
           "^\\*\\(?:Proced\\|timer-list\\|Abbrevs\\|Output\\|Occur\\|unsent mail.*?\\|message\\)\\*"
           "^\\*\\(?:[Cc]ompil\\(?:ation\\|e-Log\\)\\|Messages\\)"
-          "^\\*\\([Hh]elp\\|Apropos\\|refs\\)"
+          "^\\*\\([Hh]elp\\|Apropos\\|refs\\|Shortdoc\\)"
           "^\\*\\(?:doom[: ]\\|Pp E\\)"
           "^\\*\\(?:Wo\\)?Man "
           (lambda (buf) (with-current-buffer buf
