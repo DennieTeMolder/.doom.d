@@ -451,7 +451,9 @@ https://www.reddit.com/r/emacs/comments/op4fcm/send_command_to_vterm_and_execute
   "Insert string, undo if the same input event is issued twice"
   (let* ((event (event-basic-type last-input-event))
          (char (ignore-errors (format "%c" event))))
-    (cond ((and char (ess-inside-string-or-comment-p))
+    (cond ((when char
+             (or (ess-inside-string-or-comment-p)
+                 (looking-back "[=|]" (1- (point)))))
            (insert char))
           ((re-search-backward mystr (- (point) (length mystr)) t)
            (if (and char (numberp event))
