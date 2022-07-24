@@ -45,7 +45,8 @@
       (:prefix "t"
        :desc "Auto linebreaks"     "a" #'auto-fill-mode
        :desc "GhostText server"    "G" #'my/atomic-chrome-toggle-server
-       :desc "Log interactions"    "L" #'my/interaction-log-mode-w-buffer
+       :desc "Interaction logging" "I" #'my/interaction-log-mode-w-buffer
+       :desc "Left margin"         "L" #'my/window-toggle-left-margin
        :desc "Smooth scrolling"    "S" #'good-scroll-mode
        :desc "Trash deleted files" "T" #'my/toggle-trash-delete)
 

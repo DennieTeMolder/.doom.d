@@ -593,7 +593,7 @@ block, send the entire code block."
       (advice-remove 'evil-scroll-down #'my/good-scroll-down-half)
       (advice-remove 'evil-scroll-up #'my/good-scroll-up-half))))
 
-;;; Misc
+;;; Toggles
 ;;;###autoload
 (defun my/toggle-trash-delete ()
   "Toggle between trashing and deleting files"
@@ -605,3 +605,13 @@ block, send the entire code block."
     (progn
       (setq delete-by-moving-to-trash t)
       (message "Now moving deleted files to trash"))))
+
+(defvar my-left-margin 30
+  "Size of left margin that can be added to selected-window on demand")
+
+;;;###autoload
+(defun my/window-toggle-left-margin ()
+  "Toggle left margin on selected window."
+  (interactive)
+  (let ((window (selected-window)))
+    (set-window-margins window (unless (car (window-margins window)) my-left-margin))))
