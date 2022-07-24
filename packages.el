@@ -60,6 +60,7 @@
 (package! tablist :recipe (:build (:not compile)))
 
 ;; Replace the stale ess-R-data-view with the newer ess-view-data
+;; Pending in: https://github.com/doomemacs/doomemacs/pull/6455
 (package! ess-R-data-view :disable t)
 (package! ess-view-data)
 
