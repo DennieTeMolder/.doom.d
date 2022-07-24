@@ -463,13 +463,13 @@ https://www.reddit.com/r/emacs/comments/op4fcm/send_command_to_vterm_and_execute
 (defun my/ess-r-insert-assign (arg)
   "Rewrite of `ess-insert-assign' that respects white space, invoke twice to undo"
   (interactive "p")
-  (my-ess-insert-string " <- "))
+  (my-ess-insert-string "<-"))
 
 ;;;###autoload
 (defun my/ess-r-insert-pipe (arg)
   "Based on `ess-insert-assign', invoking the command twice reverts the insert"
   (interactive "p")
-  (my-ess-insert-string " |> "))
+  (my-ess-insert-string "%>%"))
 
 ;;;###autoload
 (defun my-ess-switch-maybe-a (orig-fn TOGGLE-EOB)
