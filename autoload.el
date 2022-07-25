@@ -627,11 +627,13 @@ block, send the entire code block."
 ;;;###autoload
 (defun my-csv-mode-maybe-h ()
   "Activate csv/tsv-mode if max line is below `my-csv-mode-max-length'."
-  (let ((file (buffer-file-name))
-        (len (cadr (buffer-line-statistics))))
-    (when (and file (< len my-csv-mode-max-length))
-      (cond ((string= (file-name-extension file) "csv") (csv-mode))
-            ((string= (file-name-extension file) "tsv") (tsv-mode))))))
+  (when-let* ((file (buffer-file-name))
+              (ext (file-name-extension file)))
+    (when (< (cadr (buffer-line-statistics)) my-csv-mode-max-length)
+      (cond ((string= ext "csv")
+             (csv-mode))
+            ((string= ext "tsv")
+             (tsv-mode))))))
 
 ;;; Lispy
 ;;;###autoload
