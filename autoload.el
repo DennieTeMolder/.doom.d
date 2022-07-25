@@ -123,7 +123,11 @@ Also checks if FILE exists."
 (defun my-workspace-switch-maybe (name)
   "Switch to workspace NAME if not already current"
   (unless (equal name (+workspace-current-name))
-    (+workspace-switch name t)
+    ;; Recycle current workspace if empty
+    (if (or (+workspace-exists-p name)
+            (+workspace-buffer-list))
+        (+workspace-switch name t)
+      (+workspace-rename (+workspace-current-name) name))
     (+workspace/display)))
 
 ;;;###autoload
