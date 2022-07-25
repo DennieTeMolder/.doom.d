@@ -632,3 +632,29 @@ block, send the entire code block."
     (when (and file (< len my-csv-mode-max-length))
       (cond ((string= (file-name-extension file) "csv") (csv-mode))
             ((string= (file-name-extension file) "tsv") (tsv-mode))))))
+
+;;; Lispy
+;;;###autoload
+(defun my/lispy-step-into (arg)
+  "Step into the list at point, moving the point to after ARG atoms.
+If REGION is active, call `lispy-delete' instead."
+  (interactive "p")
+  (cond ((region-active-p)
+         (call-interactively 'lispy-delete))
+        ((lispy-left-p)
+         (lispy-dotimes arg
+           (if (lispy-left-p)
+               (progn
+                 ;; Step into list
+                 (forward-char 1)
+                 ;; If not at the next list move to end of atom
+                 (unless (lispy-left-p)
+                   (lispyville-forward-atom-end)))
+             (lispyville-forward-atom-end))))
+        ((lispy-right-p)
+         (lispy-dotimes arg
+           (if (lispy-right-p)
+               (forward-char -1)
+             (lispyville-backward-atom-end))))
+        (t
+         (error "Unexpected"))))

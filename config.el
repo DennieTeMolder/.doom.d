@@ -589,6 +589,13 @@ Also used by `org-modern-mode' to calculate heights.")
   (map! :map comint-mode-map
         "C-l" #'comint-clear-buffer))
 
+(after! lispy
+  ;; Define custom special key for stepping into lists/deleting marked regions
+  (lispy-define-key lispy-mode-map "i" 'my/lispy-step-into)
+
+  ;; Rebind the key previously on "i"
+  (map! :map lispy-mode-map "TAB" #'special-lispy-tab))
+
 (after! eshell
   (remove-hook! 'eshell-mode-hook #'hide-mode-line-mode))
 
