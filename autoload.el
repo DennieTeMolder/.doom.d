@@ -650,7 +650,8 @@ If REGION is active, call `lispy-delete' instead."
                  ;; Step into list
                  (forward-char 1)
                  ;; If not at the next list move to end of atom
-                 (unless (lispy-left-p)
+                 (unless (or (lispy-left-p)
+                             (lispy--in-empty-list-p))
                    (lispyville-forward-atom-end)))
              (lispyville-forward-atom-end))))
         ((lispy-right-p)
