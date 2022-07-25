@@ -573,7 +573,7 @@ Also used by `org-modern-mode' to calculate heights.")
   (setq-default TeX-master nil))
 
 ;;;; Programming Languages
-;;; Treat sub-words in camelCased words as individual text objects
+;; Treat sub-words in camelCased words as individual text objects
 (after! prog-mode
   (add-hook! 'prog-mode-hook #'subword-mode))
 
