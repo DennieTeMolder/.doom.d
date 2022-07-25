@@ -619,3 +619,16 @@ block, send the entire code block."
   (interactive)
   (let ((window (selected-window)))
     (set-window-margins window (unless (car (window-margins window)) my-left-margin))))
+
+;;; So-long-mode/csv-mode/tsv-mode
+(defvar my-csv-mode-max-length 300
+  "Maximum line length (bytes) for csv/tsv-mode to be enabled.")
+
+;;;###autoload
+(defun my-csv-mode-maybe-h ()
+  "Activate csv/tsv-mode if max line is below `my-csv-mode-max-length'."
+  (let ((file (buffer-file-name))
+        (len (cadr (buffer-line-statistics))))
+    (when (and file (< len my-csv-mode-max-length))
+      (cond ((string= (file-name-extension file) "csv") (csv-mode))
+            ((string= (file-name-extension file) "tsv") (tsv-mode))))))

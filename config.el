@@ -708,6 +708,14 @@ Also used by `org-modern-mode' to calculate heights.")
   (add-hook! 'csv-mode-hook
     (setq-local buffer-invisibility-spec nil)))
 
+;; Start csv/tsv files in so-long-mode to prevent freezing
+(pushnew! auto-mode-alist
+          '(".csv" . so-long-mode)
+          '(".tsv" . so-long-mode))
+
+;; Enable csv/tsv mode on files with short lines
+(add-hook! 'so-long-mode-hook #'my-csv-mode-maybe-h)
+
 ;;;; Misc Packages
 ;; M-x interaction-log-mode shows all executed command for debugging/showcasing
 (use-package! interaction-log
