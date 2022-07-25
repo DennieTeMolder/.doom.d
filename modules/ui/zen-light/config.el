@@ -1,7 +1,7 @@
 ;;; ui/zen-light/config.el -*- lexical-binding: t; -*-
 
 (defvar +zenl-mixed-pitch-modes
-  '(org-mode LaTeX-mode markdown-mode gfm-mode Info-mode adoc-mode rst-mode)
+  '(org-mode LaTeX-mode markdown-mode gfm-mode helpful-mode Info-mode adoc-mode rst-mode)
   "What major-modes to enable `mixed-pitch-mode' in with `visual-fill-column-mode'.")
 
 (defvar +zenl-text-scale 1
@@ -19,7 +19,8 @@
   (add-hook! 'visual-fill-column-mode-hook
     (defun +zenl-visual-fill-column-h ()
         (display-line-numbers-mode (if visual-fill-column-mode -1 +1))
-        (text-scale-set (if visual-fill-column-mode +zenl-text-scale 0))
+        (when (+zenl-enable-mixed-pitch-mode-h)
+          (text-scale-set (if visual-fill-column-mode +zenl-text-scale 0)))
         (when (and (eq major-mode 'org-mode)
                    (featurep! :lang org))
           (+org-pretty-mode (if visual-fill-column-mode +1 -1)))
