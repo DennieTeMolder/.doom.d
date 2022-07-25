@@ -622,9 +622,10 @@ Also used by `org-modern-mode' to calculate heights.")
     '(company-R-args company-R-objects company-R-library company-dabbrev-code :separate))
 
   ;; Enable additional highlighting
-  (add-to-list 'ess-R-font-lock-keywords '(ess-R-fl-keyword:F&T . t))
-  (add-to-list 'ess-R-font-lock-keywords '(ess-fl-keyword:fun-calls . t))
-  (add-to-list 'ess-R-font-lock-keywords '(ess-fl-keyword:operators . t))
+  (pushnew! ess-R-font-lock-keywords
+            '(ess-R-fl-keyword:F&T . t)
+            '(ess-fl-keyword:fun-calls . t)
+            '(ess-fl-keyword:operators . t))
 
   ;; Customize type faces (used for F&T color)
   (custom-set-faces! '(ess-constant-face :weight bold :inherit font-lock-warning-face))
@@ -673,14 +674,15 @@ Also used by `org-modern-mode' to calculate heights.")
   ;; Python keybindings
   (map! :map python-mode-map
         :nv [C-return] #'my/python-send-current-and-step
-        :localleader
-        :desc "Open python REPL" [tab] #'+python/open-ipython-repl
-        :desc "Send buffer to REPL" "b" #'python-shell-send-buffer
-        :desc "Send file to REPL" "f" #'python-shell-send-file))
+        (:localleader
+         :desc "Open python REPL" [tab] #'+python/open-ipython-repl
+         :desc "Send buffer to REPL" "b" #'python-shell-send-buffer
+         :desc "Send file to REPL" "f" #'python-shell-send-file)))
 
 ;; Snakefiles in python mode
-(add-to-list 'auto-mode-alist '("Snakefile" . python-mode))
-(add-to-list 'auto-mode-alist '("\\.smk\\'" . python-mode))
+(pushnew! auto-mode-alist
+          '("Snakefile" . python-mode)
+          '("\\.smk\\'" . python-mode))
 
 (after! conda
   (custom-set-variables
