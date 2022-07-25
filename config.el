@@ -494,7 +494,7 @@ Also used by `org-modern-mode' to calculate heights.")
   (setq org-roam-dailies-capture-templates
         '(("d" "default" entry "* %?"
            :target (file+head "%<%Y-%m-%d>.org"
-                              "#+title: %<%Y-%m-%d>\n#+date: %<%A %B %d, Week %W %Y>\n \n* Agenda\n")
+                              "#+title: %<%b %d %Y>\n#+date: %<%A %B %d, Week %W %Y>\n \n* Agenda\n")
            :empty-lines 1))))
 
 (when (featurep! :tools biblio)
