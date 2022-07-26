@@ -590,6 +590,9 @@ Also used by `org-modern-mode' to calculate heights.")
         "C-l" #'comint-clear-buffer))
 
 (after! lispy
+  ;; Prettier function evaluation
+  (setq lispy-eval-display-style 'eros--eval-overlay)
+
   ;; Define custom special key for stepping into lists/deleting marked regions
   (lispy-define-key lispy-mode-map "i" 'my/lispy-step-into)
 
