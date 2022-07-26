@@ -353,6 +353,7 @@ Calls `hlissner-org-roam-update-slug-h' on `after-save-hook'."
 
 (defun my-org-roam-dailes-active-files ()
   "Return list of daily files corresponding to TODAY or later"
+  (require 'org-roam-dailies)
   (let ((files (org-roam-dailies--list-files))
         (today (calendar-absolute-from-gregorian (calendar-current-date))))
     (while (and files
