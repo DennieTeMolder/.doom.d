@@ -9,6 +9,7 @@
         '("\\*Async Shell Command\\*"
           "\\*Local variables\\*"
           "\\*Flycheck errors\\*"
+	  "\\*Process List\\*"
           "\\*Calendar\\*"
           "\\*info\\*"
           "^\\*Customize"
