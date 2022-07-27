@@ -663,3 +663,20 @@ If REGION is active, call `lispy-delete' instead."
              (lispyville-backward-atom-end))))
         (t
          (error "Unexpected"))))
+
+;;; Imenu
+(defvar my-imenu-orginal-index-function nil
+  "Original indexing function before calling `my-imenu-merge-index-h'")
+
+;;;###autoload
+(defun my-imenu-merge-index-h ()
+  "Append results from `imenu-generic-expression' to the current imenu (add to major-mode hook).
+This is useful when the index function does not utilise the generic expression such as in python-mode."
+  (setq-local my-imenu-orginal-index-function imenu-create-index-function
+              imenu-create-index-function 'my--imenu-merge-index))
+
+(defun my--imenu-merge-index ()
+  "See `my-imenu-merge-index-h'."
+  (let ((original-index (funcall my-imenu-orginal-index-function))
+        (generic-index (imenu--generic-function imenu-generic-expression)))
+    (append generic-index original-index)))

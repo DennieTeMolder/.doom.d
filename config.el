@@ -681,6 +681,12 @@ Also used by `org-modern-mode' to calculate heights.")
         :desc "View R object" :localleader "o" #'ess-view-data-print))
 
 (after! python
+  ;; Add generic imenu expression and ensure python doesn't ignore them
+  (add-hook! 'python-mode-hook
+             #'my-imenu-merge-index-h
+             (setq-local imenu-generic-expression
+                         '(("Rule" "^rule \\(\\_<[^ \t():\n]+\\_>\\):" 1))))
+
   ;; Python keybindings
   (map! :map python-mode-map
         :nv [C-return] #'my/python-send-current-and-step
