@@ -62,7 +62,7 @@
 ;; Replace the stale ess-R-data-view with the newer ess-view-data
 ;; Pending in: https://github.com/doomemacs/doomemacs/pull/6455
 (package! ess-R-data-view :disable t)
-(package! ess-view-data)
+(package! ess-view-data :pin "9df62e1bebf93d2dd3ab572daf2704a3f34db859")
 
 ;;; Custom packages
 (package! org-modern)
@@ -74,7 +74,7 @@
 (package! dired-du)
 (package! xr)
 (package! info-colors)
-(package! org-appear
+(package! org-appear :pin "60ba267c5da336e75e603f8c7ab3f44e6f4e4dac"
   :recipe (:host github :repo "awth13/org-appear"))
-(package! indent-tools
+(package! indent-tools :pin "9df62e1bebf93d2dd3ab572daf2704a3f34db859"
   :recipe (:host github :repo "DennieTeMolder/indent-tools"))
