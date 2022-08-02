@@ -198,6 +198,9 @@
 (remove-hook! '(completion-list-mode-hook Man-mode-hook)
               #'hide-mode-line-mode)
 
+;; This prevents stepping into the left side window from the bottom side window
+(advice-remove 'windmove-up #'+windmove-ignore-window-parameters-a)
+
 ;; Search options for "SPC s o" (`+lookup/online')
 (setq +lookup-provider-url-alist
       '(("DuckDuckGo"        +lookup--online-backend-duckduckgo "https://duckduckgo.com/?q=%s")
