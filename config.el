@@ -704,13 +704,10 @@ Also used by `org-modern-mode' to calculate heights.")
           '("\\.smk\\'" . python-mode))
 
 (after! conda
-  (custom-set-variables
-   '(conda-anaconda-home "~/.local/miniconda3/"))
-
   (advice-add '+python-init-anaconda-mode-maybe-h :before-until #'my-remote-buffer-p)
 
   ;; Prompt user to change into a conda env
-  (when (executable-find "conda")
+  (when (getenv "CONDA_EXE")
       (add-hook! 'anaconda-mode-hook #'my/conda-env-guess-prompt))
 
   (map! :map (python-mode-map inferior-python-mode-map)
