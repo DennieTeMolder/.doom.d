@@ -612,7 +612,7 @@ Also used by `org-modern-mode' to calculate heights.")
   (remove-hook! 'vterm-mode-hook #'hide-mode-line-mode)
 
   ;; Fix evil cursor getting out of sync
-  (advice-add 'vterm--redraw :after #'tiku91/vterm-redraw-cursor))
+  (advice-add 'vterm--redraw :after #'tiku91-vterm-redraw-cursor))
 
 (after! sh-script
   (map! :map sh-mode-map

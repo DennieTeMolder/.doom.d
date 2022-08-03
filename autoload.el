@@ -414,7 +414,7 @@ The DATE is derived from the #+title which must match the Org date format."
 
 ;;; Vterm
 ;;;###autoload
-(defun tiku91/vterm-redraw-cursor (args)
+(defun tiku91-vterm-redraw-cursor (args)
   "Redraw evil cursor with vterm to keep it consistent with the current state.
 Fix by tiku91:
 https://github.com/akermu/emacs-libvterm/issues/313#issuecomment-867525845"
