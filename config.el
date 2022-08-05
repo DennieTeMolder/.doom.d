@@ -650,9 +650,10 @@ Also used by `org-modern-mode' to calculate heights.")
   ;; ESS R keybindings, make < add a <-, type twice to undo (same goes for >)
   (map! (:map ess-mode-map
          :nv [C-return] #'ess-eval-region-or-line-and-step
-         :localleader
-         :desc "Source current file" "s" #'ess-load-file
-         "S" #'ess-switch-process)
+         (:localleader
+          :desc "Eval symbol at point" "." #'my/ess-eval-symbol-at-point
+          :desc "Source current file" "s" #'ess-load-file
+          "S" #'ess-switch-process))
 
         (:map inferior-ess-mode-map
          :localleader

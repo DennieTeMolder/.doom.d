@@ -492,6 +492,15 @@ https://www.reddit.com/r/emacs/comments/op4fcm/send_command_to_vterm_and_execute
     (unless ess-buffer-visible
       (select-window starting-window))))
 
+;;;###autoload
+(defun my/ess-eval-symbol-at-point ()
+  "Send the symbol under the cursor to the current ESS process"
+  (interactive)
+  (ess-send-string
+   (get-process ess-current-process-name)
+   (symbol-name (ess-symbol-at-point))
+   t))
+
 ;;; Python
 ;;;###autoload
 (defun my/python-shell-send-statment-and-step ()
