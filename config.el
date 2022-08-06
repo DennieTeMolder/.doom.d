@@ -649,7 +649,9 @@ Also used by `org-modern-mode' to calculate heights.")
 
   ;; Lag the cursor is debug mode, this leaves the point at a variable after its assigned
   (advice-add 'ess-debug-command-next :around #'my-with-lagging-point-a)
-  (dolist (symbol '(my/ess-debug-command-step ess-debug-command-up))
+  (dolist (symbol '(my/ess-debug-command-step
+                    ess-debug-command-up
+                    ess-debug-command-quit))
     (advice-add symbol :after #'my-lagging-point-reset))
 
   ;; ESS R keybindings, make < add a <-, type twice to undo (same goes for >)
