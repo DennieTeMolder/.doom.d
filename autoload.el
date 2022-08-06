@@ -501,6 +501,18 @@ https://www.reddit.com/r/emacs/comments/op4fcm/send_command_to_vterm_and_execute
    (symbol-name (ess-symbol-at-point))
    t))
 
+;;;###autoload
+(defun my/ess-debug-command-step ()
+  "Step into in debug mode.
+Equivalent to 's' at the R prompt."
+  (interactive)
+  (ess-force-buffer-current)
+  (unless (ess--dbg-is-active-p)
+    (error "Debugger is not active"))
+  (if (ess--dbg-is-recover-p)
+      (ess-send-string (ess-get-process) "0")
+    (ess-send-string (ess-get-process) "s")))
+
 ;;; Python
 ;;;###autoload
 (defun my/python-shell-send-statment-and-step ()

@@ -655,6 +655,9 @@ Also used by `org-modern-mode' to calculate heights.")
           :desc "Source current file" "s" #'ess-load-file
           "S" #'ess-switch-process))
 
+        (:map ess-debug-minor-mode-map
+         "M-S" #'my/ess-debug-command-step)
+
         (:map inferior-ess-mode-map
          :localleader
          "TAB" #'ess-switch-to-inferior-or-script-buffer
