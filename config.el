@@ -647,6 +647,11 @@ Also used by `org-modern-mode' to calculate heights.")
 
   (add-hook! 'inferior-ess-r-mode-hook (visual-line-mode +1))
 
+  ;; Lag the cursor is debug mode, this leaves the point at a variable after its assigned
+  (advice-add 'ess-debug-command-next :around #'my-with-lagging-point-a)
+  (dolist (symbol '(my/ess-debug-command-step ess-debug-command-up))
+    (advice-add symbol :after #'my-lagging-point-reset))
+
   ;; ESS R keybindings, make < add a <-, type twice to undo (same goes for >)
   (map! (:map ess-mode-map
          :nv [C-return] #'ess-eval-region-or-line-and-step
@@ -656,7 +661,9 @@ Also used by `org-modern-mode' to calculate heights.")
           "S" #'ess-switch-process))
 
         (:map ess-debug-minor-mode-map
-         "M-S" #'my/ess-debug-command-step)
+         "M-S" #'my/ess-debug-command-step
+         "M-E" #'my/ess-eval-symbol-at-point
+         "M-A" #'my/lagging-point-goto-actual)
 
         (:map inferior-ess-mode-map
          :localleader

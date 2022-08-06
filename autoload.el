@@ -701,3 +701,30 @@ This is useful when the index function does not utilise the generic expression s
   (let ((original-index (funcall my-imenu-orginal-index-function))
         (generic-index (imenu--generic-function imenu-generic-expression)))
     (append generic-index original-index)))
+
+;;; Misc
+(defvar my-lagging-point-actual nil
+  "Position of cursor when `my-with-lagging-point-a' would not have been active.")
+
+;;;###autoload
+(defun my-with-lagging-point-a (orig-fn)
+  "Keep/lag the cursor position one command execution behind.
+Indented to advise functions that move the point."
+  (my/lagging-point-goto-actual)
+  (save-excursion
+    (funcall orig-fn)
+    (sleep-for .05)
+    (setq-local my-lagging-point-actual (point))))
+
+;;;###autoload
+(defun my/lagging-point-goto-actual ()
+  "Restore cursor to the unlagged position."
+  (interactive)
+  (when my-lagging-point-actual
+    (goto-char my-lagging-point-actual)
+    (recenter nil)))
+
+;;;###autoload
+(defun my-lagging-point-reset ()
+  "Reset `my-lagging-point-actual'."
+  (setq-local my-lagging-point-actual nil))
