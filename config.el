@@ -218,8 +218,7 @@
 ;;;; Doom Core Package Settings
 (after! evil
   ;; Indicate `evil-repeat' to ignore certain commands because they freeze emacs
-  (evil-add-command-properties '+workspace/switch-left :repeat nil)
-  (evil-add-command-properties '+workspace/switch-right :repeat nil)
+  (my-evil-repeat-ignore '+workspace/switch-left '+workspace/switch-right)
 
   ;; Enable granular undo (remembers delete actions during insert state)
   (setq evil-want-fine-undo t

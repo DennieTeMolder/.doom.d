@@ -728,3 +728,11 @@ Indented to advise functions that move the point."
 (defun my-lagging-point-reset ()
   "Reset `my-lagging-point-actual'."
   (setq-local my-lagging-point-actual nil))
+
+;;;###autoload
+(defun my-evil-repeat-ignore (&rest symbol)
+  "Instruct `evil-repeat' to ignore commands with SYMBOL."
+  (unless symbol
+    (error "SYMBOL should be provided!"))
+  (dolist (current symbol)
+    (evil-add-command-properties current :repeat nil)))
