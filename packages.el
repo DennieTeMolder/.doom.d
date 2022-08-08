@@ -62,7 +62,7 @@
 ;; Replace the stale ess-R-data-view with the newer ess-view-data
 ;; Pending in: https://github.com/doomemacs/doomemacs/pull/6455
 (package! ess-R-data-view :disable t)
-(package! ess-view-data :pin "9df62e1bebf93d2dd3ab572daf2704a3f34db859")
+(package! ess-view-data :pin "aab369f84cadebbbca7c3825741d643ebeb6b722")
 
 ;;; Custom packages
 (package! org-modern)
