@@ -1,5 +1,26 @@
 ;;; private/my-config/autoloads.el -*- lexical-binding: t; -*-
 
+;;; Utility
+(defun my-remote-buffer-p (&optional buf)
+  "Returns t if BUF belongs to a remote directory."
+  (let* ((buf (or buf (current-buffer)))
+         (dir (buffer-local-value 'default-directory buf)))
+    (ignore-errors (file-remote-p dir))))
+
+;;;###autoload
+(defun my-file-local-readable-p (file)
+  "Return non-nil if FILE is local and readable."
+  (unless (file-remote-p file)
+    (file-readable-p file)))
+
+;;;###autoload
+(defun my-evil-repeat-ignore (&rest symbol)
+  "Instruct `evil-repeat' to ignore commands with SYMBOL."
+  (unless symbol
+    (error "SYMBOL should be provided!"))
+  (dolist (current symbol)
+    (evil-add-command-properties current :repeat nil)))
+
 ;;; Theme recommendations
 (defun my--theme-which-inactive (theme1 theme2)
   "Return THEME1 of not currently active, else return THEME2"
@@ -79,12 +100,6 @@
   (or (file-remote-p project-root)
       (file-in-directory-p project-root temporary-file-directory)
       (file-in-directory-p project-root doom-local-dir)))
-
-;;;###autoload
-(defun my-file-local-readable-p (file)
-  "Return non-nil if FILE is local and readable."
-  (unless (file-remote-p file)
-    (file-readable-p file)))
 
 ;;; Workspaces/perspectives
 ;;;###autoload
@@ -537,12 +552,6 @@ Unless SILENT is t the user is notified when ENV-NAME is already active."
       (unless (string= ienv "base")
         (my--conda-env-promt-activate ienv)))))
 
-(defun my-remote-buffer-p (&optional buf)
-  "Returns t if BUF belongs to a remote directory."
-  (let* ((buf (or buf (current-buffer)))
-         (dir (buffer-local-value 'default-directory buf)))
-    (ignore-errors (file-remote-p dir))))
-
 ;;; atomic-chrome
 ;;;###autoload
 (defun my/atomic-chrome-toggle-server ()
@@ -671,7 +680,7 @@ This is useful when the index function does not utilise the generic expression s
         (generic-index (imenu--generic-function imenu-generic-expression)))
     (append generic-index original-index)))
 
-;;; Misc
+;;; With lagging point functions
 (defvar my-lagging-point-actual nil
   "Position of cursor when `my-with-lagging-point-a' would not have been active.")
 
@@ -697,11 +706,3 @@ Indented to advise functions that move the point."
 (defun my-lagging-point-reset ()
   "Reset `my-lagging-point-actual'."
   (setq-local my-lagging-point-actual nil))
-
-;;;###autoload
-(defun my-evil-repeat-ignore (&rest symbol)
-  "Instruct `evil-repeat' to ignore commands with SYMBOL."
-  (unless symbol
-    (error "SYMBOL should be provided!"))
-  (dolist (current symbol)
-    (evil-add-command-properties current :repeat nil)))
