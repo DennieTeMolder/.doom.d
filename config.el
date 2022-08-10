@@ -1,4 +1,5 @@
 ;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
+;; Note: custom functions/variables/macros are prefixed with 'dtm'
 
 ;; Place your private configuration here! Remember, you do not need to run 'doom
 ;; sync' after modifying this file!
@@ -34,32 +35,32 @@
 ;; refresh your font settings. If Emacs still can't find your font, it likely
 ;; wasn't installed correctly. Font issues are rarely Doom issues!
 
-(defvar my-base-font-size (if (and (<= (display-pixel-height) 1080)
+(defvar dtm-base-font-size (if (and (<= (display-pixel-height) 1080)
                                    (not IS-LAPTOP))
                               13.0 14.0))
 
 ;; Use float for size as it indicates point size rather then pixels (better scaling)
-(setq doom-font (font-spec :family "Iosevka" :width 'expanded :size my-base-font-size)
-      doom-big-font (font-spec :family "Iosevka" :width 'expanded :size (+ my-base-font-size 5))
-      doom-serif-font (font-spec :family "Iosevka Slab" :width 'expanded :size my-base-font-size)
-      doom-variable-pitch-font (font-spec :family "Iosevka Aile" :size my-base-font-size))
+(setq doom-font (font-spec :family "Iosevka" :width 'expanded :size dtm-base-font-size)
+      doom-big-font (font-spec :family "Iosevka" :width 'expanded :size (+ dtm-base-font-size 5))
+      doom-serif-font (font-spec :family "Iosevka Slab" :width 'expanded :size dtm-base-font-size)
+      doom-variable-pitch-font (font-spec :family "Iosevka Aile" :size dtm-base-font-size))
 
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
 
-;; Settings use by `my/recommend-theme' to determine theme
-(defvar my-first-hour-of-day 8)
-(defvar my-last-hour-of-day 17)
-(defvar my-day-theme 'doom-one-light)
-(defvar my-night-theme 'doom-vibrant)
-(defvar my-presentation-theme 'doom-ayu-light)
-(defvar my-solarized-theme 'doom-flatwhite)
-(defvar my-dark-theme 'doom-monokai-ristretto)
+;; Settings use by `dtm/recommend-theme' to determine theme
+(defvar dtm-first-hour-of-day 8)
+(defvar dtm-last-hour-of-day 17)
+(defvar dtm-day-theme 'doom-one-light)
+(defvar dtm-night-theme 'doom-vibrant)
+(defvar dtm-presentation-theme 'doom-ayu-light)
+(defvar dtm-solarized-theme 'doom-flatwhite)
+(defvar dtm-dark-theme 'doom-monokai-ristretto)
 
 ;; Load theme based on custom function
 (setq doom-flatwhite-no-highlight-variables t
-      doom-theme (my-recommend-theme))
+      doom-theme (dtm-recommend-theme))
 
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
@@ -137,7 +138,7 @@
   (display-battery-mode +1))
 
 ;; Only display encoding in modeline when it's not UTF-8
-(add-hook! 'after-change-major-mode-hook #'my-doom-modeline-conditional-buffer-encoding)
+(add-hook! 'after-change-major-mode-hook #'dtm-doom-modeline-conditional-buffer-encoding)
 
 ;; Simplify window title and give a visual indication if file is edited
 (setq frame-title-format
@@ -151,7 +152,7 @@
        (if (buffer-modified-p) " +" ""))))
 
 ;; Replace the default doom splash screen with amore subtle one
-(setq +doom-dashboard-ascii-banner-fn #'my-doom-ascii-banner-fn)
+(setq +doom-dashboard-ascii-banner-fn #'dtm-doom-ascii-banner-fn)
 
 ;; Customize dashboard menu options to include org roam
 (setq +doom-dashboard-menu-sections
@@ -159,13 +160,13 @@
          (all-the-icons-octicon "history" :face 'doom-dashboard-menu-title)
          :when (file-exists-p (doom-session-file))
          :face (:inherit (doom-dashboard-menu-title bold))
-         :action my/load-session)
+         :action dtm/load-session)
         ("Recently opened files" :icon
          (all-the-icons-octicon "file-text" :face 'doom-dashboard-menu-title)
          :action recentf-open-files)
         ("Open roam index" :icon
          (all-the-icons-octicon "database" :face 'doom-dashboard-menu-title)
-         :action my/org-roam-open-index)
+         :action dtm/org-roam-open-index)
         ("Open roam today" :icon
          (all-the-icons-octicon "calendar" :face 'doom-dashboard-menu-title)
          :action org-roam-dailies-goto-today)
@@ -218,7 +219,7 @@
 ;;;; Doom Core Package Settings
 (after! evil
   ;; Indicate `evil-repeat' to ignore certain commands because they freeze emacs
-  (my-evil-repeat-ignore '+workspace/switch-left '+workspace/switch-right)
+  (dtm-evil-repeat-ignore '+workspace/switch-left '+workspace/switch-right)
 
   ;; Enable granular undo (remembers delete actions during insert state)
   (setq evil-want-fine-undo t
@@ -241,7 +242,7 @@
   ;; Projectle sorting by recently opened
   (setq projectile-sort-order 'recently-active
         ;; Replace the doom-project-ignored-p function to ignore remote projects
-        projectile-ignored-project-function #'my-project-ignored-p)
+        projectile-ignored-project-function #'dtm-project-ignored-p)
 
   ;; Define a generic project as .projectile is not synced by Nextcloud
   (projectile-register-project-type 'generic '("PROJECT") :project-file "PROJECT")
@@ -258,7 +259,7 @@
 
 (after! recentf
   ;;Exclude non-existent & remote files from recent files list after cleanup
-  (setq recentf-keep '(my-file-local-readable-p))
+  (setq recentf-keep '(dtm-file-local-readable-p))
 
   ;; Revert back to running cleanup on mode start instead of emacs shutdown
   (remove-hook! 'kill-emacs-hook #'recentf-cleanup)
@@ -275,19 +276,19 @@
                     doom/goto-private-init-file
                     doom/goto-private-config-file
                     doom/goto-private-packages-file))
-    (advice-add symbol :before #'my/doom-private-goto-workspace))
+    (advice-add symbol :before #'dtm/doom-private-goto-workspace))
 
   ;; Fix default input value for `doom/load-session'
-  (global-set-key [remap doom/load-session] #'my/load-session))
+  (global-set-key [remap doom/load-session] #'dtm/load-session))
 
 ;; Use ediff in dired instead of diff
 (after! dired
   (setq dired-clean-confirm-killing-deleted-buffers nil)
 
-  (define-key dired-mode-map [remap dired-diff] #'my/dired-ediff))
+  (define-key dired-mode-map [remap dired-diff] #'dtm/dired-ediff))
 
 (after! ranger
-  (define-key ranger-mode-map [remap dired-diff] #'my/dired-ediff))
+  (define-key ranger-mode-map [remap dired-diff] #'dtm/dired-ediff))
 
 (after! undo-fu
   ;; Raise undo limit do 10 Mb (doom default: 40kb)
@@ -339,7 +340,7 @@
         ispell-personal-dictionary "~/Nextcloud/Dictionary/personal_dict.pws"))
 
 ;; Org-mode settings
-(defvar my-org-line-spacing 0.1
+(defvar dtm-org-line-spacing 0.1
   "`line-spacing' used in `org-mode'.
 Also used by `org-modern-mode' to calculate heights.")
 
@@ -373,7 +374,7 @@ Also used by `org-modern-mode' to calculate heights.")
 
   ;; Enable hard wrapping and automate paragraph filling
   ;; Allow for double quoting using '' and `` (`` -> “)
-  (add-hook! 'org-mode-hook #'my-org-mode-setup-h)
+  (add-hook! 'org-mode-hook #'dtm-org-mode-setup-h)
 
   ;; Use old org-ref insert key, remove `org-agenda-file-to-front' binding
   (map! :map org-mode-map
@@ -397,7 +398,7 @@ Also used by `org-modern-mode' to calculate heights.")
 (use-package! org-appear
   :commands org-appear-mode
   :init
-  (advice-add 'org-toggle-pretty-entities :after #'my-org-pretty-use-appear-a)
+  (advice-add 'org-toggle-pretty-entities :after #'dtm-org-pretty-use-appear-a)
   :config
   (setq org-appear-autosubmarkers t
         org-appear-autoemphasis t
@@ -407,7 +408,7 @@ Also used by `org-modern-mode' to calculate heights.")
   :hook (org-mode . org-modern-mode)
   :hook (org-agenda-finalize . org-modern-agenda)
   :config
-  (setq org-modern-label-border my-org-line-spacing
+  (setq org-modern-label-border dtm-org-line-spacing
         org-modern-statistics nil
         org-modern-table nil ; Ref: https://github.com/minad/org-modern/issues/69
         org-modern-star ["●" "◉" "○" "◉" "○" "◉" "○" "◉"]
@@ -419,7 +420,7 @@ Also used by `org-modern-mode' to calculate heights.")
   (set-face-attribute 'org-modern-symbol nil :family "Iosevka")
 
   ;; Correct indentation of headings
-  (advice-add 'org-indent--compute-prefixes :after #'my-org--modern-indent-heading)
+  (advice-add 'org-indent--compute-prefixes :after #'dtm-org--modern-indent-heading)
 
   ;; Refresh `org-indent-mode' to apply advice
   (when org-indent-mode
@@ -429,10 +430,10 @@ Also used by `org-modern-mode' to calculate heights.")
   (setq +org-present-text-scale 6)
 
   ;; Make presentations even prettier
-  (add-hook! 'org-tree-slide-mode-hook :append #'my-org-tree-slide-setup-h)
+  (add-hook! 'org-tree-slide-mode-hook :append #'dtm-org-tree-slide-setup-h)
 
   ;; Disable `flycheck-mode' and `spell-fu-mode' when presenting
-  (advice-add 'org-tree-slide-mode :around #'my-org-tree-slide-no-squiggles-a)
+  (advice-add 'org-tree-slide-mode :around #'dtm-org-tree-slide-no-squiggles-a)
 
   (map! :map org-tree-slide-mode-map
         :gn "q" (cmd! (org-tree-slide-mode -1))
@@ -456,14 +457,14 @@ Also used by `org-modern-mode' to calculate heights.")
         org-roam-dailies-directory "journals/"
         org-roam-file-exclude-regexp "Rubbish/")
 
-  (defvar my-org-roam-index-file "pages/contents.org"))
+  (defvar dtm-org-roam-index-file "pages/contents.org"))
 
 (after! org-roam
   ;; Disable completion everywhere as it overrides company completion
   (setq org-roam-completion-everywhere nil)
 
   ;; Custom org-roam buffer preview function
-  (setq org-roam-preview-function #'my-org-element-at-point-get-content)
+  (setq org-roam-preview-function #'dtm-org-element-at-point-get-content)
 
   ;; Automatically update the slug in the filename when #+title: has changed.
   (add-hook 'org-roam-find-file-hook #'hlissner-org-roam-update-slug-on-save-h)
@@ -481,10 +482,10 @@ Also used by `org-modern-mode' to calculate heights.")
                     org-roam-dailies--capture
                     org-roam-buffer-display-dedicated
                     org-roam-buffer-toggle))
-    (advice-add symbol :before #'my-org-roam-goto-workspace))
+    (advice-add symbol :before #'dtm-org-roam-goto-workspace))
 
   ;; Sync org-agenda with org-roam dailies
-  (advice-add 'org-agenda :before #'my-org-roam-dailies-sync-agenda)
+  (advice-add 'org-agenda :before #'dtm-org-roam-dailies-sync-agenda)
 
   ;; Roam templates
   (setq org-roam-capture-templates
@@ -510,7 +511,7 @@ Also used by `org-modern-mode' to calculate heights.")
   (push '(note . "${=key=}: ${title}\n\n* Notes") citar-templates)
 
   ;; Open notes in roam workspace
-  (advice-add 'citar-open-notes :before #'my-org-roam-goto-workspace)
+  (advice-add 'citar-open-notes :before #'dtm-org-roam-goto-workspace)
 
   ;; Update citar cache when bib-file changes during specified modes
   (citar-filenotify-setup '(LaTeX-mode-hook org-mode-hook))
@@ -546,7 +547,7 @@ Also used by `org-modern-mode' to calculate heights.")
 
   (map! (:map pdf-view-mode-map
          :gn "C-e" #'pdf-view-scroll-down-or-previous-page
-         :gn "S"   #'my/pdf-view-fit-half-height
+         :gn "S"   #'dtm/pdf-view-fit-half-height
          :gn "s r" #'image-rotate
          :v  "h"   #'pdf-annot-add-highlight-markup-annotation
          :v  "s"   #'pdf-annot-add-strikeout-markup-annotation
@@ -592,7 +593,7 @@ Also used by `org-modern-mode' to calculate heights.")
   (setq lispy-eval-display-style 'eros--eval-overlay)
 
   ;; Define custom special key for stepping into lists/deleting marked regions
-  (lispy-define-key lispy-mode-map "i" 'my/lispy-step-into)
+  (lispy-define-key lispy-mode-map "i" 'dtm/lispy-step-into)
 
   ;; Rebind the key previously on "i"
   (map! :map lispy-mode-map "TAB" #'special-lispy-tab))
@@ -639,7 +640,7 @@ Also used by `org-modern-mode' to calculate heights.")
   (custom-set-faces! '(ess-constant-face :weight bold :inherit font-lock-warning-face))
 
   ;; Make inferior buffer not take focus on startup
-  (advice-add 'ess-switch-to-inferior-or-script-buffer :around #'my-ess-switch-maybe-a)
+  (advice-add 'ess-switch-to-inferior-or-script-buffer :around #'dtm-ess-switch-maybe-a)
 
   ;; Make evil tab width same as ESS offset
   (add-hook! 'ess-mode-hook (setq-local evil-shift-width 'ess-indent-offset))
@@ -647,24 +648,24 @@ Also used by `org-modern-mode' to calculate heights.")
   (add-hook! 'inferior-ess-r-mode-hook (visual-line-mode +1))
 
   ;; Lag the cursor is debug mode, this leaves the point at a variable after its assigned
-  (advice-add 'ess-debug-command-next :around #'my-with-lagging-point-a)
-  (dolist (symbol '(my/ess-debug-command-step
+  (advice-add 'ess-debug-command-next :around #'dtm-with-lagging-point-a)
+  (dolist (symbol '(dtm/ess-debug-command-step
                     ess-debug-command-up
                     ess-debug-command-quit))
-    (advice-add symbol :after #'my-lagging-point-reset))
+    (advice-add symbol :after #'dtm-lagging-point-reset))
 
   ;; ESS R keybindings, make < add a <-, type twice to undo (same goes for >)
   (map! (:map ess-mode-map
          :nv [C-return] #'ess-eval-region-or-line-and-step
          (:localleader
-          :desc "Eval symbol at point" "." #'my/ess-eval-symbol-at-point
+          :desc "Eval symbol at point" "." #'dtm/ess-eval-symbol-at-point
           :desc "Source current file" "s" #'ess-load-file
           "S" #'ess-switch-process))
 
         (:map ess-debug-minor-mode-map
-         "M-S" #'my/ess-debug-command-step
-         "M-E" #'my/ess-eval-symbol-at-point
-         "M-A" #'my/lagging-point-goto-actual)
+         "M-S" #'dtm/ess-debug-command-step
+         "M-E" #'dtm/ess-eval-symbol-at-point
+         "M-A" #'dtm/lagging-point-goto-actual)
 
         (:map inferior-ess-mode-map
          :localleader
@@ -677,8 +678,8 @@ Also used by `org-modern-mode' to calculate heights.")
          :desc "Environment list R objects" "E" #'ess-rdired)
 
         (:map (ess-r-mode-map inferior-ess-r-mode-map)
-         :i "<" #'my/ess-r-insert-assign
-         :i ">" #'my/ess-r-insert-pipe)))
+         :i "<" #'dtm/ess-r-insert-assign
+         :i ">" #'dtm/ess-r-insert-pipe)))
 
 (after! ess-s-lang
   ;; Imenu search entries, best invoked with =consult-imenu= (SPC s i)
@@ -694,7 +695,7 @@ Also used by `org-modern-mode' to calculate heights.")
 (after! python
   ;; Add generic imenu expression and ensure python doesn't ignore them
   (add-hook! 'python-mode-hook
-             #'my-imenu-merge-index-h
+             #'dtm-imenu-merge-index-h
              (setq-local imenu-generic-expression
                          '(("Rule" "^rule \\(\\_<[^ \t():\n]+\\_>\\):" 1))))
 
@@ -738,11 +739,11 @@ Also used by `org-modern-mode' to calculate heights.")
   ;; Prompt user to change into a conda env
   ;; HACK use the find-file-hook because elpy keeps triggering python-mode
   (when (getenv "CONDA_EXE")
-    (add-hook! 'find-file-hook #'my-conda-env-guess-prompt-h))
+    (add-hook! 'find-file-hook #'dtm-conda-env-guess-prompt-h))
 
   (map! :map (python-mode-map inferior-python-mode-map)
         :localleader :prefix ("c" . "Conda")
-        :desc "Guess conda env" "g" #'my/conda-env-guess-prompt
+        :desc "Guess conda env" "g" #'dtm/conda-env-guess-prompt
                                 "a" #'conda-env-activate
                                 "d" #'conda-env-deactivate))
 
@@ -760,7 +761,7 @@ Also used by `org-modern-mode' to calculate heights.")
           '(".tsv" . so-long-mode))
 
 ;; Enable csv/tsv mode on files with short lines
-(add-hook! 'so-long-mode-hook #'my-csv-mode-maybe-h)
+(add-hook! 'so-long-mode-hook #'dtm-csv-mode-maybe-h)
 
 ;;;; Misc Packages
 ;; M-x interaction-log-mode shows all executed command for debugging/showcasing
@@ -777,7 +778,7 @@ Also used by `org-modern-mode' to calculate heights.")
         good-scroll-step (round (/ (display-pixel-height) 5)))
 
   ;; Override evil functions on mode activation, undo upon deactivation
-  (add-hook! 'good-scroll-mode-hook #'my-good-scroll-evil-override-h))
+  (add-hook! 'good-scroll-mode-hook #'dtm-good-scroll-evil-override-h))
 
 ;; Init good-scroll
 (unless IS-LAPTOP

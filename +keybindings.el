@@ -31,29 +31,29 @@
       :desc "Repeat last command" "r" #'repeat
 
       ;; Buffers
-      :desc "Move buffer to workspace" "b TAB" #'my/buffer-move-to-workspace-prompt
+      :desc "Move buffer to workspace" "b TAB" #'dtm/buffer-move-to-workspace-prompt
                                        "b D"   #'kill-buffer-and-window
       :desc "Show undo history"        "b h"   #'vundo
 
       ;; Window management
       (:prefix "w"
        :desc "Adjust windows hydra"  "a" #'+hydra/window-nav/body
-       :desc "Enlarge double height" "e" #'my/window-double-height
-       :desc "Halve height"          "E" #'my/window-half-height)
+       :desc "Enlarge double height" "e" #'dtm/window-double-height
+       :desc "Halve height"          "E" #'dtm/window-half-height)
 
       ;; Toggles
       (:prefix "t"
        :desc "Auto linebreaks"     "a" #'auto-fill-mode
-       :desc "GhostText server"    "G" #'my/atomic-chrome-toggle-server
-       :desc "Interaction logging" "I" #'my/interaction-log-mode-w-buffer
-       :desc "Left margin"         "L" #'my/window-toggle-left-margin
+       :desc "GhostText server"    "G" #'dtm/atomic-chrome-toggle-server
+       :desc "Interaction logging" "I" #'dtm/interaction-log-mode-w-buffer
+       :desc "Left margin"         "L" #'dtm/window-toggle-left-margin
        :desc "Smooth scrolling"    "S" #'good-scroll-mode
-       :desc "Trash deleted files" "T" #'my/toggle-trash-delete)
+       :desc "Trash deleted files" "T" #'dtm/toggle-trash-delete)
 
       ;; Roam
       (:prefix "n r"
-       :desc "Open index"        "o"   #'my/org-roam-open-index
-       :desc "Schedule headline" "d s" #'my/org-roam-dailies-schedule-time))
+       :desc "Open index"        "o"   #'dtm/org-roam-open-index
+       :desc "Schedule headline" "d s" #'dtm/org-roam-dailies-schedule-time))
 
 ;;; Custom modules
 (map! :leader

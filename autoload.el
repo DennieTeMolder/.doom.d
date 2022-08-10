@@ -1,20 +1,20 @@
 ;;; autoloads.el -*- lexical-binding: t; -*-
 
 ;;; Utility
-(defun my-remote-buffer-p (&optional buf)
+(defun dtm-remote-buffer-p (&optional buf)
   "Returns t if BUF belongs to a remote directory."
   (let* ((buf (or buf (current-buffer)))
          (dir (buffer-local-value 'default-directory buf)))
     (ignore-errors (file-remote-p dir))))
 
 ;;;###autoload
-(defun my-file-local-readable-p (file)
+(defun dtm-file-local-readable-p (file)
   "Return non-nil if FILE is local and readable."
   (unless (file-remote-p file)
     (file-readable-p file)))
 
 ;;;###autoload
-(defun my-evil-repeat-ignore (&rest symbol)
+(defun dtm-evil-repeat-ignore (&rest symbol)
   "Instruct `evil-repeat' to ignore commands with SYMBOL."
   (unless symbol
     (error "SYMBOL should be provided!"))
@@ -22,21 +22,21 @@
     (evil-add-command-properties current :repeat nil)))
 
 ;;; Theme recommendations
-(defun my--theme-which-inactive (theme1 theme2)
+(defun dtm--theme-which-inactive (theme1 theme2)
   "Return THEME1 of not currently active, else return THEME2"
   (if (eq theme1 (car custom-enabled-themes)) theme2 theme1))
 
 ;;;###autoload
-(defun my-recommend-theme ()
+(defun dtm-recommend-theme ()
   "Recommend a NEW theme to use based on context and time of day."
  (if (bound-and-true-p org-tree-slide-mode)
-     my-presentation-theme
+     dtm-presentation-theme
    (let ((hour (string-to-number (substring (current-time-string) 11 13))))
-     (if (member hour (number-sequence my-first-hour-of-day my-last-hour-of-day))
-         (my--theme-which-inactive my-day-theme my-solarized-theme)
-       (my--theme-which-inactive my-night-theme my-dark-theme)))))
+     (if (member hour (number-sequence dtm-first-hour-of-day dtm-last-hour-of-day))
+         (dtm--theme-which-inactive dtm-day-theme dtm-solarized-theme)
+       (dtm--theme-which-inactive dtm-night-theme dtm-dark-theme)))))
 
-(defun my--load-theme-confirm (theme)
+(defun dtm--load-theme-confirm (theme)
   "Load THEME after user confirmation."
   (when (y-or-n-p (format "Activate \"%s\" theme?" theme))
     (mapc #'disable-theme custom-enabled-themes)
@@ -48,21 +48,21 @@
       (doom/reload-theme))))
 
 ;;;###autoload
-(defun my/load-recommended-theme ()
-  "Load the theme returned by `my-recommend-theme' after user confirmation."
+(defun dtm/load-recommended-theme ()
+  "Load the theme returned by `dtm-recommend-theme' after user confirmation."
   (interactive)
-  (my--load-theme-confirm (my-recommend-theme)))
+  (dtm--load-theme-confirm (dtm-recommend-theme)))
 
 ;;; UI
 ;;;###autoload
-(defun my-doom-modeline-conditional-buffer-encoding ()
+(defun dtm-doom-modeline-conditional-buffer-encoding ()
   "Only display encoding in modeline when it's not UTF-8"
   (setq-local doom-modeline-buffer-encoding
               (unless (or (eq buffer-file-coding-system 'utf-8-unix)
                           (eq buffer-file-coding-system 'utf-8)))))
 
 ;;;###autoload
-(defun my-doom-ascii-banner-fn ()
+(defun dtm-doom-ascii-banner-fn ()
   (let* ((banner
           '(",---.,-.-.,---.,---.,---."
             "|---'| | |,---||    `---."
@@ -82,20 +82,20 @@
 
 ;;; Window management
 ;;;###autoload
-(defun my/window-double-height ()
+(defun dtm/window-double-height ()
   "Double height of active window"
   (interactive)
   (enlarge-window (window-height)))
 
 ;;;###autoload
-(defun my/window-half-height ()
+(defun dtm/window-half-height ()
   "Halves height of active window"
   (interactive)
   (enlarge-window (/ (window-height) -2)))
 
 ;;; File handeling
 ;;;###autoload
-(defun my-project-ignored-p (project-root)
+(defun dtm-project-ignored-p (project-root)
   "Return non-nil if remote or temporary file or a straight package."
   (or (file-remote-p project-root)
       (file-in-directory-p project-root temporary-file-directory)
@@ -103,7 +103,7 @@
 
 ;;; Workspaces/perspectives
 ;;;###autoload
-(defun my/load-session (file)
+(defun dtm/load-session (file)
   "Stripped down `doom/load-session' with proper default value.
 Also checks if FILE exists."
   (interactive
@@ -115,7 +115,7 @@ Also checks if FILE exists."
   (doom-load-session file)
   (message "Session restored. Welcome back."))
 
-(defun my-buffer-move-to-workspace (buffer name)
+(defun dtm-buffer-move-to-workspace (buffer name)
   "Move BUFFER from the original workspace to NAME and switch"
   (let ((origin (+workspace-current-name)))
     (+workspace-switch name t)
@@ -126,16 +126,16 @@ Also checks if FILE exists."
     (+workspace/display)))
 
 ;;;###autoload
-(defun my/buffer-move-to-workspace-prompt ()
+(defun dtm/buffer-move-to-workspace-prompt ()
   "Move current buffer from the current to the selected workspace"
   (interactive)
   (let ((buffer (current-buffer))
         (name (completing-read
                "Move current buffer to workspace:"
                (+workspace-list-names))))
-    (my-buffer-move-to-workspace buffer name)))
+    (dtm-buffer-move-to-workspace buffer name)))
 
-(defun my-workspace-switch-maybe (name)
+(defun dtm-workspace-switch-maybe (name)
   "Switch to workspace NAME if not already current"
   (unless (equal name (+workspace-current-name))
     ;; Recycle current workspace if empty
@@ -146,18 +146,18 @@ Also checks if FILE exists."
     (+workspace/display)))
 
 ;;;###autoload
-(defun my/doom-private-goto-workspace ()
+(defun dtm/doom-private-goto-workspace ()
   "Open/create the dedicated private config workspace"
-  (my-workspace-switch-maybe "*config*"))
+  (dtm-workspace-switch-maybe "*config*"))
 
 ;;;###autoload
-(defun my-org-roam-goto-workspace (&rest _)
+(defun dtm-org-roam-goto-workspace (&rest _)
   "Open/create the dedicated org-roam workspace"
-  (my-workspace-switch-maybe "*roam*"))
+  (dtm-workspace-switch-maybe "*roam*"))
 
 ;;; Ediff
 ;;;###autoload
-(defun my/ediff-this-file ()
+(defun dtm/ediff-this-file ()
   "Ediff file associated with current buffer to file selected in prompt."
   (interactive)
   (when (and (buffer-modified-p)
@@ -170,7 +170,7 @@ Also checks if FILE exists."
 
 ;;; Dired
 ;;;###autoload
-(defun my/dired-ediff ()
+(defun dtm/dired-ediff ()
   "Compare file under cursor to file selected in prompt using Ediff"
   (interactive)
   (let* ((file (dired-get-filename t))
@@ -182,18 +182,18 @@ Also checks if FILE exists."
 
 ;;; Org-mode
 ;;;###autoload
-(defun my-org-mode-setup-h ()
+(defun dtm-org-mode-setup-h ()
   "Personal org-mode customisation's after mode startup"
-  (setq-local line-spacing my-org-line-spacing
+  (setq-local line-spacing dtm-org-line-spacing
               auto-hscroll-mode nil)
   (electric-quote-local-mode +1)
   (visual-line-mode -1)
   (auto-fill-mode +1)
   (add-hook! 'evil-insert-state-exit-hook
-             :local #'my-insert-exit-fill-paragraph))
+             :local #'dtm-insert-exit-fill-paragraph))
 
 ;;;###autoload
-(defun my-insert-exit-fill-paragraph ()
+(defun dtm-insert-exit-fill-paragraph ()
   "Perform `org-fill-paragraph' unless el at point is a src block"
   ;; Check if `auto-fill-mode' is active
   (when auto-fill-function
@@ -201,7 +201,7 @@ Also checks if FILE exists."
                   '(src-block comment-block))
       (org-fill-paragraph))))
 
-(defun my-org-get-title-value ()
+(defun dtm-org-get-title-value ()
   "Returns the value of #+TITLE for the current document"
   (car (cdar (org-collect-keywords '("TITLE")))))
 
@@ -233,7 +233,7 @@ https://github.com/abo-abo/org-download/commit/137c3d2aa083283a3fc853f9ecbbc0303
 
 ;;; Org-modern
 ;;;###autoload
-(defun my-org--modern-indent-heading ()
+(defun dtm-org--modern-indent-heading ()
   "Correctly indents heading assuming leading stars are fully hidden (not invisible)."
   (dotimes (n org-indent--deepest-level)
     (unless (= n 0)
@@ -245,7 +245,7 @@ https://github.com/abo-abo/org-download/commit/137c3d2aa083283a3fc853f9ecbbc0303
 
 ;;; Org-tree-slide
 ;;;###autoload
-(defun my-org-tree-slide-setup-h ()
+(defun dtm-org-tree-slide-setup-h ()
   "Additional settings to prettify presentations"
   (if org-tree-slide-mode
       (progn
@@ -263,7 +263,7 @@ https://github.com/abo-abo/org-download/commit/137c3d2aa083283a3fc853f9ecbbc0303
   (redraw-display))
 
 ;;;###autoload
-(defun my-org-tree-slide-no-squiggles-a (orig-fn &optional ARG)
+(defun dtm-org-tree-slide-no-squiggles-a (orig-fn &optional ARG)
   "Toggle modes that litter the buffer with squiggly lines."
   (let ((ARG (if (memq ARG '(nil toggle))
                  (if org-tree-slide-mode -1 +1)
@@ -280,20 +280,20 @@ https://github.com/abo-abo/org-download/commit/137c3d2aa083283a3fc853f9ecbbc0303
       (spell-fu-mode +1))))
 
 ;;; Org-appear
-(defun my-org-pretty-use-appear-a ()
+(defun dtm-org-pretty-use-appear-a ()
   "Activate `org-appear-mode' based on `org-pretty-entities'."
   (org-appear-mode (if org-pretty-entities +1 -1)))
 
 ;;; Org-roam
 ;;;###autoload
-(defun my/org-roam-open-index ()
-  "Opens the file specified in my-org-roam-index-file"
+(defun dtm/org-roam-open-index ()
+  "Opens the file specified in dtm-org-roam-index-file"
   (interactive)
-  (my-org-roam-goto-workspace)
-  (find-file (expand-file-name my-org-roam-index-file org-roam-directory)))
+  (dtm-org-roam-goto-workspace)
+  (find-file (expand-file-name dtm-org-roam-index-file org-roam-directory)))
 
 ;;;###autoload
-(defun my-org-element-at-point-get-content ()
+(defun dtm-org-element-at-point-get-content ()
   "Return the current element's content without properties.
 Based on `org-mark-element' and `org-roam-preview-default-function'."
   ;; Move to beginning of item to include children
@@ -362,44 +362,44 @@ Calls `hlissner-org-roam-update-slug-h' on `after-save-hook'."
             'append 'local))
 
 ;;; Org-roam-dailies
-(defun my-org-roam-dailes-calendar--file-to-absolute (file)
+(defun dtm-org-roam-dailes-calendar--file-to-absolute (file)
   "Convert file name (with gregorian date format) to absolute time"
   (calendar-absolute-from-gregorian (org-roam-dailies-calendar--file-to-date file)))
 
-(defun my-org-roam-dailes-active-files ()
+(defun dtm-org-roam-dailes-active-files ()
   "Return list of daily files corresponding to TODAY or later"
   (require 'org-roam-dailies)
   (let ((files (org-roam-dailies--list-files))
         (today (calendar-absolute-from-gregorian (calendar-current-date))))
     (while (and files
-                (< (my-org-roam-dailes-calendar--file-to-absolute (car files))
+                (< (dtm-org-roam-dailes-calendar--file-to-absolute (car files))
                    today))
       (pop files))
     files))
 
 ;;;###autoload
-(defun my-org-roam-dailies-sync-agenda (&rest _)
+(defun dtm-org-roam-dailies-sync-agenda (&rest _)
   "Scan the dailies-directory and add current and future dates to agenda."
   (mapc (lambda (x) (cl-pushnew x org-agenda-files :test #'string=))
-        (my-org-roam-dailes-active-files)))
+        (dtm-org-roam-dailes-active-files)))
 
 ;;;###autoload
-(defun my/org-roam-dailies-schedule-time ()
+(defun dtm/org-roam-dailies-schedule-time ()
   "Wrapper around `org-schedule' that only prompts for time.
 The DATE is derived from the #+title which must match the Org date format."
   (interactive)
   (unless (org-roam-dailies--daily-note-p)
     (user-error "Not in a daily-note"))
-  (let ((date (my-org-get-title-value))
+  (let ((date (dtm-org-get-title-value))
         (time (read-string "Schedule headline at (HH:MM): ")))
     (org-schedule nil (concat date " " time (when (length< time 3) ":00")))))
 
 ;;;###autoload
-(defun my/org-roam-dailies-insert-timeblock ()
+(defun dtm/org-roam-dailies-insert-timeblock ()
   "Inserts an org roam headline for each hour in START to END with a timestamp.
 The DATE is derived from the #+title which must match the Org date format."
   (interactive)
-  (let ((date (my-org-get-title-value))
+  (let ((date (dtm-org-get-title-value))
         (start (read-number "Start time (hour): " 8))
         (end (- (read-number "End time (hour): " 17) 1)))
     (end-of-line)
@@ -414,7 +414,7 @@ The DATE is derived from the #+title which must match the Org date format."
 
 ;;; Pdf-tools
 ;;;###autoload
-(defun my/pdf-view-fit-half-height ()
+(defun dtm/pdf-view-fit-half-height ()
   "Fit PDF height to 2x window (minus 0.1 to fix scrolling)"
   (interactive)
   (pdf-view-fit-height-to-window)
@@ -467,7 +467,7 @@ https://www.reddit.com/r/emacs/comments/op4fcm/send_command_to_vterm_and_execute
       (forward-line))))
 
 ;;; ESS/R
-(defun my-ess-insert-string (mystr)
+(defun dtm-ess-insert-string (mystr)
   "Insert string, undo if the same input event is issued twice"
   (let* ((event (event-basic-type last-input-event))
          (char (ignore-errors (format "%c" event))))
@@ -482,19 +482,19 @@ https://www.reddit.com/r/emacs/comments/op4fcm/send_command_to_vterm_and_execute
           (t (insert mystr)))))
 
 ;;;###autoload
-(defun my/ess-r-insert-assign (arg)
+(defun dtm/ess-r-insert-assign (arg)
   "Rewrite of `ess-insert-assign' that respects white space, invoke twice to undo"
   (interactive "p")
-  (my-ess-insert-string "<-"))
+  (dtm-ess-insert-string "<-"))
 
 ;;;###autoload
-(defun my/ess-r-insert-pipe (arg)
+(defun dtm/ess-r-insert-pipe (arg)
   "Based on `ess-insert-assign', invoking the command twice reverts the insert"
   (interactive "p")
-  (my-ess-insert-string "%>%"))
+  (dtm-ess-insert-string "%>%"))
 
 ;;;###autoload
-(defun my-ess-switch-maybe-a (orig-fn TOGGLE-EOB)
+(defun dtm-ess-switch-maybe-a (orig-fn TOGGLE-EOB)
   "Only switch to the REPL if it was already visible"
   (let* ((starting-window (selected-window))
          (ess-process (when ess-current-process-name
@@ -508,7 +508,7 @@ https://www.reddit.com/r/emacs/comments/op4fcm/send_command_to_vterm_and_execute
       (select-window starting-window))))
 
 ;;;###autoload
-(defun my/ess-eval-symbol-at-point ()
+(defun dtm/ess-eval-symbol-at-point ()
   "Send the symbol under the cursor to the current ESS process"
   (interactive)
   (ess-send-string
@@ -517,7 +517,7 @@ https://www.reddit.com/r/emacs/comments/op4fcm/send_command_to_vterm_and_execute
    t))
 
 ;;;###autoload
-(defun my/ess-debug-command-step ()
+(defun dtm/ess-debug-command-step ()
   "Step into in debug mode.
 Equivalent to 's' at the R prompt."
   (interactive)
@@ -529,7 +529,7 @@ Equivalent to 's' at the R prompt."
     (ess-send-string (ess-get-process) "s")))
 
 ;;; Conda
-(defun my--conda-env-promt-activate (env-name &optional silent)
+(defun dtm--conda-env-promt-activate (env-name &optional silent)
   "If conda environment with ENV-NAME is not activated, prompt the user to do so.
 Unless SILENT is t the user is notified when ENV-NAME is already active."
   (if (string= env-name conda-env-current-name)
@@ -538,23 +538,23 @@ Unless SILENT is t the user is notified when ENV-NAME is already active."
       (conda-env-activate (conda-env-name-to-dir env-name)))))
 
 ;;;###autoload
-(defun my/conda-env-guess-prompt ()
+(defun dtm/conda-env-guess-prompt ()
   "Guess the currently relevant conda env and prompt user to activate it"
   (interactive)
-  (my--conda-env-promt-activate (conda--infer-env-from-buffer)))
+  (dtm--conda-env-promt-activate (conda--infer-env-from-buffer)))
 
 ;;;###autoload
-(defun my-conda-env-guess-prompt-h ()
+(defun dtm-conda-env-guess-prompt-h ()
   "Prompt the user to activate the relevant conda env if it is not \"base\"."
   (when (and (eq major-mode 'python-mode)
-             (not (my-remote-buffer-p)))
+             (not (dtm-remote-buffer-p)))
     (let ((ienv (conda--infer-env-from-buffer)))
       (unless (string= ienv "base")
-        (my--conda-env-promt-activate ienv)))))
+        (dtm--conda-env-promt-activate ienv)))))
 
 ;;; atomic-chrome
 ;;;###autoload
-(defun my/atomic-chrome-toggle-server ()
+(defun dtm/atomic-chrome-toggle-server ()
   (interactive)
   (if (bound-and-true-p global-atomic-chrome-edit-mode)
       (progn
@@ -566,7 +566,7 @@ Unless SILENT is t the user is notified when ENV-NAME is already active."
 
 ;;; Interaction-log-mode
 ;;;###autoload
-(defun my/interaction-log-mode-w-buffer ()
+(defun dtm/interaction-log-mode-w-buffer ()
   "Toggles `interaction-log-mode' and shows/hides its buffer"
   (interactive)
   (call-interactively #'interaction-log-mode)
@@ -579,27 +579,27 @@ Unless SILENT is t the user is notified when ENV-NAME is already active."
     (kill-buffer ilog-buffer-name)))
 
 ;;; Good-scroll-mode
-(defun my/good-scroll-down-half ()
+(defun dtm/good-scroll-down-half ()
   (interactive)
   (good-scroll-move (/ (good-scroll--window-usable-height) 2)))
 
-(defun my/good-scroll-up-half ()
+(defun dtm/good-scroll-up-half ()
   (interactive)
   (good-scroll-move (/ (good-scroll--window-usable-height) -2)))
 
 ;;;###autoload
-(defun my-good-scroll-evil-override-h ()
+(defun dtm-good-scroll-evil-override-h ()
   (if good-scroll-mode
       (progn
-        (advice-add 'evil-scroll-down :override #'my/good-scroll-down-half)
-        (advice-add 'evil-scroll-up :override #'my/good-scroll-up-half))
+        (advice-add 'evil-scroll-down :override #'dtm/good-scroll-down-half)
+        (advice-add 'evil-scroll-up :override #'dtm/good-scroll-up-half))
     (progn
-      (advice-remove 'evil-scroll-down #'my/good-scroll-down-half)
-      (advice-remove 'evil-scroll-up #'my/good-scroll-up-half))))
+      (advice-remove 'evil-scroll-down #'dtm/good-scroll-down-half)
+      (advice-remove 'evil-scroll-up #'dtm/good-scroll-up-half))))
 
 ;;; Toggles
 ;;;###autoload
-(defun my/toggle-trash-delete ()
+(defun dtm/toggle-trash-delete ()
   "Toggle between trashing and deleting files"
   (interactive)
   (if delete-by-moving-to-trash
@@ -610,26 +610,26 @@ Unless SILENT is t the user is notified when ENV-NAME is already active."
       (setq delete-by-moving-to-trash t)
       (message "Now moving deleted files to trash"))))
 
-(defvar my-left-margin 30
+(defvar dtm-left-margin 30
   "Size of left margin that can be added to selected-window on demand")
 
 ;;;###autoload
-(defun my/window-toggle-left-margin ()
+(defun dtm/window-toggle-left-margin ()
   "Toggle left margin on selected window."
   (interactive)
   (let ((window (selected-window)))
-    (set-window-margins window (unless (car (window-margins window)) my-left-margin))))
+    (set-window-margins window (unless (car (window-margins window)) dtm-left-margin))))
 
 ;;; So-long-mode/csv-mode/tsv-mode
-(defvar my-csv-mode-max-length 300
+(defvar dtm-csv-mode-max-length 300
   "Maximum line length (bytes) for csv/tsv-mode to be enabled.")
 
 ;;;###autoload
-(defun my-csv-mode-maybe-h ()
-  "Activate csv/tsv-mode if max line is below `my-csv-mode-max-length'."
+(defun dtm-csv-mode-maybe-h ()
+  "Activate csv/tsv-mode if max line is below `dtm-csv-mode-max-length'."
   (when-let* ((file (buffer-file-name))
               (ext (file-name-extension file)))
-    (when (< (cadr (buffer-line-statistics)) my-csv-mode-max-length)
+    (when (< (cadr (buffer-line-statistics)) dtm-csv-mode-max-length)
       (cond ((string= ext "csv")
              (csv-mode))
             ((string= ext "tsv")
@@ -637,7 +637,7 @@ Unless SILENT is t the user is notified when ENV-NAME is already active."
 
 ;;; Lispy
 ;;;###autoload
-(defun my/lispy-step-into (arg)
+(defun dtm/lispy-step-into (arg)
   "Step into the list at point, moving the point to after ARG atoms.
 If REGION is active, call `lispy-delete' instead."
   (interactive "p")
@@ -664,45 +664,45 @@ If REGION is active, call `lispy-delete' instead."
          (error "Unexpected"))))
 
 ;;; Imenu
-(defvar my-imenu-orginal-index-function nil
-  "Original indexing function before calling `my-imenu-merge-index-h'")
+(defvar dtm-imenu-orginal-index-function nil
+  "Original indexing function before calling `dtm-imenu-merge-index-h'")
 
 ;;;###autoload
-(defun my-imenu-merge-index-h ()
+(defun dtm-imenu-merge-index-h ()
   "Append results from `imenu-generic-expression' to the current imenu (add to major-mode hook).
 This is useful when the index function does not utilise the generic expression such as in python-mode."
-  (setq-local my-imenu-orginal-index-function imenu-create-index-function
-              imenu-create-index-function 'my--imenu-merge-index))
+  (setq-local dtm-imenu-orginal-index-function imenu-create-index-function
+              imenu-create-index-function 'dtm--imenu-merge-index))
 
-(defun my--imenu-merge-index ()
-  "See `my-imenu-merge-index-h'."
-  (let ((original-index (funcall my-imenu-orginal-index-function))
+(defun dtm--imenu-merge-index ()
+  "See `dtm-imenu-merge-index-h'."
+  (let ((original-index (funcall dtm-imenu-orginal-index-function))
         (generic-index (imenu--generic-function imenu-generic-expression)))
     (append generic-index original-index)))
 
 ;;; With lagging point functions
-(defvar my-lagging-point-actual nil
-  "Position of cursor when `my-with-lagging-point-a' would not have been active.")
+(defvar dtm-lagging-point-actual nil
+  "Position of cursor when `dtm-with-lagging-point-a' would not have been active.")
 
 ;;;###autoload
-(defun my-with-lagging-point-a (orig-fn)
+(defun dtm-with-lagging-point-a (orig-fn)
   "Keep/lag the cursor position one command execution behind.
 Indented to advise functions that move the point."
-  (my/lagging-point-goto-actual)
+  (dtm/lagging-point-goto-actual)
   (save-excursion
     (funcall orig-fn)
     (sleep-for .05)
-    (setq-local my-lagging-point-actual (point))))
+    (setq-local dtm-lagging-point-actual (point))))
 
 ;;;###autoload
-(defun my/lagging-point-goto-actual ()
+(defun dtm/lagging-point-goto-actual ()
   "Restore cursor to the unlagged position."
   (interactive)
-  (when my-lagging-point-actual
-    (goto-char my-lagging-point-actual)
+  (when dtm-lagging-point-actual
+    (goto-char dtm-lagging-point-actual)
     (recenter nil)))
 
 ;;;###autoload
-(defun my-lagging-point-reset ()
-  "Reset `my-lagging-point-actual'."
-  (setq-local my-lagging-point-actual nil))
+(defun dtm-lagging-point-reset ()
+  "Reset `dtm-lagging-point-actual'."
+  (setq-local dtm-lagging-point-actual nil))
