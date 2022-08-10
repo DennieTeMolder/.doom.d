@@ -514,20 +514,19 @@ Equivalent to 's' at the R prompt."
     (ess-send-string (ess-get-process) "s")))
 
 ;;; Conda
-(defun my--conda-env-promt-activate (env-name)
-  "If conda environment with ENV-NAME is not activated, prompt the user to do so"
-  (if (and (not (equal env-name conda-env-current-name))
-           (y-or-n-p (format "Activate conda env: %s?" env-name)))
-      (conda-env-activate (conda-env-name-to-dir env-name))))
+(defun my--conda-env-promt-activate (env-name &optional silent)
+  "If conda environment with ENV-NAME is not activated, prompt the user to do so.
+Unless SILENT is t the user is notified when ENV-NAME is already active."
+  (if (string= env-name conda-env-current-name)
+      (unless silent (message "The %s environment is already active" env-name))
+    (when (y-or-n-p (format "Activate conda env: %s?" env-name))
+      (conda-env-activate (conda-env-name-to-dir env-name)))))
 
 ;;;###autoload
 (defun my/conda-env-guess-prompt ()
   "Guess the currently relevant conda env and prompt user to activate it"
   (interactive)
-  (let ((candidate-env (conda--infer-env-from-buffer))
-        (fallback-env "base"))
-    (cond (candidate-env (my--conda-env-promt-activate candidate-env))
-          ((not conda-env-current-name) (my--conda-env-promt-activate fallback-env)))))
+  (my--conda-env-promt-activate (conda--infer-env-from-buffer)))
 
 ;;;###autoload
 (defun my-conda-env-guess-prompt-h ()
