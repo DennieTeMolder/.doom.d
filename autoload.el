@@ -531,10 +531,12 @@ Equivalent to 's' at the R prompt."
 
 ;;;###autoload
 (defun my-conda-env-guess-prompt-h ()
-  "Prompt the user to activate a conda env once per buffer."
+  "Prompt the user to activate the relevant conda env if it is not \"base\"."
   (when (and (eq major-mode 'python-mode)
              (not (my-remote-buffer-p)))
-    (my/conda-env-guess-prompt)))
+    (let ((ienv (conda--infer-env-from-buffer)))
+      (unless (string= ienv "base")
+        (my--conda-env-promt-activate ienv)))))
 
 (defun my-remote-buffer-p (&optional buf)
   "Returns t if BUF belongs to a remote directory."
