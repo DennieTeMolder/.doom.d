@@ -1,4 +1,4 @@
-;;; private/my-config/autoloads.el -*- lexical-binding: t; -*-
+;;; autoloads.el -*- lexical-binding: t; -*-
 
 ;;; Utility
 (defun my-remote-buffer-p (&optional buf)
