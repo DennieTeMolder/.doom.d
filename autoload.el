@@ -513,44 +513,6 @@ Equivalent to 's' at the R prompt."
       (ess-send-string (ess-get-process) "0")
     (ess-send-string (ess-get-process) "s")))
 
-;;; Python
-;;;###autoload
-(defun my/python-shell-send-statment-and-step ()
-  "Send statement to python shell and move to next"
-  (interactive)
-  (python-shell-send-region
-   (save-excursion (python-nav-beginning-of-statement))
-   (save-excursion (python-nav-end-of-statement)))
-  (python-nav-forward-statement))
-
-;;;###autoload
-(defun my/python-shell-send-block-and-step ()
-  "Send block to python shell and move to next statement"
-  (interactive)
-  (python-shell-send-region
-   (save-excursion (python-nav-beginning-of-block))
-   (save-excursion (python-nav-end-of-block)))
-  (python-nav-end-of-block)
-  (python-nav-forward-statement))
-
-;;;###autoload
-(defun my/python-send-current-and-step ()
-  "Sends statement under point to python shell, if the statement starts a code
-block, send the entire code block."
-  (interactive)
-  ;; Ensure the python process is running
-  (unless (python-shell-get-process)
-    (save-selected-window (call-interactively #'+python/open-ipython-repl))
-    ;; Give python time to load the interaction module
-    (sleep-for .5))
-  ;; Check for region, start of block, or other and act accordingly
-  (cond ((region-active-p)
-         (call-interactively #'python-shell-send-region))
-        ((python-info-statement-starts-block-p)
-         (call-interactively #'my/python-shell-send-block-and-step))
-        (t
-         (call-interactively #'my/python-shell-send-statment-and-step))))
-
 ;;; Conda
 (defun my--conda-env-promt-activate (env-name)
   "If conda environment with ENV-NAME is not activated, prompt the user to do so"
@@ -568,8 +530,14 @@ block, send the entire code block."
           ((not conda-env-current-name) (my--conda-env-promt-activate fallback-env)))))
 
 ;;;###autoload
+(defun my-conda-env-guess-prompt-h ()
+  "Prompt the user to activate a conda env once per buffer."
+  (when (and (eq major-mode 'python-mode)
+             (not (my-remote-buffer-p)))
+    (my/conda-env-guess-prompt)))
+
 (defun my-remote-buffer-p (&optional buf)
-  ;; And don't save TRAMP buffers; they're super slow to restore
+  "Returns t if BUF belongs to a remote directory."
   (let* ((buf (or buf (current-buffer)))
          (dir (buffer-local-value 'default-directory buf)))
     (ignore-errors (file-remote-p dir))))

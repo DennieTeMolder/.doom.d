@@ -700,29 +700,51 @@ Also used by `org-modern-mode' to calculate heights.")
 
   ;; Python keybindings
   (map! :map python-mode-map
-        :nv [C-return] #'my/python-send-current-and-step
-        (:localleader
-         :desc "Open python REPL" [tab] #'+python/open-ipython-repl
-         :desc "Send buffer to REPL" "b" #'python-shell-send-buffer
-         :desc "Send file to REPL" "f" #'python-shell-send-file)))
+        :localleader
+        :desc "Send file to REPL" "f" #'python-shell-send-file))
 
 ;; Snakefiles in python mode
 (pushnew! auto-mode-alist
           '("Snakefile" . python-mode)
           '("\\.smk\\'" . python-mode))
 
-(after! conda
-  (advice-add '+python-init-anaconda-mode-maybe-h :before-until #'my-remote-buffer-p)
+(use-package! elpy
+  :commands elpy-enable
+  :init
+  (advice-add 'python-mode :before #'elpy-enable)
+  :config
+  (setq elpy-shell-starting-directory 'current-directory
+        elpy-modules '(elpy-module-sane-defaults elpy-module-eldoc))
 
+  (set-company-backend! 'python-mode
+    'elpy-company-backend 'company-yasnippet)
+  (set-lookup-handlers! 'python-mode
+    :definition #'elpy-goto-definition
+    :references #'elpy-rgrep-symbol
+    :documentation #'elpy-doc
+    :async t)
+
+  (map! (:map python-mode-map
+         :nv [C-return] #'elpy-shell-send-statement-and-step
+         (:localleader
+          :desc "Eval buffer/region" "b"   #'elpy-shell-send-region-or-buffer
+          :desc "Switch to REPL"     "TAB" #'elpy-shell-switch-to-shell))
+
+        (:map inferior-python-mode-map
+         :localleader
+         :desc "Switch to script" "TAB" #'elpy-shell-switch-to-buffer)))
+
+(after! conda
   ;; Prompt user to change into a conda env
+  ;; HACK use the find-file-hook because elpy keeps triggering python-mode
   (when (getenv "CONDA_EXE")
-      (add-hook! 'anaconda-mode-hook #'my/conda-env-guess-prompt))
+    (add-hook! 'find-file-hook #'my-conda-env-guess-prompt-h))
 
   (map! :map (python-mode-map inferior-python-mode-map)
         :localleader :prefix ("c" . "Conda")
-         :desc "Guess conda env" "g" #'my/conda-env-guess-prompt
-         "a" #'conda-env-activate
-         "d" #'conda-env-deactivate))
+        :desc "Guess conda env" "g" #'my/conda-env-guess-prompt
+                                "a" #'conda-env-activate
+                                "d" #'conda-env-deactivate))
 
 (after! csv-mode
   ;; Asume the first line of a csv is a header

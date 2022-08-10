@@ -10,6 +10,7 @@
           "\\*Local variables\\*"
           "\\*Flycheck errors\\*"
 	  "\\*Process List\\*"
+	  "\\*Python Doc\\*"
           "\\*Calendar\\*"
           "\\*info\\*"
           "^\\*Customize"

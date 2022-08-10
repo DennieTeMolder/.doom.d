@@ -64,6 +64,11 @@
 (package! ess-R-data-view :disable t)
 (package! ess-view-data :pin "aab369f84cadebbbca7c3825741d643ebeb6b722")
 
+;; Replace anaconda-mode with elpy
+(package! anaconda-mode :disable t)
+(package! company-anaconda :disable t)
+(package! elpy)
+
 ;;; Custom packages
 (package! org-modern)
 (package! interaction-log)
