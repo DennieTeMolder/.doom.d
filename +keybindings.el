@@ -41,6 +41,10 @@
        :desc "Enlarge double height" "e" #'dtm/window-double-height
        :desc "Halve height"          "E" #'dtm/window-half-height)
 
+      ;; Open
+      (:prefix "o"
+       "T" #'vterm)
+
       ;; Toggles
       (:prefix "t"
        :desc "Auto linebreaks"     "a" #'auto-fill-mode
