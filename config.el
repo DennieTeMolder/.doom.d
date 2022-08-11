@@ -307,7 +307,7 @@
   (setq avy-all-windows t
         avy-all-windows-alt nil))
 
-;;;; Doom core package extentions
+;;;; Doom Core Package Extensions
 ;; Add colours to info pages to make them more readable
 (use-package! info-colors
     :hook (Info-selection . info-colors-fontify-node))
@@ -574,6 +574,10 @@ Also used by `org-modern-mode' to calculate heights.")
 
   ;; Compatibility with multi-file documents
   (setq-default TeX-master nil))
+
+(after! markdown-mode
+  ;; Disable proselint in Rmarkdown files
+  (add-hook! 'markdown-mode-hook #'dtm-flycheck-disable-proselint-rmd-h))
 
 ;;;; Programming Languages
 ;; General interactive programming buffer settings

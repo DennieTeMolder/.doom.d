@@ -706,3 +706,10 @@ Indented to advise functions that move the point."
 (defun dtm-lagging-point-reset ()
   "Reset `dtm-lagging-point-actual'."
   (setq-local dtm-lagging-point-actual nil))
+
+;;; Flycheck
+(defun dtm-flycheck-disable-proselint-rmd-h ()
+  "Disable the 'proselint' flycheck checker when in R markdown.
+Intended for `markdown-mode-hook'."
+  (when (string-match-p "\\.Rmd$" buffer-file-name)
+    (flycheck-disable-checker 'proselint)))
