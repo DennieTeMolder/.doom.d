@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+# name: src
+# uuid: src
+# key: src
+# condition: t
+# --
+\`\`\`{${1:r}}
+$0
+\`\`\`
