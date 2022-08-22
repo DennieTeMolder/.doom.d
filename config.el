@@ -513,11 +513,6 @@ Also used by `org-modern-mode' to calculate heights.")
   ;; Open notes in roam workspace
   (advice-add 'citar-open-notes :before #'dtm-org-roam-goto-workspace)
 
-  ;; Update citar cache when bib-file changes during specified modes
-  (citar-filenotify-setup '(LaTeX-mode-hook org-mode-hook))
-  ;; Skip looking for local bibliographies if buffer has no file associated
-  (advice-add 'citar-filenotify-local-watches :before-while #'buffer-file-name)
-
   ;; Disable citation delete binding
   (map! :map citar-org-citation-map "C-d" nil))
 
