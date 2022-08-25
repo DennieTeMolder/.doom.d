@@ -708,6 +708,7 @@ Indented to advise functions that move the point."
   (setq-local dtm-lagging-point-actual nil))
 
 ;;; Flycheck
+;;;###autoload
 (defun dtm-flycheck-disable-proselint-rmd-h ()
   "Disable the 'proselint' flycheck checker when in R markdown.
 Intended for `markdown-mode-hook'."
