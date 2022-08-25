@@ -113,11 +113,10 @@
 
 ;; Rudimentary settings
 (setq-default delete-by-moving-to-trash t
-              standard-indent 2
-              tab-width 2
+              tab-width 4
               text-scale-mode-step 1.1
               uniquify-buffer-name-style 'forward
-              x-stretch-cursor t) ; stretch cursor to glyph size
+              x-stretch-cursor t)
 
 ;; Save clipboard to kill ring before deleting text
 ;; Cyle kill ring using <C-p> or <C-n> after pasting
