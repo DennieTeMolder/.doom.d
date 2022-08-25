@@ -1,0 +1,19 @@
+# -*- mode: snippet -*-
+# name: rule
+# uuid: rule
+# key: rule
+# condition: t
+# expand-env: ((yas-indent-line 'fixed) (yas-wrap-around-region 'nil))
+# --
+rule $1:
+    input:
+        $2
+    output:
+        $3
+    log:
+        "logs/$4$1.log"
+    conda:
+        "envs/$5"
+    threads: $6
+    shell:
+        "$0"
