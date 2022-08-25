@@ -725,10 +725,13 @@ Also used by `org-modern-mode' to calculate heights.")
     :async t)
 
   (map! (:map python-mode-map
-         :nv [C-return] #'elpy-shell-send-statement-and-step
+         :nv [C-return] #'my/elpy-send-current-and-step
          (:localleader
-          :desc "Eval buffer/region" "b"   #'elpy-shell-send-region-or-buffer
-          :desc "Switch to REPL"     "TAB" #'elpy-shell-switch-to-shell))
+          :desc "Eval buffer"         "b"   #'elpy-shell-send-buffer
+          :desc "Eval defun"          "d"   #'elpy-shell-send-defun
+          :desc "Eval line/statement" "l"   #'elpy-shell-send-statement
+          :desc "Eval top statement"  "s"   #'elpy-shell-send-top-statement
+          :desc "Switch to REPL"      "TAB" #'elpy-shell-switch-to-shell))
 
         (:map inferior-python-mode-map
          :localleader

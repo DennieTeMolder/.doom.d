@@ -714,3 +714,14 @@ Indented to advise functions that move the point."
 Intended for `markdown-mode-hook'."
   (when (string-match-p "\\.Rmd$" buffer-file-name)
     (flycheck-disable-checker 'proselint)))
+
+;;; Python
+;;;###autoload
+(defun my/elpy-send-current-and-step ()
+  "If region is active call `python-shell-send-region' else call `elpy-shell-send-statement-and-step'."
+  (interactive)
+  (if (region-active-p)
+      (progn
+        (exchange-point-and-mark)
+        (call-interactively #'python-shell-send-region))
+    (call-interactively #'elpy-shell-send-statement-and-step)))
