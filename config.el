@@ -728,11 +728,12 @@ Also used by `org-modern-mode' to calculate heights.")
   (map! (:map python-mode-map
          :nv [C-return] #'dtm/elpy-send-current-and-step
          (:localleader
-          :desc "Eval buffer"         "b"   #'elpy-shell-send-buffer
-          :desc "Eval defun"          "d"   #'elpy-shell-send-defun
-          :desc "Eval line/statement" "l"   #'elpy-shell-send-statement
-          :desc "Eval top statement"  "s"   #'elpy-shell-send-top-statement
-          :desc "Switch to REPL"      "TAB" #'elpy-shell-switch-to-shell))
+          :desc "Eval buffer"          "b"   #'elpy-shell-send-buffer
+          :desc "Eval defun"           "d"   #'elpy-shell-send-defun
+          :desc "Eval line/statement"  "l"   #'elpy-shell-send-statement
+          :desc "Eval top statement"   "s"   #'elpy-shell-send-top-statement
+          :desc "Eval symbol at point" "."   #'dtm/elpy-print-symbol-at-point
+          :desc "Switch to REPL"       "TAB" #'elpy-shell-switch-to-shell))
 
         (:map inferior-python-mode-map
          :localleader

@@ -731,3 +731,12 @@ Intended for `markdown-mode-hook'."
         (call-interactively #'elpy-shell-send-region-or-buffer)
         (deactivate-mark))
     (call-interactively #'elpy-shell-send-statement-and-step)))
+
+;;;###autoload
+(defun dtm/elpy-print-symbol-at-point ()
+  (interactive)
+  (let* ((symbol (python-info-current-symbol))
+         (command (concat "print(" symbol ")")))
+    (message "Sent: %s" command)
+    (elpy-shell--with-maybe-echo
+     (python-shell-send-string command))))
