@@ -21,6 +21,10 @@
   (dolist (current symbol)
     (evil-add-command-properties current :repeat nil)))
 
+(defun dtm-point-mark-same-line-p ()
+  "Returns t if point and mark are on the same line"
+  (<= (line-beginning-position) (mark) (line-end-position)))
+
 ;;; Theme recommendations
 (defun dtm--theme-which-inactive (theme1 theme2)
   "Return THEME1 of not currently active, else return THEME2"
@@ -717,11 +721,13 @@ Intended for `markdown-mode-hook'."
 
 ;;; Python
 ;;;###autoload
-(defun my/elpy-send-current-and-step ()
-  "If region is active call `python-shell-send-region' else call `elpy-shell-send-statement-and-step'."
+(defun dtm/elpy-send-current-and-step ()
+  "If region is active call `elpy-shell-send-region-or-buffer' else call `elpy-shell-send-statement-and-step'."
   (interactive)
   (if (region-active-p)
       (progn
-        (exchange-point-and-mark)
-        (call-interactively #'python-shell-send-region))
+        (when (dtm-point-mark-same-line-p)
+          (exchange-point-and-mark))
+        (call-interactively #'elpy-shell-send-region-or-buffer)
+        (deactivate-mark))
     (call-interactively #'elpy-shell-send-statement-and-step)))

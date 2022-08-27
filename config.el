@@ -724,7 +724,7 @@ Also used by `org-modern-mode' to calculate heights.")
     :async t)
 
   (map! (:map python-mode-map
-         :nv [C-return] #'my/elpy-send-current-and-step
+         :nv [C-return] #'dtm/elpy-send-current-and-step
          (:localleader
           :desc "Eval buffer"         "b"   #'elpy-shell-send-buffer
           :desc "Eval defun"          "d"   #'elpy-shell-send-defun
