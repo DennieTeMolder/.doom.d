@@ -723,6 +723,8 @@ Also used by `org-modern-mode' to calculate heights.")
     :documentation #'elpy-doc
     :async t)
 
+  (advice-add 'elpy-shell-switch-to-shell :after #'evil-normal-state)
+
   (map! (:map python-mode-map
          :nv [C-return] #'dtm/elpy-send-current-and-step
          (:localleader
