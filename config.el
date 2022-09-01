@@ -442,7 +442,7 @@ Also used by `org-modern-mode' to calculate heights.")
 
 ;; Org-download settings
 (after! org-download
-  (setq org-download-method 'drestivo/org-download-method
+  (setq org-download-method 'drestivo-org-download-method
         org-download-link-format "[[file:%s]]\n"))
 
 ;; Org-pomodoro settings
