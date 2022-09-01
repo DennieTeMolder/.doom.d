@@ -210,30 +210,30 @@ Also checks if FILE exists."
   (car (cdar (org-collect-keywords '("TITLE")))))
 
 ;;;###autoload
-(defun drestivo-org-download-method (link)
-  "This is an helper function for org-download.
-It creates an \"./Image\" folder within the same directory of the org file.
-File is named as: download name + timestamp + target org file
-Based on drestivo's answer to this post: https://github.com/abo-abo/org-download/issues/40.
+(defun dtm-org-download-method (link)
+  "This is a helper function for org-download.
+It creates the \"./Image\" folder within the same directory of the org file.
+File is named as: org-file + timestamp + download-file-name
+
+Based on drestivo's answer to this post:
+https://github.com/abo-abo/org-download/issues/40.
 Which was based off this commit message:
 https://github.com/abo-abo/org-download/commit/137c3d2aa083283a3fc853f9ecbbc03039bf397b"
-  (let ((filename
-         (file-name-nondirectory
-          (car (url-path-and-query
-                (url-generic-parse-url link)))))
-        (dir "Images/"))
-    (progn
-      (setq filename-with-timestamp
-            (format "%s%s-<%s>.%s"
-                    (file-name-sans-extension filename)
-                    (format-time-string org-download-timestamp)
-                    (file-name-base (buffer-file-name))
-                    (file-name-extension filename)))
-      ;; Check if directory exists otherwise create it
-      (unless (file-exists-p dir)
-        (make-directory dir t))
-      (message "Image: %s saved!" (expand-file-name filename-with-timestamp dir))
-      (concat dir filename-with-timestamp))))
+  (let* ((dir "Images/")
+         (filename (file-name-nondirectory
+                    (car (url-path-and-query
+                          (url-generic-parse-url link)))))
+         (filename-with-timestamp
+          (format "%s%s--%s.%s"
+                  (file-name-base (buffer-file-name))
+                  (format-time-string org-download-timestamp)
+                  (file-name-sans-extension filename)
+                  (file-name-extension filename))))
+    ;; Check if directory exists otherwise create it
+    (unless (file-exists-p dir)
+      (make-directory dir t))
+    (message "Image: %s saved!" (expand-file-name filename-with-timestamp dir))
+    (concat dir filename-with-timestamp)))
 
 ;;; Org-modern
 ;;;###autoload
