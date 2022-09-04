@@ -280,6 +280,9 @@
   ;; Fix default input value for `doom/load-session'
   (global-set-key [remap doom/load-session] #'dtm/load-session))
 
+(when (modulep! :ui popup)
+  (advice-remove 'balance-windows #'+popup-save-a))
+
 ;; Use ediff in dired instead of diff
 (after! dired
   (setq dired-clean-confirm-killing-deleted-buffers nil)
@@ -622,6 +625,10 @@ Also used by `org-modern-mode' to calculate heights.")
   ;; Use current dir for session
   (setq ess-ask-for-ess-directory nil
         ess-style 'RStudio)
+
+  (set-popup-rules!
+    '(("^\\*R\\(?::.+\\)?\\*"
+       :vslot -5 :size 0.35 :select nil :modeline t :quit nil :ttl nil)))
 
   ;; Add company-R-library backend, currently part of this pending pull request:
   ;; https://github.com/doomemacs/doomemacs/pull/6455

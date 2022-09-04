@@ -41,6 +41,16 @@
        :desc "Enlarge double height" "e" #'dtm/window-double-height
        :desc "Halve height"          "E" #'dtm/window-half-height)
 
+      ;; Popups
+      "/" nil ; Unbind `+default/search-project' (also bound to "SPC s p")
+      (:prefix ("/" . "popup")
+       "/" #'+popup/toggle
+       "." #'dtm/popup-open
+       "b" #'+popup/buffer
+       "k" #'dtm/popup-kill
+       "r" #'dtm/popup-raise
+       "u" #'+popup/restore)
+
       ;; Open
       (:prefix "o"
        "T" #'vterm)
@@ -65,11 +75,12 @@
        :desc "Zen writing mode"     "t z" #'visual-fill-column-mode
 
       ;; :when (featurep! :ui popper)
-       "/" nil ; Unbind `+default/search-project' (also bound to "SPC s p")
-       (:prefix ("/" . "popup")
-        :desc "Show/hide"           "/" #'popper-toggle-latest
-        :desc "Next"                "n" #'popper-cycle
-        :desc "Kill"                "k" #'+popper/kill-latest-popup-keep-open
-        :desc "Quit"                "q" #'popper-kill-latest-popup
-        :desc "Toggle popup/buffer" "t" #'+popper/toggle-type
-        :desc "Raise"               "r" #'+popper/raise-popup))
+       ;;"/" nil ; Unbind `+default/search-project' (also bound to "SPC s p")
+       ;; (:prefix ("/" . "popup")
+       ;;  :desc "Show/hide"           "/" #'popper-toggle-latest
+       ;;  :desc "Next"                "n" #'popper-cycle
+       ;;  :desc "Kill"                "k" #'+popper/kill-latest-popup-keep-open
+       ;;  :desc "Quit"                "q" #'popper-kill-latest-popup
+       ;;  :desc "Toggle popup/buffer" "t" #'+popper/toggle-type
+       ;;  :desc "Raise"               "r" #'+popper/raise-popup)
+       )

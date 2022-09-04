@@ -740,3 +740,42 @@ Intended for `markdown-mode-hook'."
     (message "Sent: %s" command)
     (elpy-shell--with-maybe-echo
      (python-shell-send-string command))))
+
+;;; Doom popup module
+;;;###autoload
+(defun dtm/popup-raise ()
+  "Wrapper for `+popup/raise' that will ensure a popup is selected."
+  (interactive)
+  (unless (+popup-window-p)
+    (+popup/other))
+  (call-interactively #'+popup/raise))
+
+;;;###autoload
+(defun dtm/popup-kill ()
+  "Kill the currently open popup."
+  (interactive)
+  (unless (+popup-window-p)
+    (+popup/other))
+  (+popup--remember (selected-window))
+  (kill-buffer-and-window))
+
+;;;###autoload
+(defun dtm--popup-buffer-p (buf)
+  "Returns true if BUF matches a popup rule from `set-popup-rule!'."
+  (if-let (rule (cl-loop with bname = (car buf)
+                         for (pred . action) in display-buffer-alist
+                         if (and (functionp pred) (funcall pred bname action))
+                         return (cons pred action)
+                         else if (and (stringp pred) (string-match-p pred bname))
+                         return (cons pred action)))
+      ;; TODO test for :ignored rules
+      t nil))
+
+;;;###autoload
+(defun dtm/popup-open (buffer)
+  "Display BUFFER, prompts user with all open popups."
+  (interactive (list
+                (read-buffer (format-prompt "Select popup" nil)
+                             nil t #'dtm--popup-buffer-p)))
+  (+popup/close-all t)
+  (display-buffer buffer))
