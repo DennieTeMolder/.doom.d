@@ -281,6 +281,9 @@
   (global-set-key [remap doom/load-session] #'dtm/load-session))
 
 (when (modulep! :ui popup)
+  (setq +popup-defaults
+        '(:side bottom :height 0.16 :width 40 :quit t :select ignore :ttl nil))
+
   (advice-remove 'balance-windows #'+popup-save-a))
 
 ;; Use ediff in dired instead of diff
