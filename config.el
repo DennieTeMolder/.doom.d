@@ -619,6 +619,10 @@ Also used by `org-modern-mode' to calculate heights.")
   ;; Actually clear buffer upon C-l
   (setq vterm-clear-scrollback-when-clearing t)
 
+  ;; Don't consider vterm buffer as popup (only doom:vterm)
+  (set-popup-rule! "^\\*vterm" :ignore t)
+  (+popup-cleanup-rules-h)
+
   (remove-hook! 'vterm-mode-hook #'hide-mode-line-mode)
 
   ;; Fix evil cursor getting out of sync
