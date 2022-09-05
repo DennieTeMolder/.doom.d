@@ -756,7 +756,7 @@ Intended for `markdown-mode-hook'."
   (interactive)
   (unless (+popup-window-p)
     (+popup/other))
-  (+popup--remember (selected-window))
+  (+popup--remember (list (selected-window)))
   (kill-buffer-and-window))
 
 ;;;###autoload
