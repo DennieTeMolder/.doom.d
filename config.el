@@ -344,6 +344,11 @@
   (setq ispell-dictionary "en_GB"
         ispell-personal-dictionary "~/Nextcloud/Dictionary/personal_dict.pws"))
 
+(after! flycheck
+  ;; Select flycheck window when opened
+  (set-popup-rule! "^\\*Flycheck errors\\*" :size 0.25 :select t)
+  (+popup-cleanup-rules-h))
+
 ;; Org-mode settings
 (defvar dtm-org-line-spacing 0.1
   "`line-spacing' used in `org-mode'.
