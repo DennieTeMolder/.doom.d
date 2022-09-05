@@ -44,16 +44,16 @@
       ;; Popups
       "/" nil ; Unbind `+default/search-project' (also bound to "SPC s p")
       (:prefix ("/" . "popup")
-       "/" #'+popup/toggle
-       "." #'dtm/popup-open
-       "b" #'+popup/buffer
-       "k" #'dtm/popup-kill
-       "r" #'dtm/popup-raise
-       "u" #'+popup/restore)
+       :desc "Show/hide popup" "/" #'+popup/toggle
+       :desc "Select popup"    "." #'dtm/popup-select
+       :desc "Buffer to popup" "b" #'+popup/buffer
+       :desc "Kill popup"      "k" #'dtm/popup-kill
+       :desc "Popup to buffer" "r" #'dtm/popup-raise
+       :desc "Restore popup"   "u" #'+popup/restore)
 
       ;; Open
       (:prefix "o"
-       "T" #'vterm)
+       :desc "Vterm here" "T" #'vterm)
 
       ;; Toggles
       (:prefix "t"
