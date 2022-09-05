@@ -760,17 +760,23 @@ Intended for `markdown-mode-hook'."
   (kill-buffer-and-window))
 
 ;;;###autoload
-(defun dtm-popup-buffer-p (buf)
-  "Returns true if BUF matches a popup rule from `set-popup-rule!' and is not ignored."
-  (let ((bname (cond ((listp buf) (car buf))
+(defun dtm-popup-get-rule (buf)
+  "Returns (predicate . action) for BUF in `display-buffer-alist'.
+Based on `+popup/diagnose'."
+  (let ((bname (cond ((stringp buf) buf)
+                     ((listp buf) (car buf))
                      ((bufferp buf) (buffer-name buf))
                      (t (error "Unexpected!")))))
-    (when-let (rule (cl-loop for (pred . action) in display-buffer-alist
-                             if (and (functionp pred) (funcall pred bname action))
-                             return (cons pred action)
-                             else if (and (stringp pred) (string-match-p pred bname))
-                             return (cons pred action)))
-      (not (cdr (assoc 'ignore rule))))))
+    (cl-loop for (pred . action) in display-buffer-alist
+             if (and (functionp pred) (funcall pred bname action))
+             return (cons pred action)
+             else if (and (stringp pred) (string-match-p pred bname))
+             return (cons pred action))))
+
+(defun dtm-popup-buffer-p (buf)
+  "Returns t if BUF has a non-nil `set-popup-rule!' in `display-buffer-alist'."
+  (when-let ((rule (dtm-popup-get-rule buf)))
+    (if (cddr rule) t nil)))
 
 ;;;###autoload
 (defun dtm/popup-select (buffer)
