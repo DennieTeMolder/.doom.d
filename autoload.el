@@ -760,22 +760,23 @@ Intended for `markdown-mode-hook'."
   (kill-buffer-and-window))
 
 ;;;###autoload
-(defun dtm--popup-buffer-p (buf)
-  "Returns true if BUF matches a popup rule from `set-popup-rule!'."
-  (if-let (rule (cl-loop with bname = (car buf)
-                         for (pred . action) in display-buffer-alist
-                         if (and (functionp pred) (funcall pred bname action))
-                         return (cons pred action)
-                         else if (and (stringp pred) (string-match-p pred bname))
-                         return (cons pred action)))
-      ;; TODO test for :ignored rules
-      t nil))
+(defun dtm-popup-buffer-p (buf)
+  "Returns true if BUF matches a popup rule from `set-popup-rule!' and is not ignored."
+  (let ((bname (cond ((listp buf) (car buf))
+                     ((bufferp buf) (buffer-name buf))
+                     (t (error "Unexpected!")))))
+    (when-let (rule (cl-loop for (pred . action) in display-buffer-alist
+                             if (and (functionp pred) (funcall pred bname action))
+                             return (cons pred action)
+                             else if (and (stringp pred) (string-match-p pred bname))
+                             return (cons pred action)))
+      (not (cdr (assoc 'ignore rule))))))
 
 ;;;###autoload
-(defun dtm/popup-open (buffer)
+(defun dtm/popup-select (buffer)
   "Display BUFFER, prompts user with all open popups."
   (interactive (list
                 (read-buffer (format-prompt "Select popup" nil)
-                             nil t #'dtm--popup-buffer-p)))
-  (+popup/close-all t)
-  (display-buffer buffer))
+                             nil t #'dtm-popup-buffer-p)))
+  (when buffer
+    (display-buffer buffer)))
