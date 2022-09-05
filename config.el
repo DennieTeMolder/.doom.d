@@ -604,6 +604,11 @@ Also used by `org-modern-mode' to calculate heights.")
   (map! :map comint-mode-map
         "C-l" #'comint-clear-buffer))
 
+(when (modulep! :lang emacs-lisp)
+  (add-hook! 'emacs-lisp-mode-hook
+    (add-to-list 'imenu-generic-expression
+                 '("Module" "^\\s-*(when (modulep! +\\([^)]+\\))" 1))))
+
 (after! lispy
   ;; Prettier function evaluation
   (setq lispy-eval-display-style 'eros--eval-overlay)
