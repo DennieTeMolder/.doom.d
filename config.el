@@ -194,10 +194,6 @@
 ;; Disable global hl-line-mode
 (remove-hook! 'doom-first-buffer-hook #'global-hl-line-mode)
 
-;; Don't hide mode line when outside of popup
-(remove-hook! '(completion-list-mode-hook Man-mode-hook)
-              #'hide-mode-line-mode)
-
 ;; This prevents stepping into the left side window from the bottom side window
 (advice-remove 'windmove-up #'+windmove-ignore-window-parameters-a)
 
@@ -618,9 +614,6 @@ Also used by `org-modern-mode' to calculate heights.")
 
   ;; Rebind the key previously on "i"
   (map! :map lispy-mode-map "TAB" #'special-lispy-tab))
-
-(after! eshell
-  (remove-hook! 'eshell-mode-hook #'hide-mode-line-mode))
 
 (after! vterm
   ;; Actually clear buffer upon C-l
