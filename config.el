@@ -64,7 +64,7 @@
 
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
-(setq org-directory (concat doom-etc-dir "org/"))
+(setq org-directory (concat doom-data-dir "org/"))
 
 ;; Make sure the org dir exists (important for id hash-tables)
 (unless (file-exists-p org-directory)
@@ -457,7 +457,7 @@ Also used by `org-modern-mode' to calculate heights.")
         org-pomodoro-keep-killed-pomodoro-time t))
 
 ;; Org-roam init settings
-(when (featurep! :lang org +roam2)
+(when (modulep! :lang org +roam2)
   (setq org-roam-directory "~/Nextcloud/PKM/"
         org-roam-dailies-directory "journals/"
         org-roam-file-exclude-regexp "Rubbish/")
@@ -505,7 +505,7 @@ Also used by `org-modern-mode' to calculate heights.")
                               "#+title: %<%b %d %Y>\n#+date: %<%A %B %d, Week %W %Y>\n \n* Agenda\n")
            :empty-lines 1))))
 
-(when (featurep! :tools biblio)
+(when (modulep! :tools biblio)
   ;; Citar bibliography settings
   (setq! citar-bibliography '("~/Nextcloud/Zotero/master.bib")
          citar-library-paths '("~/Nextcloud/Zotero/")
