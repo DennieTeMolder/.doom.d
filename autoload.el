@@ -22,6 +22,10 @@
   (dolist (current symbol)
     (evil-add-command-properties current :repeat nil)))
 
+(defun dtm-region-as-string ()
+  "Return the marked region as string."
+  (buffer-substring-no-properties (mark) (point)))
+
 (defun dtm-point-mark-same-line-p ()
   "Returns t if point and mark are on the same line"
   (<= (line-beginning-position) (mark) (line-end-position)))
@@ -738,9 +742,12 @@ Intended for `markdown-mode-hook'."
     (call-interactively #'elpy-shell-send-statement-and-step)))
 
 ;;;###autoload
-(defun dtm/elpy-print-symbol-at-point ()
+(defun dtm/elpy-print-symbol-or-region ()
+  "Prints the symbol at point or active region in the python REPL."
   (interactive)
-  (let* ((symbol (python-info-current-symbol))
+  (let* ((symbol (if (region-active-p)
+                     (dtm-region-as-string)
+                   (python-info-current-symbol)))
          (command (concat "print(" symbol ")")))
     (message "Sent: %s" command)
     (elpy-shell--with-maybe-echo
