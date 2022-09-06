@@ -281,11 +281,6 @@
   (setq +popup-defaults
         '(:side bottom :height 0.16 :width 40 :quit t :select ignore :ttl nil))
 
-  ;; Expand popup rules
-  (set-popup-rules!
-    '(("^\\*R\\(?::.+\\)?\\*"
-       :vslot -5 :size 0.35 :select nil :modeline t :quit nil :ttl nil)))
-
   ;; Allow popups to be balanced
   (advice-remove 'balance-windows #'+popup-save-a))
 
@@ -349,7 +344,7 @@
 
 (after! flycheck
   ;; Select flycheck window when opened
-  (set-popup-rule! "^\\*Flycheck errors\\*" :size 0.25 :select t)
+  (set-popup-rule! "^\\*Flycheck errors\\*" :size 0.25 :select t :ttl 0)
   (+popup-cleanup-rules-h))
 
 ;; Org-mode settings
