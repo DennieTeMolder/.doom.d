@@ -22,7 +22,7 @@
         (when (+zenl-enable-mixed-pitch-mode-h)
           (text-scale-set (if visual-fill-column-mode +zenl-text-scale 0)))
         (when (and (eq major-mode 'org-mode)
-                   (featurep! :lang org))
+                   (modulep! :lang org))
           (+org-pretty-mode (if visual-fill-column-mode +1 -1)))
         (visual-fill-column-adjust))))
 

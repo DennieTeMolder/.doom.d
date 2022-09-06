@@ -71,10 +71,10 @@
 
 ;;; Custom modules
 (map! :leader
-      ;; :when (featurep! :ui zen-light)
+      ;; :when (modulep! :ui zen-light)
        :desc "Zen writing mode"     "t z" #'visual-fill-column-mode
 
-      ;; :when (featurep! :ui popper)
+      ;; :when (modulep! :ui popper)
        ;;"/" nil ; Unbind `+default/search-project' (also bound to "SPC s p")
        ;; (:prefix ("/" . "popup")
        ;;  :desc "Show/hide"           "/" #'popper-toggle-latest
