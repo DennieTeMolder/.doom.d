@@ -1,6 +1,7 @@
 ;;; autoloads.el -*- lexical-binding: t; -*-
 
 ;;; Utility
+;;;###autoload
 (defun dtm-remote-buffer-p (&optional buf)
   "Returns t if BUF belongs to a remote directory."
   (let* ((buf (or buf (current-buffer)))
@@ -97,7 +98,7 @@
   (interactive)
   (enlarge-window (/ (window-height) -2)))
 
-;;; File handeling
+;;; Projectile
 ;;;###autoload
 (defun dtm-project-ignored-p (project-root)
   "Return non-nil if remote or temporary file or a straight package."
@@ -284,6 +285,7 @@ https://github.com/abo-abo/org-download/commit/137c3d2aa083283a3fc853f9ecbbc0303
       (spell-fu-mode +1))))
 
 ;;; Org-appear
+;;;###autoload
 (defun dtm-org-pretty-use-appear-a ()
   "Activate `org-appear-mode' based on `org-pretty-entities'."
   (org-appear-mode (if org-pretty-entities +1 -1)))
@@ -333,6 +335,7 @@ Based on `org-mark-element' and `org-roam-preview-default-function'."
 
 (defvar org-roam-old-slug nil)
 
+;;;###autoload
 (defun hlissner-org-roam-update-slug-h ()
   "Rename the current file if #+title has changed.
 Will ask for confirmation if the new filename already exists."
@@ -583,10 +586,12 @@ Unless SILENT is t the user is notified when ENV-NAME is already active."
     (kill-buffer ilog-buffer-name)))
 
 ;;; Good-scroll-mode
+;;;###autoload
 (defun dtm/good-scroll-down-half ()
   (interactive)
   (good-scroll-move (/ (good-scroll--window-usable-height) 2)))
 
+;;;###autoload
 (defun dtm/good-scroll-up-half ()
   (interactive)
   (good-scroll-move (/ (good-scroll--window-usable-height) -2)))
@@ -759,7 +764,6 @@ Intended for `markdown-mode-hook'."
   (+popup--remember (list (selected-window)))
   (kill-buffer-and-window))
 
-;;;###autoload
 (defun dtm-popup-get-rule (buf)
   "Returns (predicate . action) for BUF in `display-buffer-alist'.
 Based on `+popup/diagnose'."
