@@ -49,7 +49,7 @@
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
 
-;; Settings use by `dtm/recommend-theme' to determine theme
+;; Settings used by `dtm/recommend-theme' to determine theme
 (defvar dtm-first-hour-of-day 8)
 (defvar dtm-last-hour-of-day 17)
 (defvar dtm-day-theme 'doom-one-light)
@@ -119,7 +119,7 @@
               x-stretch-cursor t)
 
 ;; Save clipboard to kill ring before deleting text
-;; Cyle kill ring using <C-p> or <C-n> after pasting
+;; Cycle kill ring using <C-p> or <C-n> after pasting
 (setq save-interprogram-paste-before-kill t)
 
 ;; Increase horizontal scroll (shift + mwheel) sensitivity
@@ -150,10 +150,10 @@
       (:eval
        (if (buffer-modified-p) " +" ""))))
 
-;; Replace the default doom splash screen with amore subtle one
+;; Replace the default doom splash screen with a more subtle one
 (setq +doom-dashboard-ascii-banner-fn #'dtm-doom-ascii-banner-fn)
 
-;; Customize dashboard menu options to include org roam
+;; Customise dashboard menu options to include org roam
 (setq +doom-dashboard-menu-sections
       '(("Restore previous session" :icon
          (all-the-icons-octicon "history" :face 'doom-dashboard-menu-title)
@@ -335,7 +335,7 @@
 (use-package! xr
   :commands xr)
 
-;;;; Writing/Organization Tools
+;;;; Writing/Organisation Tools
 ;; Spell checking
 (after! ispell
   ;; Global and personal ispell library
@@ -375,7 +375,7 @@ Also used by `org-modern-mode' to calculate heights.")
     '(outline-2 :height 1.1)
     '(outline-3 :height 1.05))
 
-  ;; Give ellipsis same color as text
+  ;; Give ellipsis same colour as text
   (custom-set-faces!
     '(org-ellipsis :foreground nil :background nil :weight regular)
     '(org-headline-done :strike-through t))
@@ -649,7 +649,7 @@ Also used by `org-modern-mode' to calculate heights.")
             '(ess-fl-keyword:fun-calls . t)
             '(ess-fl-keyword:operators . t))
 
-  ;; Customize type faces (used for F&T color)
+  ;; Customise type faces (used for F&T colour)
   (custom-set-faces! '(ess-constant-face :weight bold :inherit font-lock-warning-face))
 
   ;; Make inferior buffer not take focus on startup
@@ -767,7 +767,7 @@ Also used by `org-modern-mode' to calculate heights.")
                                 "d" #'conda-env-deactivate))
 
 (after! csv-mode
-  ;; Asume the first line of a csv is a header
+  ;; Assume the first line of a csv is a header
   (setq csv-header-lines 1)
 
   ;; Ensure delimiters are not hidden when aligning
@@ -799,7 +799,7 @@ Also used by `org-modern-mode' to calculate heights.")
   ;; Override evil functions on mode activation, undo upon deactivation
   (add-hook! 'good-scroll-mode-hook #'dtm-good-scroll-evil-override-h))
 
-;; Init good-scroll
+;; Init good-scroll (In this way it is still accessible on laptops)
 (unless IS-LAPTOP
   (good-scroll-mode +1))
 
