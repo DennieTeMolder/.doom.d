@@ -595,6 +595,9 @@ Also used by `org-modern-mode' to calculate heights.")
   (map! :map comint-mode-map
         "C-l" #'comint-clear-buffer))
 
+(after! compile
+  (add-hook! 'compilation-mode-hook (visual-line-mode +1)))
+
 (when (modulep! :lang emacs-lisp)
   (add-hook! 'emacs-lisp-mode-hook
     (add-to-list 'imenu-generic-expression
