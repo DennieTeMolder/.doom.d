@@ -800,7 +800,7 @@ Based on `+popup/diagnose'."
 (defun dtm-popup-buffer-p (buf)
   "Returns t if BUF has a non-nil `set-popup-rule!' in `display-buffer-alist'."
   (when-let ((rule (dtm-popup-get-rule buf)))
-    (if (cddr rule) t nil)))
+    (eq '+popup-buffer (caadr rule))))
 
 ;;;###autoload
 (defun dtm/popup-select (buffer)
