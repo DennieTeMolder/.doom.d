@@ -273,9 +273,6 @@
                     doom/goto-private-packages-file))
     (advice-add symbol :before #'dtm-doom-private-goto-workspace))
 
-  ;; Open pdf files in a dedicated workspace
-  (dtm-set-workspace-rule "\\.pdf$" "*pdf*")
-
   ;; Fix default input value for `doom/load-session'
   (global-set-key [remap doom/load-session] #'dtm/load-session))
 
@@ -550,6 +547,10 @@ Also used by `org-modern-mode' to calculate heights.")
   (setq pdf-view-resize-factor 1.1)
 
   (add-to-list 'evil-snipe-disabled-modes 'pdf-view-mode)
+
+  ;; Open pdf files in a dedicated workspace
+  (add-hook! 'pdf-view-mode-hook (dtm/buffer-move-to-workspace
+                                  (current-buffer) "*pdf*"))
 
   (map! (:map pdf-view-mode-map
          :gn "C-e" #'pdf-view-scroll-down-or-previous-page
