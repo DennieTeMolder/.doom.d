@@ -124,26 +124,6 @@ Also checks if FILE exists."
   (doom-load-session file)
   (message "Session restored. Welcome back."))
 
-(defun dtm-buffer-move-to-workspace (buffer name)
-  "Move BUFFER from the original workspace to NAME and switch"
-  (let ((origin (+workspace-current-name)))
-    (+workspace-switch name t)
-    (persp-add-buffer buffer (+workspace-get name) t nil)
-    (+workspace-switch origin)
-    (persp-remove-buffer buffer (+workspace-get origin) nil t nil nil)
-    (+workspace-switch name)
-    (+workspace/display)))
-
-;;;###autoload
-(defun dtm/buffer-move-to-workspace-prompt ()
-  "Move current buffer from the current to the selected workspace"
-  (interactive)
-  (let ((buffer (current-buffer))
-        (name (completing-read
-               "Move current buffer to workspace:"
-               (+workspace-list-names))))
-    (dtm-buffer-move-to-workspace buffer name)))
-
 (defun dtm-workspace-switch-maybe (name)
   "Switch to workspace NAME if not already current"
   (unless (equal name (+workspace-current-name))
@@ -155,7 +135,7 @@ Also checks if FILE exists."
     (+workspace/display)))
 
 ;;;###autoload
-(defun dtm/doom-private-goto-workspace ()
+(defun dtm-doom-private-goto-workspace ()
   "Open/create the dedicated private config workspace"
   (dtm-workspace-switch-maybe "*config*"))
 
@@ -163,6 +143,39 @@ Also checks if FILE exists."
 (defun dtm-org-roam-goto-workspace (&rest _)
   "Open/create the dedicated org-roam workspace"
   (dtm-workspace-switch-maybe "*roam*"))
+
+;;;###autoload
+(defun dtm/buffer-move-to-workspace (buffer name)
+  "Move BUFFER from the original workspace to NAME and switch"
+  (interactive (list
+                (current-buffer)
+                (completing-read "Move current buffer to workspace:"
+                                 (+workspace-list-names))))
+  (let ((persp-autokill-buffer-on-remove nil))
+    (persp-remove-buffer buffer))
+  (dtm-workspace-switch-maybe name)
+  (display-buffer-same-window buffer nil)
+  (+workspace/display))
+
+(defun dtm-display-buffer-in-workspace (buffer alist)
+  "Display BUFFER in (workspace . name) defined in ALIST.
+Intended for use in `display-buffer-alist'."
+  (let ((name (cdr (assq 'workspace alist))))
+    (if (equal name (+workspace-current-name))
+        (display-buffer-same-window buffer nil)
+      (dtm/buffer-move-to-workspace buffer name))))
+
+;;;###autoload
+(defun dtm-set-workspace-rule (predicate name)
+  "Move buffers matching PREDICATE to workspace NAME.
+This is achieved by adding a rule to `display-buffer-alist'."
+  (let ((rule `(,predicate (dtm-display-buffer-in-workspace)
+                           (workspace . ,name))))
+    (push rule display-buffer-alist)
+    ;; HACK prevent rule from being overridden by `set-popup-rule!'
+    (when (boundp '+popup--display-buffer-alist)
+      (push rule +popup--display-buffer-alist)))
+  t)
 
 ;;; Ediff
 ;;;###autoload

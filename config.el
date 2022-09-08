@@ -271,7 +271,10 @@
                     doom/goto-private-init-file
                     doom/goto-private-config-file
                     doom/goto-private-packages-file))
-    (advice-add symbol :before #'dtm/doom-private-goto-workspace))
+    (advice-add symbol :before #'dtm-doom-private-goto-workspace))
+
+  ;; Open pdf files in a dedicated workspace
+  (dtm-set-workspace-rule "\\.pdf$" "*pdf*")
 
   ;; Fix default input value for `doom/load-session'
   (global-set-key [remap doom/load-session] #'dtm/load-session))

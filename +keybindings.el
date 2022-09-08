@@ -31,9 +31,10 @@
       :desc "Repeat last command" "r" #'repeat
 
       ;; Buffers
-      :desc "Move buffer to workspace" "b TAB" #'dtm/buffer-move-to-workspace-prompt
-                                       "b D"   #'kill-buffer-and-window
-      :desc "Show undo history"        "b h"   #'vundo
+      (:prefix "b"
+       :desc "Move buffer to workspace" "TAB" #'dtm/buffer-move-to-workspace
+                                        "D"   #'kill-buffer-and-window
+       :desc "Show undo history"        "h"   #'vundo)
 
       ;; Window management
       (:prefix "w"
