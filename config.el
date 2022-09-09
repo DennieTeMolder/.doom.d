@@ -616,6 +616,11 @@ Also used by `org-modern-mode' to calculate heights.")
     (add-to-list 'imenu-generic-expression
                  '("Module" "^\\s-*(when (modulep! +\\([^)]+\\))" 1))))
 
+(after! elisp-refs
+  (add-hook 'elisp-refs-mode-hook #'hide-mode-line-mode)
+
+  (map! :map elisp-refs-mode-map :gn "RET" #'elisp-refs-visit-match-other-window))
+
 (after! lispy
   ;; Prettier function evaluation
   (setq lispy-eval-display-style 'eros--eval-overlay)
