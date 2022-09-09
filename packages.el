@@ -55,6 +55,9 @@
 ;; Disable it as I am not using it and might create typing delay
 (package! evil-escape :disable t)
 
+;; Disable ibuffer sorting by project (use workspaces instead)
+(package! ibuffer-projectile :disable t)
+
 ;; Byte compiling tablist creates an error in `pdf-annot-list-annotations'
 ;; https://github.com/vedang/pdf-tools/issues/89
 (package! tablist :recipe (:build (:not compile)))

@@ -221,6 +221,28 @@ This is achieved by adding a rule to `display-buffer-alist'."
       (push rule +popup--display-buffer-alist)))
   t)
 
+(defun dtm-ibuffer-workspace-filter-groups ()
+  "Generate value for `ibuffer-filter-groups' based on perspectives."
+  (mapcar #'(lambda (pn) (list pn (cons 'persp pn)))
+          (nconc
+           (cl-delete persp-nil-name (persp-names-current-frame-fast-ordered)
+                      :test 'string=)
+           (list persp-nil-name))))
+
+;;;###autoload
+(defun dtm-ibuffer-group-by-workspace-h ()
+  "Set the current filter groups to filter by perspective.
+Based on `ibuffer-projectile-set-filter-groups' from the ibuffer-projectile package:
+https://github.com/purcell/ibuffer-projectile"
+  (interactive)
+  (setq ibuffer-filter-groups (dtm-ibuffer-workspace-filter-groups))
+  (message "persp-ibuffer: grouping buffers by workspace")
+  (let ((ibuf (get-buffer "*Ibuffer*")))
+    (when ibuf
+      (with-current-buffer ibuf
+        (pop-to-buffer ibuf)
+        (ibuffer-update nil t)))))
+
 ;;; Ediff
 ;;;###autoload
 (defun dtm/ediff-this-file ()
