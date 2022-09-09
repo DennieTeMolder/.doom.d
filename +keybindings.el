@@ -34,7 +34,8 @@
       (:prefix "b"
        :desc "Move buffer to workspace" "TAB" #'dtm/buffer-move-to-workspace
                                         "D"   #'kill-buffer-and-window
-       :desc "Show undo history"        "h"   #'vundo)
+       :desc "Show undo history"        "h"   #'vundo
+       :desc "Switch orphan buffer"     "o"   #'dtm/switch-orphan-buffer)
 
       ;; Window management
       (:prefix "w"
@@ -46,7 +47,6 @@
       "/" nil ; Unbind `+default/search-project' (also bound to "SPC s p")
       (:prefix ("/" . "popup")
        :desc "Show/hide popup" "/" #'+popup/toggle
-       :desc "Select popup"    "." #'dtm/popup-select
        :desc "Buffer to popup" "b" #'+popup/buffer
        :desc "Kill popup"      "k" #'dtm/popup-kill
        :desc "Popup to buffer" "r" #'dtm/popup-raise

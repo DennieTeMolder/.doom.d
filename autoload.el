@@ -149,6 +149,16 @@ Also checks if FILE exists."
   (doom-load-session file)
   (message "Session restored. Welcome back."))
 
+(defun dtm-buffer-orphan-p (buf)
+  "Return t if buffer BUF does not belong to any workspace/perspective."
+  (not (persp--buffer-in-persps (dtm-get-buffer buf))))
+
+;;;###autoload
+(defun dtm/switch-orphan-buffer ()
+  "Prompt user to select buffer matching `dtm-buffer-orphan-p'."
+  (interactive)
+  (dtm-read-display-buffer "Select orphan buffer" #'dtm-buffer-orphan-p))
+
 (defun dtm-workspace-switch-maybe (name)
   "Switch to workspace NAME if not already current"
   (unless (equal name (+workspace-current-name))
