@@ -2,13 +2,6 @@
 
 ;;; Utility
 ;;;###autoload
-(defun dtm-remote-buffer-p (&optional buf)
-  "Returns t if BUF belongs to a remote directory."
-  (let* ((buf (or buf (current-buffer)))
-         (dir (buffer-local-value 'default-directory buf)))
-    (ignore-errors (file-remote-p dir))))
-
-;;;###autoload
 (defun dtm-file-local-readable-p (file)
   "Return non-nil if FILE is local and readable."
   (unless (file-remote-p file)
@@ -29,6 +22,13 @@
 (defun dtm-point-mark-same-line-p ()
   "Returns t if point and mark are on the same line"
   (<= (line-beginning-position) (mark) (line-end-position)))
+
+;;; Buffer functions
+(defun dtm-buffer-remote-p (&optional buf)
+  "Returns t if BUF belongs to a remote directory."
+  (let* ((buf (or buf (current-buffer)))
+         (dir (buffer-local-value 'default-directory buf)))
+    (ignore-errors (file-remote-p dir))))
 
 ;;; Theme recommendations
 (defun dtm--theme-which-inactive (theme1 theme2)
@@ -571,7 +571,7 @@ Unless SILENT is t the user is notified when ENV-NAME is already active."
 (defun dtm-conda-env-guess-prompt-h ()
   "Prompt the user to activate the relevant conda env if it is not \"base\"."
   (when (and (eq major-mode 'python-mode)
-             (not (dtm-remote-buffer-p)))
+             (not (dtm-buffer-remote-p)))
     (let ((ienv (conda--infer-env-from-buffer)))
       (unless (string= ienv "base")
         (dtm--conda-env-promt-activate ienv)))))
