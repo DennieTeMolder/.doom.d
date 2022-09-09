@@ -569,8 +569,7 @@ Also used by `org-modern-mode' to calculate heights.")
   (add-to-list 'evil-snipe-disabled-modes 'pdf-view-mode)
 
   ;; Open pdf files in a dedicated workspace
-  (add-hook! 'pdf-view-mode-hook (dtm/buffer-move-to-workspace
-                                  (current-buffer) "*pdf*"))
+  (add-hook! 'pdf-view-mode-hook (dtm/buffer-move-to-workspace "*pdf*"))
 
   (map! (:map pdf-view-mode-map
          :gn "C-e" #'pdf-view-scroll-down-or-previous-page
