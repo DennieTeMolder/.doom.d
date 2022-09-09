@@ -9,7 +9,7 @@
 
 ;;;###autoload
 (defun dtm-doctor-running-p ()
-  "Returns true when doom doctor is running.
+  "Returns t when the doom doctor CLI is running.
 Required because doctor sets `noninteractive' to nil."
   (boundp 'doom-doctor--errors))
 
