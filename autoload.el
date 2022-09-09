@@ -565,11 +565,11 @@ https://www.reddit.com/r/emacs/comments/op4fcm/send_command_to_vterm_and_execute
 (defun dtm-ess-switch-maybe-a (orig-fn TOGGLE-EOB)
   "Only switch to the REPL if it was already visible"
   (let* ((starting-window (selected-window))
-         (ess-process (when ess-current-process-name
-                        (get-process ess-current-process-name)))
-         (ess-buffer-visible (when ess-process
-                               (doom-visible-buffer-p
-                                (buffer-name (process-buffer ess-process))))))
+         (ess-process (and ess-current-process-name
+                           (get-process ess-current-process-name)))
+         (ess-buffer-visible (and ess-process
+                                  (doom-visible-buffer-p
+                                   (buffer-name (process-buffer ess-process))))))
     (funcall orig-fn TOGGLE-EOB)
     (evil-normal-state)
     (unless ess-buffer-visible
