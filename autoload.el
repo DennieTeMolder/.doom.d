@@ -50,10 +50,9 @@
 
 (defun dtm-read-display-buffer (prompt &optional predicate)
   "Display buffer by providing user with PROMPT on buffers matching PREDICATE."
-  (let ((buf (read-buffer (format-prompt prompt nil)
-                          nil t predicate)))
-    (when buf
-      (display-buffer buf))))
+  (when-let ((buf (read-buffer (format-prompt prompt nil)
+                               nil t predicate)))
+    (display-buffer buf)))
 
 ;;; Theme recommendations
 (defun dtm--theme-which-inactive (theme1 theme2)
@@ -149,15 +148,24 @@ Also checks if FILE exists."
   (doom-load-session file)
   (message "Session restored. Welcome back."))
 
-(defun dtm-buffer-orphan-p (buf)
+(defun dtm-buffer-orphan-p (&optional buf)
   "Return t if buffer BUF does not belong to any workspace/perspective."
-  (not (persp--buffer-in-persps (dtm-get-buffer buf))))
+  (let ((buf (or buf (current-buffer))))
+    (not (persp--buffer-in-persps (dtm-get-buffer buf)))))
 
 ;;;###autoload
 (defun dtm/switch-orphan-buffer ()
   "Prompt user to select buffer matching `dtm-buffer-orphan-p'."
   (interactive)
   (dtm-read-display-buffer "Select orphan buffer" #'dtm-buffer-orphan-p))
+
+;;;###autoload
+(defun dtm/ibuffer-orphans ()
+  "Open an ibuffer window with all orphan buffers."
+  (interactive)
+  (let ((ibuffer-never-show-predicates '(persp--buffer-in-persps))
+        (ibuffer-hook nil))
+    (ibuffer)))
 
 (defun dtm-workspace-switch-maybe (name)
   "Switch to workspace NAME if not already current"
@@ -180,25 +188,26 @@ Also checks if FILE exists."
   (dtm-workspace-switch-maybe "*roam*"))
 
 ;;;###autoload
-(defun dtm/buffer-move-to-workspace (buffer name)
-  "Move BUFFER from the original workspace to NAME and switch"
+(defun dtm/buffer-move-to-workspace (name &optional alist)
+  "Move `current-buffer' to workspace with NAME and switch"
   (interactive (list
-                (current-buffer)
                 (completing-read "Move current buffer to workspace:"
                                  (+workspace-list-names))))
-  (let ((persp-autokill-buffer-on-remove nil))
-    (persp-remove-buffer buffer))
-  (dtm-workspace-switch-maybe name)
-  (display-buffer-same-window buffer nil)
-  (+workspace/display))
+  (let ((buffer (current-buffer))
+        (persp (get-current-persp))
+        (persp-autokill-buffer-on-remove nil))
+    (unless (equal name (+workspace-current-name))
+      (when (persp-contain-buffer-p buffer persp)
+        (persp-remove-buffer buffer persp))
+      (dtm-workspace-switch-maybe name))
+    (display-buffer-same-window buffer alist)))
 
 (defun dtm-display-buffer-in-workspace (buffer alist)
   "Display BUFFER in (workspace . name) defined in ALIST.
 Intended for use in `display-buffer-alist'."
   (let ((name (cdr (assq 'workspace alist))))
-    (if (equal name (+workspace-current-name))
-        (display-buffer-same-window buffer nil)
-      (dtm/buffer-move-to-workspace buffer name))))
+    (let ((alist (remove (assq 'workspace alist) alist)))
+      (dtm/buffer-move-to-workspace name alist))))
 
 ;;;###autoload
 (defun dtm-set-workspace-rule (predicate name)
@@ -829,9 +838,10 @@ Based on `+popup/diagnose'."
              else if (and (stringp pred) (string-match-p pred bname))
              return (cons pred action))))
 
-(defun dtm-popup-buffer-p (buf)
+(defun dtm-popup-buffer-p (&optional buf)
   "Returns t if BUF has a non-nil `set-popup-rule!' in `display-buffer-alist'."
-  (when-let ((rule (dtm-popup-get-rule buf)))
+  (when-let* ((buf (or buf (current-buffer)))
+              (rule (dtm-popup-get-rule buf)))
     (eq '+popup-buffer (caadr rule))))
 
 ;;;###autoload
