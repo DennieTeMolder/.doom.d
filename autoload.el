@@ -8,6 +8,12 @@
     (file-readable-p file)))
 
 ;;;###autoload
+(defun dtm-doctor-running-p ()
+  "Returns true when doom doctor is running.
+Required because doctor sets `noninteractive' to nil."
+  (boundp 'doom-doctor--errors))
+
+;;;###autoload
 (defun dtm-evil-repeat-ignore (&rest symbol)
   "Instruct `evil-repeat' to ignore commands with SYMBOL."
   (unless symbol

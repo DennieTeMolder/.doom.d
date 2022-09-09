@@ -36,8 +36,8 @@
 ;; wasn't installed correctly. Font issues are rarely Doom issues!
 
 (defvar dtm-base-font-size (if (and (<= (display-pixel-height) 1080)
-                                   (not IS-LAPTOP))
-                              13.0 14.0))
+                                    (not IS-LAPTOP))
+                               13.0 14.0))
 
 ;; Use float for size as it indicates point size rather then pixels (better scaling)
 (setq doom-font (font-spec :family "Iosevka" :width 'expanded :size dtm-base-font-size)
@@ -278,11 +278,12 @@
 
 (after! ibuffer
   ;; Ref: https://gist.github.com/Bad-ptr/1aca1ec54c3bdb2ee80996eb2b68ad2d#file-persp-mode-ibuffer-groups-el
-  (define-ibuffer-filter persp
-      "Toggle current view to buffers of current perspective."
-    (:description "persp-mode"
-     :reader (persp-prompt nil nil (safe-persp-name (get-frame-persp)) t))
-    (cl-find buf (safe-persp-buffers (persp-get-by-name qualifier))))
+  (unless (dtm-doctor-running-p)
+    (define-ibuffer-filter persp
+        "Toggle current view to buffers of current perspective."
+      (:description "persp-mode"
+       :reader (persp-prompt nil nil (safe-persp-name (get-frame-persp)) t))
+      (cl-find buf (safe-persp-buffers (persp-get-by-name qualifier)))))
 
   ;; Group buffers based on perspective/workspace
   (add-hook 'ibuffer-hook #'dtm-ibuffer-group-by-workspace-h))
@@ -299,7 +300,8 @@
       ;; New rules
       ("\\*refs:"
        :size 0.42 :select t :ttl nil)))
-  (+popup-cleanup-rules-h)
+  (unless (dtm-doctor-running-p)
+    (+popup-cleanup-rules-h))
 
   ;; Allow popups to be balanced
   (advice-remove 'balance-windows #'+popup-save-a))
