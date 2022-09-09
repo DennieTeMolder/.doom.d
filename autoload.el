@@ -30,6 +30,31 @@
          (dir (buffer-local-value 'default-directory buf)))
     (ignore-errors (file-remote-p dir))))
 
+(defun dtm-get-buffer (b-or-n)
+  "Wrapper for `get-buffer', that handles `read-buffer' cons cells."
+  (let ((buf (cond ((listp b-or-n) (cdr b-or-n))
+                   ((stringp b-or-n) (get-buffer b-or-n))
+                   (t b-or-n))))
+    (unless (bufferp buf)
+      (error "No buffer found for: %s" b-or-n))
+    buf))
+
+(defun dtm-get-buffer-name (b-or-n)
+  "Wrapper for `buffer-name', that handles `read-buffer' cons cells."
+  (let ((bname (cond ((listp b-or-n) (car b-or-n))
+                     ((bufferp b-or-n) (buffer-name b-or-n))
+                     (t b-or-n))))
+    (unless (stringp bname)
+      (error "Could not find buffer string for: %s" b-or-n))
+    bname))
+
+(defun dtm-read-display-buffer (prompt &optional predicate)
+  "Display buffer by providing user with PROMPT on buffers matching PREDICATE."
+  (let ((buf (read-buffer (format-prompt prompt nil)
+                          nil t predicate)))
+    (when buf
+      (display-buffer buf))))
+
 ;;; Theme recommendations
 (defun dtm--theme-which-inactive (theme1 theme2)
   "Return THEME1 of not currently active, else return THEME2"
@@ -787,10 +812,7 @@ Intended for `markdown-mode-hook'."
 (defun dtm-popup-get-rule (buf)
   "Returns (predicate . action) for BUF in `display-buffer-alist'.
 Based on `+popup/diagnose'."
-  (let ((bname (cond ((stringp buf) buf)
-                     ((listp buf) (car buf))
-                     ((bufferp buf) (buffer-name buf))
-                     (t (error "Unexpected!")))))
+  (let ((bname (dtm-get-buffer-name buf)))
     (cl-loop for (pred . action) in display-buffer-alist
              if (and (functionp pred) (funcall pred bname action))
              return (cons pred action)
@@ -803,10 +825,8 @@ Based on `+popup/diagnose'."
     (eq '+popup-buffer (caadr rule))))
 
 ;;;###autoload
-(defun dtm/popup-select (buffer)
-  "Display BUFFER, prompts user with all open popups."
-  (interactive (list
-                (read-buffer (format-prompt "Select popup" nil)
-                             nil t #'dtm-popup-buffer-p)))
-  (when buffer
-    (display-buffer buffer)))
+(defun dtm/switch-popup-buffer ()
+  "Prompt user to select buffer matching `dtm-popup-buffer-p'."
+  (interactive)
+  (dtm-read-display-buffer "Select popup" #'dtm-popup-buffer-p))
+
