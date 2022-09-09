@@ -277,9 +277,18 @@
   (global-set-key [remap doom/load-session] #'dtm/load-session))
 
 (when (modulep! :ui popup)
-  ;; Disable default ttl
-  (setq +popup-defaults
-        '(:side bottom :height 0.16 :width 40 :quit t :select ignore :ttl nil))
+  (set-popup-rules!
+    ;; Redefined rules
+    '(("^\\*\\(?:Wo\\)?Man "
+       :vslot -6 :size 0.45 :select t :quit t :ttl nil)
+      ("^\\*\\([Hh]elp\\|Apropos\\)"
+       :slot 2 :vslot -8 :size 0.42 :select t :ttl nil)
+      ("^\\*info\\*$"
+       :slot 2 :vslot 2 :size 0.45 :select t :ttl nil)
+      ;; New rules
+      ("\\*refs:"
+       :size 0.42 :select t :ttl nil)))
+  (+popup-cleanup-rules-h)
 
   ;; Allow popups to be balanced
   (advice-remove 'balance-windows #'+popup-save-a))
