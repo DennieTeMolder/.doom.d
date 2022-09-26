@@ -435,7 +435,7 @@ Also used by `org-modern-mode' to calculate heights.")
         org-appear-autoentities t))
 
 (use-package! org-modern
-  :hook (org-mode . org-modern-mode)
+  :hook (org-mode . dtm-org-modern-mode-maybe-h)
   :hook (org-agenda-finalize . org-modern-agenda)
   :config
   (setq org-modern-label-border dtm-org-line-spacing

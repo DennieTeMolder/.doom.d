@@ -327,6 +327,13 @@ https://github.com/abo-abo/org-download/commit/137c3d2aa083283a3fc853f9ecbbc0303
 
 ;;; Org-modern
 ;;;###autoload
+(defun dtm-org-modern-mode-maybe-h ()
+  "Activate `org-modern-mode' unless in `doom-emacs-dir'.
+The additional markup used in doom-style org documents causes rendering issues."
+  (unless (file-in-directory-p default-directory doom-emacs-dir)
+    (org-modern-mode +1)))
+
+;;;###autoload
 (defun dtm-org--modern-indent-heading ()
   "Correctly indents heading assuming leading stars are fully hidden (not invisible)."
   (dotimes (n org-indent--deepest-level)
