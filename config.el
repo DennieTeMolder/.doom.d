@@ -440,7 +440,6 @@ Also used by `org-modern-mode' to calculate heights.")
   :config
   (setq org-modern-label-border dtm-org-line-spacing
         org-modern-statistics nil
-        org-modern-table nil ; Ref: https://github.com/minad/org-modern/issues/69
         org-modern-star ["●" "◉" "○" "◉" "○" "◉" "○" "◉"]
         org-modern-list '((?+ . "›")
                           (?- . "‒")
