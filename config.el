@@ -640,7 +640,11 @@ Also used by `org-modern-mode' to calculate heights.")
 
 (after! lispy
   ;; Prettier function evaluation
-  (setq lispy-eval-display-style 'eros--eval-overlay)
+  (setq lispy-eval-display-style 'overlay)
+
+  ;; Do not enable lispy in the minibuffer
+  (remove-hook 'eval-expression-minibuffer-setup-hook
+               #'doom-init-lispy-in-eval-expression-h)
 
   ;; Define custom special key for stepping into lists/deleting marked regions
   (lispy-define-key lispy-mode-map "i" 'dtm/lispy-step-into)
