@@ -185,12 +185,6 @@
 ;; Default major mode for scratch buffer
 (setq doom-scratch-initial-major-mode 'lisp-interaction-mode)
 
-;; Disable visual line mode as it can be expensive on long lines
-(remove-hook! 'text-mode-hook #'visual-line-mode)
-
-;; Automatically load changes (should mostly be in log files)
-(add-hook! 'text-mode-hook (auto-revert-mode +1))
-
 ;; Disable global hl-line-mode
 (remove-hook! 'doom-first-buffer-hook #'global-hl-line-mode)
 
@@ -210,6 +204,13 @@
         ("Manjaro packages"  "https://packages.manjaro.org/?query=%s")
         ("AUR"               "https://aur.archlinux.org/packages?O=0&K=%s")
         ("Anaconda packages" "https://anaconda.org/search?q=%s")))
+
+(after! text-mode
+  ;; Disable visual line mode as it can be expensive on long lines
+  (remove-hook! 'text-mode-hook #'visual-line-mode)
+
+  ;; Automatically load changes (should mostly be in log files)
+  (add-hook! 'text-mode-hook (auto-revert-mode +1)))
 
 ;;;; Doom Core Package Settings
 (after! evil
