@@ -54,7 +54,8 @@
 
       ;; Open
       (:prefix "o"
-       :desc "Vterm here" "T" #'vterm)
+       :desc "Folder sidebar" "s" #'dirvish-side
+       :desc "Vterm here"     "T" #'vterm)
 
       ;; Toggles
       (:prefix "t"

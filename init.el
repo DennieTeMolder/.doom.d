@@ -46,7 +46,7 @@
        (popup +defaults) ; tame sudden yet inevitable temporary windows
        ;;popper            ; custom popup management module based on popper
        ;;tabs              ; a tab bar for Emacs
-       treemacs            ; a project drawer, like neotree but cooler
+       ;;treemacs          ; a project drawer, like neotree but cooler
        ;;unicode           ; extended unicode support for various languages
        (vc-gutter          ; vcs diff in the fringe
         +diff-hl
@@ -74,7 +74,7 @@
 
        :emacs
        (dired              ; making dired pretty [functional]
-        +ranger
+        +dirvish
         +icons)
        electric            ; smarter, keyword-based electric-indent
        (ibuffer +icons)    ; interactive buffer management

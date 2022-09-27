@@ -306,14 +306,26 @@
   ;; Allow popups to be balanced
   (advice-remove 'balance-windows #'+popup-save-a))
 
-;; Use ediff in dired instead of diff
 (after! dired
-  (setq dired-clean-confirm-killing-deleted-buffers nil)
+  (setq dired-kill-when-opening-new-dired-buffer t
+        dired-listing-switches "-l --human-readable --group-directories-first")
 
+  ;; Enable command that allows dired buffers to be reused
+  (put 'dired-find-alternate-file 'disabled nil)
+
+  ;; Use ediff in dired instead of diff
   (define-key dired-mode-map [remap dired-diff] #'dtm/dired-ediff))
 
-(after! ranger
-  (define-key ranger-mode-map [remap dired-diff] #'dtm/dired-ediff))
+(after! dirvish
+  (map! :map dirvish-mode-map
+        :n "l" #'dired-find-alternate-file
+        :n "h" (cmd! (find-alternate-file ".."))
+        :n "L" #'dirvish-history-go-forward
+        :n "H" #'dirvish-history-go-backward
+        :n "z" #'dirvish-ls-switches-menu))
+
+(after! dired-x
+ (remove-hook 'dired-mode-hook #'dired-omit-mode))
 
 (after! undo-fu
   ;; Raise undo limit do 10 Mb (doom default: 40kb)
@@ -336,13 +348,6 @@
 ;; Add colours to info pages to make them more readable
 (use-package! info-colors
     :hook (Info-selection . info-colors-fontify-node))
-
-;; On-demand listing of directory sizes in dired
-(use-package! dired-du
-  :after ranger
-  :bind (:map ranger-mode-map ("d u" . dired-du-mode))
-  :config
-  (setq dired-du-size-format t))
 
 ;; Enable vertico mouse extension (included with vertico)
 (use-package! vertico-mouse
