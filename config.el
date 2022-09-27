@@ -311,8 +311,11 @@
   (setq dired-kill-when-opening-new-dired-buffer t
         dired-listing-switches "-l --human-readable --group-directories-first")
 
-  ;; Enable command that allows dired buffers to be reused
+  ;; Enable command that respects `dired-kill-when-opening-new-dired-buffer'
   (put 'dired-find-alternate-file 'disabled nil)
+
+  ;; HACK manually disable diff-hl hook until dirvish module is merged upstream
+  (remove-hook 'dired-mode-hook #'diff-hl-dired-mode)
 
   ;; Use ediff in dired instead of diff
   (define-key dired-mode-map [remap dired-diff] #'dtm/dired-ediff))
