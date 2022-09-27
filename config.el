@@ -7,7 +7,7 @@
 ;;;; Flags
 ;; Determine if running on a laptop based on env variable (must be set by user)
 (defvar IS-LAPTOP (string= "yes" (getenv "IS_LAPTOP")))
-(defvar MAXIMIZE (string= "yes" (getenv "MAXIMIZE_EMACS")))
+(defvar FRAME-MAXIMIZE (string= "yes" (getenv "MAXIMIZE_EMACS")))
 
 ;;;; Doom preamble
 ;; Some functionality uses this to identify you, e.g. GPG configuration, email
@@ -127,7 +127,7 @@
 
 ;;;; UI Settings
 ;; Maximise emacs if specified in shell ENV
-(when MAXIMIZE
+(when FRAME-MAXIMIZE
   (add-to-list 'default-frame-alist '(fullscreen . maximized)))
 
 ;; Display battery status on laptops
@@ -282,7 +282,7 @@
     (define-ibuffer-filter persp
         "Toggle current view to buffers of current perspective."
       (:description "persp-mode"
-       :reader (persp-prompt nil nil (safe-persp-name (get-frame-persp)) t))
+       :reader (persp-read-persp nil nil (safe-persp-name (get-frame-persp)) t))
       (cl-find buf (safe-persp-buffers (persp-get-by-name qualifier)))))
 
   ;; Group buffers based on perspective/workspace
