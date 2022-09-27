@@ -308,11 +308,7 @@
   (advice-remove 'balance-windows #'+popup-save-a))
 
 (after! dired
-  (setq dired-kill-when-opening-new-dired-buffer t
-        dired-listing-switches "-l --human-readable --group-directories-first")
-
-  ;; Enable command that respects `dired-kill-when-opening-new-dired-buffer'
-  (put 'dired-find-alternate-file 'disabled nil)
+  (setq dired-listing-switches "-l --human-readable --group-directories-first")
 
   ;; HACK manually disable diff-hl hook until dirvish module is merged upstream
   (remove-hook 'dired-mode-hook #'diff-hl-dired-mode)
@@ -321,9 +317,12 @@
   (define-key dired-mode-map [remap dired-diff] #'dtm/dired-ediff))
 
 (after! dirvish
+  (setq dirvish-attributes
+        '(vc-state subtree-state all-the-icons file-time file-size))
+
   (map! :map dirvish-mode-map
-        :n "l" #'dired-find-alternate-file
-        :n "h" (cmd! (find-alternate-file ".."))
+        :n "l" #'dired-find-file
+        :n "h" #'dired-up-directory
         :n "L" #'dirvish-history-go-forward
         :n "H" #'dirvish-history-go-backward
         :n "z" #'dirvish-ls-switches-menu))
