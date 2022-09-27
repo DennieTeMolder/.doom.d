@@ -769,6 +769,13 @@ If REGION is active, call `lispy-delete' instead."
          (error "Unexpected"))))
 
 ;;; Imenu
+;;;###autoload
+(defun dtm-elisp-extend-imenu-a ()
+  "Add `modulep!' support to `imenu' as the 2nd element.
+Intended as advice for `+emacs-lisp-extend-imenu-h'."
+  (push '("Module" "^\\s-*(when (modulep! +\\([^)]+\\))" 1)
+        (cdr imenu-generic-expression)))
+
 (defvar dtm-imenu-orginal-index-function nil
   "Original indexing function before calling `dtm-imenu-merge-index-h'")
 

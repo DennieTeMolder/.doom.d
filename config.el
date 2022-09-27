@@ -629,9 +629,7 @@ Also used by `org-modern-mode' to calculate heights.")
   (add-hook! 'compilation-mode-hook (visual-line-mode +1)))
 
 (when (modulep! :lang emacs-lisp)
-  (add-hook! 'emacs-lisp-mode-hook
-    (add-to-list 'imenu-generic-expression
-                 '("Module" "^\\s-*(when (modulep! +\\([^)]+\\))" 1))))
+  (advice-add '+emacs-lisp-extend-imenu-h :after #'dtm-elisp-extend-imenu-a))
 
 (after! elisp-refs
   (add-hook 'elisp-refs-mode-hook #'hide-mode-line-mode)
