@@ -167,7 +167,9 @@ Use the following syntax to configure the entries displayed in
 /There are no known problems with this module./ [[doom-report:][Report one?]]
 
 * Frequently asked questions
-/This module has no FAQs yet./ [[doom-suggest-faq:][Ask one?]]
+** How to kill all session buffers on quit?
+
+Set ~dirvish-reuse-session~ to nil.
 
 * TODO Appendix
 #+begin_quote
