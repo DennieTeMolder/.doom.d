@@ -317,7 +317,8 @@
   (define-key dired-mode-map [remap dired-diff] #'dtm/dired-ediff))
 
 (after! dirvish
-  (setq dirvish-attributes
+  (setq dirvish-reuse-session nil
+        dirvish-attributes
         '(vc-state subtree-state all-the-icons file-time file-size))
 
   (map! :map dirvish-mode-map
