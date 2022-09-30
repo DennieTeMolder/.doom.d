@@ -38,7 +38,7 @@
 
 ;;;###package windmove
 ;; Steal hack from popup module to make treemacs accessible using evil
-(defadvice! +windmove-ignore-window-parameters-a (fn &rest args)
+(defadvice! +popup--ignore-window-parameters-a (fn &rest args)
   "Allow *interactive* commands to enter windows with the `no-other-window' parameter."
   :around '(windmove-up windmove-down windmove-left windmove-right)
   (letf! (defun windmove-find-other-window (dir &optional arg window)

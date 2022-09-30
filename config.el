@@ -189,7 +189,7 @@
 (remove-hook! 'doom-first-buffer-hook #'global-hl-line-mode)
 
 ;; This prevents stepping into the left side window from the bottom side window
-(advice-remove 'windmove-up #'+windmove-ignore-window-parameters-a)
+(advice-remove 'windmove-up #'+popup--ignore-window-parameters-a)
 
 ;; Search options for "SPC s o" (`+lookup/online')
 (setq +lookup-provider-url-alist
