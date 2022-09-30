@@ -316,6 +316,9 @@
   ;; Use ediff in dired instead of diff
   (define-key dired-mode-map [remap dired-diff] #'dtm/dired-ediff))
 
+(after! dired-x
+  (remove-hook 'dired-mode-hook #'dired-omit-mode))
+
 (after! dirvish
   (setq dirvish-reuse-session nil
         dirvish-attributes
@@ -328,8 +331,10 @@
         :n "H" #'dirvish-history-go-backward
         :n "z" #'dirvish-ls-switches-menu))
 
-(after! dired-x
- (remove-hook 'dired-mode-hook #'dired-omit-mode))
+(after! dirvish-side
+  ;; Make side window inaccessible without `+popup--ignore-window-parameters-a'
+  (add-to-list 'dirvish-side-window-parameters
+               '(no-other-window . t)))
 
 (after! undo-fu
   ;; Raise undo limit do 10 Mb (doom default: 40kb)
