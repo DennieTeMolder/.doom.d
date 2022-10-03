@@ -37,7 +37,7 @@
 
 (defvar dtm-base-font-size (if (and (<= (display-pixel-height) 1080)
                                     (not IS-LAPTOP))
-                               12.0 14.0))
+                               11.0 14.0))
 
 ;; Use float for size as it indicates point size rather then pixels (better scaling)
 (setq doom-font (font-spec :family "Iosevka" :width 'expanded :size dtm-base-font-size)
