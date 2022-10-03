@@ -24,21 +24,28 @@
     :slot 20 :size 0.8 :select t :quit nil :ttl 0)
   (set-evil-initial-state! 'image-dired-display-image-mode 'emacs)
 
-  (let ((non-gnu-args "-alh")
-        (gnu-args
-         "-l --almost-all --human-readable --group-directories-first"))
-    (cond ((and (boundp 'ls-lisp-use-insert-directory-program)
-                (not ls-lisp-use-insert-directory-program)
-                (< emacs-major-version 28))
-           ;; Fixes #3939: unsortable dired entries on Windows
-           (setq dired-listing-switches non-gnu-args))
-          (IS-BSD
-           ;; BSD ls doesn't support long options
-           (if-let (gls (executable-find "gls"))
-               (setq insert-directory-program gls
-                     dired-listing-switches gnu-args)
-             (setq dired-listing-switches non-gnu-args)))
-          (t (setq dired-listing-switches gnu-args))))
+  (let* ((ls (executable-find "ls"))
+         (gls (executable-find "gls"))
+         (idp (executable-find insert-directory-program))
+         (ls-is-gnu? (and ls (= 0 (process-file ls nil nil nil "--version"))))
+         (idp-is-gnu-ls?
+          (and idp (= 0 (process-file idp nil nil nil "--version")))))
+    (setq dired-listing-switches
+          "-l --almost-all --human-readable --group-directories-first")
+    (setq insert-directory-program
+          (cond
+           ;; just use GNU ls if found
+           (ls-is-gnu? ls)
+           ;; use insert-directory-program if it points to GNU ls
+           (idp-is-gnu-ls? insert-directory-program)
+           ;; heuristic: GNU ls is often installed as gls by Homebrew on Mac
+           ((and (eq system-type 'darwin) gls) gls)
+           (t
+            ;; Emacs 28+ sanitizes unknown switches silently
+            (when (< emacs-major-version 28)
+              (setq dired-listing-switches "-alh"))
+            ;; fallback to insert-directory-program
+            insert-directory-program))))
 
   (defadvice! +dired--no-revert-in-virtual-buffers-a (&rest args)
     "Don't auto-revert in dired-virtual buffers (see `dired-virtual-revert')."
