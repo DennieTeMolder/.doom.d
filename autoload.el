@@ -892,3 +892,18 @@ Based on `+popup/diagnose'."
   (interactive)
   (dtm-read-display-buffer "Select popup" #'dtm-popup-buffer-p))
 
+;;; Dirvish
+;;;###autoload
+(defun dtm/dirvish-side (&optional path)
+  "Modified `dirvish-side' that always closes the window if visible."
+  (interactive (list (and current-prefix-arg
+                          (read-directory-name "Open sidetree: "))))
+  (if (not (fboundp 'dirvish-curr))
+      (dirvish-side)                    ;Trigger lazy loading
+    (let ((fullframep (when-let ((dv (dirvish-curr))) (car (dv-layout dv))))
+          (visible (dirvish-side--session-visible-p))
+          (path (or path (dirvish--get-project-root) default-directory)))
+      (cond (fullframep (user-error "Can not create side session here"))
+            (visible (progn (select-window visible)
+                            (dirvish-quit)))
+            (t (dirvish-side--new path))))))
