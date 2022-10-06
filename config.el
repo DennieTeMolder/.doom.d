@@ -322,7 +322,15 @@
 (after! dirvish
   (setq dirvish-reuse-session nil
         dirvish-attributes
-        '(vc-state subtree-state all-the-icons file-time file-size))
+        '(vc-state subtree-state all-the-icons file-time file-size)
+        dirvish-quick-access-entries
+        '(("d" "~/Downloads/" "Downloads")
+          ("e" "/home/pyrron/.emacs.d/.local/cache/" "Emacs user directory")
+          ("h" "~/" "Home")
+          ("m" "/mnt/" "Mount")
+          ("n" "~/Nextcloud/" "Nextcloud")
+          ("p" "~/Nextcloud/PhD/Projects/" "Projects")
+          ("r" "/" "Root")))
 
   (map! :map dirvish-mode-map
         :n "l" #'dired-find-file
