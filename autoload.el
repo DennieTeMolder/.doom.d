@@ -278,8 +278,7 @@ https://github.com/purcell/ibuffer-projectile"
 ;;;###autoload
 (defun dtm-org-mode-setup-h ()
   "Personal org-mode customisation's after mode startup"
-  (setq-local line-spacing dtm-org-line-spacing
-              auto-hscroll-mode nil)
+  (setq-local line-spacing dtm-org-line-spacing)
   (electric-quote-local-mode +1)
   (visual-line-mode -1)
   (auto-fill-mode +1)

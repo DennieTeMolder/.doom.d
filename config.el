@@ -191,6 +191,9 @@
 ;; This prevents stepping into the left side window from the bottom side window
 (advice-remove 'windmove-up #'+popup--ignore-window-parameters-a)
 
+;; Do not scroll horizontally if auto-fill-mode is active
+(add-hook! 'auto-fill-mode-hook (setq-local auto-hscroll-mode (not auto-fill-function)))
+
 ;; Search options for "SPC s o" (`+lookup/online')
 (setq +lookup-provider-url-alist
       '(("DuckDuckGo"        +lookup--online-backend-duckduckgo "https://duckduckgo.com/?q=%s")
