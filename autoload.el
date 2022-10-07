@@ -282,6 +282,7 @@ https://github.com/purcell/ibuffer-projectile"
   (electric-quote-local-mode +1)
   (visual-line-mode -1)
   (auto-fill-mode +1)
+  (+org-pretty-mode +1)
   (add-hook! 'evil-insert-state-exit-hook
              :local #'dtm-insert-exit-fill-paragraph))
 
