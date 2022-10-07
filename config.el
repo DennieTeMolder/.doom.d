@@ -324,8 +324,12 @@
         dirvish-attributes
         '(vc-state subtree-state all-the-icons file-time file-size)
         dirvish-quick-access-entries
-        '(("d" "~/Downloads/" "Downloads")
-          ("e" "/home/pyrron/.emacs.d/.local/cache/" "Emacs user directory")
+        `(("D" "~/Downloads/" "Downloads")
+          ("dc" ,doom-core-dir "Doom Core")
+          ("dl" ,doom-local-dir "Doom Local")
+          ("dm" ,doom-modules-dir "Doom Modules")
+          ("dr" ,(concat straight-base-dir "straight/repos/") "Doom Repos")
+          ("du" ,doom-user-dir "Doom User")
           ("h" "~/" "Home")
           ("m" "/mnt/" "Mount")
           ("n" "~/Nextcloud/" "Nextcloud")
