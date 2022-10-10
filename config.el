@@ -339,7 +339,9 @@
           ("p" "~/Nextcloud/PhD/Projects/" "Projects")
           ("r" "/" "Root")))
 
+  ;; Bind `revert-buffer' for reloading directory contents
   (map! :map dirvish-mode-map
+        :n "C-r" #'revert-buffer
         :n "l" #'dired-find-file
         :n "h" #'dired-up-directory
         :n "L" #'dirvish-history-go-forward
