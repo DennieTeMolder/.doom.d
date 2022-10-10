@@ -898,7 +898,7 @@ Based on `+popup/diagnose'."
   "Modified `dirvish-side' that always closes the window if visible."
   (interactive (list (and current-prefix-arg
                           (read-directory-name "Open sidetree: "))))
-  (if (not (fboundp 'dirvish-curr))
+  (if (not (fboundp 'dirvish-side--session-visible-p))
       (dirvish-side)                    ;Trigger lazy loading
     (let ((fullframep (when-let ((dv (dirvish-curr))) (car (dv-layout dv))))
           (visible (dirvish-side--session-visible-p))
