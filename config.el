@@ -311,7 +311,8 @@
   (advice-remove 'balance-windows #'+popup-save-a))
 
 (after! dired
-  (setq dired-listing-switches "-l --human-readable --group-directories-first")
+  (setq dired-listing-switches "-l --human-readable --group-directories-first"
+        dired-hide-details-hide-symlink-targets nil)
 
   ;; HACK manually disable diff-hl hook until dirvish module is merged upstream
   (remove-hook 'dired-mode-hook #'diff-hl-dired-mode)
@@ -326,6 +327,8 @@
   (setq dirvish-reuse-session nil
         dirvish-attributes
         '(vc-state subtree-state all-the-icons file-time file-size)
+        dirvish-mode-line-format
+        '(:left (sort file-time) :right (omit yank index))
         dirvish-quick-access-entries
         `(("D" "~/Downloads/" "Downloads")
           ("dc" ,doom-core-dir "Doom Core")
