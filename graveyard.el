@@ -30,3 +30,10 @@ block, send the entire code block."
          (call-interactively #'dtm/python-shell-send-block-and-step))
         (t
          (call-interactively #'dtm/python-shell-send-statment-and-step))))
+
+;;; Window management
+;;;###autoload
+(defun dtm/window-half-height ()
+  "Halves height of active window"
+  (interactive)
+  (enlarge-window (/ (window-height) -2)))

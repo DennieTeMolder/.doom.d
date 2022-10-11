@@ -39,9 +39,7 @@
 
       ;; Window management
       (:prefix "w"
-       :desc "Adjust windows hydra"  "a" #'+hydra/window-nav/body
-       :desc "Enlarge double height" "e" #'dtm/window-double-height
-       :desc "Halve height"          "E" #'dtm/window-half-height)
+       :desc "Adjust windows hydra"  "a" #'+hydra/window-nav/body)
 
       ;; Popups
       "/" nil ; Unbind `+default/search-project' (also bound to "SPC s p")
@@ -49,8 +47,7 @@
        :desc "Show/hide popup" "/" #'+popup/toggle
        :desc "Buffer to popup" "b" #'+popup/buffer
        :desc "Kill popup"      "k" #'dtm/popup-kill
-       :desc "Popup to buffer" "r" #'dtm/popup-raise
-       :desc "Restore popup"   "u" #'+popup/restore)
+       :desc "Popup to buffer" "r" #'dtm/popup-raise)
 
       ;; Open
       (:prefix "o"

@@ -119,19 +119,6 @@ Required because doctor sets `noninteractive' to nil."
                "\n"))
      'face 'doom-dashboard-banner)))
 
-;;; Window management
-;;;###autoload
-(defun dtm/window-double-height ()
-  "Double height of active window"
-  (interactive)
-  (enlarge-window (window-height)))
-
-;;;###autoload
-(defun dtm/window-half-height ()
-  "Halves height of active window"
-  (interactive)
-  (enlarge-window (/ (window-height) -2)))
-
 ;;; Projectile
 ;;;###autoload
 (defun dtm-project-ignored-p (project-root)
