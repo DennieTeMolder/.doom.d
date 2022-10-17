@@ -342,6 +342,7 @@ The additional markup used in doom-style org documents causes rendering issues."
         (display-line-numbers-mode -1)
         (hl-line-mode -1)
         (mixed-pitch-mode +1)
+        (+org-pretty-mode +1)
         (org-appear-mode -1)
         (add-hook! 'pdf-view-mode-hook :append #'org-tree-slide-mode))
     (progn

@@ -490,7 +490,7 @@ Also used by `org-modern-mode' to calculate heights.")
     (org-indent-mode +1)))
 
 (after! org-tree-slide
-  (setq +org-present-text-scale 6)
+  (setq +org-present-text-scale 7)
 
   ;; Make presentations even prettier
   (add-hook! 'org-tree-slide-mode-hook :append #'dtm-org-tree-slide-setup-h)
