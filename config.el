@@ -419,7 +419,7 @@ Also used by `org-modern-mode' to calculate heights.")
         org-agenda-time-grid '((daily today require-timed)
                                (759 1159 1300 1700)
                                " ┄┄┄┄┄ " "┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄")
-        org-agenda-current-time-string "⭠ now ─────────")
+        org-agenda-current-time-string "<- NOW ────────")
 
   ;; Make headings bold and larger
   (custom-set-faces!
