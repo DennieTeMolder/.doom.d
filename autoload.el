@@ -662,8 +662,7 @@ Unless SILENT is t the user is notified when ENV-NAME is already active."
   (interactive)
   (call-interactively #'interaction-log-mode)
   (if interaction-log-mode
-      (progn
-        (sleep-for .1)
+      (when (y-or-n-p "Show interaction-log buffer?")
         (display-buffer ilog-buffer-name))
     (when-let ((window (get-buffer-window ilog-buffer-name)))
       (delete-window window))
