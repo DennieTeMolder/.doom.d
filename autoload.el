@@ -181,6 +181,11 @@ Also checks if FILE exists."
   (dtm-workspace-switch-maybe "*roam*"))
 
 ;;;###autoload
+(defun dtm-citar-goto-workspace (&rest _)
+  "Open/create the dedicated citar bibliography workspace"
+  (dtm-workspace-switch-maybe "*bib*"))
+
+;;;###autoload
 (defun dtm/buffer-move-to-workspace (name &optional alist)
   "Move `current-buffer' to workspace with NAME and switch"
   (interactive (list

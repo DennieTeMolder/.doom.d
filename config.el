@@ -573,7 +573,9 @@ Also used by `org-modern-mode' to calculate heights.")
   ;; citar note template
   (push '(note . "${=key=}: ${title}\n\n* Notes") citar-templates)
 
-  ;; Open notes in roam workspace
+  ;; Dedicated workspaces
+  (advice-add 'citar-open-files :before #'dtm-citar-goto-workspace)
+  (advice-add 'citar--open-entry :before #'dtm-citar-goto-workspace)
   (advice-add 'citar-open-notes :before #'dtm-org-roam-goto-workspace)
 
   ;; Disable citation delete binding
@@ -602,9 +604,6 @@ Also used by `org-modern-mode' to calculate heights.")
   (setq pdf-view-resize-factor 1.1)
 
   (add-to-list 'evil-snipe-disabled-modes 'pdf-view-mode)
-
-  ;; Open pdf files in a dedicated workspace
-  (add-hook! 'pdf-view-mode-hook (dtm/buffer-move-to-workspace "*pdf*"))
 
   (map! (:map pdf-view-mode-map
          :gn "C-e" #'pdf-view-scroll-down-or-previous-page
