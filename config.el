@@ -312,7 +312,8 @@
 
 (after! dired
   (setq dired-listing-switches "-l --human-readable --group-directories-first"
-        dired-hide-details-hide-symlink-targets nil)
+        dired-hide-details-hide-symlink-targets nil
+        dired-dwim-target nil)
 
   ;; HACK manually disable diff-hl hook until dirvish module is merged upstream
   (remove-hook 'dired-mode-hook #'diff-hl-dired-mode)
