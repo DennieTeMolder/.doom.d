@@ -458,17 +458,17 @@ Calls `hlissner-org-roam-update-slug-h' on `after-save-hook'."
             'append 'local))
 
 ;;; Org-roam-dailies
-(defun dtm-org-roam-dailes-calendar--file-to-absolute (file)
+(defun dtm-org-roam-dailies-file-to-absolute (file)
   "Convert file name (with gregorian date format) to absolute time"
   (calendar-absolute-from-gregorian (org-roam-dailies-calendar--file-to-date file)))
 
-(defun dtm-org-roam-dailes-active-files ()
+(defun dtm-org-roam-dailies-active-files ()
   "Return list of daily files corresponding to TODAY or later"
   (require 'org-roam-dailies)
   (let ((files (org-roam-dailies--list-files))
         (today (calendar-absolute-from-gregorian (calendar-current-date))))
     (while (and files
-                (< (dtm-org-roam-dailes-calendar--file-to-absolute (car files))
+                (< (dtm-org-roam-dailies-file-to-absolute (car files))
                    today))
       (pop files))
     files))
@@ -477,7 +477,7 @@ Calls `hlissner-org-roam-update-slug-h' on `after-save-hook'."
 (defun dtm-org-roam-dailies-sync-agenda (&rest _)
   "Scan the dailies-directory and add current and future dates to agenda."
   (mapc (lambda (x) (cl-pushnew x org-agenda-files :test #'string=))
-        (dtm-org-roam-dailes-active-files)))
+        (dtm-org-roam-dailies-active-files)))
 
 ;;;###autoload
 (defun dtm/org-roam-dailies-schedule-time ()
