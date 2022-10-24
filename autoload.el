@@ -458,6 +458,13 @@ Calls `hlissner-org-roam-update-slug-h' on `after-save-hook'."
             'append 'local))
 
 ;;; Org-roam-dailies
+(defun dtm-org-roam-dailies-goto-date-a ()
+  "Ensure function is executed from a roam buffer to activate keybindings.
+Intended as :before advice for `org-roam-dailies-goto-date'"
+  (dtm-org-roam-goto-workspace)
+  (unless (org-roam-buffer-p)
+    (dtm/org-roam-open-index)))
+
 (defun dtm-org-roam-dailies-file-to-absolute (file)
   "Convert file name (with gregorian date format) to absolute time"
   (calendar-absolute-from-gregorian (org-roam-dailies-calendar--file-to-date file)))

@@ -551,6 +551,9 @@ Also used by `org-modern-mode' to calculate heights.")
   ;; Sync org-agenda with org-roam dailies
   (advice-add 'org-agenda :before #'dtm-org-roam-dailies-sync-agenda)
 
+  ;; Ensure keybindings are loaded for dailies-calendar
+  (advice-add 'org-roam-dailies-goto-date :before #'dtm-org-roam-dailies-goto-date-a)
+
   ;; Roam templates
   (setq org-roam-capture-templates
         '(("d" "default" plain "%?"
