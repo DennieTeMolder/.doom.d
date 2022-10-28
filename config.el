@@ -348,6 +348,7 @@
         :n "C-r" #'revert-buffer
         :n "l" #'dired-find-file
         :n "h" #'dired-up-directory
+        :n "c" #'dired-create-empty-file
         :n "L" #'dirvish-history-go-forward
         :n "H" #'dirvish-history-go-backward
         :n "z" #'dirvish-ls-switches-menu))
