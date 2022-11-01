@@ -513,7 +513,8 @@ Also used by `org-modern-mode' to calculate heights.")
 
 ;; Org-pomodoro settings
 (after! org-pomodoro
-  (setq org-pomodoro-manual-break t
+  (setq org-pomodoro-format "%s"
+        org-pomodoro-manual-break t
         org-pomodoro-keep-killed-pomodoro-time t))
 
 ;; Org-roam init settings
