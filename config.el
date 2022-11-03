@@ -908,6 +908,8 @@ Also used by `org-modern-mode' to calculate heights.")
     (advice-add symbol :around #'doom-set-jump-maybe-a)))
 
 (use-package keycast
+  :hook (after-init . keycast-mode)
+  :commands keycast-mode
   :config
   (defvar keycast-mode-string '("" keycast-mode-line " ")
     "Element to insert into `global-mode-string' when `keycast-mode' is active")
@@ -924,7 +926,10 @@ Also used by `org-modern-mode' to calculate heights.")
       (setq global-mode-string (delete keycast-mode-string global-mode-string))
       (remove-hook 'pre-command-hook 'keycast--update)))
 
-  ;; Enable mode
-  (keycast-mode))
+  (custom-set-faces!
+    '(keycast-command :inherit doom-modeline-debug
+      :height 0.9)
+    '(keycast-key :inherit custom-modified
+      :weight bold)))
 
 (load! "+keybindings")
