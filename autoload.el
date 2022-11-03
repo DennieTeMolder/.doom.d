@@ -272,6 +272,7 @@ https://github.com/purcell/ibuffer-projectile"
   "Personal org-mode customisation's after mode startup"
   (setq-local line-spacing dtm-org-line-spacing)
   (electric-quote-local-mode +1)
+  (highlight-indent-guides-mode -1)
   (visual-line-mode -1)
   (auto-fill-mode +1)
   (+org-pretty-mode +1)
