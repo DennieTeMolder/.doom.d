@@ -667,19 +667,6 @@ Unless SILENT is t the user is notified when ENV-NAME is already active."
       (atomic-chrome-start-server)
       (message "Started GhostText Server"))))
 
-;;; Interaction-log-mode
-;;;###autoload
-(defun dtm/interaction-log-mode-w-buffer ()
-  "Toggles `interaction-log-mode' and shows/hides its buffer"
-  (interactive)
-  (call-interactively #'interaction-log-mode)
-  (if interaction-log-mode
-      (when (y-or-n-p "Show interaction-log buffer?")
-        (display-buffer ilog-buffer-name))
-    (when-let ((window (get-buffer-window ilog-buffer-name)))
-      (delete-window window))
-    (kill-buffer ilog-buffer-name)))
-
 ;;; Good-scroll-mode
 ;;;###autoload
 (defun dtm/good-scroll-down-half ()

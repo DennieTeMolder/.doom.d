@@ -856,10 +856,6 @@ Also used by `org-modern-mode' to calculate heights.")
 (add-hook! 'so-long-mode-hook #'dtm-csv-mode-maybe-h)
 
 ;;;; Misc Packages
-;; M-x interaction-log-mode shows all executed command for debugging/showcasing
-(use-package! interaction-log
-  :commands interaction-log-mode)
-
 ;; Smooth scrolling
 (use-package! good-scroll
   :commands good-scroll-mode
@@ -910,5 +906,25 @@ Also used by `org-modern-mode' to calculate heights.")
                     indent-tools-goto-child
                     indent-tools-goto-end-of-tree))
     (advice-add symbol :around #'doom-set-jump-maybe-a)))
+
+(use-package keycast
+  :config
+  (defvar keycast-mode-string '("" keycast-mode-line " ")
+    "Element to insert into `global-mode-string' when `keycast-mode' is active")
+
+  ;; Redefine keycast-mode to be compatible with doom-modeline
+  (define-minor-mode keycast-mode
+    "Show current command and its key binding in the doom-modeline."
+    :group 'mode-line
+    :global t
+    (if keycast-mode
+        (progn
+          (add-to-list 'global-mode-string keycast-mode-string)
+          (add-hook 'pre-command-hook 'keycast--update t))
+      (setq global-mode-string (delete keycast-mode-string global-mode-string))
+      (remove-hook 'pre-command-hook 'keycast--update)))
+
+  ;; Enable mode
+  (keycast-mode))
 
 (load! "+keybindings")

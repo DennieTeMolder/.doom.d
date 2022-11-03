@@ -58,6 +58,8 @@
       (:prefix "t"
        :desc "Auto linebreaks"     "a" #'auto-fill-mode
        :desc "GhostText server"    "G" #'dtm/atomic-chrome-toggle-server
+       :desc "Keycast mode"        "k" #'keycast-mode
+       :desc "Keycast log mode"    "K" #'keycast-log-mode
        :desc "Log interactions"    "L" #'dtm/interaction-log-mode-w-buffer
        :desc "Margin (left)"       "M" #'dtm/window-toggle-left-margin
        :desc "Smooth scrolling"    "S" #'good-scroll-mode

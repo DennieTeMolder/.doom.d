@@ -74,7 +74,6 @@
 
 ;;; Custom packages
 (package! org-modern)
-(package! interaction-log)
 (package! good-scroll)
 (package! atomic-chrome)
 (package! vundo)
@@ -82,6 +81,7 @@
 (package! dired-du)
 (package! xr)
 (package! info-colors)
+(package! keycast)
 (package! org-appear
   :recipe (:host github :repo "awth13/org-appear"))
 (package! indent-tools
