@@ -346,11 +346,12 @@
   ;; Bind `revert-buffer' for reloading directory contents
   (map! :map dirvish-mode-map
         :n "C-r" #'revert-buffer
-        :n "l" #'dired-find-file
-        :n "h" #'dired-up-directory
         :n "c" #'dired-create-empty-file
-        :n "L" #'dirvish-history-go-forward
+        :n "h" #'dired-up-directory
         :n "H" #'dirvish-history-go-backward
+        :n "l" #'dired-find-file
+        :n "L" #'dirvish-history-go-forward
+        :n "o" #'dirvish-quick-access
         :n "z" #'dirvish-ls-switches-menu))
 
 (after! dirvish-side
