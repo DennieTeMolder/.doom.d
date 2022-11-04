@@ -376,10 +376,15 @@
   (setq avy-all-windows t
         avy-all-windows-alt nil))
 
+(after! eshell
+  ;; Fuzzy match parent directories (a.k.a. "bd")
+  ;; The "z" command does the same but for dir history
+  (add-to-list '+eshell-aliases '("up" "eshell-up $1")))
+
 ;;;; Doom Core Package Extensions
 ;; Add colours to info pages to make them more readable
 (use-package! info-colors
-    :hook (Info-selection . info-colors-fontify-node))
+  :hook (Info-selection . info-colors-fontify-node))
 
 ;; Enable vertico mouse extension (included with vertico)
 (use-package! vertico-mouse
