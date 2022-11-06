@@ -346,6 +346,9 @@
           ("p" "~/Nextcloud/PhD/Projects/" "Projects")
           ("r" "/" "Root")))
 
+  ;; Make dirvish recognise custom project types
+  (advice-add 'dirvish--get-project-root :override #'projectile-project-root)
+
   ;; Bind `revert-buffer' for reloading directory contents
   (map! :map dirvish-mode-map
         :n "C-r" #'revert-buffer
