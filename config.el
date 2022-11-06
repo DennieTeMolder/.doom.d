@@ -361,9 +361,7 @@
         :n "z" #'dirvish-ls-switches-menu))
 
 (after! dirvish-side
-  ;; Make side window inaccessible without `+popup--ignore-window-parameters-a'
-  (add-to-list 'dirvish-side-window-parameters
-               '(no-other-window . t)))
+  (dirvish-side-follow-mode +1))
 
 (after! undo-fu
   ;; Raise undo limit do 10 Mb (doom default: 40kb)
