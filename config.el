@@ -130,15 +130,6 @@
 (when FRAME-MAXIMIZE
   (add-to-list 'default-frame-alist '(fullscreen . maximized)))
 
-;; Display battery status on laptops
-(use-package! battery
-  :if IS-LAPTOP
-  :config
-  (display-battery-mode +1))
-
-;; Only display encoding in modeline when it's not UTF-8
-(add-hook! 'after-change-major-mode-hook #'dtm-doom-modeline-conditional-buffer-encoding)
-
 ;; Simplify window title and give a visual indication if file is edited
 (setq frame-title-format
     '(""
@@ -149,6 +140,18 @@
          "%b"))
       (:eval
        (if (buffer-modified-p) " +" ""))))
+
+(after! doom-modeline
+  (setq doom-modeline-buffer-file-name-style 'truncate-except-project)
+
+  ;; Only display encoding in modeline when it's not UTF-8
+  (add-hook! 'after-change-major-mode-hook #'dtm-doom-modeline-conditional-buffer-encoding))
+
+;; Display battery status on laptops
+(use-package! battery
+  :if IS-LAPTOP
+  :config
+  (display-battery-mode +1))
 
 ;; Replace the default doom splash screen with a more subtle one
 (setq +doom-dashboard-ascii-banner-fn #'dtm-doom-ascii-banner-fn)
