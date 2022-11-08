@@ -790,6 +790,9 @@ Also used by `org-modern-mode' to calculate heights.")
   (map! :map ess-r-mode-map
         :desc "View R object" :localleader "o" #'ess-view-data-print))
 
+(use-package! ess-r-insert-obj
+  :after ESS)
+
 (after! python
   ;; Add generic imenu expression and ensure python doesn't ignore them
   (add-hook! 'python-mode-hook

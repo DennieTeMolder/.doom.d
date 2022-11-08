@@ -66,6 +66,7 @@
 ;; Pending in: https://github.com/doomemacs/doomemacs/pull/6455
 (package! ess-R-data-view :disable t)
 (package! ess-view-data)
+(package! ess-r-insert-obj)
 
 ;; Replace anaconda-mode with elpy
 (package! anaconda-mode :disable t)
