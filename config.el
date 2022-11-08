@@ -662,7 +662,6 @@ Also used by `org-modern-mode' to calculate heights.")
 ;; General interactive programming buffer settings
 (after! comint
   (setq ansi-color-for-comint-mode 'filter
-        comint-prompt-read-only t
         comint-scroll-to-bottom-on-input t
         comint-scroll-to-bottom-on-output t
         comint-move-point-for-output t)
