@@ -380,11 +380,6 @@
   (setq avy-all-windows t
         avy-all-windows-alt nil))
 
-(after! eshell
-  ;; Fuzzy match parent directories (a.k.a. "bd")
-  ;; The "z" command does the same but for dir history
-  (add-to-list '+eshell-aliases '("up" "eshell-up $1")))
-
 ;;;; Doom Core Package Extensions
 ;; Add colours to info pages to make them more readable
 (use-package! info-colors
@@ -402,6 +397,19 @@
 ;; Reverse `rx' operation, for turning regex into lisp
 (use-package! xr
   :commands xr)
+
+;; Undo history tree
+(use-package! vundo
+  :commands vundo
+  :config
+  (setq vundo-glyph-alist vundo-unicode-symbols)
+  (map! :map vundo-mode-map
+        "h" #'vundo-backward
+        "j" #'vundo-next
+        "k" #'vundo-previous
+        "l" #'vundo-forward
+        "H" #'vundo-stem-root
+        "L" #'vundo-stem-end))
 
 ;;;; Writing/Organisation Tools
 ;; Spell checking
@@ -695,6 +703,11 @@ Also used by `org-modern-mode' to calculate heights.")
   ;; Rebind the key previously on "i"
   (map! :map lispy-mode-map "TAB" #'special-lispy-tab))
 
+(after! eshell
+  ;; Fuzzy match parent directories (a.k.a. "bd")
+  ;; The "z" command does the same but for dir history
+  (add-to-list '+eshell-aliases '("up" "eshell-up $1")))
+
 (after! vterm
   ;; Actually clear buffer upon C-l
   (setq vterm-clear-scrollback-when-clearing t)
@@ -723,8 +736,8 @@ Also used by `org-modern-mode' to calculate heights.")
   (setq ess-ask-for-ess-directory nil
         ess-style 'RStudio)
 
-  ;; Add company-R-library backend, currently part of this pending pull request:
-  ;; https://github.com/doomemacs/doomemacs/pull/6455
+  ;; Add company-R-library backend
+  ;; REVIEW https://github.com/doomemacs/doomemacs/pull/6455
   (set-company-backend! 'ess-r-mode
     '(company-R-args company-R-objects company-R-library company-dabbrev-code :separate))
 
@@ -757,18 +770,22 @@ Also used by `org-modern-mode' to calculate heights.")
          :nv [C-return] #'ess-eval-region-or-line-and-step
          (:localleader
           :desc "Eval symbol at point" "." #'dtm/ess-eval-symbol-at-point
-          :desc "Source current file" "s" #'ess-load-file
-          "S" #'ess-switch-process))
+          :desc "Source current file"  "s" #'ess-load-file
+                                       "S" #'ess-switch-process))
+
+        (:map inferior-ess-mode-map
+         :localleader
+         "TAB" #'ess-switch-to-inferior-or-script-buffer
+         "x r" #'inferior-ess-reload)
 
         (:map ess-debug-minor-mode-map
          "M-S" #'dtm/ess-debug-command-step
          "M-E" #'dtm/ess-eval-symbol-at-point
          "M-A" #'dtm/lagging-point-goto-actual)
 
-        (:map inferior-ess-mode-map
-         :localleader
-         "TAB" #'ess-switch-to-inferior-or-script-buffer
-         "x r" #'inferior-ess-reload)
+        ;; REVIEW https://github.com/doomemacs/doomemacs/pull/6455
+        (:map ess-roxy-mode-map
+         :i "RET" #'ess-indent-new-comment-line)
 
         (:map ess-r-mode-map
          :localleader
@@ -896,18 +913,6 @@ Also used by `org-modern-mode' to calculate heights.")
         '(("github\\.com" . gfm-mode)
           ("overleaf\\.com" . latex-mode)
           ("azuredatabricks\\.net" . python-mode))))
-
-(use-package! vundo
-  :commands vundo
-  :config
-  (setq vundo-glyph-alist vundo-unicode-symbols)
-  (map! :map vundo-mode-map
-        "h" #'vundo-backward
-        "j" #'vundo-next
-        "k" #'vundo-previous
-        "l" #'vundo-forward
-        "H" #'vundo-stem-root
-        "L" #'vundo-stem-end))
 
 (use-package! indent-tools
   :commands indent-tools-hydra/body

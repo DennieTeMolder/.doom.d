@@ -59,11 +59,11 @@
 (package! ibuffer-projectile :disable t)
 
 ;; Byte compiling tablist creates an error in `pdf-annot-list-annotations'
-;; https://github.com/vedang/pdf-tools/issues/89
+;; REVIEW https://github.com/vedang/pdf-tools/issues/89
 (package! tablist :recipe (:build (:not compile)))
 
 ;; Replace the stale ess-R-data-view with the newer ess-view-data
-;; Pending in: https://github.com/doomemacs/doomemacs/pull/6455
+;; REVIEW https://github.com/doomemacs/doomemacs/pull/6455
 (package! ess-R-data-view :disable t)
 (package! ess-view-data)
 (package! ess-r-insert-obj)
