@@ -4,12 +4,12 @@
 ;; Place your private configuration here! Remember, you do not need to run 'doom
 ;; sync' after modifying this file!
 
-;;;; Flags
+;;* Flags
 ;; Determine if running on a laptop based on env variable (must be set by user)
 (defvar IS-LAPTOP (string= "yes" (getenv "IS_LAPTOP")))
 (defvar FRAME-MAXIMIZE (string= "yes" (getenv "MAXIMIZE_EMACS")))
 
-;;;; Doom preamble
+;;* Doom preamble
 ;; Some functionality uses this to identify you, e.g. GPG configuration, email
 ;; clients, file templates and snippets. It is optional.
 (setq user-full-name nil
@@ -107,7 +107,7 @@
 ;; they are implemented.
 
 
-;;;; Basic Settings
+;;* Basic Settings
 ;; Quit without confirmation
 (setq confirm-kill-emacs nil)
 
@@ -125,7 +125,7 @@
 ;; Increase horizontal scroll (shift + mwheel) sensitivity
 (setq mouse-wheel-scroll-amount-horizontal 12)
 
-;;;; UI Settings
+;;* UI Settings
 ;; Maximise emacs if specified in shell ENV
 (when FRAME-MAXIMIZE
   (add-to-list 'default-frame-alist '(fullscreen . maximized)))
@@ -184,7 +184,7 @@
          (all-the-icons-octicon "book" :face 'doom-dashboard-menu-title)
          :action doom/help)))
 
-;;;; General Doom Settings
+;;* General Doom Settings
 ;; Default major mode for scratch buffer
 (setq doom-scratch-initial-major-mode 'lisp-interaction-mode)
 
@@ -218,7 +218,7 @@
   ;; Automatically load changes (should mostly be in log files)
   (add-hook! 'text-mode-hook (auto-revert-mode +1)))
 
-;;;; Doom Core Package Settings
+;;* Doom Core Package Settings
 (after! evil
   ;; Indicate `evil-repeat' to ignore certain commands because they freeze emacs
   (dtm-evil-repeat-ignore '+workspace/switch-left '+workspace/switch-right)
@@ -387,7 +387,7 @@
           :internal-border-width 1
           :internal-border-color "#51afef")))
 
-;;;; Doom Core Package Extensions
+;;* Doom Core Package Extensions
 ;; Add colours to info pages to make them more readable
 (use-package! info-colors
   :hook (Info-selection . info-colors-fontify-node))
@@ -418,7 +418,7 @@
         "H" #'vundo-stem-root
         "L" #'vundo-stem-end))
 
-;;;; Writing/Organisation Tools
+;;* Writing/Organisation Tools
 ;; Spell checking
 (after! ispell
   ;; Global and personal ispell library
@@ -673,7 +673,7 @@ Also used by `org-modern-mode' to calculate heights.")
   ;; Disable proselint in Rmarkdown files
   (add-hook! 'markdown-mode-hook #'dtm-flycheck-disable-proselint-rmd-h))
 
-;;;; Programming Languages
+;;* Programming Languages
 ;; General interactive programming buffer settings
 (after! comint
   (setq ansi-color-for-comint-mode 'filter
@@ -897,7 +897,7 @@ Also used by `org-modern-mode' to calculate heights.")
 ;; Enable csv/tsv mode on files with short lines
 (add-hook! 'so-long-mode-hook #'dtm-csv-mode-maybe-h)
 
-;;;; Misc Packages
+;;* Misc Packages
 ;; Smooth scrolling
 (use-package! good-scroll
   :commands good-scroll-mode

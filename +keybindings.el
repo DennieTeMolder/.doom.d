@@ -1,6 +1,6 @@
 ;;; $DOOMDIR/+keybindings.el -*- lexical-binding: t; -*-
 
-;;; Global
+;;* Global
 (map! "C-s" #'isearch-forward-word
       "C-l" #'+nav-flash/blink-cursor
 
@@ -18,7 +18,7 @@
        :n [mouse-8] #'Info-history-back
        :n [mouse-9] #'Info-history-forward))
 
-;;; <leader>
+;;* <leader>
 (map! :leader
       ;; Spacemacs style M-x
       ;; Old SPC SPC binding (projectile find file) is available under "SPC p f"
@@ -70,7 +70,7 @@
        :desc "Open index"        "o"   #'dtm/org-roam-open-index
        :desc "Schedule headline" "d s" #'dtm/org-roam-dailies-schedule-time))
 
-;;; Custom modules
+;;* Custom modules
 (map! :leader
       ;; :when (modulep! :ui zen-light)
        :desc "Zen writing mode"     "t z" #'visual-fill-column-mode

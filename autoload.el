@@ -1,6 +1,6 @@
 ;;; autoloads.el -*- lexical-binding: t; -*-
 
-;;; Utility
+;;* Utility
 ;;;###autoload
 (defun dtm-file-local-readable-p (file)
   "Return non-nil if FILE is local and readable."
@@ -29,7 +29,7 @@ Required because doctor sets `noninteractive' to nil."
   "Returns t if point and mark are on the same line"
   (<= (line-beginning-position) (mark) (line-end-position)))
 
-;;; Buffer functions
+;;* Buffer functions
 (defun dtm-buffer-remote-p (&optional buf)
   "Returns t if BUF belongs to a remote directory."
   (let* ((buf (or buf (current-buffer)))
@@ -60,7 +60,7 @@ Required because doctor sets `noninteractive' to nil."
                                nil t predicate)))
     (display-buffer buf)))
 
-;;; Theme recommendations
+;;* Theme recommendations
 (defun dtm--theme-which-inactive (theme1 theme2)
   "Return THEME1 of not currently active, else return THEME2"
   (if (eq theme1 (car custom-enabled-themes)) theme2 theme1))
@@ -92,7 +92,7 @@ Required because doctor sets `noninteractive' to nil."
   (interactive)
   (dtm--load-theme-confirm (dtm-recommend-theme)))
 
-;;; UI
+;;* UI
 ;;;###autoload
 (defun dtm-doom-modeline-conditional-buffer-encoding ()
   "Only display encoding in modeline when it's not UTF-8"
@@ -119,7 +119,7 @@ Required because doctor sets `noninteractive' to nil."
                "\n"))
      'face 'doom-dashboard-banner)))
 
-;;; Projectile
+;;* Projectile
 ;;;###autoload
 (defun dtm-project-ignored-p (project-root)
   "Return non-nil if remote or temporary file or a straight package."
@@ -127,7 +127,7 @@ Required because doctor sets `noninteractive' to nil."
       (file-in-directory-p project-root temporary-file-directory)
       (file-in-directory-p project-root doom-local-dir)))
 
-;;; Workspaces/perspectives
+;;* Workspaces/perspectives
 ;;;###autoload
 (defun dtm/load-session (file)
   "Stripped down `doom/load-session' with proper default value.
@@ -241,7 +241,7 @@ https://github.com/purcell/ibuffer-projectile"
         (pop-to-buffer ibuf)
         (ibuffer-update nil t)))))
 
-;;; Ediff
+;;* Ediff
 ;;;###autoload
 (defun dtm/ediff-this-file ()
   "Ediff file associated with current buffer to file selected in prompt."
@@ -254,7 +254,7 @@ https://github.com/purcell/ibuffer-projectile"
       (user-error "No file associated with current buffer!"))
     (ediff current (read-file-name "Diff current file with:" nil nil t))))
 
-;;; Dired
+;;* Dired
 ;;;###autoload
 (defun dtm/dired-ediff ()
   "Compare file under cursor to file selected in prompt using Ediff"
@@ -266,7 +266,7 @@ https://github.com/purcell/ibuffer-projectile"
                                  default nil t)))
     (ediff (expand-file-name file dir) target)))
 
-;;; Org-mode
+;;* Org-mode
 ;;;###autoload
 (defun dtm-org-mode-setup-h ()
   "Personal org-mode customisation's after mode startup"
@@ -318,7 +318,7 @@ https://github.com/abo-abo/org-download/commit/137c3d2aa083283a3fc853f9ecbbc0303
     (message "Image: %s saved!" (expand-file-name filename-with-timestamp dir))
     (concat dir filename-with-timestamp)))
 
-;;; Org-modern
+;;* Org-modern
 ;;;###autoload
 (defun dtm-org-modern-mode-maybe-h ()
   "Activate `org-modern-mode' unless in `doom-emacs-dir'.
@@ -337,7 +337,7 @@ The additional markup used in doom-style org documents causes rendering issues."
               n
               (org-add-props heading-prefix nil 'face 'org-indent))))))
 
-;;; Org-tree-slide
+;;* Org-tree-slide
 ;;;###autoload
 (defun dtm-org-tree-slide-setup-h ()
   "Additional settings to prettify presentations"
@@ -374,13 +374,13 @@ The additional markup used in doom-style org documents causes rendering issues."
       (flycheck-mode +1)
       (spell-fu-mode +1))))
 
-;;; Org-appear
+;;* Org-appear
 ;;;###autoload
 (defun dtm-org-pretty-use-appear-a ()
   "Activate `org-appear-mode' based on `org-pretty-entities'."
   (org-appear-mode (if org-pretty-entities +1 -1)))
 
-;;; Org-roam
+;;* Org-roam
 ;;;###autoload
 (defun dtm/org-roam-open-index ()
   "Opens the file specified in dtm-org-roam-index-file"
@@ -458,7 +458,7 @@ Calls `hlissner-org-roam-update-slug-h' on `after-save-hook'."
   (add-hook 'after-save-hook #'hlissner-org-roam-update-slug-h
             'append 'local))
 
-;;; Org-roam-dailies
+;;* Org-roam-dailies
 (defun dtm-org-roam-dailies-goto-date-a ()
   "Ensure function is executed from a roam buffer to activate keybindings.
 Intended as :before advice for `org-roam-dailies-goto-date'"
@@ -516,7 +516,7 @@ The DATE is derived from the #+title which must match the Org date format."
       (line-move 1)
       (end-of-line))))
 
-;;; Pdf-tools
+;;* Pdf-tools
 ;;;###autoload
 (defun dtm/pdf-view-fit-half-height ()
   "Fit PDF height to 2x window (minus 0.1 to fix scrolling)"
@@ -531,7 +531,7 @@ The DATE is derived from the #+title which must match the Org date format."
           (- (* 2 scale) 0.1))
     (pdf-view-redisplay t)))
 
-;;; Vterm
+;;* Vterm
 ;;;###autoload
 (defun tiku91-vterm-redraw-cursor (args)
   "Redraw evil cursor with vterm to keep it consistent with the current state.
@@ -539,7 +539,7 @@ Fix by tiku91:
 https://github.com/akermu/emacs-libvterm/issues/313#issuecomment-867525845"
   (evil-refresh-cursor evil-state))
 
-;;; Sh-mode
+;;* Sh-mode
 ;;;###autoload
 (defun thegodzeye/vterm-execute-current-line ()
   "Insert text of current line in vterm and execute.
@@ -570,7 +570,7 @@ https://www.reddit.com/r/emacs/comments/op4fcm/send_command_to_vterm_and_execute
       (switch-to-buffer-other-window cbuf)
       (forward-line))))
 
-;;; ESS/R
+;;* ESS/R
 (defun dtm-ess-insert-string (mystr)
   "Insert string, undo if the same input event is issued twice"
   (let* ((event (event-basic-type last-input-event))
@@ -632,7 +632,7 @@ Equivalent to 's' at the R prompt."
       (ess-send-string (ess-get-process) "0")
     (ess-send-string (ess-get-process) "s")))
 
-;;; Conda
+;;* Conda
 (defun dtm--conda-env-promt-activate (env-name &optional silent)
   "If conda environment with ENV-NAME is not activated, prompt the user to do so.
 Unless SILENT is t the user is notified when ENV-NAME is already active."
@@ -656,7 +656,7 @@ Unless SILENT is t the user is notified when ENV-NAME is already active."
       (unless (string= ienv "base")
         (dtm--conda-env-promt-activate ienv)))))
 
-;;; atomic-chrome
+;;* atomic-chrome
 ;;;###autoload
 (defun dtm/atomic-chrome-toggle-server ()
   (interactive)
@@ -668,7 +668,7 @@ Unless SILENT is t the user is notified when ENV-NAME is already active."
       (atomic-chrome-start-server)
       (message "Started GhostText Server"))))
 
-;;; Good-scroll-mode
+;;* Good-scroll-mode
 ;;;###autoload
 (defun dtm/good-scroll-down-half ()
   (interactive)
@@ -689,7 +689,7 @@ Unless SILENT is t the user is notified when ENV-NAME is already active."
       (advice-remove 'evil-scroll-down #'dtm/good-scroll-down-half)
       (advice-remove 'evil-scroll-up #'dtm/good-scroll-up-half))))
 
-;;; Toggles
+;;* Toggles
 ;;;###autoload
 (defun dtm/toggle-trash-delete ()
   "Toggle between trashing and deleting files"
@@ -712,7 +712,7 @@ Unless SILENT is t the user is notified when ENV-NAME is already active."
   (let ((window (selected-window)))
     (set-window-margins window (unless (car (window-margins window)) dtm-left-margin))))
 
-;;; So-long-mode/csv-mode/tsv-mode
+;;* So-long-mode/csv-mode/tsv-mode
 (defvar dtm-csv-mode-max-length 300
   "Maximum line length (bytes) for csv/tsv-mode to be enabled.")
 
@@ -727,7 +727,7 @@ Unless SILENT is t the user is notified when ENV-NAME is already active."
             ((string= ext "tsv")
              (tsv-mode))))))
 
-;;; Lispy
+;;* Lispy
 ;;;###autoload
 (defun dtm/lispy-step-into (arg)
   "Step into the list at point, moving the point to after ARG atoms.
@@ -755,7 +755,7 @@ If REGION is active, call `lispy-delete' instead."
         (t
          (error "Unexpected"))))
 
-;;; Imenu
+;;* Imenu
 ;;;###autoload
 (defun dtm-elisp-extend-imenu-h ()
   "Add `modulep!' support to `imenu' as the 2nd element.
@@ -784,7 +784,7 @@ This is useful when the index function does not utilise the generic expression s
         (generic-index (imenu--generic-function imenu-generic-expression)))
     (append generic-index original-index)))
 
-;;; With lagging point functions
+;;* With lagging point functions
 (defvar dtm-lagging-point-actual nil
   "Position of cursor when `dtm-with-lagging-point-a' would not have been active.")
 
@@ -811,7 +811,7 @@ Indented to advise functions that move the point."
   "Reset `dtm-lagging-point-actual'."
   (setq-local dtm-lagging-point-actual nil))
 
-;;; Flycheck
+;;* Flycheck
 ;;;###autoload
 (defun dtm-flycheck-disable-proselint-rmd-h ()
   "Disable the 'proselint' flycheck checker when in R markdown.
@@ -819,7 +819,7 @@ Intended for `markdown-mode-hook'."
   (when (string-match-p "\\.Rmd$" buffer-file-name)
     (flycheck-disable-checker 'proselint)))
 
-;;; Python
+;;* Python
 ;;;###autoload
 (defun dtm/elpy-send-current-and-step ()
   "If region is active call `elpy-shell-send-region-or-buffer' else call `elpy-shell-send-statement-and-step'."
@@ -844,7 +844,7 @@ Intended for `markdown-mode-hook'."
     (elpy-shell--with-maybe-echo
      (python-shell-send-string command))))
 
-;;; Doom popup module
+;;* Doom popup module
 ;;;###autoload
 (defun dtm/popup-raise ()
   "Wrapper for `+popup/raise' that will ensure a popup is selected."
@@ -884,7 +884,7 @@ Based on `+popup/diagnose'."
   (interactive)
   (dtm-read-display-buffer "Select popup" #'dtm-popup-buffer-p))
 
-;;; Dirvish
+;;* Dirvish
 ;;;###autoload
 (defun dtm/dirvish-side (&optional path)
   "Modified `dirvish-side' that always closes the window if visible."
