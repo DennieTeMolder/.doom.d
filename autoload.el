@@ -894,20 +894,3 @@ Based on `+popup/diagnose'."
             (visible (progn (select-window visible)
                             (dirvish-quit)))
             (t (dirvish-side--new path))))))
-
-;;; Hydra
-;;;###autoload
-(defun dtm-hydra-curr ()
-  "Return symbol of currently active hydra.
-FIXME Does not work as part of :before hydra/body advice"
-  (intern (substring (symbol-name hydra-curr-body-fn) 0 -5)))
-
-;;;###autoload
-(defun dtm-hydra-hide (&optional name)
-  (let ((name (or name (dtm-hydra-curr))))
-    (hydra-set-property name :verbosity 0)))
-
-;;;###autoload
-(defun dtm-hydra-show (&optional name)
-  (let ((name (or name (dtm-hydra-curr))))
-    (hydra-set-property name :verbosity 1)))
