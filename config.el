@@ -689,7 +689,10 @@ Also used by `org-modern-mode' to calculate heights.")
   (add-hook! 'compilation-mode-hook (visual-line-mode +1)))
 
 (when (modulep! :lang emacs-lisp)
-  (advice-add '+emacs-lisp-extend-imenu-h :after #'dtm-elisp-extend-imenu-a))
+  ;; REVIEW fix the doom custom "Section" imenu entry
+  (advice-add '+emacs-lisp-extend-imenu-h :after #'dtm-fix-elisp-extend-imenu-a)
+
+  (add-hook! 'emacs-lisp-mode-hook :append #'dtm-elisp-extend-imenu-h))
 
 (after! elisp-refs
   (add-hook 'elisp-refs-mode-hook #'hide-mode-line-mode)
