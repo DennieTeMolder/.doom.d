@@ -424,6 +424,21 @@
         "H" #'vundo-stem-root
         "L" #'vundo-stem-end))
 
+;; TODO find alternative for module :editor file-templates
+(use-package! tempel
+  :commands tempel-complete tempel-expand tempel-insert tempel--prefix-bounds
+  :init
+  (setq tempel-path (expand-file-name "snippets.eld" doom-user-dir)
+        tempel-trigger-prefix ">")
+
+  (add-hook! '(prog-mode-hook text-mode-hook) #'dtm-tempel-setup-capf)
+  :config
+  (map! :map tempel-map
+        "<tab>"     #'tempel-next
+        "<backtab>" #'tempel-previous
+        "C-c C-c"   #'tempel-done
+        "C-c C-q"   #'tempel-abort))
+
 ;;* Writing/Organisation Tools
 ;; Spell checking
 (after! ispell
@@ -967,20 +982,5 @@ Also used by `org-modern-mode' to calculate heights.")
       :height 0.9)
     '(keycast-key :inherit custom-modified
       :weight bold)))
-
-;; TODO find alternative for module :editor file-templates
-(use-package! tempel
-  :commands tempel-complete tempel-expand tempel-insert tempel--prefix-bounds
-  :init
-  (setq tempel-path (expand-file-name "snippets.eld" doom-user-dir)
-        tempel-trigger-prefix ">")
-
-  (add-hook! '(prog-mode-hook text-mode-hook) #'dtm-tempel-setup-capf)
-  :config
-  (map! :map tempel-map
-        "<tab>"     #'tempel-next
-        "<backtab>" #'tempel-previous
-        "C-c C-c"   #'tempel-done
-        "C-c C-q"   #'tempel-abort))
 
 (load! "+keybindings")
