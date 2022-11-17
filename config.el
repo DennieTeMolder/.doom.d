@@ -205,7 +205,7 @@
         ("Github"            "https://github.com/search?ref=simplesearch&q=%s")
         ("StackOverflow"     "https://stackoverflow.com/search?q=%s")
         ("Arch wiki"         "https://wiki.archlinux.org/index.php?search=%s")
-        ("Doom Emacs issues" "https://github.com/hlissner/doom-emacs/issues?q=is%%3Aissue+%s")
+        ("Doom Emacs issues" "https://github.com/doomemacs/doomemacs/issues?q=is%%3Aissue+%s")
         ("Ubuntu packages"   "https://packages.ubuntu.com/search?suite=focal&arch=arm64&keywords=%s")
         ("Manjaro packages"  "https://packages.manjaro.org/?query=%s")
         ("AUR"               "https://aur.archlinux.org/packages?O=0&K=%s")
@@ -567,13 +567,13 @@ Also used by `org-modern-mode' to calculate heights.")
   (setq org-roam-preview-function #'dtm-org-element-at-point-get-content)
 
   ;; Automatically update the slug in the filename when #+title: has changed.
-  (add-hook 'org-roam-find-file-hook #'hlissner-org-roam-update-slug-on-save-h)
+  (add-hook 'org-roam-find-file-hook #'dtm-org-roam-update-slug-on-save-h)
 
   ;; Make the backlinks buffer easier to peruse by folding leaves by default.
   (add-hook 'org-roam-buffer-postrender-functions #'magit-section-show-level-2)
 
   ;; Add ID, Type, Tags, and Aliases to top of backlinks buffer.
-  (advice-add #'org-roam-buffer-set-header-line-format :after #'hlissner-org-roam-add-preamble-a)
+  (advice-add #'org-roam-buffer-set-header-line-format :after #'dtm-org-roam-add-preamble-a)
 
   ;; Open all roam buffers in a dedicated workspace
   (dolist (symbol '(org-roam-node-find
@@ -735,11 +735,11 @@ Also used by `org-modern-mode' to calculate heights.")
   (remove-hook! 'vterm-mode-hook #'hide-mode-line-mode)
 
   ;; Fix evil cursor getting out of sync
-  (advice-add 'vterm--redraw :after #'tiku91-vterm-redraw-cursor))
+  (advice-add 'vterm--redraw :after #'dtm-vterm-redraw-cursor))
 
 (after! sh-script
   (map! :map sh-mode-map
-        :nv [C-return] #'thegodzeye/vterm-execute-current-line))
+        :nv [C-return] #'dtm/vterm-execute-current-line))
 
 ;; Proper number highlighting for R mode
 (after! highlight-numbers

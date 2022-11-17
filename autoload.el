@@ -401,8 +401,9 @@ Based on `org-mark-element' and `org-roam-preview-default-function'."
     (string-trim (buffer-substring-no-properties beg end))))
 
 ;;;###autoload
-(defun hlissner-org-roam-add-preamble-a (string)
-  "Add information about current node to top of org roam buffer."
+(defun dtm-org-roam-add-preamble-a (string)
+  "Add information about current node to top of org roam buffer.
+Ref: https://github.com/hlissner/.doom.d"
   (let ((node org-roam-buffer-current-node))
     (insert
      (format "%-10s %s\n" (propertize "ID:" 'face 'bold)
@@ -423,21 +424,22 @@ Based on `org-mark-element' and `org-roam-preview-default-function'."
                "-"))
      ?\n)))
 
-(defvar org-roam-old-slug nil)
+(defvar dtm-org-roam-old-slug nil)
 
 ;;;###autoload
-(defun hlissner-org-roam-update-slug-h ()
+(defun dtm-org-roam-update-slug-h ()
   "Rename the current file if #+title has changed.
-Will ask for confirmation if the new filename already exists."
+Will ask for confirmation if the new filename already exists.
+Ref: https://github.com/hlissner/.doom.d"
   (when (org-roam-buffer-p)
     (when-let* ((node (org-roam-node-at-point))
                 (new-slug (org-roam-node-slug node))
-                (old-slug org-roam-old-slug)
+                (old-slug dtm-org-roam-old-slug)
                 (old-slug-re (concat "/[^/]*\\(" (regexp-quote old-slug) "\\)[^/]*\\.org$"))
                 (file-name (org-roam-node-file node))
                 ((not (equal old-slug new-slug)))
                 ((string-match-p old-slug-re file-name)))
-      (setq org-roam-old-slug new-slug)
+      (setq dtm-org-roam-old-slug new-slug)
       (condition-case _
           (let ((new-file-name
                  (replace-regexp-in-string
@@ -448,15 +450,15 @@ Will ask for confirmation if the new filename already exists."
             (set-visited-file-name new-file-name t t)
             (org-roam-db-autosync--setup-file-h))
         (error
-         (setq org-roam-old-slug old-slug))))))
+         (setq dtm-org-roam-old-slug old-slug))))))
 
 ;;;###autoload
-(defun hlissner-org-roam-update-slug-on-save-h ()
+(defun dtm-org-roam-update-slug-on-save-h ()
   "Set up auto-updating for the current node's filename.
-Calls `hlissner-org-roam-update-slug-h' on `after-save-hook'."
-  (setq-local org-roam-old-slug (ignore-errors (org-roam-node-slug (org-roam-node-at-point))))
-  (add-hook 'after-save-hook #'hlissner-org-roam-update-slug-h
-            'append 'local))
+Calls `dtm-org-roam-update-slug-h' on `after-save-hook'.
+Ref: https://github.com/hlissner/.doom.d"
+  (setq-local dtm-org-roam-old-slug (ignore-errors (org-roam-node-slug (org-roam-node-at-point))))
+  (add-hook 'after-save-hook #'dtm-org-roam-update-slug-h 'append 'local))
 
 ;;* Org-roam-dailies
 (defun dtm-org-roam-dailies-goto-date-a ()
@@ -533,7 +535,7 @@ The DATE is derived from the #+title which must match the Org date format."
 
 ;;* Vterm
 ;;;###autoload
-(defun tiku91-vterm-redraw-cursor (args)
+(defun dtm-vterm-redraw-cursor (args)
   "Redraw evil cursor with vterm to keep it consistent with the current state.
 Fix by tiku91:
 https://github.com/akermu/emacs-libvterm/issues/313#issuecomment-867525845"
@@ -541,9 +543,9 @@ https://github.com/akermu/emacs-libvterm/issues/313#issuecomment-867525845"
 
 ;;* Sh-mode
 ;;;###autoload
-(defun thegodzeye/vterm-execute-current-line ()
+(defun dtm/vterm-execute-current-line ()
   "Insert text of current line in vterm and execute.
-Based off:
+Solution by thegodzeye:
 https://www.reddit.com/r/emacs/comments/op4fcm/send_command_to_vterm_and_execute_it/"
   (interactive)
   (require 'vterm)
