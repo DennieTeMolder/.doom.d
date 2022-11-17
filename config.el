@@ -235,10 +235,15 @@
 (after! company
   ;; Disable company auto pop-up as it can be expensive, use C-SPC to trigger
   (setq company-idle-delay nil
-        company-selection-wrap-around t)
+        company-selection-wrap-around t
+        company-abort-on-unique-match nil)
 
   ;; Enable in elisp mode at is not as expensive
-  (add-hook! 'emacs-lisp-mode-hook (setq-local company-idle-delay 0.2)))
+  (add-hook! 'emacs-lisp-mode-hook (setq-local company-idle-delay 0.2))
+
+  ;; Disable cycling using tab in favour of C-j/k
+  (dolist (key '("TAB" "<tab>" "<backtab>"))
+    (unbind-key key company-active-map)))
 
 (after! projectile
   ;; Projectle sorting by recently opened
