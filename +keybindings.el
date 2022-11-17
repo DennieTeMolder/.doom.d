@@ -4,6 +4,8 @@
 (map! "C-s" #'isearch-forward-word
       "C-l" #'+nav-flash/blink-cursor
 
+      :i "C-x C-s" #'dtm-tempel-complete-always
+
       ;; Make "Z" bindings only kill buffers not the session
       :n "ZQ" #'kill-buffer-and-window
       :n "ZZ" #'doom/save-and-kill-buffer

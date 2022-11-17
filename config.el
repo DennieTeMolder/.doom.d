@@ -968,23 +968,19 @@ Also used by `org-modern-mode' to calculate heights.")
     '(keycast-key :inherit custom-modified
       :weight bold)))
 
+;; TODO find alternative for module :editor file-templates
 (use-package! tempel
-  :commands tempel-complete tempel-expand tempel-insert
+  :commands tempel-complete tempel-expand tempel-insert tempel--prefix-bounds
   :init
-  (setq tempel-path (expand-file-name "templates.eld" doom-user-dir)
-        tempel-trigger-prefix "<")
+  (setq tempel-path (expand-file-name "snippets.eld" doom-user-dir)
+        tempel-trigger-prefix ">")
 
-  (add-hook! '(prog-mode-hook text-mode-hook)
-    (defun tempel-setup-capf ()
-      "Add the Tempel Capf to `completion-at-point-functions'."
-      (setq-local completion-at-point-functions
-                  (cons #'tempel-complete completion-at-point-functions))))
-
-  (map! :i "C-x C-s" #'dtm-temple-complete-no-trigger
-        (:map tempel-map
-         "<tab>"     #'tempel-next
-         "<backtab>" #'tempel-previous
-         "C-c C-c"   #'tempel-done
-         "C-c C-q"   #'tempel-abort)))
+  (add-hook! '(prog-mode-hook text-mode-hook) #'dtm-tempel-setup-capf)
+  :config
+  (map! :map tempel-map
+        "<tab>"     #'tempel-next
+        "<backtab>" #'tempel-previous
+        "C-c C-c"   #'tempel-done
+        "C-c C-q"   #'tempel-abort))
 
 (load! "+keybindings")

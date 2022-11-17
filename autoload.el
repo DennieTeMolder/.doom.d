@@ -901,9 +901,19 @@ Based on `+popup/diagnose'."
 
 ;;* Tempel
 ;;;###autoload
-(defun dtm-temple-complete-no-trigger ()
-  "Trigger `tempel-complete' without `tempel-trigger-prefix'.
+(defun dtm-tempel-setup-capf ()
+  "Add the Tempel Capf to `completion-at-point-functions'.
+Caution: make sure `tempel-trigger-prefix' is not nil."
+  (setq-local completion-at-point-functions
+              (cons #'tempel-complete completion-at-point-functions)))
+
+;;;###autoload
+(defun dtm-tempel-complete-always ()
+  "Trigger `tempel-complete' regardless if `tempel-trigger-prefix' is provided.
 Auto-expand on exact match."
   (interactive)
-  (let ((tempel-trigger-prefix nil))
-    (call-interactively (if (tempel-expand) #'tempel-expand #'tempel-complete))))
+  (let ((tempel-trigger-prefix (when (tempel--prefix-bounds) tempel-trigger-prefix)))
+    (call-interactively #'tempel-complete)
+    ;; FIXME this has the potential to further expand the template
+    (when (tempel-expand)
+      (call-interactively #'tempel-expand))))
