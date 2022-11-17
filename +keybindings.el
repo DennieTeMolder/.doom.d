@@ -37,17 +37,13 @@
        :desc "Show undo history"        "h"   #'vundo
        :desc "Switch orphan buffer"     "o"   #'dtm/switch-orphan-buffer)
 
-      ;; Window management
-      (:prefix "w"
-       :desc "Adjust windows hydra"  "a" #'+hydra/window-nav/body)
+      ;; Insert
+      :desc "snippet" "i s" #'tempel-insert
 
-      ;; Popups
-      "/" nil ; Unbind `+default/search-project' (also bound to "SPC s p")
-      (:prefix ("/" . "popup")
-       :desc "Show/hide popup" "/" #'+popup/toggle
-       :desc "Buffer to popup" "b" #'+popup/buffer
-       :desc "Kill popup"      "k" #'dtm/popup-kill
-       :desc "Popup to buffer" "r" #'dtm/popup-raise)
+      ;; Notes roam
+      (:prefix "n r"
+       :desc "Open index"        "o"   #'dtm/org-roam-open-index
+       :desc "Schedule headline" "d s" #'dtm/org-roam-dailies-schedule-time)
 
       ;; Open
       (:prefix "o"
@@ -65,10 +61,17 @@
        :desc "Smooth scrolling"    "S" #'good-scroll-mode
        :desc "Trash deleted files" "T" #'dtm/toggle-trash-delete)
 
-      ;; Roam
-      (:prefix "n r"
-       :desc "Open index"        "o"   #'dtm/org-roam-open-index
-       :desc "Schedule headline" "d s" #'dtm/org-roam-dailies-schedule-time))
+      ;; Window management
+      (:prefix "w"
+       :desc "Adjust windows hydra"  "a" #'+hydra/window-nav/body)
+
+      ;; Popups
+      "/" nil ; Unbind `+default/search-project' (also bound to "SPC s p")
+      (:prefix ("/" . "popup")
+       :desc "Show/hide popup" "/" #'+popup/toggle
+       :desc "Buffer to popup" "b" #'+popup/buffer
+       :desc "Kill popup"      "k" #'dtm/popup-kill
+       :desc "Popup to buffer" "r" #'dtm/popup-raise))
 
 ;;* Custom modules
 (map! :leader

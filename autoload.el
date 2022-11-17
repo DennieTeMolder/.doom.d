@@ -898,3 +898,12 @@ Based on `+popup/diagnose'."
             (visible (progn (select-window visible)
                             (dirvish-quit)))
             (t (dirvish-side--new path))))))
+
+;;* Tempel
+;;;###autoload
+(defun dtm-temple-complete-no-trigger ()
+  "Trigger `tempel-complete' without `tempel-trigger-prefix'.
+Auto-expand on exact match."
+  (interactive)
+  (let ((tempel-trigger-prefix nil))
+    (call-interactively (if (tempel-expand) #'tempel-expand #'tempel-complete))))

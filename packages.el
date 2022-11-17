@@ -73,6 +73,12 @@
 (package! company-anaconda :disable t)
 (package! elpy)
 
+;; Custom template expansion, fully disable yasnippet
+;; See: (doom-package-depending-on 'yasnippet)
+(package! tempel)
+(package! yasnippet :ignore t)
+(package! company-auctex :disable t)
+
 ;;; Custom packages
 (package! org-modern)
 (package! good-scroll)
