@@ -52,8 +52,9 @@ eshell-mode
 
 ess-r-mode
 
-(H "### " p " ------" q)
-(h "## " p " ------" q)
+(h1 "### " r " ------" q)
+(h2 "## " r " ------" q)
+(fun p " <- function(" p ") {" n> q n "}")
 
 python-mode
 
