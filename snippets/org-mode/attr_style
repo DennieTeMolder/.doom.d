@@ -1,6 +1,0 @@
-# -*- mode: snippet -*-
-# name: add html style
-# key: style
-# uuid: style
-# --
-#+ATTR_HTML: :style $0

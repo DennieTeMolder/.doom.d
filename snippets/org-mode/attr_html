@@ -1,6 +1,0 @@
-# -*- mode: snippet -*-
-# name: add html attribute
-# key: attr
-# uuid: attr
-# --
-#+ATTR_HTML: $0

@@ -1,7 +1,0 @@
-# -*- mode: snippet -*-
-# name: pipe lambda
-# uuid: pipe_lambda
-# key: \
-# condition: t
-# --
-{\\($1) $0}()

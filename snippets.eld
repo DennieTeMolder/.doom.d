@@ -1,13 +1,7 @@
+;; See `tempo-define-template' for the syntax (use-package tempo)
 fundamental-mode ;; Available everywhere
 
 (today (format-time-string "%Y-%m-%d"))
-
-latex-mode
-
-(begin "\\begin{" (s env) "}" r> n> "\\end{" (s env) "}")
-(frac "\\frac{" p "}{" q "}")
-(enumerate "\\begin{enumerate}\n\\item " r> n> "\\end{enumerate}")
-(itemize "\\begin{itemize}\n\\item " r> n> "\\end{itemize}")
 
 lisp-mode emacs-lisp-mode ;; Specify multiple modes
 
@@ -15,7 +9,7 @@ lisp-mode emacs-lisp-mode ;; Specify multiple modes
 
 emacs-lisp-mode
 
-(autoload ";;;###autoload")
+(auto ";;;###autoload")
 (pt "(point)")
 (lambda "(lambda (" p ")" n> r> ")")
 (var "(defvar " p "\n  \"" p "\")")
@@ -58,24 +52,61 @@ eshell-mode
 
 ess-r-mode
 
-(h1 "### " p " ------q")
-(h2 "## " p " ------q")
+(H "### " p " ------" q)
+(h "## " p " ------" q)
+
+python-mode
+
+(rule "rule " (s name) ":" n
+      (_ 4) "input:"  n (_ 8) p n
+      (_ 4) "output:" n (_ 8) p n
+      (_ 4) "log:"    n (_ 8) d "logs/" (s name) ".log" d n
+      (_ 4) "conda:"  n (_ 8) d "envs/" p ".yml" d n
+      (_ 4) "threads: " p n
+      (_ 4) "shell:"  n (_ 8) d q d)
 
 text-mode
 
 (asciibox "+-" (make-string (length str) ?-) "-+" n
           "| " (s str)                       " |" n
           "+-" (make-string (length str) ?-) "-+" n)
+
 org-mode
 
-(title "#+title: " p n "#+author: Daniel Mendler" n "#+language: en" n n)
-(quote "#+begin_quote" n> r> n> "#+end_quote")
-(example "#+begin_example" n> r> n> "#+end_example")
+(title "#+title: " p n "#+author: " p n "#+language: en_GB" n n)
+(cap "#+label: " p n "#+caption: " r)
+(begin "#+begin_" (s name) n> r> n> "#+end_" (s name))
 (center "#+begin_center" n> r> n> "#+end_center")
 (comment "#+begin_comment" n> r> n> "#+end_comment")
-(verse "#+begin_verse" n> r> n> "#+end_verse")
+(quote "#+begin_quote" n> r> n> "#+end_quote")
+(example "#+begin_example" n> r> n> "#+end_example")
+(notes "#+begin_notes" n> r> n> "#+end_notes")
 (src "#+begin_src " p n> r> n> "#+end_src" :post (org-edit-src-code))
 (elisp "#+begin_src emacs-lisp" n> r> n "#+end_src" :post (org-edit-src-code))
+(attr "#+attr_html: ")
+(style (i attr) ":style ")
+(2c "#+begin_leftcol" n> r> n> "#+end_leftcol" n n
+    "#+begin_rightcol" n> q n> "#+end_rightcol")
+(va "#+begin_valign-wrapper" n> r> n> "#+end_valign-wrapper")
+(plotly "#+html: <div id=" d (s id) d "></div>" n
+        "#+html: <script> myPlots.push({json:" n
+        "#+include: " r " export html" n
+        "#+html: ,id: " d (s id) d "})</script>" q)
+(plotly-init "#+html: <script>var myPlots = [];</script>")
+(read-tsv "#+begin_src R :colnames yes :rownames no :exports results :session none" n
+          "readr::read_tsv("d r d")" n
+          "#+end_src" n n "#+results:" n n)
+
+latex-mode
+
+(begin "\\begin{" (s env) "}" r> n> "\\end{" (s env) "}")
+(frac "\\frac{" p "}{" q "}")
+(enumerate "\\begin{enumerate}\n\\item " r> n> "\\end{enumerate}")
+(itemize "\\begin{itemize}\n\\item " r> n> "\\end{itemize}")
+
+markdown-mode
+
+(src "```{" (p "r") _ (p "name") "}" n q n "```")
 
 ;; Local Variables:
 ;; mode: lisp-data

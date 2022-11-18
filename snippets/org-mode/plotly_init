@@ -1,6 +1,0 @@
-# -*- mode: snippet -*-
-# name: plotly init
-# key: plotly_init
-# uuid: plotly_init
-# --
-#+HTML: <script>var myPlots = [];</script>

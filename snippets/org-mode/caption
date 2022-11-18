@@ -1,7 +1,0 @@
-# -*- mode: snippet -*-
-# name: caption with label
-# key: cap
-# uuid: cap
-# --
-#+LABEL: $1
-#+CAPTION: $2
