@@ -427,12 +427,13 @@
 ;; TODO find alternative for module :editor file-templates
 (use-package! tempel
   :commands tempel-complete tempel-expand tempel-insert tempel--prefix-bounds
-  :init
+  :config
   (setq tempel-path (expand-file-name "snippets.eld" doom-user-dir)
+        tempel-user-elements '(dtm-tempel-whitespace
+                               dtm-tempel-double-quote
+                               dtm-tempel-include)
         tempel-trigger-prefix ">")
 
-  (add-hook! '(prog-mode-hook text-mode-hook) #'dtm-tempel-setup-capf)
-  :config
   (map! :map tempel-map
         "<tab>"     #'tempel-next
         "<backtab>" #'tempel-previous

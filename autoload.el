@@ -903,9 +903,10 @@ Based on `+popup/diagnose'."
 
 ;;* Tempel
 ;;;###autoload
-(defun dtm-tempel-setup-capf ()
+(defun dtm-tempel-setup-capf-h ()
   "Add the Tempel Capf to `completion-at-point-functions'.
-Caution: make sure `tempel-trigger-prefix' is not nil."
+Caution: make sure `tempel-trigger-prefix' is not nil.
+Meant for hooking onto `prog-mode-hook' and `text-mode-hook'."
   (setq-local completion-at-point-functions
               (cons #'tempel-complete completion-at-point-functions)))
 
@@ -916,6 +917,30 @@ Auto-expand on exact match."
   (interactive)
   (let ((tempel-trigger-prefix (when (tempel--prefix-bounds) tempel-trigger-prefix)))
     (call-interactively #'tempel-complete)
-    ;; FIXME this has the potential to further expand the template
-    (when (tempel-expand)
+    (when (and (not tempel--active)
+               (tempel-expand))
       (call-interactively #'tempel-expand))))
+
+;;;###autoload
+(defun dtm-tempel-double-quote (elt)
+  "Insert a single double quote using the 'd' as template ELT.
+For use in `tempel-user-elements'."
+  (when (eq elt 'd) "\""))
+
+;;;###autoload
+(defun dtm-tempel-whitespace (elt)
+  "Insert a space using '_' or N spaces using '(_ N)' as template ELT.
+For use in `tempel-user-elements'."
+  (when-let ((n (cond ((eq elt '_) 1)
+                      ((eq (car-safe elt) '_) (cadr elt)))))
+    (make-string n 32)))
+
+;;;###autoload
+(defun dtm-tempel-include (elt)
+  "Insert template with NAME using '(i NAME)' as template ELT.
+Ref: https://github.com/minad/tempel"
+  (when (eq (car-safe elt) 'i)
+    (if-let (template (alist-get (cadr elt) (tempel--templates)))
+        (cons 'l template)
+      (message "Template %s not found" (cadr elt))
+      nil)))
