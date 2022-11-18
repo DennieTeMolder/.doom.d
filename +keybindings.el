@@ -50,6 +50,9 @@
 
       ;; Open
       (:prefix "o"
+       :desc "Current dir"    "-" #'dirvish
+       :desc "Current dir"    "d" #'dirvish
+       :desc "Start debugger" "D" #'+debugger/start
        :desc "Folder sidebar" "s" #'dtm/dirvish-side
        :desc "Vterm here"     "T" #'vterm)
 
