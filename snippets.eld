@@ -52,9 +52,10 @@ eshell-mode
 
 ess-r-mode
 
-(h1 "### " r " ------" q)
-(h2 "## " r " ------" q)
+(h1 "### " (r "Title") " ------" n q)
+(h2 "## " (r "Title") " ------" n q)
 (fun p " <- function(" p ") {" n> q n "}")
+(timer "tstart <- Sys.time()" n r "print(Sys.time() - tstart)")
 
 python-mode
 
