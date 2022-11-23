@@ -622,12 +622,14 @@ Also used by `org-modern-mode' to calculate heights.")
 (when (modulep! :tools biblio)
   ;; Citar bibliography settings
   (setq! citar-bibliography '("~/Nextcloud/Zotero/master.bib")
-         citar-library-paths '("~/Nextcloud/Zotero/")
-         citar-notes-paths '("~/Nextcloud/PKM/notes/")))
+         citar-library-paths '("~/Nextcloud/Zotero/")))
 
 (after! citar
-  ;; citar note template
-  (push '(note . "${=key=}: ${title}\n\n* Notes") citar-templates)
+  ;; Ensure notes can be accessed by `citar-open-notes'
+  (require 'citar-org-roam)
+
+  (setq citar-org-roam-note-title-template "${=key=}: ${title}\n\n* Notes"
+        citar-org-roam-subdir "notes")
 
   ;; Dedicated workspaces
   (advice-add 'citar-open-files :before #'dtm-citar-goto-workspace)
@@ -639,8 +641,8 @@ Also used by `org-modern-mode' to calculate heights.")
 
 ;; Org-noter settings
 (after! org-noter
-  (setq org-noter-hide-other nil ;; Don't fold headings when navigating
-        org-noter-always-create-frame nil) ;; Only crete new frames for additional sessions
+  (setq org-noter-hide-other nil           ; Don't fold headings when navigating
+        org-noter-always-create-frame nil) ; Only crete new frames for additional sessions
 
   ;; Kill session map in line with other C-c bound pdf controls for one hand use
   (map! :map (org-noter-doc-mode-map org-noter-notes-mode-map)
