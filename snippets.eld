@@ -86,7 +86,8 @@ org-mode
 (src "#+begin_src " p n> r> n> "#+end_src" :post (org-edit-src-code))
 (elisp "#+begin_src emacs-lisp" n> r> n "#+end_src" :post (org-edit-src-code))
 (attr "#+attr_html: ")
-(style (i attr) ":style ")
+(style (i attr) ":style " r)
+(class (i attr) ":class " r)
 (2c "#+begin_leftcol" n> r> n> "#+end_leftcol" n n
     "#+begin_rightcol" n> q n> "#+end_rightcol")
 (va "#+begin_valign-wrapper" n> r> n> "#+end_valign-wrapper")
