@@ -490,8 +490,10 @@ Also used by `org-modern-mode' to calculate heights.")
   (add-hook! 'org-mode-hook #'dtm-org-mode-setup-h)
 
   ;; The `dtm-org-mode-setup-h' function always disables indent guides
-  (remove-hook 'org-mode-local-vars-hook #'+indent-guides-disable-maybe-h)
+  (remove-hook 'org-mode-local-vars-hook #'+indent-guides-disable-maybe-h))
 
+;; Keys bound in after! org seem to get overwritten, this works
+(after! org-keys
   ;; Use old org-ref insert key, remove `org-agenda-file-to-front' binding
   (map! :map org-mode-map
         "C-c ]" #'org-cite-insert
