@@ -1,7 +1,7 @@
-;;; backlog.el -*- lexical-binding: t; -*-
+;;; graveyard.el -*- lexical-binding: t; -*-
 ;; This file contains unused functions I could not bear to delete
 
-;;; Python
+;;* Python
 (defun dtm/python-shell-send-statment-and-step ()
   "Send statement to python shell and move to next"
   (interactive)
@@ -31,8 +31,7 @@ block, send the entire code block."
         (t
          (call-interactively #'dtm/python-shell-send-statment-and-step))))
 
-;;; Window management
-;;;###autoload
+;;* Window management
 (defun dtm/window-half-height ()
   "Halves height of active window"
   (interactive)

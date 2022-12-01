@@ -523,8 +523,11 @@ Also used by `org-modern-mode' to calculate heights.")
         org-appear-autoentities t))
 
 (use-package! org-modern
-  :hook (org-mode . dtm-org-modern-mode-maybe-h)
-  :hook (org-agenda-finalize . org-modern-agenda)
+  :after org
+  :init
+  ;; Correct indentation of headings
+  (advice-add 'org-indent--compute-prefixes :after #'dtm-org--modern-indent-heading)
+
   :config
   (setq org-modern-label-border dtm-org-line-spacing
         org-modern-statistics nil
@@ -536,12 +539,7 @@ Also used by `org-modern-mode' to calculate heights.")
   ;; Ensure symbols do not change when switching fonts
   (set-face-attribute 'org-modern-symbol nil :family "Iosevka")
 
-  ;; Correct indentation of headings
-  (advice-add 'org-indent--compute-prefixes :after #'dtm-org--modern-indent-heading)
-
-  ;; Refresh `org-indent-mode' to apply advice
-  (when org-indent-mode
-    (org-indent-mode +1)))
+  (global-org-modern-mode))
 
 (after! org-tree-slide
   (setq +org-present-text-scale (- dtm-base-font-size 7))
