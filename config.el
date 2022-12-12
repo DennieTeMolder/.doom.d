@@ -660,6 +660,7 @@ Also used by `org-modern-mode' to calculate heights.")
 
   (map! (:map pdf-view-mode-map
          :gn "C-e" #'pdf-view-scroll-down-or-previous-page
+         :gn "C-s" #'isearch-forward-word
          :gn "S"   #'dtm/pdf-view-fit-half-height
          :gn "s r" #'image-rotate
          :v  "h"   #'pdf-annot-add-highlight-markup-annotation
@@ -956,7 +957,7 @@ Also used by `org-modern-mode' to calculate heights.")
                     indent-tools-goto-end-of-tree))
     (advice-add symbol :around #'doom-set-jump-maybe-a)))
 
-(use-package keycast
+(use-package! keycast
   :hook (after-init . keycast-mode)
   :commands keycast-mode
   :config
@@ -980,5 +981,21 @@ Also used by `org-modern-mode' to calculate heights.")
       :height 0.9)
     '(keycast-key :inherit custom-modified
       :weight bold)))
+
+;; Improved isearch
+(use-package! ctrlf
+  :commands ctrlf-forward-default
+  :config
+  ;; Use 'M-s s' while searching to change styles
+  (setq ctrlf-default-search-style 'fuzzy-multi
+        ctrlf-show-match-count-at-eol t
+        ctrlf-auto-recenter t)
+
+  ;; Fuzzy matching across multiple lines
+  (add-to-list
+   'ctrlf-style-alist
+   '(fuzzy-multi . (:prompt "fuzzy multi-line"
+                    :translator dtm-translate-fuzzy-multi-literal
+                    :case-fold ctrlf-no-uppercase-literal-p))))
 
 (load! "+keybindings")

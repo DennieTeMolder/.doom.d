@@ -944,3 +944,11 @@ Ref: https://github.com/minad/tempel"
         (cons 'l template)
       (message "Template %s not found" (cadr elt))
       nil)))
+
+;;* CTRLF
+(defun dtm-translate-fuzzy-multi-literal (input)
+  "Build a fuzzy-matching regexp from literal INPUT.
+See `ctrlf-split-fuzzy' for how INPUT is split into subinputs.
+Each subinput is quoted and the results are joined with \".*\n*.*\".
+This enables the each word of the query to be on a consecutive non-blank line."
+  (string-join (mapcar #'regexp-quote (ctrlf-split-fuzzy input)) ".*\n*.*"))

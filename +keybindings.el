@@ -1,7 +1,7 @@
 ;;; $DOOMDIR/+keybindings.el -*- lexical-binding: t; -*-
 
 ;;* Global
-(map! "C-s" #'isearch-forward-word
+(map! "C-s" #'ctrlf-forward-default
       "C-l" #'+nav-flash/blink-cursor
 
       :i "C-x C-s" #'dtm-tempel-complete-always
