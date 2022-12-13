@@ -733,6 +733,10 @@ Also used by `org-modern-mode' to calculate heights.")
   ;; Rebind the key previously on "i"
   (map! :map lispy-mode-map "TAB" #'special-lispy-tab))
 
+(after! eros
+  ;; Large results can freeze emacs, this limits the inconvenience
+  (setq eros-eval-result-duration 2))
+
 (after! eshell
   ;; Fuzzy match parent directories (a.k.a. "bd")
   ;; The "z" command does the same but for dir history
