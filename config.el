@@ -928,18 +928,18 @@ Also used by `org-modern-mode' to calculate heights.")
 ;; Smooth scrolling
 (use-package! good-scroll
   :commands good-scroll-mode
+  :init
+  ;; Override evil functions on mode activation, undo upon deactivation
+  (add-hook! 'good-scroll-mode-hook #'dtm-good-scroll-evil-override-h)
+
+  ;; Auto enable only when not on laptop (can still be manually activated)
+  (unless IS-LAPTOP (good-scroll-mode +1))
+
   :config
   ;; Increase animation time and mouse scrolling sensitivity
-  (setq good-scroll-duration .25
+  (setq good-scroll-duration 0.25
         good-scroll-algorithm 'good-scroll-linear
-        good-scroll-step (round (/ (display-pixel-height) 5)))
-
-  ;; Override evil functions on mode activation, undo upon deactivation
-  (add-hook! 'good-scroll-mode-hook #'dtm-good-scroll-evil-override-h))
-
-;; Init good-scroll (In this way it is still accessible on laptops)
-(unless IS-LAPTOP
-  (good-scroll-mode +1))
+        good-scroll-step (round (/ (display-pixel-height) 5))))
 
 ;; Package for interacting with text fields, requires GhostText browser extension
 (use-package! atomic-chrome
