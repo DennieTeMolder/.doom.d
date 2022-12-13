@@ -88,7 +88,6 @@
 (package! atomic-chrome)
 (package! vundo)
 (package! trashed)
-(package! dired-du)
 (package! xr)
 (package! info-colors)
 (package! keycast)
