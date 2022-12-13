@@ -716,7 +716,7 @@ Unless SILENT is t the user is notified when ENV-NAME is already active."
 
 ;;* So-long-mode/csv-mode/tsv-mode
 (defvar dtm-csv-mode-max-length 300
-  "Maximum line length (bytes) for csv/tsv-mode to be enabled.")
+  "Maximum characters per line for csv/tsv-mode to be enabled.")
 
 ;;;###autoload
 (defun dtm-csv-mode-maybe-h ()
