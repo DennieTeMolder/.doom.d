@@ -79,6 +79,9 @@
 (package! yasnippet :ignore t)
 (package! company-auctex :disable t)
 
+;; Only used by `lispy-occur'
+(package! swiper :ignore t)
+
 ;;; Custom packages
 (package! org-modern)
 (package! good-scroll)

@@ -727,6 +727,9 @@ Also used by `org-modern-mode' to calculate heights.")
   (remove-hook 'eval-expression-minibuffer-setup-hook
                #'doom-init-lispy-in-eval-expression-h)
 
+  ;; Unbind `lispy-occur' because we drop the swiper package
+  (unbind-key "y" lispy-mode-map)
+
   ;; Define custom special key for stepping into lists/deleting marked regions
   (lispy-define-key lispy-mode-map "i" 'dtm/lispy-step-into)
 
