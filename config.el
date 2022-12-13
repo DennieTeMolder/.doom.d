@@ -965,8 +965,7 @@ Also used by `org-modern-mode' to calculate heights.")
     (advice-add symbol :around #'doom-set-jump-maybe-a)))
 
 (use-package! keycast
-  :hook (after-init . keycast-mode)
-  :commands keycast-mode
+  :commands keycast-mode keycast-log-mode
   :config
   (defvar keycast-mode-string '("" keycast-mode-line " ")
     "Element to insert into `global-mode-string' when `keycast-mode' is active")
