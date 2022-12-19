@@ -359,6 +359,7 @@
         :n "l"   #'dired-find-file
         :n "L"   #'dirvish-history-go-forward
         :n "o"   #'dirvish-quick-access
+        :n "Y"   #'dirvish-copy-file-true-path
         :n "z"   #'dirvish-ls-switches-menu))
 
 (after! dirvish-side
