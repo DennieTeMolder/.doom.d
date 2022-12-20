@@ -653,6 +653,7 @@ Unless SILENT is t the user is notified when ENV-NAME is already active."
 (defun dtm-conda-env-guess-prompt-h ()
   "Prompt the user to activate the relevant conda env if it is not \"base\"."
   (when (and (eq major-mode 'python-mode)
+             (not non-essential)
              (not (dtm-buffer-remote-p)))
     (let ((ienv (conda--infer-env-from-buffer)))
       (unless (string= ienv "base")
