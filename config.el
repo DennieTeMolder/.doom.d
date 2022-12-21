@@ -1007,6 +1007,12 @@ Also used by `org-modern-mode' to calculate heights.")
    'ctrlf-style-alist
    '(fuzzy-multi . (:prompt "fuzzy multi-line"
                     :translator dtm-translate-fuzzy-multi-literal
-                    :case-fold ctrlf-no-uppercase-literal-p))))
+                    :case-fold ctrlf-no-uppercase-literal-p)))
+
+  (map! :map ctrlf-minibuffer-mode-map
+        "C-s" #'ctrlf-next-match
+        "C-r" #'ctrlf-previous-match
+        "C-u" #'ctrlf-previous-page
+        "C-d" #'ctrlf-next-page))
 
 (load! "+keybindings")
