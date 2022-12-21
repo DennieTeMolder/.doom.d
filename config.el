@@ -349,10 +349,13 @@
   ;; Make dirvish recognise custom project types
   (advice-add 'dirvish--get-project-root :override #'projectile-project-root)
 
+  (add-hook 'dired-isearch-filenames-mode-hook #'dtm-dired-isearch-successful-find-file-h)
+
   ;; Bind `revert-buffer' for reloading directory contents
   (map! :map dirvish-mode-map
         :n "C-o" #'dirvish-history-jump
         :n "C-r" #'revert-buffer
+        :n "C-s" #'dired-isearch-filenames
         :n "c"   #'dired-create-empty-file
         :n "h"   #'dired-up-directory
         :n "H"   #'dirvish-history-go-backward
@@ -360,7 +363,8 @@
         :n "L"   #'dirvish-history-go-forward
         :n "o"   #'dirvish-quick-access
         :n "Y"   #'dirvish-copy-file-path
-        :n "z"   #'dirvish-ls-switches-menu))
+        :n "z"   #'dirvish-ls-switches-menu
+        :n "/"   (cmd! (message "Use C-s!"))))
 
 (after! dirvish-side
   (dirvish-side-follow-mode +1))

@@ -266,6 +266,14 @@ https://github.com/purcell/ibuffer-projectile"
                                  default nil t)))
     (ediff (expand-file-name file dir) target)))
 
+;;;###autoload
+(defun dtm-dired-isearch-successful-find-file-h ()
+  "Open the file under cursor if `dired-isearch-filenames' was successful.
+For use with `dired-isearch-filenames-mode-hook'."
+  (unless (or dired-isearch-filenames-mode
+              isearch-mode-end-hook-quit)
+    (dired-find-file)))
+
 ;;* Org-mode
 ;;;###autoload
 (defun dtm-org-mode-setup-h ()
