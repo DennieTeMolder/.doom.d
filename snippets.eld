@@ -65,7 +65,7 @@ python-mode
       (_ 4) "log:"    n (_ 8) d "logs/" (s name) ".log" d n
       (_ 4) "conda:"  n (_ 8) d "envs/" p ".yml" d n
       (_ 4) "threads: " p n
-      (_ 4) "shell:"  n (_ 8) d q d)
+      (_ 4) "shell:"  n (_ 8) d q "2> {log}" d)
 
 text-mode
 
