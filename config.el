@@ -35,9 +35,7 @@
 ;; refresh your font settings. If Emacs still can't find your font, it likely
 ;; wasn't installed correctly. Font issues are rarely Doom issues!
 
-(defvar dtm-base-font-size (if (and (<= (display-pixel-height) 1080)
-                                    (not IS-LAPTOP))
-                               11.0 13.0))
+(defvar dtm-base-font-size (if IS-LAPTOP 13.0 11.0))
 
 ;; Use float for size as it indicates point size rather then pixels (better scaling)
 (setq doom-font (font-spec :family "Iosevka" :width 'expanded :size dtm-base-font-size)
