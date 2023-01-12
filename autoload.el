@@ -745,7 +745,7 @@ Unless SILENT is t the user is notified when ENV-NAME is already active."
 If REGION is active, call `lispy-delete' instead."
   (interactive "p")
   (cond ((region-active-p)
-         (call-interactively 'lispy-delete))
+         (call-interactively #'lispy-delete))
         ((lispy-left-p)
          (lispy-dotimes arg
            (if (lispy-left-p)
