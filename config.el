@@ -781,14 +781,14 @@ Also used by `org-modern-mode' to calculate heights.")
   (set-company-backend! 'ess-r-mode
     '(company-R-args company-R-objects company-R-library company-dabbrev-code :separate))
 
-  ;; Enable additional highlighting
-  (pushnew! ess-R-font-lock-keywords
-            '(ess-R-fl-keyword:F&T . t)
-            '(ess-fl-keyword:fun-calls . t)
-            '(ess-fl-keyword:operators . t))
+  (add-hook 'ess-r-mode-local-vars-hook #'tree-sitter! 'append)
 
-  ;; Customise type faces (used for F&T colour)
-  (custom-set-faces! '(ess-constant-face :weight bold :inherit font-lock-warning-face))
+  ;; Recognise F/T as boolean values
+  (tree-sitter-hl-add-patterns 'r
+    [((identifier) @boolean
+      (.eq? @boolean "T"))
+     ((identifier) @boolean
+      (.eq? @boolean "F"))])
 
   ;; Make inferior buffer not take focus on startup
   (advice-add 'ess-switch-to-inferior-or-script-buffer :around #'dtm-ess-switch-maybe-a)
@@ -798,7 +798,7 @@ Also used by `org-modern-mode' to calculate heights.")
 
   (add-hook! 'inferior-ess-r-mode-hook (visual-line-mode +1))
 
-  ;; Lag the cursor is debug mode, this leaves the point at a variable after its assigned
+  ;; Lag the cursor in debug mode, this leaves the point at a variable after its assigned
   (advice-add 'ess-debug-command-next :around #'dtm-with-lagging-point-a)
   (dolist (symbol '(dtm/ess-debug-command-step
                     ess-debug-command-up
