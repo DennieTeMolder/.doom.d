@@ -990,3 +990,4 @@ Also used by `org-modern-mode' to calculate heights.")
         "C-d" #'ctrlf-next-page))
 
 (load! "+keybindings")
+(load! "+faces")

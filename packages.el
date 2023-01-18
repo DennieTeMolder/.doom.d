@@ -49,6 +49,7 @@
 ;; ...Or *all* packages (NOT RECOMMENDED; will likely break things)
 ;(unpin! t)
 (unpin! dirvish)
+(unpin! tree-sitter-langs)
 
 ;;; Doom modifications
 ;; Evil-escape will exit insert state after a key sequence ("jk")
