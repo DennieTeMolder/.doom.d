@@ -765,12 +765,6 @@ Also used by `org-modern-mode' to calculate heights.")
   (map! :map sh-mode-map
         :nv [C-return] #'dtm/vterm-execute-current-line))
 
-;; Proper number highlighting for R mode
-(after! highlight-numbers
-  (let ((expr "\\_<[0-9]*\\(?:\\.[0-9]+\\)?\\(?:[eE]-?[0-9]+\\)?\\_>"))
-    (puthash 'ess-r-mode expr highlight-numbers-modelist)
-    (puthash 'python-mode expr highlight-numbers-modelist)))
-
 (after! ess
   ;; Use current dir for session
   (setq ess-ask-for-ess-directory nil
