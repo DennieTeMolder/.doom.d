@@ -543,11 +543,16 @@ The DATE is derived from the #+title which must match the Org date format."
 
 ;;* Vterm
 ;;;###autoload
-(defun dtm-vterm-redraw-cursor (args)
-  "Redraw evil cursor with vterm to keep it consistent with the current state.
-Fix by tiku91:
-https://github.com/akermu/emacs-libvterm/issues/313#issuecomment-867525845"
-  (evil-refresh-cursor evil-state))
+(defun dtm-vterm-redraw-cursor-a (orig-fn &rest args)
+  "Prevent vterm from modifying `cursor-type'..
+Intended as around advice for `vterm--redraw'
+Ref: https://github.com/akermu/emacs-libvterm/issues/313#issuecomment-1191400836"
+  (let ((cursor-type cursor-type)) (apply orig-fn args)))
+
+(defun dtm-vterm-sync-cursor-a (&rest _)
+  "Keep vterm cursor position cosistent with evil.
+Intended as before advice for `vterm-send-key'"
+  (vterm-goto-char (point)))
 
 ;;* Sh-mode
 ;;;###autoload
