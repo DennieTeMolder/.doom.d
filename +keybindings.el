@@ -65,8 +65,6 @@
       (:prefix "t"
        :desc "Auto linebreaks"     "a" #'auto-fill-mode
        :desc "GhostText server"    "G" #'dtm/atomic-chrome-toggle-server
-       :desc "Keycast mode"        "k" #'keycast-mode
-       :desc "Keycast log mode"    "K" #'keycast-log-mode
        :desc "Log interactions"    "L" #'dtm/interaction-log-mode-w-buffer
        :desc "Margin (left)"       "M" #'dtm/window-toggle-left-margin
        :desc "Recommend theme"     "R" #'dtm/load-recommended-theme
@@ -88,15 +86,19 @@
 ;;* Custom modules
 (map! :leader
       ;; :when (modulep! :ui zen-light)
-       :desc "Zen writing mode"     "t z" #'visual-fill-column-mode
+      :desc "Zen writing mode"     "t z" #'visual-fill-column-mode
+
+      ;; :when (modulep! :ui keycast)
+      ;; :desc "Keycast mode"        "t k" #'keycast-mode
+      ;; :desc "Keycast log mode"    "t K" #'keycast-log-mode
 
       ;; :when (modulep! :ui popper)
-       ;;"/" nil ; Unbind `+default/search-project' (also bound to "SPC s p")
-       ;; (:prefix ("/" . "popup")
-       ;;  :desc "Show/hide"           "/" #'popper-toggle-latest
-       ;;  :desc "Next"                "n" #'popper-cycle
-       ;;  :desc "Kill"                "k" #'+popper/kill-latest-popup-keep-open
-       ;;  :desc "Quit"                "q" #'popper-kill-latest-popup
-       ;;  :desc "Toggle popup/buffer" "t" #'+popper/toggle-type
-       ;;  :desc "Raise"               "r" #'+popper/raise-popup)
-       )
+      ;;"/" nil ; Unbind `+default/search-project' (also bound to "SPC s p")
+      ;; (:prefix ("/" . "popup")
+      ;;  :desc "Show/hide"           "/" #'popper-toggle-latest
+      ;;  :desc "Next"                "n" #'popper-cycle
+      ;;  :desc "Kill"                "k" #'+popper/kill-latest-popup-keep-open
+      ;;  :desc "Quit"                "q" #'popper-kill-latest-popup
+      ;;  :desc "Toggle popup/buffer" "t" #'+popper/toggle-type
+      ;;  :desc "Raise"               "r" #'+popper/raise-popup)
+      )

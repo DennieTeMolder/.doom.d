@@ -90,7 +90,6 @@
 (package! trashed)
 (package! xr)
 (package! info-colors)
-(package! keycast)
 (package! ctrlf)
 (package! org-appear
   :recipe (:host github :repo "awth13/org-appear"))
