@@ -711,6 +711,9 @@ Also used by `org-modern-mode' to calculate heights.")
 (after! compile
   (add-hook! 'compilation-mode-hook (visual-line-mode +1)))
 
+(after! tree-sitter
+  (custom-set-faces! '(tree-sitter-hl-face:number :inherit highlight-numbers-number)))
+
 (when (modulep! :lang emacs-lisp)
   ;; REVIEW fix the doom custom "Section" imenu entry
   (advice-add '+emacs-lisp-extend-imenu-h :after #'dtm-fix-elisp-extend-imenu-a)
