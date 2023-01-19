@@ -331,6 +331,8 @@
         '(vc-state subtree-state all-the-icons file-time file-size)
         dirvish-mode-line-format
         '(:left (sort file-time) :right (omit yank index))
+        dirvish-preview-dispatchers
+        '(image gif archive)
         dirvish-quick-access-entries
         `(("D" "~/Downloads/" "Downloads")
           ("dc" ,doom-core-dir "Doom Core")
