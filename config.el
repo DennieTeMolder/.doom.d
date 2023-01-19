@@ -464,7 +464,7 @@ Also used by `org-modern-mode' to calculate heights.")
         org-agenda-start-day nil
         org-agenda-span 14
         org-agenda-time-grid '((daily today require-timed)
-                               (759 1159 1300 1700)
+                               (759 1159 1299 1699)
                                " ┄┄┄┄┄ " "┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄")
         org-agenda-current-time-string "<- NOW ────────")
 
