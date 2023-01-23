@@ -9,6 +9,8 @@ lisp-mode emacs-lisp-mode ;; Specify multiple modes
 
 emacs-lisp-mode
 
+(__ ";;; " (file-name-nondirectory (buffer-file-name)) " -*- lexical-binding: t; -*-" n
+    (ignore (setq lexical-binding t)))
 (auto ";;;###autoload")
 (pt "(point)")
 (lambda "(lambda (" p ")" n> r> ")")

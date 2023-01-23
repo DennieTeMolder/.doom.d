@@ -424,9 +424,8 @@
         "H" #'vundo-stem-root
         "L" #'vundo-stem-end))
 
-;; TODO find alternative for module :editor file-templates
 (use-package! tempel
-  :commands tempel-complete tempel-expand tempel-insert tempel--prefix-bounds
+  :commands tempel-complete tempel-expand tempel-insert
   :config
   (setq tempel-path (expand-file-name "snippets.eld" doom-user-dir)
         tempel-user-elements '(dtm-tempel-whitespace
@@ -438,7 +437,10 @@
         "<tab>"     #'tempel-next
         "<backtab>" #'tempel-previous
         "C-c C-c"   #'tempel-done
-        "C-c C-q"   #'tempel-abort))
+        "C-c C-k"   #'tempel-abort))
+
+;; Templates for new/empty files
+(add-hook 'doom-switch-buffer-hook #'dtm-tempel-autoinsert-check-h)
 
 ;;* Writing/Organisation Tools
 ;; Spell checking

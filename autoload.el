@@ -929,11 +929,38 @@ Meant for hooking onto `prog-mode-hook' and `text-mode-hook'."
   "Trigger `tempel-complete' regardless if `tempel-trigger-prefix' is provided.
 Auto-expand on exact match."
   (interactive)
+  (require 'tempel)
   (let ((tempel-trigger-prefix (when (tempel--prefix-bounds) tempel-trigger-prefix)))
     (call-interactively #'tempel-complete)
     (when (and (not tempel--active)
                (tempel-expand))
       (call-interactively #'tempel-expand))))
+
+;;;###autoload
+(defvar +file-templates-inhibit nil
+  "If non-nil, inhibit file template expansion.
+Copied from the 'file-templates' doom module.")
+
+;;;###autoload
+(defun dtm-tempel-autoinsert-template ()
+  "Get the autoinsert/empty file template for current-buffer."
+  (require 'tempel)
+  (alist-get '__ (tempel--templates)))
+
+;;;###autoload
+(defun dtm-tempel-autoinsert-check-h ()
+  "Expand the autoinsert/emtpy file template into the current buffer.
+The buffer must be non-read-only, empty, and there must
+be an entry for __ in `tempel-path' for the current mode."
+  (and (not +file-templates-inhibit)
+       buffer-file-name
+       (not buffer-read-only)
+       (bobp) (eobp)
+       (not (member (substring (buffer-name) 0 1) '("*" " ")))
+       (not (buffer-modified-p))
+       (null (buffer-base-buffer))
+       (when-let ((template (dtm-tempel-autoinsert-template)))
+         (tempel-insert template))))
 
 ;;;###autoload
 (defun dtm-tempel-double-quote (elt)
