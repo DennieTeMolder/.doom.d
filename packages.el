@@ -70,13 +70,14 @@
 (package! ess-r-insert-obj)
 
 ;; Replace anaconda-mode with elpy
+(package! elpy)
 (package! anaconda-mode :disable t)
 (package! company-anaconda :disable t)
-(package! elpy)
 
 ;; Custom template expansion, fully disable yasnippet
 ;; See: (doom-package-depending-on 'yasnippet)
-(package! tempel)
+;; REVIEW unpin after `compat' package bump
+(package! tempel :pin "9a25bacc16eac8b83c1bef1aefa0be27cfa8a762")
 (package! yasnippet :ignore t)
 (package! company-auctex :disable t)
 
