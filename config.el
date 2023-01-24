@@ -541,7 +541,9 @@ Also used by `org-modern-mode' to calculate heights.")
   ;; Ensure symbols do not change when switching fonts
   (set-face-attribute 'org-modern-symbol nil :family "Iosevka")
 
-  (global-org-modern-mode))
+  ;; Enable
+  (add-hook 'org-agenda-finalize-hook #'org-modern-agenda)
+  (add-hook 'org-mode-hook #'dtm-org-modern-mode-maybe-h))
 
 (after! org-tree-slide
   (setq +org-present-text-scale (- dtm-base-font-size 7))
