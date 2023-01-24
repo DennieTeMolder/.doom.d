@@ -29,6 +29,13 @@ Required because doctor sets `noninteractive' to nil."
   "Returns t if point and mark are on the same line"
   (<= (line-beginning-position) (mark) (line-end-position)))
 
+;;;###autoload
+(defun dtm-file-name-as-title (&optional fname)
+  "Convert NAME to title by replacing _,... to space and capitalising.
+If NAME is not provided `buffer-file-name' is used."
+  (let ((name (file-name-base (or fname buffer-file-name))))
+    (capitalize (replace-regexp-in-string "[^A-Za-z0-9]+" " " name))))
+
 ;;* Buffer functions
 (defun dtm-buffer-remote-p (&optional buf)
   "Returns t if BUF belongs to a remote directory."

@@ -42,6 +42,11 @@ emacs-lisp-mode
 (provide "(provide '" (file-name-base (or (buffer-file-name) (buffer-name))) ")" n
          ";;; " (file-name-nondirectory (or (buffer-file-name) (buffer-name))) " ends here" n)
 
+sh-mode
+(__ "#!/usr/bin/env bash" n)
+(for "for " p " in " p "; do" n> r> n "done")
+(if "if [ " p " ]; then" n> r> n "fi")
+
 eshell-mode
 
 (for "for " (p "i") " in " p " { " q " }")
@@ -61,6 +66,7 @@ ess-r-mode
 
 python-mode
 
+(__ "#!/usr/bin/env python3" n)
 (rule "rule " (s name) ":" n
       (_ 4) "input:"  n (_ 8) p n
       (_ 4) "output:" n (_ 8) p n
@@ -77,6 +83,7 @@ text-mode
 
 org-mode
 
+(__ "#+title: " (dtm-file-name-as-title) n)
 (title "#+title: " p n "#+author: " p n "#+language: en_GB" n n)
 (cap "#+label: " p n "#+caption: " r)
 (begin "#+begin_" (s name) n> r> n> "#+end_" (s name))
