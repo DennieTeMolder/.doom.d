@@ -469,6 +469,7 @@ Ref: https://github.com/hlissner/.doom.d"
   (add-hook 'after-save-hook #'dtm-org-roam-update-slug-h 'append 'local))
 
 ;;* Org-roam-dailies
+;;;###autoload
 (defun dtm-org-roam-dailies-goto-date-a ()
   "Ensure function is executed from a roam buffer to activate keybindings.
 Intended as :before advice for `org-roam-dailies-goto-date'"
@@ -549,6 +550,7 @@ Intended as around advice for `vterm--redraw'
 Ref: https://github.com/akermu/emacs-libvterm/issues/313#issuecomment-1191400836"
   (let ((cursor-type cursor-type)) (apply orig-fn args)))
 
+;;;###autoload
 (defun dtm-vterm-sync-cursor-a (&rest _)
   "Keep vterm cursor position cosistent with evil.
 Intended as before advice for `vterm-send-key'"
@@ -936,12 +938,10 @@ Auto-expand on exact match."
                (tempel-expand))
       (call-interactively #'tempel-expand))))
 
-;;;###autoload
 (defvar +file-templates-inhibit nil
   "If non-nil, inhibit file template expansion.
 Copied from the 'file-templates' doom module.")
 
-;;;###autoload
 (defun dtm-tempel-autoinsert-template ()
   "Get the autoinsert/empty file template for current-buffer."
   (require 'tempel)
@@ -987,6 +987,7 @@ Ref: https://github.com/minad/tempel"
       nil)))
 
 ;;* CTRLF
+;;;###autoload
 (defun dtm-translate-fuzzy-multi-literal (input)
   "Build a fuzzy-matching regexp from literal INPUT.
 See `ctrlf-split-fuzzy' for how INPUT is split into subinputs.
