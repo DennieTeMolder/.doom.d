@@ -236,11 +236,11 @@
         company-selection-wrap-around t
         company-dabbrev-ignore-case 'keep-prefix)
 
-  ;; Make dabbrev (C-x C-n) case sensitive in programming modes
-  (add-hook! 'prog-mode-hook (setq-local company-dabbrev-ignore-case nil))
+  ;; Enable auto pop-up in elisp mode as it is less expensive
+  (add-hook! 'emacs-lisp-mode-hook (setq-local company-idle-delay 0.2))
 
-  ;; Enable in elisp mode at is not as expensive
-  (add-hook! 'emacs-lisp-mode-hook (setq-local company-idle-delay 0.2)))
+  ;; Make dabbrev (C-x C-n) case sensitive in programming modes
+  (add-hook! 'prog-mode-hook (setq-local company-dabbrev-ignore-case nil)))
 
 (after! projectile
   ;; Projectle sorting by recently opened
