@@ -233,7 +233,11 @@
 (after! company
   ;; Disable company auto pop-up as it can be expensive, use C-SPC to trigger
   (setq company-idle-delay nil
-        company-selection-wrap-around t)
+        company-selection-wrap-around t
+        company-dabbrev-ignore-case 'keep-prefix)
+
+  ;; Make dabbrev case sensitive in programming modes
+  (add-hook! 'prog-mode-hook (setq-local company-dabbrev-ignore-case nil))
 
   ;; Enable in elisp mode at is not as expensive
   (add-hook! 'emacs-lisp-mode-hook (setq-local company-idle-delay 0.2)))
