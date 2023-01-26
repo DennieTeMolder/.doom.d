@@ -236,7 +236,7 @@
         company-selection-wrap-around t
         company-dabbrev-ignore-case 'keep-prefix)
 
-  ;; Make dabbrev case sensitive in programming modes
+  ;; Make dabbrev (C-x C-n) case sensitive in programming modes
   (add-hook! 'prog-mode-hook (setq-local company-dabbrev-ignore-case nil))
 
   ;; Enable in elisp mode at is not as expensive
