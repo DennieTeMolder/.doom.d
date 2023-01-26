@@ -7,11 +7,6 @@
       :i "C-x C-s" #'dtm-tempel-complete-always
       :v "C-x C-s" #'tempel-insert
 
-      :desc "Next window"              :n "] w" #'evil-window-next
-      :desc "Previous window"          :n "[ w" #'evil-window-prev
-      :desc "Next persp/workspace"     :n "] p" #'+workspace:switch-next
-      :desc "Previous persp/workspace" :n "[ p" #'+workspace:switch-previous
-
       ;; Make "Z" bindings only kill buffers not the session
       :n "ZQ" #'kill-buffer-and-window
       :n "ZZ" #'doom/save-and-kill-buffer
@@ -73,7 +68,8 @@
 
       ;; Window management
       (:prefix "w"
-       :desc "Adjust windows hydra"  "a" #'+hydra/window-nav/body)
+       :desc "Adjust windows hydra" "a" #'+hydra/window-nav/body
+                                    "e" #'evil-window-prev)
 
       ;; Popups
       "/" nil ; Unbind `+default/search-project' (also bound to "SPC s p")
