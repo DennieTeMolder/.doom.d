@@ -358,7 +358,6 @@
         :n "C-o"   #'dirvish-history-jump
         :n "C-r"   #'revert-buffer
         :n "C-s"   #'dirvish-fd
-        :n "C-M-s" #'dirvish-fd-switches-menu
         :n "c"     #'dired-create-empty-file
         :n "h"     #'dired-up-directory
         :n "H"     #'dirvish-history-go-backward
@@ -366,8 +365,19 @@
         :n "L"     #'dirvish-history-go-forward
         :n "o"     #'dirvish-quick-access
         :n "Y"     #'dirvish-copy-file-path
-        :n "z"     #'dirvish-ls-switches-menu
-        :n "/"     #'find-file))
+        :n "/"     #'find-file
+        (:localleader
+         :desc "chmod"           "c" #'drivish-chxx-menu
+         :desc "fd"              "f" #'dirvish-fd
+         :desc "fd menu"         "F" #'dirvish-fd-switches-menu
+         :desc "Group files"     "g" #'dirvish-emerge-menu
+         :desc "Git menu"        "G" #'dirvish-vc-menu
+         :desc "Hide/omit files" "h" #'dired-omit-mode
+         :desc "ls menu"         "l" #'dirvish-ls-switches-menu
+         :desc "Mark menu"       "m" #'dirvish-mark-menu
+         :desc "Renaming menu"   "r" #'dirvish-renaming-menu
+         :desc "Setup dirvish"   "s" #'dirvish-setup-menu
+         :desc "Subtree menu"    "S" #'dirvish-subtree-menu)))
 
 (after! dirvish-side
   (dirvish-side-follow-mode +1))
