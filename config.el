@@ -365,19 +365,22 @@
         :n "L"     #'dirvish-history-go-forward
         :n "o"     #'dirvish-quick-access
         :n "Y"     #'dirvish-copy-file-path
-        :n "/"     #'find-file
-        (:localleader
-         :desc "chmod"           "c" #'drivish-chxx-menu
-         :desc "fd"              "f" #'dirvish-fd
-         :desc "fd menu"         "F" #'dirvish-fd-switches-menu
-         :desc "Group files"     "g" #'dirvish-emerge-menu
-         :desc "Git menu"        "G" #'dirvish-vc-menu
-         :desc "Hide/omit files" "h" #'dired-omit-mode
-         :desc "ls menu"         "l" #'dirvish-ls-switches-menu
-         :desc "Mark menu"       "m" #'dirvish-mark-menu
-         :desc "Renaming menu"   "r" #'dirvish-renaming-menu
-         :desc "Setup dirvish"   "s" #'dirvish-setup-menu
-         :desc "Subtree menu"    "S" #'dirvish-subtree-menu)))
+        :n "/"     #'find-file)
+
+  ;; Descriptions only work when bound to `major-mode' map
+  (map! :map dired-mode-map
+        :localleader
+        :desc "chmod"           "c" #'drivish-chxx-menu
+        :desc "fd"              "f" #'dirvish-fd
+        :desc "fd menu"         "F" #'dirvish-fd-switches-menu
+        :desc "Group files"     "g" #'dirvish-emerge-menu
+        :desc "Git menu"        "G" #'dirvish-vc-menu
+        :desc "Hide/omit files" "h" #'dired-omit-mode
+        :desc "ls menu"         "l" #'dirvish-ls-switches-menu
+        :desc "Mark menu"       "m" #'dirvish-mark-menu
+        :desc "Renaming menu"   "r" #'dirvish-renaming-menu
+        :desc "Setup dirvish"   "s" #'dirvish-setup-menu
+        :desc "Subtree menu"    "S" #'dirvish-subtree-menu))
 
 (after! dirvish-side
   (dirvish-side-follow-mode +1))
@@ -823,12 +826,18 @@ Also used by `org-modern-mode' to calculate heights.")
     (advice-add symbol :after #'dtm-lagging-point-reset))
 
   ;; ESS R keybindings, make < add a <-, type twice to undo (same goes for >)
-  (map! (:map ess-mode-map
+  (map! (:map ess-r-mode-map
          :nv [C-return] #'ess-eval-region-or-line-and-step
-         (:localleader
-          :desc "Eval symbol at point" "." #'dtm/ess-eval-symbol-at-point
-          :desc "Source current file"  "s" #'ess-load-file
-                                       "S" #'ess-switch-process))
+         :localleader
+         :desc "Eval reg|func|para"         "e" #'ess-eval-region-or-function-or-paragraph
+         :desc "Environment list R objects" "E" #'ess-rdired
+         :desc "Source current file"        "s" #'ess-load-file
+                                            "S" #'ess-switch-process
+         :desc "Eval symbol at point"       "." #'dtm/ess-eval-symbol-at-point)
+
+        (:map (ess-r-mode-map inferior-ess-r-mode-map)
+         :i "<" #'dtm/ess-r-insert-assign
+         :i ">" #'dtm/ess-r-insert-pipe)
 
         (:map inferior-ess-mode-map
          :localleader
@@ -842,19 +851,10 @@ Also used by `org-modern-mode' to calculate heights.")
 
         ;; REVIEW https://github.com/doomemacs/doomemacs/pull/6455
         (:map ess-roxy-mode-map
-         :i "RET" #'ess-indent-new-comment-line)
-
-        (:map ess-r-mode-map
-         :localleader
-         :desc "Eval reg|func|para" "e" #'ess-eval-region-or-function-or-paragraph
-         :desc "Environment list R objects" "E" #'ess-rdired)
-
-        (:map (ess-r-mode-map inferior-ess-r-mode-map)
-         :i "<" #'dtm/ess-r-insert-assign
-         :i ">" #'dtm/ess-r-insert-pipe)))
+         :i "RET" #'ess-indent-new-comment-line)))
 
 (after! ess-s-lang
-  ;; Imenu search entries, best invoked with =consult-imenu= (SPC s i)
+  ;; Imenu search entries, best invoked with `consult-imenu' (SPC s i)
   (add-to-list 'ess-imenu-S-generic-expression
                '("Section" "^\\(#+ [^\n]+\\) ----+" 1)))
 
@@ -876,8 +876,7 @@ Also used by `org-modern-mode' to calculate heights.")
 
   ;; Python keybindings
   (map! :map python-mode-map
-        :localleader
-        :desc "Send file to REPL" "f" #'python-shell-send-file))
+        :desc "Send file to REPL" :localleader "f" #'python-shell-send-file))
 
 ;; Snakefiles in python mode
 (pushnew! auto-mode-alist
