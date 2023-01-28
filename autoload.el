@@ -549,6 +549,12 @@ The DATE is derived from the #+title which must match the Org date format."
           (- (* 2 scale) 0.1))
     (pdf-view-redisplay t)))
 
+;;;###autoload
+(defun dtm/org-noter-insert-maybe ()
+  "Call `org-noter-insert-note' if `org-noter-doc-mode' is active."
+  (interactive)
+  (when org-noter-doc-mode (call-interactively #'org-noter-insert-note)))
+
 ;;* Vterm
 ;;;###autoload
 (defun dtm-vterm-redraw-cursor-a (orig-fn &rest args)

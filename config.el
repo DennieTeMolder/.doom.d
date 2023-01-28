@@ -670,10 +670,7 @@ Also used by `org-modern-mode' to calculate heights.")
 
   ;; The pdf-view major mode overwrites the i binding with =ignore= for all minor modes
   ;; This works around that by incorporating the binding into the major mode
-  (map! :map pdf-view-mode-map
-        :desc "Insert org note" :n "i" (cmd! (if org-noter-doc-mode
-                                                 (org-noter-insert-note)
-                                               (ignore)))))
+  (map! :map pdf-view-mode-map :n "i" #'dtm/org-noter-insert-maybe))
 
 (after! pdf-tools
   ;; Distinguish current match
