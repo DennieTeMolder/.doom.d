@@ -805,7 +805,11 @@ Also used by `org-modern-mode' to calculate heights.")
     [((identifier) @boolean
       (.eq? @boolean "T"))
      ((identifier) @boolean
-      (.eq? @boolean "F"))])
+      (.eq? @boolean "F"))
+     ((call function: (identifier) @keyword)
+      (.eq? @keyword "stop"))
+     ((call function: (identifier) @keyword)
+      (.eq? @keyword "return"))])
 
   ;; Make inferior buffer not take focus on startup
   (advice-add 'ess-switch-to-inferior-or-script-buffer :around #'dtm-ess-switch-maybe-a)

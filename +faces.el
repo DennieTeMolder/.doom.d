@@ -22,6 +22,11 @@
   "Face for repeats (for, while)."
   :group 'tree-sitter-hl-faces)
 
+(defface tree-sitter-hl-face:keyword.function
+  '((t :inherit font-lock-keyword-face))
+  "Face for repeats (for, while)."
+  :group 'tree-sitter-hl-faces)
+
 (defface tree-sitter-hl-face:namespace
   '((t :inherit font-lock-doc-face
      :slant italic))
