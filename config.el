@@ -843,7 +843,8 @@ Also used by `org-modern-mode' to calculate heights.")
         (:map inferior-ess-mode-map
          :localleader
          "TAB" #'ess-switch-to-inferior-or-script-buffer
-         "x r" #'inferior-ess-reload)
+         "x r" #'inferior-ess-reload
+         "h h" #'ess-display-help-on-object)
 
         (:map ess-debug-minor-mode-map
          "M-S" #'dtm/ess-debug-command-step
