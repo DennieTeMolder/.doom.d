@@ -756,7 +756,7 @@ Also used by `org-modern-mode' to calculate heights.")
   (unbind-key "y" lispy-mode-map)
 
   ;; Define custom special key for stepping into lists/deleting marked regions
-  (lispy-define-key lispy-mode-map "i" 'dtm/lispy-step-into)
+  (lispy-define-key lispy-mode-map "i" #'dtm/lispy-step-into)
 
   ;; Rebind the key previously on "i"
   (map! :map lispy-mode-map "TAB" #'special-lispy-tab))
