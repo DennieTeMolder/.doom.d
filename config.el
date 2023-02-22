@@ -12,7 +12,7 @@
 ;;* Doom preamble
 ;; Some functionality uses this to identify you, e.g. GPG configuration, email
 ;; clients, file templates and snippets. It is optional.
-(setq user-full-name "John Doe"
+(setq user-full-name "Dennie te Molder"
       user-mail-address "john@doe.com")
 
 ;; Doom exposes five (optional) variables for controlling fonts in Doom:
@@ -572,10 +572,10 @@ Also used by `org-modern-mode' to calculate heights.")
   (advice-add 'org-tree-slide-mode :around #'dtm-org-tree-slide-no-squiggles-a)
 
   (map! :map org-tree-slide-mode-map
-        :gn "q" (cmd! (org-tree-slide-mode -1))
-        :gn [left] #'org-tree-slide-move-previous-tree
-        :gn [right] #'org-tree-slide-move-next-tree
-        :gn [C-up] #'org-tree-slide-content))
+        :n "q" (cmd! (org-tree-slide-mode -1))
+        :n [left] #'org-tree-slide-move-previous-tree
+        :n [right] #'org-tree-slide-move-next-tree
+        :n [C-up] #'org-tree-slide-content))
 
 ;; Org-download settings
 (after! org-download
@@ -682,26 +682,26 @@ Also used by `org-modern-mode' to calculate heights.")
   (add-to-list 'evil-snipe-disabled-modes 'pdf-view-mode)
 
   (map! (:map pdf-view-mode-map
-         :gn "C-e" #'pdf-view-scroll-down-or-previous-page
-         :gn "C-s" #'isearch-forward-word
-         :gn "S"   #'dtm/pdf-view-fit-half-height
-         :gn "s r" #'image-rotate
+         :n "C-e" #'pdf-view-scroll-down-or-previous-page
+         :n "C-s" #'isearch-forward-word
+         :n "S"   #'dtm/pdf-view-fit-half-height
+         :n "s r" #'image-rotate
          :v  "h"   #'pdf-annot-add-highlight-markup-annotation
          :v  "s"   #'pdf-annot-add-strikeout-markup-annotation
          :v  "u"   #'pdf-annot-add-underline-markup-annotation
          (:prefix "s"
-          :desc "Slice original"     :gn "o" #'pdf-view-reset-slice
-          :desc "Slice bounding box" :gn "b" #'pdf-view-set-slice-from-bounding-box
-          :desc "Slice using mouse"  :gn "m" #'pdf-view-set-slice-using-mouse)
+          :desc "Slice original"     :n "o" #'pdf-view-reset-slice
+          :desc "Slice bounding box" :n "b" #'pdf-view-set-slice-from-bounding-box
+          :desc "Slice using mouse"  :n "m" #'pdf-view-set-slice-using-mouse)
          (:prefix "C-c"
           :desc "Add Note"          "a" #'pdf-annot-add-text-annotation
           :desc "Delete Annotation" "d" #'pdf-annot-delete))
 
         (:map pdf-history-minor-mode-map
-         :gn "<tab>"     #'pdf-history-backward
-         :gn "<backtab>" #'pdf-history-forward
-         :gn [mouse-8]   #'pdf-history-backward
-         :gn [mouse-9]   #'pdf-history-forward)))
+         :g "<tab>"     #'pdf-history-backward
+         :g "<backtab>" #'pdf-history-forward
+         :g [mouse-8]   #'pdf-history-backward
+         :g [mouse-9]   #'pdf-history-forward)))
 
 ;; LaTeX settings
 (after! tex-mode
