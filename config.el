@@ -685,11 +685,11 @@ Also used by `org-modern-mode' to calculate heights.")
          :n "C-e" #'pdf-view-scroll-down-or-previous-page
          :n "C-s" #'isearch-forward-word
          :n "S"   #'dtm/pdf-view-fit-half-height
-         :n "s r" #'image-rotate
-         :v  "h"   #'pdf-annot-add-highlight-markup-annotation
-         :v  "s"   #'pdf-annot-add-strikeout-markup-annotation
-         :v  "u"   #'pdf-annot-add-underline-markup-annotation
+         :v "h"   #'pdf-annot-add-highlight-markup-annotation
+         :v "s"   #'pdf-annot-add-strikeout-markup-annotation
+         :v "u"   #'pdf-annot-add-underline-markup-annotation
          (:prefix "s"
+          :desc "Rotate page"        :n "r" #'image-rotate
           :desc "Slice original"     :n "o" #'pdf-view-reset-slice
           :desc "Slice bounding box" :n "b" #'pdf-view-set-slice-from-bounding-box
           :desc "Slice using mouse"  :n "m" #'pdf-view-set-slice-using-mouse)
@@ -698,10 +698,10 @@ Also used by `org-modern-mode' to calculate heights.")
           :desc "Delete Annotation" "d" #'pdf-annot-delete))
 
         (:map pdf-history-minor-mode-map
-         :g "<tab>"     #'pdf-history-backward
-         :g "<backtab>" #'pdf-history-forward
-         :g [mouse-8]   #'pdf-history-backward
-         :g [mouse-9]   #'pdf-history-forward)))
+         :n "<tab>"     #'pdf-history-backward
+         :n "<backtab>" #'pdf-history-forward
+         :n [mouse-8]   #'pdf-history-backward
+         :n [mouse-9]   #'pdf-history-forward)))
 
 ;; LaTeX settings
 (after! tex-mode
