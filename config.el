@@ -52,7 +52,7 @@
 (defvar dtm-last-hour-of-day 17)
 (defvar dtm-day-theme 'doom-one-light)
 (defvar dtm-night-theme 'doom-vibrant)
-(defvar dtm-presentation-theme 'doom-ayu-light)
+(defvar dtm-presentation-theme 'doom-tomorrow-day)
 (defvar dtm-solarized-theme 'doom-flatwhite)
 (defvar dtm-dark-theme 'doom-monokai-ristretto)
 
