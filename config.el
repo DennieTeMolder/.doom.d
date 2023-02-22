@@ -744,7 +744,9 @@ Also used by `org-modern-mode' to calculate heights.")
 (after! elisp-refs
   (add-hook 'elisp-refs-mode-hook #'hide-mode-line-mode)
 
-  (map! :map elisp-refs-mode-map :gn "RET" #'elisp-refs-visit-match-other-window))
+  ;; Open files in other window to preserve the popup window
+  (advice-add 'elisp-refs--find-file :override #'dtm-elisp-refs--find-file-a)
+  (map! :map elisp-refs-mode-map :n "RET" #'elisp-refs-visit-match-other-window))
 
 (after! lispy
   ;; Prettier function evaluation

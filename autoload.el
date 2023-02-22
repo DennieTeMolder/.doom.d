@@ -1007,3 +1007,11 @@ See `ctrlf-split-fuzzy' for how INPUT is split into subinputs.
 Each subinput is quoted and the results are joined with \".*\n*.*\".
 This enables the each word of the query to be on a consecutive non-blank line."
   (string-join (mapcar #'regexp-quote (ctrlf-split-fuzzy input)) ".*\n*.*"))
+
+;;* Elisp-refs
+;;;###autoload
+(defun dtm-elisp-refs--find-file-a (button)
+  "Open the file referenced by BUTTON in the other window.
+Intended as :around advice for `elisp-refs--find-file'."
+  (find-file-other-window (button-get button 'path))
+  (goto-char (point-min)))
