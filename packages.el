@@ -48,8 +48,6 @@
 ;(unpin! pinned-package another-pinned-package)
 ;; ...Or *all* packages (NOT RECOMMENDED; will likely break things)
 ;(unpin! t)
-(unpin! dirvish)
-(unpin! tree-sitter-langs)
 
 ;;; Doom modifications
 ;; Evil-escape will exit insert state after a key sequence ("jk")
@@ -76,8 +74,7 @@
 
 ;; Custom template expansion, fully disable yasnippet
 ;; See: (doom-package-depending-on 'yasnippet)
-;; REVIEW unpin after `compat' package bump
-(package! tempel :pin "9a25bacc16eac8b83c1bef1aefa0be27cfa8a762")
+(package! tempel)
 (package! yasnippet :ignore t)
 (package! company-auctex :disable t)
 
