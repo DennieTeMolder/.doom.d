@@ -731,7 +731,9 @@ Also used by `org-modern-mode' to calculate heights.")
   (add-hook! 'compilation-mode-hook (visual-line-mode +1)))
 
 (after! tree-sitter
-  (custom-set-faces! '(tree-sitter-hl-face:number :inherit highlight-numbers-number)))
+  (custom-set-faces!
+    '(tree-sitter-hl-face:number :inherit highlight-numbers-number)
+    '(tree-sitter-hl-face:type.builtin :inherit font-lock-warning-face :weight bold)))
 
 (when (modulep! :lang emacs-lisp)
   ;; REVIEW fix the doom custom "Section" imenu entry
@@ -808,6 +810,8 @@ Also used by `org-modern-mode' to calculate heights.")
       (.eq? @boolean "F"))
      ((call function: (identifier) @keyword)
       (.eq? @keyword "stop"))
+     ((call function: (identifier) @keyword)
+      (.eq? @keyword "warning"))
      ((call function: (identifier) @keyword)
       (.eq? @keyword "return"))])
 
