@@ -796,6 +796,7 @@ Also used by `org-modern-mode' to calculate heights.")
 (after! ess
   ;; Use current dir for session
   (setq ess-ask-for-ess-directory nil
+        ess-startup-directory-function #'dtm-ess-startup-dir
         ess-style 'RStudio)
 
   ;; Add company-R-library backend

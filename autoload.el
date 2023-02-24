@@ -628,6 +628,11 @@ https://www.reddit.com/r/emacs/comments/op4fcm/send_command_to_vterm_and_execute
   (dtm-ess-insert-string "%>%"))
 
 ;;;###autoload
+(defun dtm-ess-startup-dir ()
+  "Returns `default-directory' unless in `ess-r-package-mode'."
+  (unless ess-r-package-mode default-directory))
+
+;;;###autoload
 (defun dtm-ess-switch-maybe-a (orig-fn TOGGLE-EOB)
   "Only switch to the REPL if it was already visible"
   (let* ((starting-window (selected-window))
