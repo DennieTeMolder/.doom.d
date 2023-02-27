@@ -219,7 +219,7 @@
 ;;* Doom Core Package Settings
 (after! evil
   ;; Indicate `evil-repeat' to ignore certain commands because they freeze emacs
-  (dtm-evil-repeat-ignore '+workspace/switch-left '+workspace/switch-right)
+  (dtm-evil-repeat-ignore #'+workspace/switch-left #'+workspace/switch-right)
 
   ;; Enable granular undo (remembers delete actions during insert state)
   (setq evil-want-fine-undo t
@@ -502,6 +502,9 @@ Also used by `org-modern-mode' to calculate heights.")
   (custom-set-faces!
     '(org-ellipsis :foreground nil :background nil :weight regular)
     '(org-headline-done :strike-through t))
+
+  ;; Mark tab-navigation through tables as non-repeatable
+  (dtm-evil-repeat-ignore #'org-cycle)
 
   ;; Enable hard wrapping and automate paragraph filling
   ;; Allow for double quoting using '' and `` (`` -> “)
