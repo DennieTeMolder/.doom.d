@@ -331,6 +331,7 @@
 
 (after! dirvish
   (setq dirvish-reuse-session nil
+        dirvish-mode-line-height doom-modeline-height
         dirvish-attributes
         '(vc-state subtree-state all-the-icons file-time file-size)
         dirvish-mode-line-format
@@ -370,7 +371,7 @@
   ;; Descriptions only work when bound to `major-mode' map
   (map! :map dired-mode-map
         :localleader
-        :desc "chmod"           "c" #'drivish-chxx-menu
+        :desc "chmod"           "c" #'dirvish-chxxx-menu
         :desc "fd"              "f" #'dirvish-fd
         :desc "fd menu"         "F" #'dirvish-fd-switches-menu
         :desc "Group files"     "g" #'dirvish-emerge-menu
