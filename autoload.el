@@ -926,19 +926,13 @@ Based on `+popup/diagnose'."
 
 ;;* Dirvish
 ;;;###autoload
-(defun dtm/dirvish-side (&optional path)
-  "Modified `dirvish-side' that always closes the window if visible."
-  (interactive (list (and current-prefix-arg
-                          (read-directory-name "Open sidetree: "))))
-  (if (not (fboundp 'dirvish-side--session-visible-p))
-      (dirvish-side)                    ;Trigger lazy loading
-    (let ((fullframep (when-let ((dv (dirvish-curr))) (car (dv-layout dv))))
-          (visible (dirvish-side--session-visible-p))
-          (path (or path (dirvish--get-project-root) default-directory)))
-      (cond (fullframep (user-error "Can not create side session here"))
-            (visible (progn (select-window visible)
-                            (dirvish-quit)))
-            (t (dirvish-side--new path))))))
+(defun dtm/dirvish-side ()
+  "Wrapper for `dirvish-side' that always closes the window if visible."
+  (interactive)
+  (if-let (window (and (fboundp 'dirvish-side--session-visible-p)
+                       (dirvish-side--session-visible-p)))
+      (progn (select-window window) (dirvish-quit))
+    (call-interactively #'dirvish-side)))
 
 ;;* Tempel
 ;;;###autoload
