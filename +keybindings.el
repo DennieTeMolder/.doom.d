@@ -77,6 +77,7 @@
       "/" nil ; Unbind `+default/search-project' (also bound to "SPC s p")
       (:prefix ("/" . "popup")
        :desc "Show/hide popup" "/" #'+popup/toggle
+       :desc "Switch popup"    "." #'dtm/switch-popup-buffer
        :desc "Buffer to popup" "b" #'+popup/buffer
        :desc "Kill popup"      "k" #'dtm/popup-kill
        :desc "Popup to buffer" "r" #'dtm/popup-raise))
