@@ -40,6 +40,9 @@
        :desc "Show undo history"        "h"   #'vundo
        :desc "Switch orphan buffer"     "o"   #'dtm/switch-orphan-buffer)
 
+      ;; Help
+      "h t" #'dtm/consult-theme
+
       ;; Insert
       :desc "snippet" "i s" #'tempel-insert
 
@@ -62,7 +65,6 @@
        :desc "GhostText server"    "G" #'dtm/atomic-chrome-toggle-server
        :desc "Log interactions"    "L" #'dtm/interaction-log-mode-w-buffer
        :desc "Margin (left)"       "M" #'dtm/window-toggle-left-margin
-       :desc "Recommend theme"     "R" #'dtm/load-recommended-theme
        :desc "Smooth scrolling"    "S" #'good-scroll-mode
        :desc "Trash deleted files" "T" #'dtm/toggle-trash-delete)
 

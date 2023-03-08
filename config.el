@@ -47,7 +47,7 @@
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
 
-;; Settings used by `dtm/recommend-theme' to determine theme
+;; Settings used by `dtm/consult-theme' to determine the default selection
 (defvar dtm-first-hour-of-day 8)
 (defvar dtm-last-hour-of-day 17)
 (defvar dtm-day-theme 'doom-one-light)

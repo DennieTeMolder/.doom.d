@@ -36,6 +36,11 @@ If NAME is not provided `buffer-file-name' is used."
   (let ((name (file-name-base (or fname buffer-file-name))))
     (capitalize (replace-regexp-in-string "[^A-Za-z0-9]+" " " name))))
 
+(defun dtm-cl-replace-key (key replacement lst)
+  "Overwrite the value of KEY in LIST with REPLACEMENT."
+  (when-let ((pos (cl-position key lst)))
+    (setf (nth (1+ pos) lst) replacement)))
+
 ;;* Buffer functions
 (defun dtm-buffer-remote-p (&optional buf)
   "Returns t if BUF belongs to a remote directory."
@@ -82,22 +87,21 @@ If NAME is not provided `buffer-file-name' is used."
          (dtm--theme-which-inactive dtm-day-theme dtm-solarized-theme)
        (dtm--theme-which-inactive dtm-night-theme dtm-dark-theme)))))
 
-(defun dtm--load-theme-confirm (theme)
-  "Load THEME after user confirmation."
-  (when (y-or-n-p (format "Activate \"%s\" theme?" theme))
-    (mapc #'disable-theme custom-enabled-themes)
-    (if (custom-theme-p theme)
-        (enable-theme theme)
-      (load-theme theme :no-confirm))
-    ;; Reload silently to remove artefacts
-    (let ((inhibit-message t))
-      (doom/reload-theme))))
-
 ;;;###autoload
-(defun dtm/load-recommended-theme ()
-  "Load the theme returned by `dtm-recommend-theme' after user confirmation."
+(defun dtm/consult-theme ()
+  "Call `consult-theme' interactively with `dtm-recommend-theme' as default.
+This is achieved by locally redefining `consult--read'.
+Ref: https://nullprogram.com/blog/2017/10/27/"
   (interactive)
-  (dtm--load-theme-confirm (dtm-recommend-theme)))
+  (require 'consult)
+  (cl-letf* ((orig-fn (symbol-function 'consult--read))
+             ((symbol-function 'consult--read)
+              (lambda (&rest args)
+                (dtm-cl-replace-key :default (symbol-name (dtm-recommend-theme)) args)
+                (apply orig-fn args))))
+    (call-interactively #'consult-theme)
+    (when (bound-and-true-p org-tree-slide-mode)
+      (redraw-frame))))
 
 ;;* UI
 ;;;###autoload
