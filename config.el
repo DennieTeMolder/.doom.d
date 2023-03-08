@@ -410,6 +410,10 @@
           :internal-border-width 1
           :internal-border-color "#51afef")))
 
+(after! magit-todos
+  ;; Show more todo items (SPC p t)
+  (setq magit-todos-max-items 20))
+
 ;;* Doom Core Package Extensions
 ;; Add colours to info pages to make them more readable
 (use-package! info-colors
