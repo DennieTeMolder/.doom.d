@@ -365,12 +365,13 @@ The additional markup used in doom-style org documents causes rendering issues."
         (mixed-pitch-mode +1)
         (+org-pretty-mode +1)
         (org-appear-mode -1)
+        (add-hook! 'minibuffer-exit-hook :append #'redraw-frame)
         (add-hook! 'pdf-view-mode-hook :append #'org-tree-slide-mode))
     (progn
       (setq-local buffer-read-only nil)
       (mixed-pitch-mode -1)
-      (remove-hook! 'pdf-view-mode-hook #'org-tree-slide-mode)))
-  (redraw-display))
+      (remove-hook! 'minibuffer-exit-hook #'redraw-frame)
+      (remove-hook! 'pdf-view-mode-hook #'org-tree-slide-mode))))
 
 ;;;###autoload
 (defun dtm-org-tree-slide-no-squiggles-a (orig-fn &optional ARG)
