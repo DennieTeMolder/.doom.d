@@ -99,9 +99,7 @@ Ref: https://nullprogram.com/blog/2017/10/27/"
               (lambda (&rest args)
                 (dtm-cl-replace-key :default (symbol-name (dtm-recommend-theme)) args)
                 (apply orig-fn args))))
-    (call-interactively #'consult-theme)
-    (when (bound-and-true-p org-tree-slide-mode)
-      (redraw-frame))))
+    (call-interactively #'consult-theme)))
 
 ;;* UI
 ;;;###autoload
