@@ -92,7 +92,6 @@
 (package! xr)
 (package! info-colors)
 (package! ctrlf)
-(package! org-appear
-  :recipe (:host github :repo "awth13/org-appear"))
+(package! org-appear)
 (package! indent-tools
   :recipe (:host github :repo "DennieTeMolder/indent-tools"))
