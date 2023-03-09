@@ -687,29 +687,49 @@ Equivalent to 's' at the R prompt."
     (ess-send-string (ess-get-process) "s")))
 
 ;;* Conda
-(defun dtm--conda-env-promt-activate (env-name &optional silent)
-  "If conda environment with ENV-NAME is not activated, prompt the user to do so.
-Unless SILENT is t the user is notified when ENV-NAME is already active."
-  (if (string= env-name conda-env-current-name)
-      (unless silent (message "The %s environment is already active" env-name))
-    (when (y-or-n-p (format "Activate conda env: %s?" env-name))
-      (conda-env-activate (conda-env-name-to-dir env-name)))))
+(defun dtm-conda-infer-env-path ()
+  "Returns the path found by `conda-env-activate-for-buffer' without activating."
+  (cl-letf ((conda-message-on-environment-switch nil)
+            ((symbol-function 'conda-env-activate) #'identity))
+    (conda-env-activate-for-buffer)))
+
+(defun dtm-conda-path-promt-activate (env-path)
+  "Prompt to activate ENV-PATH if not already active."
+  (unless (string= env-path conda-env-current-path)
+    (when (y-or-n-p (format "Activate Conda env: %s?"
+                            (conda-env-dir-to-name env-path)))
+      (conda-env-activate env-path))))
+
+;;;###autoload
+(defun dtm-conda-env-guess-prompt-h ()
+  "Prompt the user to activate the inferred conda env.
+Respects the value of `conda-activate-base-by-default'"
+  (when (and (eq major-mode 'python-mode)
+             (not non-essential)
+             (not (dtm-buffer-remote-p)))
+    (when-let ((path (dtm-conda-infer-env-path)))
+      (dtm-conda-path-promt-activate path))))
 
 ;;;###autoload
 (defun dtm/conda-env-guess-prompt ()
   "Guess the currently relevant conda env and prompt user to activate it"
   (interactive)
-  (dtm--conda-env-promt-activate (conda--infer-env-from-buffer)))
+  (require 'conda)
+  (if-let* ((conda-activate-base-by-default t)
+            (path (dtm-conda-infer-env-path)))
+      (dtm-conda-path-promt-activate path)
+    (message "No Conda environment found for <%s>" (buffer-file-name))))
 
 ;;;###autoload
-(defun dtm-conda-env-guess-prompt-h ()
-  "Prompt the user to activate the relevant conda env if it is not \"base\"."
-  (when (and (eq major-mode 'python-mode)
-             (not non-essential)
-             (not (dtm-buffer-remote-p)))
-    (let ((ienv (conda--infer-env-from-buffer)))
-      (unless (string= ienv "base")
-        (dtm--conda-env-promt-activate ienv)))))
+(defun dtm-conda-call-json-a (orig-fn &rest args)
+  "Advice that forces `json-parse-string' to use nil to represent false.
+Intended as around advice for `conda--call-json'"
+  (require 'json)
+  (cl-letf* ((json-fn (symbol-function 'json-parse-string))
+             ((symbol-function 'json-parse-string)
+              (lambda (&rest ARGS)
+                (apply json-fn (dtm-cl-replace-key :false-object nil ARGS)))))
+    (apply orig-fn args)))
 
 ;;* atomic-chrome
 ;;;###autoload
