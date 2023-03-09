@@ -2,16 +2,23 @@
 
 ;;* Utility
 ;;;###autoload
+(defun dtm-doctor-running-p ()
+  "Returns t when the doom doctor CLI is running.
+Required because doctor sets `noninteractive' to nil."
+  (boundp 'doom-doctor--errors))
+
+;;;###autoload
 (defun dtm-file-local-readable-p (file)
   "Return non-nil if FILE is local and readable."
   (unless (file-remote-p file)
     (file-readable-p file)))
 
 ;;;###autoload
-(defun dtm-doctor-running-p ()
-  "Returns t when the doom doctor CLI is running.
-Required because doctor sets `noninteractive' to nil."
-  (boundp 'doom-doctor--errors))
+(defun dtm-file-name-as-title (&optional fname)
+  "Convert NAME to title by replacing _,... to space and capitalising.
+If NAME is not provided `buffer-file-name' is used."
+  (let ((name (file-name-base (or fname buffer-file-name))))
+    (capitalize (replace-regexp-in-string "[^A-Za-z0-9]+" " " name))))
 
 ;;;###autoload
 (defun dtm-evil-repeat-ignore (&rest symbol)
@@ -57,17 +64,11 @@ Required because doctor sets `noninteractive' to nil."
     (exchange-point-and-mark))
   (deactivate-mark))
 
-;;;###autoload
-(defun dtm-file-name-as-title (&optional fname)
-  "Convert NAME to title by replacing _,... to space and capitalising.
-If NAME is not provided `buffer-file-name' is used."
-  (let ((name (file-name-base (or fname buffer-file-name))))
-    (capitalize (replace-regexp-in-string "[^A-Za-z0-9]+" " " name))))
-
 (defun dtm-cl-replace-key (key replacement lst)
   "Overwrite the value of KEY in LIST with REPLACEMENT."
-  (when-let ((pos (cl-position key lst)))
-    (setf (nth (1+ pos) lst) replacement)))
+  (if-let ((pos (cl-position key lst)))
+      (progn (setf (nth (1+ pos) lst) replacement) lst)
+    (append lst (list key replacement))))
 
 ;;* Buffer functions
 (defun dtm-buffer-remote-p (&optional buf)
@@ -125,8 +126,9 @@ Ref: https://nullprogram.com/blog/2017/10/27/"
   (cl-letf* ((orig-fn (symbol-function 'consult--read))
              ((symbol-function 'consult--read)
               (lambda (&rest args)
-                (dtm-cl-replace-key :default (symbol-name (dtm-recommend-theme)) args)
-                (apply orig-fn args))))
+                (apply orig-fn (dtm-cl-replace-key
+                                :default (symbol-name (dtm-recommend-theme))
+                                args)))))
     (call-interactively #'consult-theme)))
 
 ;;* UI
