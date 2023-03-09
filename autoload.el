@@ -23,7 +23,28 @@ Required because doctor sets `noninteractive' to nil."
 
 (defun dtm-region-as-string ()
   "Return the marked region as string."
-  (buffer-substring-no-properties (mark) (point)))
+  (when (use-region-p)
+    (buffer-substring-no-properties (mark) (point))))
+
+(defun dtm-current-line-as-string ()
+  "Return the current line as string."
+  (buffer-substring-no-properties (line-beginning-position)
+                                  (line-end-position)))
+
+(defun dtm-line-empty-p ()
+  "Returns t if line contains no text or whitespace."
+  (eq (line-end-position) (line-beginning-position)))
+
+(defun dtm-buffer-end-p ()
+  "Return t if point is at end of buffer"
+  (eq (point) (buffer-end +1)))
+
+(defun dtm-forward-line-non-empty ()
+  "Move cursor to the start of the next non-empty line."
+  (forward-line)
+  (while (and (dtm-line-empty-p)
+              (not (dtm-buffer-end-p)))
+    (forward-line)))
 
 (defun dtm-point-mark-same-line-p ()
   "Returns t if point and mark are on the same line"
@@ -307,7 +328,7 @@ For use with `dired-isearch-filenames-mode-hook'."
 
 (defun dtm-org-get-title-value ()
   "Returns the value of #+TITLE for the current document"
-  (car (cdar (org-collect-keywords '("TITLE")))))
+  (cadar (org-collect-keywords '("TITLE"))))
 
 ;;;###autoload
 (defun dtm-org-download-method (link)
@@ -377,7 +398,8 @@ The additional markup used in doom-style org documents causes rendering issues."
 
 ;;;###autoload
 (defun dtm-org-tree-slide-no-squiggles-a (orig-fn &optional ARG)
-  "Toggle modes that litter the buffer with squiggly lines."
+  "Toggle modes that litter the buffer with squiggly lines.
+Intended as around advice for `org-tree-slide-mode'."
   (let ((ARG (if (memq ARG '(nil toggle))
                  (if org-tree-slide-mode -1 +1)
                ARG)))
@@ -395,7 +417,8 @@ The additional markup used in doom-style org documents causes rendering issues."
 ;;* Org-appear
 ;;;###autoload
 (defun dtm-org-pretty-use-appear-a ()
-  "Activate `org-appear-mode' based on `org-pretty-entities'."
+  "Activate `org-appear-mode' based on `org-pretty-entities'.
+Intended as after advice for `org-toggle-pretty-entities'."
   (org-appear-mode (if org-pretty-entities +1 -1)))
 
 ;;* Org-roam
@@ -568,7 +591,7 @@ Ref: https://github.com/akermu/emacs-libvterm/issues/313#issuecomment-1191400836
 
 ;;;###autoload
 (defun dtm-vterm-sync-cursor-a (&rest _)
-  "Keep vterm cursor position cosistent with evil.
+  "Keep vterm cursor position consistent with evil.
 Intended as before advice for `vterm-send-key'"
   (vterm-goto-char (point)))
 
@@ -619,15 +642,15 @@ https://www.reddit.com/r/emacs/comments/op4fcm/send_command_to_vterm_and_execute
           (t (insert mystr)))))
 
 ;;;###autoload
-(defun dtm/ess-r-insert-assign (arg)
+(defun dtm/ess-r-insert-assign ()
   "Rewrite of `ess-insert-assign' that respects white space, invoke twice to undo"
-  (interactive "p")
+  (interactive)
   (dtm-ess-insert-string "<-"))
 
 ;;;###autoload
-(defun dtm/ess-r-insert-pipe (arg)
+(defun dtm/ess-r-insert-pipe ()
   "Based on `ess-insert-assign', invoking the command twice reverts the insert"
-  (interactive "p")
+  (interactive)
   (dtm-ess-insert-string "%>%"))
 
 ;;;###autoload
@@ -887,16 +910,14 @@ Intended for `markdown-mode-hook'."
 (defun dtm/popup-raise ()
   "Wrapper for `+popup/raise' that will ensure a popup is selected."
   (interactive)
-  (unless (+popup-window-p)
-    (+popup/other))
+  (unless (+popup-window-p) (+popup/other))
   (call-interactively #'+popup/raise))
 
 ;;;###autoload
 (defun dtm/popup-kill ()
   "Kill the currently open popup."
   (interactive)
-  (unless (+popup-window-p)
-    (+popup/other))
+  (unless (+popup-window-p) (+popup/other))
   (+popup--remember (list (selected-window)))
   (kill-buffer-and-window))
 
