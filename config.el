@@ -924,7 +924,7 @@ Also used by `org-modern-mode' to calculate heights.")
          (:localleader
           :desc "Eval buffer"            "b"   #'elpy-shell-send-buffer
           :desc "Eval defun"             "d"   #'elpy-shell-send-defun
-          :desc "Eval line/statement"    "l"   #'elpy-shell-send-statement
+          :desc "Eval line"              "l"   #'dtm/elpy-send-statement-or-line
           :desc "Eval top statement"     "s"   #'elpy-shell-send-top-statement
           :desc "Print symbol or region" "."   #'dtm/elpy-print-symbol-or-region
           :desc "Switch to REPL"         "TAB" #'elpy-shell-switch-to-shell))

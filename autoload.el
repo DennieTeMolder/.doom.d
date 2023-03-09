@@ -50,6 +50,13 @@ Required because doctor sets `noninteractive' to nil."
   "Returns t if point and mark are on the same line"
   (<= (line-beginning-position) (mark) (line-end-position)))
 
+(defun dtm-deactivate-mark ()
+  "Run `deactivate-mark' keeping point at the left side of region."
+  (when (and (dtm-point-mark-same-line-p)
+             (< (mark) (point)))
+    (exchange-point-and-mark))
+  (deactivate-mark))
+
 ;;;###autoload
 (defun dtm-file-name-as-title (&optional fname)
   "Convert NAME to title by replacing _,... to space and capitalising.
@@ -865,29 +872,56 @@ Intended for `markdown-mode-hook'."
     (flycheck-disable-checker 'proselint)))
 
 ;;* Python
+(defun dtm-elpy-shell-send-string (str)
+  "Send STR to Python shell using `elpy-shell-send-buffer'.
+STR is first stripped and indented according to mode."
+  (with-temp-buffer
+    (insert (python-util-strip-string str))
+    (indent-according-to-mode)
+    (call-interactively #'elpy-shell-send-buffer)))
+
+;;;###autoload
+(defun dtm/elpy-send-region-and-step ()
+  "Send current region to Python shell, step if region is multi-line."
+  (interactive)
+  (unless (use-region-p)
+    (user-error "No valid active region!"))
+  (dtm-elpy-shell-send-string (dtm-region-as-string))
+  (dtm-deactivate-mark))
+
+;;;###autoload
+(defun dtm/elpy-send-statement-or-line ()
+  (interactive)
+  (if (python-info-statement-starts-block-p)
+      (call-interactively #'elpy-shell-send-statement)
+    (dtm-elpy-shell-send-string (dtm-current-line-as-string))))
+
+;;;###autoload
+(defun dtm/elpy-send-statement-or-line-and-step ()
+  (interactive)
+  (if (python-info-statement-starts-block-p)
+      (call-interactively #'elpy-shell-send-statement-and-step)
+    (dtm-elpy-shell-send-string (dtm-current-line-as-string))
+    (forward-line)))
+
 ;;;###autoload
 (defun dtm/elpy-send-current-and-step ()
-  "If region is active call `elpy-shell-send-region-or-buffer' else call `elpy-shell-send-statement-and-step'."
+  "Send current region, statement, or line to Python shell and step."
   (interactive)
-  (if (region-active-p)
-      (progn
-        (when (dtm-point-mark-same-line-p)
-          (exchange-point-and-mark))
-        (call-interactively #'elpy-shell-send-region-or-buffer)
-        (deactivate-mark))
-    (call-interactively #'elpy-shell-send-statement-and-step)))
+  (if (use-region-p)
+      (dtm/elpy-send-region-and-step)
+    (dtm/elpy-send-statement-or-line-and-step)))
 
 ;;;###autoload
 (defun dtm/elpy-print-symbol-or-region ()
-  "Prints the symbol at point or active region in the python REPL."
+  "Print the symbol at point or active region in the Python shell."
   (interactive)
-  (let* ((symbol (if (region-active-p)
-                     (dtm-region-as-string)
-                   (python-info-current-symbol)))
-         (command (concat "print(" symbol ")")))
-    (message "Sent: %s" command)
-    (elpy-shell--with-maybe-echo
-     (python-shell-send-string command))))
+  (let* ((reg (or (dtm-region-as-string)
+                  (python-info-current-symbol)))
+         (cmd (concat "print(" reg ")")))
+    (dtm-elpy-shell-send-string cmd))
+  (when (use-region-p)
+    (dtm-deactivate-mark)))
 
 ;;* Doom popup module
 ;;;###autoload
