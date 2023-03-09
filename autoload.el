@@ -598,33 +598,17 @@ Intended as before advice for `vterm-send-key'"
 ;;* Sh-mode
 ;;;###autoload
 (defun dtm/vterm-execute-current-line ()
-  "Insert text of current line in vterm and execute.
-Solution by thegodzeye:
-https://www.reddit.com/r/emacs/comments/op4fcm/send_command_to_vterm_and_execute_it/"
+  "Execute the current line in the vterm buffer."
   (interactive)
-  (require 'vterm)
-  (let ((command (buffer-substring
-                  (save-excursion
-                    (beginning-of-line)
-                    (point))
-                  (save-excursion
-                    (end-of-line)
-                    (point)))))
-    (let ((cbuf (current-buffer))
-          (vbuf (get-buffer vterm-buffer-name)))
-      (if vbuf
-          (progn
-            (unless (doom-visible-buffer-p vbuf)
-              (display-buffer vterm-buffer-name t))
-            (switch-to-buffer-other-window vterm-buffer-name))
-        (progn
-          (vterm-other-window)
-          (evil-normal-state)))
+  (when (dtm-line-empty-p) (dtm-forward-line-non-empty))
+  (+nav-flash-blink-cursor)
+  (let ((command (dtm-current-line-as-string)))
+    (save-selected-window
+      (vterm-other-window)
       (vterm--goto-line -1)
       (vterm-send-string command)
-      (vterm-send-return)
-      (switch-to-buffer-other-window cbuf)
-      (forward-line))))
+      (vterm-send-return)))
+  (dtm-forward-line-non-empty))
 
 ;;* ESS/R
 (defun dtm-ess-insert-string (mystr)
