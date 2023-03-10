@@ -701,12 +701,10 @@ Equivalent to 's' at the R prompt."
       (conda-env-activate env-path))))
 
 ;;;###autoload
-(defun dtm-conda-env-guess-prompt-h ()
+(defun dtm-conda-env-infer-prompt ()
   "Prompt the user to activate the inferred conda env.
 Respects the value of `conda-activate-base-by-default'"
-  (when (and (eq major-mode 'python-mode)
-             (not non-essential)
-             (not (dtm-buffer-remote-p)))
+  (unless (or non-essential (dtm-buffer-remote-p))
     (when-let ((path (dtm-conda-infer-env-path)))
       (dtm-conda-path-promt-activate path))))
 
@@ -1078,3 +1076,24 @@ This enables the each word of the query to be on a consecutive non-blank line."
 Intended as :around advice for `elisp-refs--find-file'."
   (find-file-other-window (button-get button 'path))
   (goto-char (point-min)))
+
+;;* Advice management
+(defun dtm-advice-list (symbol)
+  "Return the list of functions advising SYMBOL."
+  (let (result)
+    (advice-mapc (lambda (ad props) (push ad result))
+     symbol)
+    (nreverse result)))
+
+;;;###autoload
+(defun dtm/advice-remove (symbol advice)
+  "Remove ADVICE from SYMBOL, with interactive support.
+Ref: https://emacs.stackexchange.com/a/33344"
+  (interactive (let* ((sym (intern (completing-read "Function: " obarray #'dtm-advice-list t)))
+                      (advice (let ((advice-names
+                                     (mapcar (lambda (ad) (cons (prin1-to-string ad) ad))
+                                             (dtm-advice-list sym))))
+                                (cdr (assoc (completing-read "Remove advice: " advice-names nil t)
+                                            advice-names)))))
+                 (list sym advice)))
+  (advice-remove symbol advice))
