@@ -892,6 +892,22 @@ Intended for `markdown-mode-hook'."
     (flycheck-disable-checker 'proselint)))
 
 ;;* Python
+;;;###autoload
+(defun dtm-elpy-shell-get-doom-process-a (&optional sit)
+  "Obtain a Python process using `+python/open-repl'.
+Intended as override advice for `elpy-shell-get-or-create-process'.
+Also prompts to activate a Conda env if executable is found."
+  (if-let* ((bufname (format "*%s*" (python-shell-get-process-name nil)))
+            (proc (get-buffer-process bufname)))
+      proc
+    (when (and (fboundp #'conda--get-executable-path)
+               (ignore-errors (conda--get-executable-path)))
+      (when-let ((path (dtm-conda-infer-env-path)))
+        (dtm-conda-path-promt-activate path)))
+    (let ((buf (save-window-excursion (+python/open-repl))))
+      (when sit (sit-for sit))
+      (get-buffer-process buf))))
+
 (defun dtm-elpy-shell-send-string (str)
   "Send STR to Python shell using `elpy-shell-send-buffer'.
 STR is first stripped and indented according to mode."

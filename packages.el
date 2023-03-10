@@ -69,11 +69,6 @@
 (package! ess-view-data)
 (package! ess-r-insert-obj)
 
-;; Replace anaconda-mode with elpy
-(package! elpy)
-(package! anaconda-mode :disable t)
-(package! company-anaconda :disable t)
-
 ;; Custom template expansion, fully disable yasnippet
 ;; See: (doom-package-depending-on 'yasnippet)
 (package! tempel)
@@ -93,5 +88,7 @@
 (package! info-colors)
 (package! ctrlf)
 (package! org-appear)
+(package! elpy-shell
+  :recipe (:host github :repo "DennieTeMolder/elpy-shell"))
 (package! indent-tools
   :recipe (:host github :repo "DennieTeMolder/indent-tools"))

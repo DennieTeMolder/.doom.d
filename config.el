@@ -890,40 +890,26 @@ Also used by `org-modern-mode' to calculate heights.")
   (add-hook! 'python-mode-hook
              #'dtm-imenu-merge-index-h
              (setq-local imenu-generic-expression
-                         '(("Rule" "^rule \\(\\_<[^ \t():\n]+\\_>\\):" 1))))
-
-  ;; Python keybindings
-  (map! :map python-mode-map
-        :desc "Send file to REPL" :localleader "f" #'python-shell-send-file))
+                         '(("Rule" "^rule \\(\\_<[^ \t():\n]+\\_>\\):" 1)))))
 
 ;; Snakefiles in python mode
 (pushnew! auto-mode-alist
           '("Snakefile" . python-mode)
           '("\\.smk\\'" . python-mode))
 
-(use-package! elpy
-  :commands elpy-enable
-  :init
-  (advice-add 'python-mode :before #'elpy-enable)
+(use-package! elpy-shell
+  :after python
   :config
-  (setq elpy-shell-starting-directory 'current-directory
-        elpy-modules '(elpy-module-sane-defaults elpy-module-eldoc))
-
-  (set-company-backend! 'python-mode
-    'elpy-company-backend 'company-yasnippet)
-  (set-lookup-handlers! 'python-mode
-    :definition #'elpy-goto-definition
-    :references #'elpy-rgrep-symbol
-    :documentation #'elpy-doc
-    :async t)
-
-  (advice-add 'elpy-shell-switch-to-shell :after #'evil-normal-state)
+  ;; HACK use doom te create elpy process for pyenv support
+  (advice-add 'elpy-shell-get-or-create-process
+              :override #'dtm-elpy-shell-get-doom-process-a)
 
   (map! (:map python-mode-map
          :nv [C-return] #'dtm/elpy-send-current-and-step
          (:localleader
           :desc "Eval buffer"            "b"   #'elpy-shell-send-buffer
           :desc "Eval defun"             "d"   #'elpy-shell-send-defun
+          :desc "Send file to REPL"      "f"   #'python-shell-send-file
           :desc "Eval line"              "l"   #'dtm/elpy-send-statement-or-line
           :desc "Eval top statement"     "s"   #'elpy-shell-send-top-statement
           :desc "Print symbol or region" "."   #'dtm/elpy-print-symbol-or-region
