@@ -904,7 +904,7 @@ Also prompts to activate a Conda env if executable is found."
                (ignore-errors (conda--get-executable-path)))
       (when-let ((path (dtm-conda-infer-env-path)))
         (dtm-conda-path-promt-activate path)))
-    (let ((buf (save-window-excursion (+python/open-repl))))
+    (let ((buf (save-selected-window (+python/open-repl))))
       (when sit (sit-for sit))
       (get-buffer-process buf))))
 
