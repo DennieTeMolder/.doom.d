@@ -948,14 +948,17 @@ Also used by `org-modern-mode' to calculate heights.")
 
 ;;* Misc Packages
 ;; Smooth scrolling
+;; REVIEW activating mode with line numbers on seems to cause high CPU usage
+;; even in idle (https://github.com/io12/good-scroll.el/issues/31)
 (use-package! good-scroll
   :commands good-scroll-mode
   :init
-  ;; Override evil functions on mode activation, undo upon deactivation
-  (add-hook! 'good-scroll-mode-hook #'dtm-good-scroll-evil-override-h)
+  ;; Enable when not on laptop (can still be activated manually)
+  (unless IS-LAPTOP
+    (add-hook 'doom-first-buffer-hook #'good-scroll-mode))
 
-  ;; Auto enable only when not on laptop (can still be manually activated)
-  (unless IS-LAPTOP (good-scroll-mode +1))
+  ;; Override evil functions on mode activation, undo upon deactivation
+  (add-hook 'good-scroll-mode-hook #'dtm-good-scroll-evil-override-h)
 
   :config
   ;; Increase animation time and mouse scrolling sensitivity
