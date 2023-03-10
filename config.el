@@ -920,10 +920,6 @@ Also used by `org-modern-mode' to calculate heights.")
          :desc "Switch to script" "TAB" #'elpy-shell-switch-to-buffer)))
 
 (after! conda
-  ;; Similar to `conda-env-autoactivate-mode', but prompts before activation
-  (when (getenv "CONDA_EXE")
-    (add-hook! 'find-file-hook #'dtm-conda-env-guess-prompt-h))
-
   ;; BUG this fixes `conda--infer-env-from-buffer' returning 'base' instead of
   ;; nil if `conda-activate-base-by-default' is nil
   (advice-add 'conda--call-json :around #'dtm-conda-call-json-a)
