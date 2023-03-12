@@ -689,24 +689,27 @@ Equivalent to 's' at the R prompt."
 ;;* Conda
 (defun dtm-conda-infer-env-path ()
   "Returns the path found by `conda-env-activate-for-buffer' without activating."
-  (cl-letf ((conda-message-on-environment-switch nil)
-            ((symbol-function 'conda-env-activate) #'identity))
-    (conda-env-activate-for-buffer)))
+  (let ((conda-message-on-environment-switch nil)
+        (dtm-env-path nil))
+    (cl-letf (((symbol-function 'conda-env-activate)
+                (lambda (name) (setq dtm-env-path name))))
+      (conda-env-activate-for-buffer))
+    dtm-env-path))
 
-(defun dtm-conda-path-promt-activate (env-path)
+(defun dtm-conda-path-promt-activate (&optional env-path)
   "Prompt to activate ENV-PATH if not already active."
-  (unless (string= env-path conda-env-current-path)
-    (when (y-or-n-p (format "Activate Conda env: %s?"
-                            (conda-env-dir-to-name env-path)))
-      (conda-env-activate env-path))))
+  (when-let ((env-path (or env-path (dtm-conda-infer-env-path))))
+    (and (not (string= env-path conda-env-current-path))
+         (y-or-n-p (format "Activate Conda env: %s?"
+                           (conda-env-dir-to-name env-path)))
+         (conda-env-activate env-path))))
 
 ;;;###autoload
 (defun dtm-conda-env-infer-prompt ()
   "Prompt the user to activate the inferred conda env.
 Respects the value of `conda-activate-base-by-default'"
   (unless (or non-essential (dtm-buffer-remote-p))
-    (when-let ((path (dtm-conda-infer-env-path)))
-      (dtm-conda-path-promt-activate path))))
+    (dtm-conda-path-promt-activate)))
 
 ;;;###autoload
 (defun dtm/conda-env-guess-prompt ()
@@ -902,8 +905,7 @@ Also prompts to activate a Conda env if executable is found."
       proc
     (when (and (fboundp #'conda--get-executable-path)
                (ignore-errors (conda--get-executable-path)))
-      (when-let ((path (dtm-conda-infer-env-path)))
-        (dtm-conda-path-promt-activate path)))
+      (dtm-conda-path-promt-activate))
     (let ((buf (save-selected-window (+python/open-repl))))
       (when sit (sit-for sit))
       (get-buffer-process buf))))
