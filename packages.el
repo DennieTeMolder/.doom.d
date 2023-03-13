@@ -48,10 +48,12 @@
 ;(unpin! pinned-package another-pinned-package)
 ;; ...Or *all* packages (NOT RECOMMENDED; will likely break things)
 ;(unpin! t)
+
+;;* Unpins
 (unpin! dirvish)
 (unpin! conda)
 
-;;; Doom modifications
+;;* Doom modifications
 ;; Evil-escape will exit insert state after a key sequence ("jk")
 ;; Disable it as I am not using it and might create typing delay
 (package! evil-escape :disable t)
@@ -78,8 +80,7 @@
 ;; Only used by `lispy-occur'
 (package! swiper :ignore t)
 
-;;; Custom packages
-(package! org-modern)
+;;* Custom packages
 (package! good-scroll)
 (package! atomic-chrome)
 (package! vundo)
@@ -87,6 +88,7 @@
 (package! xr)
 (package! info-colors)
 (package! ctrlf)
+(package! org-modern)
 (package! org-appear)
 (package! elpy-shell
   :recipe (:host github :repo "DennieTeMolder/elpy-shell"))
