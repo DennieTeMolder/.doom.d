@@ -47,7 +47,7 @@
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
 
-;; Settings used by `dtm/consult-theme' to determine the default selection
+;; Settings for smart defaults in `dtm-recommend-theme' & `dtm/consult-theme'
 (defvar dtm-first-hour-of-day 8)
 (defvar dtm-last-hour-of-day 17)
 (defvar dtm-day-theme 'doom-one-light)
@@ -106,18 +106,12 @@
 
 
 ;;* Basic Settings
-;; Quit without confirmation
-(setq confirm-kill-emacs nil)
+(setq confirm-kill-emacs nil
+      delete-by-moving-to-trash t
+      text-scale-mode-step 1.1)
 
-;; Rudimentary settings
-(setq-default delete-by-moving-to-trash t
-              tab-width 4
-              text-scale-mode-step 1.1
-              uniquify-buffer-name-style 'forward
-              x-stretch-cursor t)
-
-;; Save clipboard to kill ring before deleting text
-;; Cycle kill ring using <C-p> or <C-n> after pasting
+;; Add clipboard to kill ring
+;; Cycle w/ <C-p> or <C-n> after pasting or use <M-y> `consult-yank-pop'
 (setq save-interprogram-paste-before-kill t)
 
 ;; Increase horizontal scroll (shift + mwheel) sensitivity
