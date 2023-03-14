@@ -317,8 +317,9 @@
   ;; REVIEW manually disable diff-hl hook until dirvish module is merged upstream
   (remove-hook 'dired-mode-hook #'diff-hl-dired-mode)
 
-  ;; Use ediff in dired instead of diff
-  (define-key dired-mode-map [remap dired-diff] #'dtm/dired-ediff))
+  ;; Custom overrides
+  (define-key dired-mode-map [remap dired-diff] #'dtm/dired-ediff)
+  (define-key dired-mode-map [remap dired-do-delete] #'dtm/dired-delete-marked))
 
 (after! dired-x
   (remove-hook 'dired-mode-hook #'dired-omit-mode))

@@ -295,6 +295,15 @@ https://github.com/purcell/ibuffer-projectile"
 
 ;;* Dired
 ;;;###autoload
+(defun dtm/dired-delete-marked ()
+  "Delete marked or current file(s), with C-u toggle `delete-by-moving-to-trash'."
+  (interactive)
+  (let ((delete-by-moving-to-trash (if current-prefix-arg
+                                       (not delete-by-moving-to-trash)
+                                     delete-by-moving-to-trash)))
+    (dired-do-delete)))
+
+;;;###autoload
 (defun dtm/dired-ediff ()
   "Compare file under cursor to file selected in prompt using Ediff"
   (interactive)
@@ -1107,11 +1116,12 @@ Intended as :around advice for `elisp-refs--find-file'."
 (defun dtm/advice-remove (symbol advice)
   "Remove ADVICE from SYMBOL, with interactive support.
 Ref: https://emacs.stackexchange.com/a/33344"
-  (interactive (let* ((sym (intern (completing-read "Function: " obarray #'dtm-advice-list t)))
-                      (advice (let ((advice-names
-                                     (mapcar (lambda (ad) (cons (prin1-to-string ad) ad))
-                                             (dtm-advice-list sym))))
-                                (cdr (assoc (completing-read "Remove advice: " advice-names nil t)
-                                            advice-names)))))
-                 (list sym advice)))
+  (interactive
+   (let* ((sym (intern (completing-read "Function: " obarray #'dtm-advice-list t)))
+          (advice (let ((advice-names
+                         (mapcar (lambda (ad) (cons (prin1-to-string ad) ad))
+                                 (dtm-advice-list sym))))
+                    (cdr (assoc (completing-read "Remove advice: " advice-names nil t)
+                                advice-names)))))
+     (list sym advice)))
   (advice-remove symbol advice))
