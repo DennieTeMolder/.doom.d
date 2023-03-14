@@ -1028,6 +1028,30 @@ Meant for hooking onto `prog-mode-hook' and `text-mode-hook'."
               (cons #'tempel-complete completion-at-point-functions)))
 
 ;;;###autoload
+(defun dtm/tempel-open-template-file ()
+  "Open the last file in `tempel-path' in the other window."
+  (interactive)
+  (let ((enable-local-variables :all))
+    (find-file-other-window (last tempel-path))
+    (goto-char (point-min))))
+
+;;;###autoload
+(defun dtm/tempel-add-template ()
+  "Open the last file in `tempel-path' & insert a heading for current major-mode."
+  (interactive)
+  (let ((mode (symbol-name major-mode)))
+    (dtm/tempel-open-template-file)
+    (goto-char (point-max))
+    (backward-char)
+    (while (doom-point-in-comment-p)
+      (forward-line -1))
+    (end-of-line)
+    (insert (concat "\n" mode "\n\n()\n"))
+    (backward-char 2)
+    (recenter)
+    (evil-insert-state)))
+
+;;;###autoload
 (defun dtm-tempel-complete-always ()
   "Trigger `tempel-complete' regardless if `tempel-trigger-prefix' is provided.
 Auto-expand on exact match."
