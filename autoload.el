@@ -1020,6 +1020,18 @@ Based on `+popup/diagnose'."
 
 ;;* Tempel
 ;;;###autoload
+(defun dtm-tempel-complete-always ()
+  "Trigger `tempel-complete' regardless if `tempel-trigger-prefix' is provided.
+Auto-expand on exact match."
+  (interactive)
+  (require 'tempel)
+  (let ((tempel-trigger-prefix (when (tempel--prefix-bounds) tempel-trigger-prefix)))
+    (call-interactively #'tempel-complete)
+    (when (and (not tempel--active)
+               (tempel-expand))
+      (call-interactively #'tempel-expand))))
+
+;;;###autoload
 (defun dtm-tempel-setup-capf-h ()
   "Add the Tempel Capf to `completion-at-point-functions'.
 Caution: make sure `tempel-trigger-prefix' is not nil.
@@ -1050,18 +1062,6 @@ Meant for hooking onto `prog-mode-hook' and `text-mode-hook'."
     (backward-char 2)
     (recenter)
     (evil-insert-state)))
-
-;;;###autoload
-(defun dtm-tempel-complete-always ()
-  "Trigger `tempel-complete' regardless if `tempel-trigger-prefix' is provided.
-Auto-expand on exact match."
-  (interactive)
-  (require 'tempel)
-  (let ((tempel-trigger-prefix (when (tempel--prefix-bounds) tempel-trigger-prefix)))
-    (call-interactively #'tempel-complete)
-    (when (and (not tempel--active)
-               (tempel-expand))
-      (call-interactively #'tempel-expand))))
 
 (defvar +file-templates-inhibit nil
   "If non-nil, inhibit file template expansion.
