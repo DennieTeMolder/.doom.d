@@ -123,10 +123,10 @@ This is achieved by locally redefining `consult--read'.
 Ref: https://nullprogram.com/blog/2017/10/27/"
   (interactive)
   (require 'consult)
-  (cl-letf* ((orig-fn (symbol-function 'consult--read))
+  (cl-letf* ((this-fn (symbol-function 'consult--read))
              ((symbol-function 'consult--read)
               (lambda (&rest args)
-                (apply orig-fn (dtm-cl-replace-key
+                (apply this-fn (dtm-cl-replace-key
                                 :default (symbol-name (dtm-recommend-theme))
                                 args)))))
     (call-interactively #'consult-theme)))

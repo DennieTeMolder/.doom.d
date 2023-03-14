@@ -41,8 +41,14 @@ emacs-lisp-mode
         "(advice-add #'" (p "fun") " " (p ":around") " #'" (s name) ")")
 (provide "(provide '" (file-name-base (or (buffer-file-name) (buffer-name))) ")" n
          ";;; " (file-name-nondirectory (or (buffer-file-name) (buffer-name))) " ends here" n)
+(letf "(cl-letf* ((this-fn (symbol-function '" (s fun) "))" n>
+                 "((symbol-function '" (s fun) ")" n>
+                  "(lambda (" p ")" n>
+                    p ")))" n>
+         r> ")")
 
 sh-mode
+
 (__ "#!/usr/bin/env bash" n)
 (for "for " p " in " p "; do" n> r> n "done")
 (if "if [ " p " ]; then" n> r> n "fi")
@@ -122,5 +128,5 @@ markdown-mode
 
 ;; Local Variables:
 ;; mode: lisp-data
-;; imenu-generic-expression: ((nil "^\\([A-za-z+-]+\\)" 1))
+;; imenu-generic-expression: ((nil "^\\([A-za-z+][A-za-z +-]+\\)" 1))
 ;; End:
