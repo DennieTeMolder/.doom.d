@@ -1018,6 +1018,15 @@ Based on `+popup/diagnose'."
       (progn (select-window window) (dirvish-quit))
     (call-interactively #'dirvish-side)))
 
+;;;###autoload
+(defun dtm/dirvish-copy-file-name ()
+  "Copy file name, or path with C-u. Also works for multiple marked files."
+  (interactive)
+  (call-interactively
+   (if current-prefix-arg
+       #'dirvish-copy-file-path
+     #'dirvish-copy-file-name)))
+
 ;;* Tempel
 ;;;###autoload
 (defun dtm-tempel-complete-always ()

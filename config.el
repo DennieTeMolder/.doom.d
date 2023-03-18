@@ -360,7 +360,7 @@
         :n "l"     #'dired-find-file
         :n "L"     #'dirvish-history-go-forward
         :n "o"     #'dirvish-quick-access
-        :n "Y"     #'dirvish-copy-file-path
+        :n "Y"     #'dtm/dirvish-copy-file-name
         :n "/"     #'find-file)
 
   ;; Descriptions only work when bound to `major-mode' map
