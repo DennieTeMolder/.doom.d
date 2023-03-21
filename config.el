@@ -361,7 +361,7 @@
         :n "L"     #'dirvish-history-go-forward
         :n "o"     #'dirvish-quick-access
         :n "Y"     #'dtm/dirvish-copy-file-name
-        :n "/"     #'find-file)
+        :n "/"     #'dtm/dirvish-find-entry)
 
   ;; Descriptions only work when bound to `major-mode' map
   (map! :map dired-mode-map

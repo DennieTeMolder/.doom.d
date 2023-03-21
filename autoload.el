@@ -1027,6 +1027,12 @@ Based on `+popup/diagnose'."
        #'dirvish-copy-file-path
      #'dirvish-copy-file-name)))
 
+;;;###autoload
+(defun dtm/dirvish-find-entry ()
+  "Like `find-file' but for use in dirvish buffers."
+  (interactive)
+  (dirvish-find-entry-a (car (find-file-read-args "Open: " t))))
+
 ;;* Tempel
 ;;;###autoload
 (defun dtm-tempel-complete-always ()
