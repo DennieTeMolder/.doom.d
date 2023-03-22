@@ -905,6 +905,8 @@ Also used by `org-modern-mode' to calculate heights.")
   ;; nil if `conda-activate-base-by-default' is nil
   (advice-add 'conda--call-json :around #'dtm-conda-call-json-a)
 
+  (add-hook 'compilation-mode-hook #'dtm-conda-env-infer-prompt)
+
   (map! :map (python-mode-map inferior-python-mode-map)
         :localleader :prefix ("c" . "Conda")
         :desc "Guess conda env" "g" #'dtm/conda-env-guess-prompt
