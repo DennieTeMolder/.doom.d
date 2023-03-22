@@ -381,10 +381,6 @@
 (after! dirvish-side
   (dirvish-side-follow-mode +1))
 
-(after! undo-fu
-  ;; Raise undo limit do 10 Mb (doom default: 40kb)
-  (setq undo-limit 10000000))
-
 (after! which-key
   (setq which-key-ellipsis ".."))
 
