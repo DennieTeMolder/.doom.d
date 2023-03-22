@@ -409,6 +409,9 @@
   ;; Show more todo items (SPC p t)
   (setq magit-todos-max-items 20))
 
+(after! vundo
+  (setq vundo-glyph-alist vundo-ascii-symbols))
+
 ;;* Doom Core Package Extensions
 ;; Add colours to info pages to make them more readable
 (use-package! info-colors
@@ -426,18 +429,6 @@
 ;; Reverse `rx' operation, for turning regex into lisp
 (use-package! xr
   :commands xr)
-
-;; Undo history tree
-(use-package! vundo
-  :commands vundo
-  :config
-  (map! :map vundo-mode-map
-        "h" #'vundo-backward
-        "j" #'vundo-next
-        "k" #'vundo-previous
-        "l" #'vundo-forward
-        "H" #'vundo-stem-root
-        "L" #'vundo-stem-end))
 
 (use-package! tempel
   :commands tempel-complete tempel-expand tempel-insert

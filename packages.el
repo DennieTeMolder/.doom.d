@@ -83,7 +83,6 @@
 ;;* Custom packages
 (package! good-scroll)
 (package! atomic-chrome)
-(package! vundo)
 (package! trashed)
 (package! xr)
 (package! info-colors)
