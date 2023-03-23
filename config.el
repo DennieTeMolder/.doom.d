@@ -228,7 +228,8 @@
   ;; Disable company auto pop-up as it can be expensive, use C-SPC to trigger
   (setq company-idle-delay nil
         company-selection-wrap-around t
-        company-dabbrev-ignore-case 'keep-prefix)
+        company-dabbrev-ignore-case 'keep-prefix
+        company-dabbrev-code-everywhere t)
 
   ;; Enable auto pop-up in elisp mode as it is less expensive
   (add-hook! 'emacs-lisp-mode-hook (setq-local company-idle-delay 0.2))
