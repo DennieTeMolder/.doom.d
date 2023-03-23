@@ -101,6 +101,17 @@ If NAME is not provided `buffer-file-name' is used."
                                nil t predicate)))
     (display-buffer buf)))
 
+;;* Window functions
+(defun dtm/split-window-optimally ()
+  "Split window slicing the largest dimension."
+  (interactive)
+  (let* ((w-edges (window-inside-pixel-edges))
+         (width (- (nth 2 w-edges) (nth 0 w-edges)))
+         (height (- (nth 3 w-edges) (nth 1 w-edges))))
+  (if (> width height)
+      (split-window-horizontally)
+    (split-window-vertically))))
+
 ;;* Theme recommendations
 (defun dtm--theme-which-inactive (theme1 theme2)
   "Return THEME1 of not currently active, else return THEME2"
@@ -695,8 +706,69 @@ Equivalent to 's' at the R prompt."
       (ess-send-string (ess-get-process) "0")
     (ess-send-string (ess-get-process) "s")))
 
+;;** R plots
+(defun dtm-ess-r-select-plot-window ()
+  "Selects the window used for load R plot files."
+  (evil-window-bottom-right)
+  (unless (memq major-mode '(pdf-view-mode fundamental-mode))
+    (select-window (dtm/split-window-optimally))))
+
 (defvar dtm-ess-r-plot-filenotify nil
   "File notify descriptor watching the plot folder.")
+
+(defun dtm-ess-r-filenotify-open-pdf (event)
+  "Display file from EVENT if it was changed and ends with .pdf."
+  (when (and (eq 'changed (nth 1 event))
+             (string= ".pdf" (substring (nth 2 event) -4)))
+    (save-selected-window
+      (dtm-ess-r-select-plot-window)
+      (find-file (nth 2 event))
+      (hide-mode-line-mode +1))
+    (dtm/ess-r-cleanup-plot-buffers)
+    (message "ESS: updated plot")))
+
+(defvar dtm-ess-r-plot-dummy-name "*R plot*"
+  "Name of the placeholder plot buffer.")
+
+(defun dtm-ess-r-display-dummy (plot-dir)
+  "Display a placeholder plot buffer in `dtm-ess-r-select-plot-window'.
+Buffer will have PLOT-DIR as `default-directory'."
+  (save-selected-window
+    (dtm-ess-r-select-plot-window)
+    (set-window-buffer nil (or (get-buffer dtm-ess-r-plot-dummy-name)
+                               (generate-new-buffer dtm-ess-r-plot-dummy-name)))
+    (setq-local default-directory (concat plot-dir "/"))))
+
+(defun dtm-ess-r-get-plot-buffers ()
+  "Returns a list of all created plot files"
+  (let* ((plot-dir (file-notify--watch-directory
+                    (gethash dtm-ess-r-plot-filenotify
+                             file-notify-descriptors)))
+         (regex (concat "^" plot-dir)))
+    (delq nil (cons (get-buffer dtm-ess-r-plot-dummy-name)
+                    (mapcar
+                     (lambda (buf)
+                       (if-let ((file (buffer-file-name buf)))
+                           (when (string-match-p regex file)
+                             buf)))
+                     (buffer-list))))))
+
+;;;###autoload
+(defun dtm/ess-r-cleanup-plot-buffers (&optional kill-visible)
+  "Kill all unmodified buffers dedicated to R plot files.
+Only kill visible plot buffers if KILL-VISIBLE is t."
+  (interactive)
+  (when-let ((bufs (dtm-ess-r-get-plot-buffers)))
+    (mapc (lambda (buf)
+            (unless (buffer-modified-p buf)
+              (if-let ((win (get-buffer-window buf)))
+                  (when kill-visible
+                    (delete-window win)
+                    (kill-buffer buf))
+                (kill-buffer buf))))
+          bufs))
+  (when (called-interactively-p 'interactive)
+    (message "ESS: cleaned up plot buffers")))
 
 ;;;###autoload
 (defun dtm/ess-r-display-plots-toggle ()
@@ -705,6 +777,7 @@ Relies on using 'dtm::print_plot()' inside of R."
   (interactive)
   (if dtm-ess-r-plot-filenotify
       (progn
+        (dtm/ess-r-cleanup-plot-buffers t)
         (ess-command "options(print2pdf=FALSE)")
         (file-notify-rm-watch dtm-ess-r-plot-filenotify)
         (setq dtm-ess-r-plot-filenotify nil)
@@ -716,28 +789,7 @@ Relies on using 'dtm::print_plot()' inside of R."
       (dtm-ess-r-display-dummy plot-dir))
     (message "ESS: displaying plots in emacs")))
 
-(defun dtm-ess-r-select-plot-window ()
-  "Selects the window used for load R plot files."
-  (evil-window-bottom-right)
-  (unless (memq major-mode '(pdf-view-mode fundamental-mode))
-    (select-window (split-window-vertically))))
-
-(defun dtm-ess-r-filenotify-open-pdf (event)
-  "Display file from EVENT if it was changed and ends with .pdf."
-  (when (and (eq 'changed (nth 1 event))
-             (string= ".pdf" (substring (nth 2 event) -4)))
-    (save-selected-window
-      (dtm-ess-r-select-plot-window)
-      (find-file (nth 2 event))
-      (hide-mode-line-mode +1))))
-
-(defun dtm-ess-r-display-dummy (plot-dir)
-  (save-selected-window
-    (dtm-ess-r-select-plot-window)
-    (set-window-buffer nil (or (get-buffer "*R plot*")
-                               (generate-new-buffer "*R plot*")))
-    (setq-local default-directory (concat plot-dir "/"))))
-
+;;;###autoload
 (defun dtm/ess-rstudio ()
   "Replicate an rstudio like window layout for ESS."
   (interactive)
