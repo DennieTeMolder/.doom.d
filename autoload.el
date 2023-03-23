@@ -695,13 +695,69 @@ Equivalent to 's' at the R prompt."
       (ess-send-string (ess-get-process) "0")
     (ess-send-string (ess-get-process) "s")))
 
+(defvar dtm-ess-r-plot-filenotify nil
+  "File notify descriptor watching the plot folder.")
+
+;;;###autoload
+(defun dtm/ess-r-display-plots-toggle ()
+  "Toggle displaying R plots in emacs.
+Relies on using 'dtm::print_plot()' inside of R."
+  (interactive)
+  (if dtm-ess-r-plot-filenotify
+      (progn
+        (ess-command "options(print2pdf=FALSE)")
+        (file-notify-rm-watch dtm-ess-r-plot-filenotify)
+        (setq dtm-ess-r-plot-filenotify nil)
+        (message "ESS: stopped displaying plots in emacs"))
+    (let ((plot-dir (car (ess-get-words-from-vector "tempdir(check=TRUE)"))))
+      (ess-command "options(print2pdf=TRUE)")
+      (setq dtm-ess-r-plot-filenotify
+            (file-notify-add-watch plot-dir '(change) #'dtm-ess-r-filenotify-open-pdf))
+      (dtm-ess-r-display-dummy plot-dir))
+    (message "ESS: displaying plots in emacs")))
+
+(defun dtm-ess-r-select-plot-window ()
+  "Selects the window used for load R plot files."
+  (evil-window-bottom-right)
+  (unless (memq major-mode '(pdf-view-mode fundamental-mode))
+    (select-window (split-window-vertically))))
+
+(defun dtm-ess-r-filenotify-open-pdf (event)
+  "Display file from EVENT if it was changed and ends with .pdf."
+  (when (and (eq 'changed (nth 1 event))
+             (string= ".pdf" (substring (nth 2 event) -4)))
+    (save-selected-window
+      (dtm-ess-r-select-plot-window)
+      (find-file (nth 2 event))
+      (hide-mode-line-mode +1))))
+
+(defun dtm-ess-r-display-dummy (plot-dir)
+  (save-selected-window
+    (dtm-ess-r-select-plot-window)
+    (set-window-buffer nil (or (get-buffer "*R plot*")
+                               (generate-new-buffer "*R plot*")))
+    (setq-local default-directory (concat plot-dir "/"))))
+
+(defun dtm/ess-rstudio ()
+  "Replicate an rstudio like window layout for ESS."
+  (interactive)
+  (unless (eq major-mode 'ess-r-mode)
+    (user-error "Current buffer is not an R script!"))
+  (delete-other-windows)
+  (save-selected-window
+    (ess-switch-to-ESS t)
+    (when dtm-ess-r-plot-filenotify
+      (let ((inhibit-message t))
+        (dtm/ess-r-display-plots-toggle)))
+    (dtm/ess-r-display-plots-toggle)))
+
 ;;* Conda
 (defun dtm-conda-infer-env-path ()
   "Returns the path found by `conda-env-activate-for-buffer' without activating."
   (let ((conda-message-on-environment-switch nil)
         (dtm-env-path nil))
     (cl-letf (((symbol-function 'conda-env-activate)
-                (lambda (name) (setq dtm-env-path name))))
+               (lambda (name) (setq dtm-env-path name))))
       (conda-env-activate-for-buffer))
     dtm-env-path))
 
