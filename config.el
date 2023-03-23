@@ -835,7 +835,9 @@ Also used by `org-modern-mode' to calculate heights.")
 
         (:map (ess-r-mode-map inferior-ess-r-mode-map)
          :i "<" #'dtm/ess-r-insert-assign
-         :i ">" #'dtm/ess-r-insert-pipe)
+         :i ">" #'dtm/ess-r-insert-pipe
+         (:localleader
+          :desc "Toggle plotting in emacs" "t" #'dtm/ess-r-display-plots-toggle))
 
         (:map inferior-ess-mode-map
          :localleader
