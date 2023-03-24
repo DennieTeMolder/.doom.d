@@ -742,7 +742,7 @@ Equivalent to 's' at the R prompt."
     (when-let ((file (or file (buffer-file-name))))
       (string-match-p (concat "^" (dtm-ess-r-plot-dir)) file))))
 
-(defun dtm-ess-r-get-plot-buffers ()
+(defun dtm-ess-r-plot-buffers ()
   "Returns a list of buffers associated with an R plot."
   (delq nil
         (cons (get-buffer dtm-ess-r-plot-dummy-name)
@@ -754,27 +754,24 @@ Equivalent to 's' at the R prompt."
 (defun dtm-ess-r-plot-window ()
   "Return the window currently displaying R plots."
   (car (delq nil (mapcar (lambda (buf) (get-buffer-window buf))
-                         (dtm-ess-r-get-plot-buffers)))))
+                         (dtm-ess-r-plot-buffers)))))
 
-(defun dtm-ess-r-select-plot-window (&optional default-dir)
-  "Select the window used for displaying R plot files."
-  (if-let ((window (dtm-ess-r-plot-window)))
-      (select-window window)
-    (unless (eq (ess-get-process-buffer dtm-ess-r-plot-process-name)
-                (current-buffer))
-      (ess-switch-to-ESS t))
-    (select-window (dtm/split-window-optimally))
-    (switch-to-buffer (generate-new-buffer dtm-ess-r-plot-dummy-name))
-    (when default-dir
-      (setq-local default-directory default-dir))
-    (selected-window)))
+(defun dtm-ess-r-plot-force-window ()
+  "Return window for displaying R plot files, create if it not exists."
+  (or (dtm-ess-r-plot-window)
+      (save-selected-window
+        (unless (eq (ess-get-process-buffer dtm-ess-r-plot-process-name)
+                    (current-buffer))
+          (ess-switch-to-ESS t))
+        (select-window (dtm/split-window-optimally))
+        (switch-to-buffer (generate-new-buffer dtm-ess-r-plot-dummy-name))
+        (setq-local default-directory (dtm-ess-r-plot-dir))
+        (selected-window))))
 
-;;;###autoload
-(defun dtm/ess-r-cleanup-plot-buffers (&optional kill-visible)
+(defun dtm-ess-r-plot-cleanup-buffers (&optional kill-visible)
   "Kill all unmodified buffers dedicated to R plot files.
 Only kill visible plot buffers if KILL-VISIBLE is t."
-  (interactive)
-  (when-let ((bufs (dtm-ess-r-get-plot-buffers)))
+  (when-let ((bufs (dtm-ess-r-plot-buffers)))
     (mapc (lambda (buf)
             (unless (buffer-modified-p buf)
               (if-let ((win (get-buffer-window buf)))
@@ -782,18 +779,15 @@ Only kill visible plot buffers if KILL-VISIBLE is t."
                     (delete-window win)
                     (kill-buffer buf))
                 (kill-buffer buf))))
-          bufs))
-  (when (called-interactively-p 'interactive)
-    (message "ESS: cleaned up plot buffers")))
+          bufs)))
 
 (defun dtm-ess-r-filenotify-open-pdf (event)
   "Display file from EVENT if it was changed and ends with .pdf."
   (when (and (eq 'changed (nth 1 event))
              (string= ".pdf" (substring (nth 2 event) -4)))
-    (save-selected-window
-      (dtm-ess-r-select-plot-window)
+    (with-selected-window (dtm-ess-r-plot-force-window)
       (find-file (nth 2 event)))
-    (dtm/ess-r-cleanup-plot-buffers)
+    (dtm-ess-r-plot-cleanup-buffers)
     (message "ESS: updated plot")))
 
 ;;;###autoload
@@ -803,20 +797,20 @@ Relies on using 'dtm::print_plot()' inside of R."
   (interactive)
   (if (dtm-ess-r-plot-running-p)
       (let ((ess-local-process-name dtm-ess-r-plot-process-name))
-        (dtm/ess-r-cleanup-plot-buffers t)
+        (dtm-ess-r-plot-cleanup-buffers t)
         (file-notify-rm-watch dtm-ess-r-plot-descriptor)
         (setq dtm-ess-r-plot-process-name nil
               dtm-ess-r-plot-descriptor nil)
         (when (ess-process-live-p)
           (ess-command "options(dtm.print_plot=NULL)"))
         (message "ESS: stopped displaying plots in emacs"))
-    (let ((plot-dir (dtm-ess-r-plot-dir)))
-      (ess-command "options(dtm.print_plot=\"pdf\")")
-      (setq dtm-ess-r-plot-process-name ess-current-process-name
-            dtm-ess-r-plot-descriptor
-            (file-notify-add-watch plot-dir '(change) #'dtm-ess-r-filenotify-open-pdf))
-      (save-selected-window
-        (dtm-ess-r-select-plot-window plot-dir)))
+    (setq dtm-ess-r-plot-descriptor (file-notify-add-watch
+                                     (dtm-ess-r-plot-dir)
+                                     '(change)
+                                     #'dtm-ess-r-filenotify-open-pdf)
+          dtm-ess-r-plot-process-name ess-current-process-name)
+    (ess-command "options(dtm.print_plot=\"pdf\")")
+    (dtm-ess-r-plot-force-window)
     (message "ESS: displaying plots in emacs")))
 
 ;;* Conda
