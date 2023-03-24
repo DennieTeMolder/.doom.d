@@ -801,7 +801,7 @@ Relies on using 'dtm::print_plot()' inside of R."
               dtm-ess-r-plot-descriptor nil)
         (message "ESS: stopped displaying plots in emacs"))
     (let* ((plot-dir (dtm-ess-r-plot-dir)))
-      (ess-command "options(dtm.print_plot='pdf')")
+      (ess-command "options(dtm.print_plot=\"pdf\")")
       (setq dtm-ess-r-plot-process-name ess-current-process-name
             dtm-ess-r-plot-descriptor
             (file-notify-add-watch plot-dir '(change) #'dtm-ess-r-filenotify-open-pdf))
