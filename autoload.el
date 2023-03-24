@@ -710,6 +710,9 @@ Equivalent to 's' at the R prompt."
 (defvar dtm-ess-r-plot-dummy-name "*R plot*"
   "Name of the placeholder plot buffer.")
 
+(defvar dtm-ess-r-plot-process-name nil
+  "ESS process currently displaying plots inside emacs.")
+
 (defvar dtm-ess-r-plot-descriptor nil
   "File notify descriptor watching the plot folder.")
 
@@ -737,7 +740,9 @@ Equivalent to 's' at the R prompt."
   "Selects the window used for load R plot files."
   (if-let ((window (dtm-ess-r-plot-window)))
       (select-window window)
-    (ess-switch-to-ESS t)
+    (if-let ((ess-current-process-name dtm-ess-r-plot-process-name))
+        (ess-switch-to-ESS t)
+      (user-error "ESS: no R process selected for plotting!"))
     (select-window (dtm/split-window-optimally))
     (set-window-buffer nil (generate-new-buffer dtm-ess-r-plot-dummy-name))
     (when default-dir
@@ -777,16 +782,18 @@ Only kill visible plot buffers if KILL-VISIBLE is t."
   "Toggle displaying R plots in emacs.
 Relies on using 'dtm::print_plot()' inside of R."
   (interactive)
-  (if dtm-ess-r-plot-descriptor
-      (progn
+  (if dtm-ess-r-plot-process-name
+      (let ((ess-local-process-name dtm-ess-r-plot-process-name))
         (dtm/ess-r-cleanup-plot-buffers t)
         (ess-command "options(print2pdf=FALSE)")
         (file-notify-rm-watch dtm-ess-r-plot-descriptor)
-        (setq dtm-ess-r-plot-descriptor nil)
+        (setq dtm-ess-r-plot-process-name nil
+              dtm-ess-r-plot-descriptor nil)
         (message "ESS: stopped displaying plots in emacs"))
     (let ((plot-dir (car (ess-get-words-from-vector "tempdir(check=TRUE)"))))
       (ess-command "options(print2pdf=TRUE)")
-      (setq dtm-ess-r-plot-descriptor
+      (setq dtm-ess-r-plot-process-name ess-current-process-name
+            dtm-ess-r-plot-descriptor
             (file-notify-add-watch plot-dir '(change) #'dtm-ess-r-filenotify-open-pdf))
       (save-selected-window
         (dtm-ess-r-select-plot-window plot-dir)))
