@@ -102,15 +102,18 @@ If NAME is not provided `buffer-file-name' is used."
     (display-buffer buf)))
 
 ;;* Window functions
-(defun dtm/split-window-optimally ()
-  "Split window slicing the largest dimension."
+(defun dtm/split-window-optimally (&optional w/h-factor)
+  "Split window based on width/height of `window-inside-pixel-edges'.
+A larger W/H-FACTOR favours splitting vertically (i.e. down)."
   (interactive)
-  (let* ((w-edges (window-inside-pixel-edges))
+  (let* ((w/h-factor (or w/h-factor 1.5))
+         (w-edges (window-inside-pixel-edges))
          (width (- (nth 2 w-edges) (nth 0 w-edges)))
-         (height (- (nth 3 w-edges) (nth 1 w-edges))))
-  (if (> width height)
-      (split-window-horizontally)
-    (split-window-vertically))))
+         (height (- (nth 3 w-edges) (nth 1 w-edges)))
+         (w/h (/ width height 1.0)))
+    (if (> w/h w/h-factor)
+        (split-window-horizontally)
+      (split-window-vertically))))
 
 ;;* Theme recommendations
 (defun dtm--theme-which-inactive (theme1 theme2)
