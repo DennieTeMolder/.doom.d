@@ -675,6 +675,13 @@ Intended as before advice for `vterm-send-key'"
   (unless ess-r-package-mode default-directory))
 
 ;;;###autoload
+(defun dtm-ess-modeline-show-busy ()
+  "Display spinner if ESS process is busy (before [R]).
+Ref: `ess--tb-start', https://github.com/seagle0128/doom-modeline/issues/410"
+  (add-to-list 'mode-line-process
+               '(:eval (nth ess--busy-count ess-busy-strings))))
+
+;;;###autoload
 (defun dtm-ess-switch-maybe-a (orig-fn TOGGLE-EOB)
   "Only switch to the REPL if it was already visible"
   (let* ((starting-window (selected-window))
@@ -819,7 +826,8 @@ Relies on using 'dtm::print_plot()' inside of R."
 Intended as :after advice for `inferior-ess-reload'."
   (and (dtm-ess-r-plot-running-p)
        (string= ess-current-process-name dtm-ess-r-plot-process-name)
-       (dotimes (_ 2) (dtm/ess-r-plot-toggle))))
+       (let ((inhibit-message t))
+         (dotimes (_ 2) (dtm/ess-r-plot-toggle)))))
 
 ;;* Conda
 (defun dtm-conda-infer-env-path ()
