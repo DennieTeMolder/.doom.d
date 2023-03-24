@@ -792,13 +792,13 @@ Relies on using 'dtm::print_plot()' inside of R."
       (let ((ess-local-process-name dtm-ess-r-plot-process-name))
         (dtm/ess-r-cleanup-plot-buffers t)
         (when (ess-process-live-p)
-          (ess-command "options(print2pdf=FALSE)"))
+          (ess-command "options(dtm.print_plot=NULL)"))
         (file-notify-rm-watch dtm-ess-r-plot-descriptor)
         (setq dtm-ess-r-plot-process-name nil
               dtm-ess-r-plot-descriptor nil)
         (message "ESS: stopped displaying plots in emacs"))
     (let* ((plot-dir (dtm-ess-r-plot-dir)))
-      (ess-command "options(print2pdf=TRUE)")
+      (ess-command "options(dtm.print_plot='pdf')")
       (setq dtm-ess-r-plot-process-name ess-current-process-name
             dtm-ess-r-plot-descriptor
             (file-notify-add-watch plot-dir '(change) #'dtm-ess-r-filenotify-open-pdf))
