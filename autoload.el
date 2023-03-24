@@ -716,20 +716,27 @@ Equivalent to 's' at the R prompt."
 (defvar dtm-ess-r-plot-descriptor nil
   "File notify descriptor watching the plot folder.")
 
+(defun dtm-ess-r-plot-dir ()
+  "Return the directory to watch for R plots."
+  (if dtm-ess-r-plot-descriptor
+      (let ((watch (gethash dtm-ess-r-plot-descriptor file-notify-descriptors)))
+        (file-notify--watch-directory watch))
+    (let* ((tmp-dir (car (ess-get-words-from-vector "tempdir(check=TRUE)")))
+           (plot-dir (expand-file-name "emacs_plots/" tmp-dir)))
+      (unless (file-exists-p (file-name-as-directory tmp-dir))
+        (error "ESS: cannot get valid tempdir() from R process"))
+      (make-directory plot-dir t)
+      plot-dir)))
+
 (defun dtm-ess-r-get-plot-buffers ()
   "Returns a list of buffers associated with an R plot."
   (delq nil
         (cons (get-buffer dtm-ess-r-plot-dummy-name)
-              (when-let* ((watch (gethash dtm-ess-r-plot-descriptor
-                                          file-notify-descriptors))
-                          (plot-dir (file-notify--watch-directory watch))
-                          (regex (concat "^" plot-dir)))
-                (mapcar
-                 (lambda (buf)
-                   (if-let ((file (buffer-file-name buf)))
-                       (when (string-match-p regex file)
-                         buf)))
-                 (buffer-list))))))
+              (let ((regex (concat "^" (dtm-ess-r-plot-dir))))
+                (mapcar (lambda (buf)
+                          (if-let ((file (buffer-file-name buf)))
+                              (when (string-match-p regex file) buf)))
+                        (buffer-list))))))
 
 (defun dtm-ess-r-plot-window ()
   "Return the window used for displaying R plots."
@@ -772,8 +779,7 @@ Only kill visible plot buffers if KILL-VISIBLE is t."
              (string= ".pdf" (substring (nth 2 event) -4)))
     (save-selected-window
       (dtm-ess-r-select-plot-window)
-      (find-file (nth 2 event))
-      (hide-mode-line-mode +1))
+      (find-file (nth 2 event)))
     (dtm/ess-r-cleanup-plot-buffers)
     (message "ESS: updated plot")))
 
@@ -790,7 +796,7 @@ Relies on using 'dtm::print_plot()' inside of R."
         (setq dtm-ess-r-plot-process-name nil
               dtm-ess-r-plot-descriptor nil)
         (message "ESS: stopped displaying plots in emacs"))
-    (let ((plot-dir (car (ess-get-words-from-vector "tempdir(check=TRUE)"))))
+    (let* ((plot-dir (dtm-ess-r-plot-dir)))
       (ess-command "options(print2pdf=TRUE)")
       (setq dtm-ess-r-plot-process-name ess-current-process-name
             dtm-ess-r-plot-descriptor
