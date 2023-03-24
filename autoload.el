@@ -813,6 +813,14 @@ Relies on using 'dtm::print_plot()' inside of R."
     (dtm-ess-r-plot-force-window)
     (message "ESS: displaying plots in emacs")))
 
+;;;###autoload
+(defun dtm-ess-r-plot-reload-a (&rest _)
+  "Reload R plot display if active and attached to `ess-current-process-name'.
+Intended as :after advice for `inferior-ess-reload'."
+  (and (dtm-ess-r-plot-running-p)
+       (string= ess-current-process-name dtm-ess-r-plot-process-name)
+       (dotimes (_ 2) (dtm/ess-r-plot-toggle))))
+
 ;;* Conda
 (defun dtm-conda-infer-env-path ()
   "Returns the path found by `conda-env-activate-for-buffer' without activating."

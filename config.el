@@ -790,6 +790,21 @@ Also used by `org-modern-mode' to calculate heights.")
         ess-auto-width 'window
         ess-style 'RStudio)
 
+  ;; Make evil tab width same as ESS offset
+  (add-hook! 'ess-mode-hook (setq-local evil-shift-width 'ess-indent-offset))
+  (add-hook! 'inferior-ess-r-mode-hook (visual-line-mode +1))
+
+  ;; Make inferior buffer not take focus on startup
+  (advice-add 'ess-switch-to-inferior-or-script-buffer :around #'dtm-ess-switch-maybe-a)
+  (advice-add 'inferior-ess-reload :after #'dtm-ess-r-plot-reload-a)
+
+  ;; Lag the cursor in debug mode, this leaves the point at a variable after its assigned
+  (advice-add 'ess-debug-command-next :around #'dtm-with-lagging-point-a)
+  (dolist (symbol '(dtm/ess-debug-command-step
+                    ess-debug-command-up
+                    ess-debug-command-quit))
+    (advice-add symbol :after #'dtm-lagging-point-reset))
+
   ;; Add company-R-library backend
   ;; REVIEW https://github.com/doomemacs/doomemacs/pull/6455
   (set-company-backend! 'ess-r-mode
@@ -809,21 +824,6 @@ Also used by `org-modern-mode' to calculate heights.")
       (.eq? @keyword "warning"))
      ((call function: (identifier) @keyword)
       (.eq? @keyword "return"))])
-
-  ;; Make inferior buffer not take focus on startup
-  (advice-add 'ess-switch-to-inferior-or-script-buffer :around #'dtm-ess-switch-maybe-a)
-
-  ;; Make evil tab width same as ESS offset
-  (add-hook! 'ess-mode-hook (setq-local evil-shift-width 'ess-indent-offset))
-
-  (add-hook! 'inferior-ess-r-mode-hook (visual-line-mode +1))
-
-  ;; Lag the cursor in debug mode, this leaves the point at a variable after its assigned
-  (advice-add 'ess-debug-command-next :around #'dtm-with-lagging-point-a)
-  (dolist (symbol '(dtm/ess-debug-command-step
-                    ess-debug-command-up
-                    ess-debug-command-quit))
-    (advice-add symbol :after #'dtm-lagging-point-reset))
 
   ;; ESS R keybindings, make < add a <-, type twice to undo (same goes for >)
   (map! (:map ess-r-mode-map
