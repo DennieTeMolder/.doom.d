@@ -720,9 +720,9 @@ Equivalent to 's' at the R prompt."
   "Return the directory to watch for R plots."
   (if dtm-ess-r-plot-descriptor
       (let ((watch (gethash dtm-ess-r-plot-descriptor file-notify-descriptors)))
-        (file-notify--watch-directory watch))
+        (file-name-as-directory (file-notify--watch-directory watch)))
     (let* ((tmp-dir (car (ess-get-words-from-vector "tempdir(check=TRUE)")))
-           (plot-dir (expand-file-name "emacs_plots/" tmp-dir)))
+           (plot-dir (expand-file-name "session_plots/" tmp-dir)))
       (unless (file-exists-p (file-name-as-directory tmp-dir))
         (error "ESS: cannot get valid tempdir() from R process"))
       (make-directory plot-dir t)
@@ -753,7 +753,7 @@ Equivalent to 's' at the R prompt."
     (select-window (dtm/split-window-optimally))
     (set-window-buffer nil (generate-new-buffer dtm-ess-r-plot-dummy-name))
     (when default-dir
-      (setq-local default-directory (file-name-as-directory default-dir)))
+      (setq-local default-directory default-dir))
     (selected-window)))
 
 ;;;###autoload
