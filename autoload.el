@@ -791,7 +791,8 @@ Relies on using 'dtm::print_plot()' inside of R."
   (if dtm-ess-r-plot-process-name
       (let ((ess-local-process-name dtm-ess-r-plot-process-name))
         (dtm/ess-r-cleanup-plot-buffers t)
-        (ess-command "options(print2pdf=FALSE)")
+        (when (ess-process-live-p)
+          (ess-command "options(print2pdf=FALSE)"))
         (file-notify-rm-watch dtm-ess-r-plot-descriptor)
         (setq dtm-ess-r-plot-process-name nil
               dtm-ess-r-plot-descriptor nil)
