@@ -740,9 +740,9 @@ Equivalent to 's' at the R prompt."
   "Selects the window used for load R plot files."
   (if-let ((window (dtm-ess-r-plot-window)))
       (select-window window)
-    (if-let ((ess-current-process-name dtm-ess-r-plot-process-name))
-        (ess-switch-to-ESS t)
-      (user-error "ESS: no R process selected for plotting!"))
+    (unless (eq (ess-get-process-buffer dtm-ess-r-plot-process-name)
+                (current-buffer))
+      (ess-switch-to-ESS t))
     (select-window (dtm/split-window-optimally))
     (set-window-buffer nil (generate-new-buffer dtm-ess-r-plot-dummy-name))
     (when default-dir
