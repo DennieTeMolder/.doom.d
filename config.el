@@ -259,6 +259,7 @@
 (after! recentf
   ;;Exclude non-existent & remote files from recent files list after cleanup
   (setq recentf-keep '(dtm-file-local-readable-p))
+  (add-to-list 'recentf-exclude #'dtm-ess-r-plot-file-p t)
 
   ;; Revert back to running cleanup on mode start instead of emacs shutdown
   (remove-hook! 'kill-emacs-hook #'recentf-cleanup)
@@ -838,7 +839,7 @@ Also used by `org-modern-mode' to calculate heights.")
          :i "<" #'dtm/ess-r-insert-assign
          :i ">" #'dtm/ess-r-insert-pipe
          (:localleader
-          :desc "Toggle plotting in emacs" "t" #'dtm/ess-r-display-plots-toggle))
+          :desc "Toggle plotting in emacs" "t" #'dtm/ess-r-plot-toggle))
 
         (:map inferior-ess-mode-map
          :localleader

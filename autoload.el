@@ -719,9 +719,13 @@ Equivalent to 's' at the R prompt."
 (defvar dtm-ess-r-plot-descriptor nil
   "File notify descriptor watching the plot folder.")
 
+(defun dtm-ess-r-plot-running-p ()
+  "Return t if emacs is currently displaying R plots."
+  (if dtm-ess-r-plot-descriptor t nil))
+
 (defun dtm-ess-r-plot-dir ()
-  "Return the directory to watch for R plots."
-  (if dtm-ess-r-plot-descriptor
+  "Create and return the R plot dir based on `ess-current-process-name'."
+  (if (dtm-ess-r-plot-running-p)
       (let ((watch (gethash dtm-ess-r-plot-descriptor file-notify-descriptors)))
         (file-name-as-directory (file-notify--watch-directory watch)))
     (let* ((tmp-dir (car (ess-get-words-from-vector "tempdir(check=TRUE)")))
@@ -731,30 +735,36 @@ Equivalent to 's' at the R prompt."
       (make-directory plot-dir t)
       plot-dir)))
 
+;;;###autoload
+(defun dtm-ess-r-plot-file-p (&optional file)
+  "Return t if FILE is an R plot. Defaults to `buffer-file-name'."
+  (when (dtm-ess-r-plot-running-p)
+    (when-let ((file (or file (buffer-file-name))))
+      (string-match-p (concat "^" (dtm-ess-r-plot-dir)) file))))
+
 (defun dtm-ess-r-get-plot-buffers ()
   "Returns a list of buffers associated with an R plot."
   (delq nil
         (cons (get-buffer dtm-ess-r-plot-dummy-name)
-              (let ((regex (concat "^" (dtm-ess-r-plot-dir))))
-                (mapcar (lambda (buf)
-                          (if-let ((file (buffer-file-name buf)))
-                              (when (string-match-p regex file) buf)))
-                        (buffer-list))))))
+              (mapcar (lambda (buf)
+                        (with-current-buffer buf
+                          (when (dtm-ess-r-plot-file-p) buf)))
+                      (buffer-list)))))
 
 (defun dtm-ess-r-plot-window ()
-  "Return the window used for displaying R plots."
+  "Return the window currently displaying R plots."
   (car (delq nil (mapcar (lambda (buf) (get-buffer-window buf))
                          (dtm-ess-r-get-plot-buffers)))))
 
 (defun dtm-ess-r-select-plot-window (&optional default-dir)
-  "Selects the window used for load R plot files."
+  "Select the window used for displaying R plot files."
   (if-let ((window (dtm-ess-r-plot-window)))
       (select-window window)
     (unless (eq (ess-get-process-buffer dtm-ess-r-plot-process-name)
                 (current-buffer))
       (ess-switch-to-ESS t))
     (select-window (dtm/split-window-optimally))
-    (set-window-buffer nil (generate-new-buffer dtm-ess-r-plot-dummy-name))
+    (switch-to-buffer (generate-new-buffer dtm-ess-r-plot-dummy-name))
     (when default-dir
       (setq-local default-directory default-dir))
     (selected-window)))
@@ -787,20 +797,20 @@ Only kill visible plot buffers if KILL-VISIBLE is t."
     (message "ESS: updated plot")))
 
 ;;;###autoload
-(defun dtm/ess-r-display-plots-toggle ()
+(defun dtm/ess-r-plot-toggle ()
   "Toggle displaying R plots in emacs.
 Relies on using 'dtm::print_plot()' inside of R."
   (interactive)
-  (if dtm-ess-r-plot-process-name
+  (if (dtm-ess-r-plot-running-p)
       (let ((ess-local-process-name dtm-ess-r-plot-process-name))
         (dtm/ess-r-cleanup-plot-buffers t)
-        (when (ess-process-live-p)
-          (ess-command "options(dtm.print_plot=NULL)"))
         (file-notify-rm-watch dtm-ess-r-plot-descriptor)
         (setq dtm-ess-r-plot-process-name nil
               dtm-ess-r-plot-descriptor nil)
+        (when (ess-process-live-p)
+          (ess-command "options(dtm.print_plot=NULL)"))
         (message "ESS: stopped displaying plots in emacs"))
-    (let* ((plot-dir (dtm-ess-r-plot-dir)))
+    (let ((plot-dir (dtm-ess-r-plot-dir)))
       (ess-command "options(dtm.print_plot=\"pdf\")")
       (setq dtm-ess-r-plot-process-name ess-current-process-name
             dtm-ess-r-plot-descriptor
