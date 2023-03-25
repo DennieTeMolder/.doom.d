@@ -1001,5 +1001,13 @@ Also used by `org-modern-mode' to calculate heights.")
         "C-u" #'ctrlf-previous-page
         "C-d" #'ctrlf-next-page))
 
+(use-package! chatgpt-arcana
+  :commands chatgpt-arcana-start-chat
+  :config
+  ;; In ~/.authinfo.gpg write:
+  ;; machine chat.openai.com login CHATGPT_EMAIL password API_KEY
+  (setq chatgpt-arcana-api-key
+        (auth-source-pick-first-password :host "chat.openai.com")))
+
 (load! "+keybindings")
 (load! "+faces")
