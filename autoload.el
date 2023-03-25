@@ -747,7 +747,7 @@ Equivalent to 's' at the R prompt."
   "Return t if FILE is an R plot. Defaults to `buffer-file-name'."
   (when (dtm-ess-r-plot-running-p)
     (when-let ((file (or file (buffer-file-name))))
-      (string-match-p (concat "^" (dtm-ess-r-plot-dir)) file))))
+      (file-in-directory-p file (dtm-ess-r-plot-dir)))))
 
 (defun dtm-ess-r-plot-buffers ()
   "Returns a list of buffers associated with an R plot."
@@ -788,12 +788,12 @@ Only kill visible plot buffers if KILL-VISIBLE is t."
                 (kill-buffer buf))))
           bufs)))
 
-(defun dtm-ess-r-filenotify-open-pdf (event)
+(defun dtm-ess-r-plot-open-pdf (event)
   "Display file from EVENT if it was changed and ends with .pdf."
   (when (and (eq 'changed (nth 1 event))
              (string= ".pdf" (substring (nth 2 event) -4)))
-    (with-selected-window (dtm-ess-r-plot-force-window)
-      (find-file (nth 2 event)))
+    (set-window-buffer (dtm-ess-r-plot-force-window)
+                       (find-file-noselect (nth 2 event)))
     (dtm-ess-r-plot-cleanup-buffers)
     (message "ESS: updated plot")))
 
@@ -814,7 +814,7 @@ Relies on using 'dtm::print_plot()' inside of R."
     (setq dtm-ess-r-plot-descriptor (file-notify-add-watch
                                      (dtm-ess-r-plot-dir)
                                      '(change)
-                                     #'dtm-ess-r-filenotify-open-pdf)
+                                     #'dtm-ess-r-plot-open-pdf)
           dtm-ess-r-plot-process-name ess-current-process-name)
     (ess-command "options(dtm.print_plot=\"pdf\")")
     (dtm-ess-r-plot-force-window)
