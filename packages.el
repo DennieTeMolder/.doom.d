@@ -94,5 +94,3 @@
   :recipe (:host github :repo "DennieTeMolder/elpy-shell"))
 (package! indent-tools
   :recipe (:host github :repo "DennieTeMolder/indent-tools"))
-(package! chatgpt-arcana
-  :recipe (:host github :repo "CarlQLange/ChatGPT-Arcana.el" :files ("*.el")))
