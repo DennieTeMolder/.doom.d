@@ -1002,12 +1002,17 @@ Also used by `org-modern-mode' to calculate heights.")
         "C-d" #'ctrlf-next-page))
 
 (use-package! chatgpt-arcana
-  :commands chatgpt-arcana-start-chat
+  :commands chatgpt-arcana-resume-chat
   :config
   ;; In ~/.authinfo.gpg write:
   ;; machine chat.openai.com login CHATGPT_EMAIL password API_KEY
   (setq chatgpt-arcana-api-key
-        (auth-source-pick-first-password :host "chat.openai.com")))
+        (auth-source-pick-first-password :host "chat.openai.com")
+        chatgpt-arcana-chat-split-window nil)
+
+  (add-hook 'chatgpt-arcana-chat-mode-hook #'visual-fill-column-mode)
+
+  (advice-add chatgpt-arcana-resume-chat :before #'dtm-chatgpt-goto-workspace))
 
 (load! "+keybindings")
 (load! "+faces")

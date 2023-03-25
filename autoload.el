@@ -1299,3 +1299,41 @@ Ref: https://emacs.stackexchange.com/a/33344"
                                 advice-names)))))
      (list sym advice)))
   (advice-remove symbol advice))
+
+;;* ChatGPT
+;;;###autoload
+(defun dtm-chatgpt-goto-workspace (&rest _)
+  "Open/create workspace for ChatGPT conversations."
+  (dtm-workspace-switch-maybe "*gpt*"))
+
+(defun dtm-chatgpt-arcana-start-empty-chat (system-prompt)
+  "Start an new chat with SYSTEM-PROMPT without sending response."
+  (let* ((selected-region (dtm-region-as-string))
+         (buf (get-buffer-create "*chatgpt-arcana-conversation*"))
+         (window (get-buffer-window buf)))
+    (deactivate-mark)
+    (dtm-chatgpt-goto-workspace)
+    (if window
+        (select-window window)
+      (when chatgpt-arcana-chat-split-window
+        (split-window-horizontally))
+      (switch-to-buffer buf))
+    (erase-buffer)
+    (chatgpt-arcana-chat-mode)
+    (insert (concat chatgpt-arcana-chat-separator-system
+                    system-prompt
+                    chatgpt-arcana-chat-separator-user
+                    selected-region
+                    (when selected-region "\n\n")))))
+
+;;;###autoload
+(defun dtm/chatgpt-arcana-start-empty-chat ()
+  "Prompt user and run `dtm-chatgpt-arcana-start-empty-chat'."
+  (interactive)
+  (require 'chatgpt-arcana)
+  (dtm-chatgpt-arcana-start-empty-chat
+   (let* ((alist chatgpt-arcana-system-prompts-alist))
+     (alist-get (intern (completing-read "Conversation type: "
+                                         (mapcar #'car alist)
+                                         nil t))
+                alist))))
