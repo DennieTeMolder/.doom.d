@@ -1302,38 +1302,34 @@ Ref: https://emacs.stackexchange.com/a/33344"
 
 ;;* ChatGPT
 ;;;###autoload
-(defun dtm-chatgpt-goto-workspace (&rest _)
+(defun dtm-gptel-goto-workspace (&rest _)
   "Open/create workspace for ChatGPT conversations."
   (dtm-workspace-switch-maybe "*gpt*"))
 
-(defun dtm-chatgpt-arcana-start-empty-chat (system-prompt)
-  "Start an new chat with SYSTEM-PROMPT without sending response."
-  (let* ((selected-region (dtm-region-as-string))
-         (buf (get-buffer-create "*chatgpt-arcana-conversation*"))
-         (window (get-buffer-window buf)))
-    (deactivate-mark)
-    (dtm-chatgpt-goto-workspace)
-    (if window
-        (select-window window)
-      (when chatgpt-arcana-chat-split-window
-        (split-window-horizontally))
-      (switch-to-buffer buf))
-    (erase-buffer)
-    (chatgpt-arcana-chat-mode)
-    (insert (concat chatgpt-arcana-chat-separator-system
-                    system-prompt
-                    chatgpt-arcana-chat-separator-user
-                    selected-region
-                    (when selected-region "\n\n")))))
+;;;###autoload
+(defun dtm/gptel-new-chat ()
+  "Open a new chat in a dedicted win"
+  (interactive)
+  (require 'gptel)
+  (let ((gptel-default-session (generate-new-buffer-name gptel-default-session)))
+    ;; TODO perspectives only work when buffers are dedicated to a file
+    (dtm-gptel-goto-workspace)
+    (split-window-horizontally)
+    (balance-windows)
+    (let ((maximise (not gptel-mode)))
+      (call-interactively #'gptel)
+      (when maximise
+        (delete-other-windows)))))
 
 ;;;###autoload
-(defun dtm/chatgpt-arcana-start-empty-chat ()
-  "Prompt user and run `dtm-chatgpt-arcana-start-empty-chat'."
-  (interactive)
-  (require 'chatgpt-arcana)
-  (dtm-chatgpt-arcana-start-empty-chat
-   (let* ((alist chatgpt-arcana-system-prompts-alist))
-     (alist-get (intern (completing-read "Conversation type: "
-                                         (mapcar #'car alist)
-                                         nil t))
-                alist))))
+(defun dtm-gptel-setup-h ()
+  "Personal gptel-mode customisation's. Intended as for `gptel-mode-hook'."
+  (visual-line-mode +1)
+  (visual-fill-column-mode +1)
+  (flycheck-mode -1))
+
+;;;###autoload
+(defun dtm-gptel--insert-response-a (response info)
+  (with-current-buffer (plist-get info :gptel-buffer)
+    (goto-char (point-max))))
+

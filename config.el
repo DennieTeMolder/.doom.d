@@ -1001,18 +1001,24 @@ Also used by `org-modern-mode' to calculate heights.")
         "C-u" #'ctrlf-previous-page
         "C-d" #'ctrlf-next-page))
 
-(use-package! chatgpt-arcana
-  :commands chatgpt-arcana-resume-chat
+(use-package gptel
+  :commands gptel gptel-send
   :config
-  ;; In ~/.authinfo.gpg write:
-  ;; machine chat.openai.com login CHATGPT_EMAIL password API_KEY
-  (setq chatgpt-arcana-api-key
-        (auth-source-pick-first-password :host "chat.openai.com")
-        chatgpt-arcana-chat-split-window nil)
+  ;; ~/authinfo.gpg: machine openai.com login apikey password <key>
+  (setq gptel-default-mode 'markdown-mode)
 
-  (add-hook 'chatgpt-arcana-chat-mode-hook #'visual-fill-column-mode)
+  ;; Custom directive
+  (setq-default gptel--system-message "You are a large language model living inside the Doom Emacs framework. Help the user and be concise.")
 
-  (advice-add chatgpt-arcana-resume-chat :before #'dtm-chatgpt-goto-workspace))
+  (add-hook 'gptel-mode-hook #'dtm-gptel-setup-h)
+  (advice-add 'gptel--insert-response :after #'dtm-gptel--insert-response-a)
+
+  ;; BUG this fixes `gptel-system-prompt' related errors
+  (require 'gptel-transient)
+
+  ;; C-u C-RET brings up `gptel-send-menu
+  (map! :map gptel-mode-map
+        :gn "C-RET" #'gptel-send))
 
 (load! "+keybindings")
 (load! "+faces")
