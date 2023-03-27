@@ -760,15 +760,13 @@ Equivalent to 's' at the R prompt."
   "Returns a list of buffers associated with an R plot."
   (delq nil
         (cons (get-buffer dtm-ess-r-plot-dummy-name)
-              (mapcar (lambda (buf)
-                        (with-current-buffer buf
-                          (when (dtm-ess-r-plot-file-p) buf)))
+              (mapcar (lambda (buf) (with-current-buffer buf
+                                 (when (dtm-ess-r-plot-file-p) buf)))
                       (buffer-list)))))
 
 (defun dtm-ess-r-plot-window ()
   "Return the window currently displaying R plots."
-  (car (delq nil (mapcar (lambda (buf) (get-buffer-window buf))
-                         (dtm-ess-r-plot-buffers)))))
+  (car (delq nil (mapcar #'get-buffer-window (dtm-ess-r-plot-buffers)))))
 
 (defun dtm-ess-r-plot-force-window ()
   "Return window for displaying R plot files, create if it not exists."
@@ -795,10 +793,10 @@ Only kill visible plot buffers if KILL-VISIBLE is t."
                 (kill-buffer buf))))
           bufs)))
 
-(defun dtm-ess-r-plot-open-pdf (event)
-  "Display file from EVENT if it was changed and ends with .pdf."
+(defun dtm-ess-r-plot-file-notify-open (event)
+  "Display file in from EVENT `dtm-ess-r-plot-force-window' if it was changed."
   (when (and (eq 'changed (nth 1 event))
-             (string= ".pdf" (substring (nth 2 event) -4)))
+             (file-name-extension (nth 2 event)))
     (set-window-buffer (dtm-ess-r-plot-force-window)
                        (find-file-noselect (nth 2 event)))
     (dtm-ess-r-plot-cleanup-buffers)
@@ -821,7 +819,7 @@ Relies on using 'dtm::print_plot()' inside of R."
     (setq dtm-ess-r-plot-descriptor (file-notify-add-watch
                                      (dtm-ess-r-plot-dir)
                                      '(change)
-                                     #'dtm-ess-r-plot-open-pdf)
+                                     #'dtm-ess-r-plot-file-notify-open)
           dtm-ess-r-plot-process-name ess-current-process-name)
     (ess-command "options(dtm.print_plot=\"pdf\")")
     (dtm-ess-r-plot-force-window)
