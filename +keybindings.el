@@ -54,6 +54,8 @@
       ;; Open
       (:prefix "o"
        :desc "Current dir"             "-" #'dirvish-dwim
+       :desc "ChatGPT"                 "c" #'gptel
+       :desc "ChatGPT dedicated"       "C" #'dtm/gptel-new-chat
        :desc "Current dir (maximised)" "d" #'dirvish
        :desc "Start debugger"          "D" #'+debugger/start
        :desc "Folder sidebar"          "s" #'dtm/dirvish-side

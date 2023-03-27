@@ -1013,12 +1013,15 @@ Also used by `org-modern-mode' to calculate heights.")
   (add-hook 'gptel-mode-hook #'dtm-gptel-setup-h)
   (advice-add 'gptel--insert-response :after #'dtm-gptel--insert-response-a)
 
+  (set-popup-rule! "^\\*ChatGPT" :size 0.35 :select t :ttl nil)
+
   ;; BUG this fixes `gptel-system-prompt' related errors
   (require 'gptel-transient)
 
   ;; C-u C-RET brings up `gptel-send-menu
   (map! :map gptel-mode-map
-        :gn "C-RET" #'gptel-send))
+        :gn [C-return] #'gptel-send
+        :gn "C-c C-q"  #'dtm/kill-buffer-window-rebalance))
 
 (load! "+keybindings")
 (load! "+faces")

@@ -115,6 +115,13 @@ A larger W/H-FACTOR favours splitting vertically (i.e. down)."
         (split-window-horizontally)
       (split-window-vertically))))
 
+;;;###autoload
+(defun dtm/kill-buffer-window-rebalance ()
+  "Call `kill-buffer-and-window' and `balance-windows'."
+  (interactive)
+  (kill-buffer-and-window)
+  (balance-windows))
+
 ;;* Theme recommendations
 (defun dtm--theme-which-inactive (theme1 theme2)
   "Return THEME1 of not currently active, else return THEME2"
@@ -1308,10 +1315,11 @@ Ref: https://emacs.stackexchange.com/a/33344"
 
 ;;;###autoload
 (defun dtm/gptel-new-chat ()
-  "Open a new chat in a dedicted win"
+  "Open a new chat in a dedicated window & workspace."
   (interactive)
   (require 'gptel)
-  (let ((gptel-default-session (generate-new-buffer-name gptel-default-session)))
+  (let ((gptel-default-session (generate-new-buffer-name "ChatGPT")))
+    (ignore-errors (gptel--api-key))
     ;; TODO perspectives only work when buffers are dedicated to a file
     (dtm-gptel-goto-workspace)
     (split-window-horizontally)
@@ -1319,13 +1327,14 @@ Ref: https://emacs.stackexchange.com/a/33344"
     (let ((maximise (not gptel-mode)))
       (call-interactively #'gptel)
       (when maximise
-        (delete-other-windows)))))
+        (delete-other-windows)))
+    (with-current-buffer gptel-default-session
+      (visual-fill-column-mode +1))))
 
 ;;;###autoload
 (defun dtm-gptel-setup-h ()
-  "Personal gptel-mode customisation's. Intended as for `gptel-mode-hook'."
+  "Personal gptel-mode customisation's. Intended for `gptel-mode-hook'."
   (visual-line-mode +1)
-  (visual-fill-column-mode +1)
   (flycheck-mode -1))
 
 ;;;###autoload
