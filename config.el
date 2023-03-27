@@ -798,7 +798,7 @@ Also used by `org-modern-mode' to calculate heights.")
 
   ;; Make inferior buffer not take focus on startup
   (advice-add 'ess-switch-to-inferior-or-script-buffer :around #'dtm-ess-switch-maybe-a)
-  (advice-add 'inferior-ess-reload :after #'dtm-ess-r-plot-reload-a)
+  (advice-add 'inferior-ess-reload :around #'dtm-ess-r-plot-reload-a)
 
   ;; Lag the cursor in debug mode, this leaves the point at a variable after its assigned
   (advice-add 'ess-debug-command-next :around #'dtm-with-lagging-point-a)
@@ -1004,7 +1004,7 @@ Also used by `org-modern-mode' to calculate heights.")
 (use-package gptel
   :commands gptel gptel-send
   :config
-  ;; ~/authinfo.gpg: machine openai.com login apikey password <key>
+  ;; ~/.authinfo.gpg: machine openai.com login apikey password <key>
   (setq gptel-default-mode 'markdown-mode)
 
   ;; Custom directive
