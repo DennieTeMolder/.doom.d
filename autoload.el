@@ -686,9 +686,12 @@ Intended as before advice for `vterm-send-key'"
   "Display spinner if ESS process is busy.
 Ref: `ess--tb-start', https://github.com/seagle0128/doom-modeline/issues/410"
   (setq-local ess-busy-strings (cons "%s" (cdr ess-busy-strings))
-              mode-line-process
-              (append (butlast mode-line-process)
-                      `("]: " (:eval  (nth ess--busy-count ess-busy-strings)) " "))))
+              mode-line-process '("["
+                                  ess--mode-line-process-indicator
+                                  ess--local-mode-line-process-indicator
+                                  "]: "
+                                  (:eval (nth ess--busy-count ess-busy-strings))
+                                  " ")))
 
 ;;;###autoload
 (defun dtm-ess-switch-maybe-a (orig-fn TOGGLE-EOB)
