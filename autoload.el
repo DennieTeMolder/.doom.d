@@ -799,8 +799,8 @@ Only kill visible plot buffers if KILL-VISIBLE is t."
           bufs)))
 
 (defun dtm-ess-r-plot-file-notify-open (event)
-  "Display file in from EVENT `dtm-ess-r-plot-force-window' if it was changed."
-  (when (and (eq 'changed (nth 1 event))
+  "Display file created by EVENT in `dtm-ess-r-plot-force-window'."
+  (when (and (eq 'created (nth 1 event))
              (file-name-extension (nth 2 event)))
     (set-window-buffer (dtm-ess-r-plot-force-window)
                        (find-file-noselect (nth 2 event)))
@@ -826,7 +826,7 @@ Relies on using 'dtm::print_plot()' inside of R."
                                      '(change)
                                      #'dtm-ess-r-plot-file-notify-open)
           dtm-ess-r-plot-process-name ess-current-process-name)
-    (ess-command "options(dtm.print_plot=\"pdf\")")
+    (ess-command "options(dtm.print_plot=\"png\")")
     (dtm-ess-r-plot-force-window)
     (message "ESS: displaying plots in emacs")))
 
