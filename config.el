@@ -410,6 +410,9 @@
 (after! vundo
   (setq vundo-glyph-alist vundo-ascii-symbols))
 
+(after! image-mode
+  (advice-add 'image-fit-to-window :after #'dtm/image-center))
+
 ;;* Doom Core Package Extensions
 ;; Add colours to info pages to make them more readable
 (use-package! info-colors

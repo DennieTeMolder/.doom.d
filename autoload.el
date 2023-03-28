@@ -1349,3 +1349,26 @@ Ref: https://emacs.stackexchange.com/a/33344"
   (with-current-buffer (plist-get info :gptel-buffer)
     (goto-char (point-max))))
 
+;;* Image-mode
+(defun dtm-image-overlay ()
+  "Return current image overlay, create if not exists."
+  (or (image-mode-window-get 'overlay)
+      (alist-get 'overlay (image-mode-window-put
+                           'overlay (make-overlay (point-min) (point-max))))))
+
+;;;###autoload
+(defun dtm/image-center (&optional window)
+  "Centre the current image in the window.
+Can also be used as :after advice for `image-fit-to-window'.
+Ref: `pdf-view-display-image'"
+  (interactive)
+  (with-selected-window (or window (selected-window))
+    (unless (derived-mode-p 'image-mode)
+      (error "Not in 'image-mode'!"))
+    (let ((img-width (floor (car (image-size (image-get-display-property))))))
+      (overlay-put (dtm-image-overlay) 'before-string
+                   (when (> (window-width) img-width)
+                     (propertize " " 'display
+                                 `(space :align-to ,(/ (- (window-width)
+                                                          img-width)
+                                                       2))))))))
