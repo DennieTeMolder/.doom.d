@@ -998,7 +998,7 @@ If REGION is active, call `lispy-delete' instead."
 ;;;###autoload
 (defun dtm-fix-elisp-extend-imenu-a ()
   (cl-replace imenu-generic-expression
-              '(("Section" "^[ \t]*;;[;*]+[ \t]+\\([^\n]+\\)" 1))))
+              '(("Section" "^[ \t]*;;[;*]+[ \t]+\\(.+\\)" 1))))
 
 (defvar dtm-imenu-orginal-index-function nil
   "Original indexing function before calling `dtm-imenu-merge-index-h'")
