@@ -677,8 +677,9 @@ Also used by `org-modern-mode' to calculate heights.")
          :v "h"   #'pdf-annot-add-highlight-markup-annotation
          :v "s"   #'pdf-annot-add-strikeout-markup-annotation
          :v "u"   #'pdf-annot-add-underline-markup-annotation
+         :n "z t" #'pdf-view-themed-minor-mode
          (:prefix "s"
-          :desc "Rotate page"        :n "r" #'image-rotate
+          :desc "Rotate page"        :n "r" #'pdf-view-rotate
           :desc "Slice original"     :n "o" #'pdf-view-reset-slice
           :desc "Slice bounding box" :n "b" #'pdf-view-set-slice-from-bounding-box
           :desc "Slice using mouse"  :n "m" #'pdf-view-set-slice-using-mouse)
