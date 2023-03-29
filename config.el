@@ -35,13 +35,10 @@
 ;; refresh your font settings. If Emacs still can't find your font, it likely
 ;; wasn't installed correctly. Font issues are rarely Doom issues!
 
-(defvar dtm-base-font-size (if IS-LAPTOP 13.0 11.0))
-
 ;; Use float for size as it indicates point size rather then pixels (better scaling)
-(setq doom-font (font-spec :family "Iosevka" :width 'expanded :size dtm-base-font-size)
-      doom-big-font (font-spec :family "Iosevka" :width 'expanded :size (+ dtm-base-font-size 5))
-      doom-serif-font (font-spec :family "Iosevka Slab" :width 'expanded :size dtm-base-font-size)
-      doom-variable-pitch-font (font-spec :family "Iosevka Aile" :size dtm-base-font-size))
+(setq doom-font (font-spec :family "Iosevka Term SS05" :width 'expanded
+                           :size (if IS-LAPTOP 13.0 11.0))
+      doom-variable-pitch-font (font-spec :family "Iosevka Aile"))
 
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
@@ -555,8 +552,6 @@ Also used by `org-modern-mode' to calculate heights.")
   (set-face-attribute 'org-modern-symbol nil :family "Iosevka"))
 
 (after! org-tree-slide
-  (setq +org-present-text-scale (- dtm-base-font-size 7))
-
   ;; Make presentations even prettier
   (add-hook! 'org-tree-slide-mode-hook :append #'dtm-org-tree-slide-setup-h)
 
@@ -791,6 +786,7 @@ Also used by `org-modern-mode' to calculate heights.")
   ;; Use current dir for session
   (setq ess-ask-for-ess-directory nil
         ess-startup-directory-function #'dtm-ess-startup-dir
+        ess-r-prettify-symbols nil
         ess-auto-width 'window
         ess-style 'RStudio)
 
