@@ -454,7 +454,7 @@
 (after! ispell
   ;; Global and personal ispell library
   (setq ispell-dictionary "en_GB"
-        ispell-personal-dictionary "~/Nextcloud/Dictionary/personal_dict.pws"))
+        ispell-personal-dictionary "~/Nextcloud/Emacs/Dict/personal_dict.pws"))
 
 (after! flycheck
   ;; Select flycheck window when opened
