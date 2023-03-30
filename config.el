@@ -798,6 +798,9 @@ Also used by `org-modern-mode' to calculate heights.")
              #'dtm-ess-modeline-show-busy
              (visual-line-mode +1))
 
+  ;; Ensure with is set from the start of the process
+  (add-hook 'ess-post-run-hook #'ess-set-width)
+
   ;; Make inferior buffer not take focus on startup
   (advice-add 'ess-switch-to-inferior-or-script-buffer :around #'dtm-ess-switch-maybe-a)
   (advice-add 'inferior-ess-reload :around #'dtm-ess-r-plot-reload-a)
