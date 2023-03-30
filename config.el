@@ -354,7 +354,7 @@
   (map! :map dirvish-mode-map
         :n "C-o"   #'dirvish-history-jump
         :n "C-r"   #'revert-buffer
-        :n "C-s"   #'dirvish-fd
+        :n "C-s"   #'dtm/dirvish-search-cwd
         :n "c"     #'dired-create-empty-file
         :n "h"     #'dired-up-directory
         :n "H"     #'dirvish-history-go-backward

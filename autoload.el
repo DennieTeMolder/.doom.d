@@ -1190,6 +1190,17 @@ Based on `+popup/diagnose'."
   (interactive)
   (dirvish-find-entry-a (car (find-file-read-args "Open: " t))))
 
+;;;###autoload
+(defun dtm/dirvish-search-cwd ()
+  "Text search files from current working directory, kill dirvish on confirm."
+  (interactive)
+  (let ((consult--buffer-display #'identity)
+        (dv (dirvish-curr)))
+    (+default/search-cwd)
+    (let ((buf (current-buffer)))
+      (dirvish-kill dv)
+      (switch-to-buffer buf))))
+
 ;;* Tempel
 ;;;###autoload
 (defun dtm-tempel-complete-always ()
