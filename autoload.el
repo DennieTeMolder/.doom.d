@@ -1230,6 +1230,7 @@ Based on `+popup/diagnose'."
 (defun dtm/dirvish-search-cwd ()
   "Text search files from current working directory, kill dirvish on confirm."
   (interactive)
+  (require 'consult)
   (let ((consult--buffer-display #'identity)
         (dv (dirvish-curr)))
     (+default/search-cwd)
