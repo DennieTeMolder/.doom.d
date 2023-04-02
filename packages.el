@@ -92,5 +92,3 @@
 (package! gptel)
 (package! elpy-shell
   :recipe (:host github :repo "DennieTeMolder/elpy-shell"))
-(package! indent-tools
-  :recipe (:host github :repo "DennieTeMolder/indent-tools"))
