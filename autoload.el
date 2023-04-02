@@ -122,6 +122,42 @@ A larger W/H-FACTOR favours splitting vertically (i.e. down)."
   (kill-buffer-and-window)
   (balance-windows))
 
+;;;###autoload
+(defun dtm/move-splitter-left (arg)
+  "Move window splitter left. Ref: hydra-examples"
+  (interactive "p")
+  (if (let ((windmove-wrap-around))
+        (windmove-find-other-window 'right))
+      (shrink-window-horizontally arg)
+    (enlarge-window-horizontally arg)))
+
+;;;###autoload
+(defun dtm/move-splitter-right (arg)
+  "Move window splitter right. Ref: hydra-examples"
+  (interactive "p")
+  (if (let ((windmove-wrap-around))
+        (windmove-find-other-window 'right))
+      (enlarge-window-horizontally arg)
+    (shrink-window-horizontally arg)))
+
+;;;###autoload
+(defun dtm/move-splitter-up (arg)
+  "Move window splitter up. Ref: hydra-examples"
+  (interactive "p")
+  (if (let ((windmove-wrap-around))
+        (windmove-find-other-window 'up))
+      (enlarge-window arg)
+    (shrink-window arg)))
+
+;;;###autoload
+(defun dtm/move-splitter-down (arg)
+  "Move window splitter down. Ref: hydra-examples"
+  (interactive "p")
+  (if (let ((windmove-wrap-around))
+        (windmove-find-other-window 'up))
+      (shrink-window arg)
+    (enlarge-window arg)))
+
 ;;* Theme recommendations
 (defun dtm--theme-which-inactive (theme1 theme2)
   "Return THEME1 of not currently active, else return THEME2"

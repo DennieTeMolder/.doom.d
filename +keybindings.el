@@ -1,8 +1,12 @@
 ;;; $DOOMDIR/+keybindings.el -*- lexical-binding: t; -*-
 
 ;;* Global
-(map! "C-s" #'ctrlf-forward-default
-      "C-l" #'+nav-flash/blink-cursor
+(map! "C-<right>" #'dtm/move-splitter-right
+      "C-<left>"  #'dtm/move-splitter-left
+      "C-<down>"  #'dtm/move-splitter-down
+      "C-<up>"    #'dtm/move-splitter-up
+      "C-s"       #'ctrlf-forward-default
+      "C-l"       #'+nav-flash/blink-cursor
 
       :i "C-x C-s" #'dtm-tempel-complete-always
       :v "C-x C-s" #'tempel-insert
