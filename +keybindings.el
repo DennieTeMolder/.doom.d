@@ -34,7 +34,6 @@
       :desc "Evil ex command" ":"   #'evil-ex
 
       ;; General
-      :desc "Indentation hydra"   ">" #'indent-tools-hydra/body
       :desc "Repeat last command" "r" #'repeat
 
       ;; Buffers
@@ -74,9 +73,7 @@
        :desc "Trash deleted files" "T" #'dtm/toggle-trash-delete)
 
       ;; Window management
-      (:prefix "w"
-       :desc "Adjust windows hydra" "a" #'+hydra/window-nav/body
-                                    "e" #'evil-window-prev)
+      "w e" #'evil-window-prev
 
       ;; Popups
       "/" nil ; Unbind `+default/search-project' (also bound to "SPC s p")
