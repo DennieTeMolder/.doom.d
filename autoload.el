@@ -791,31 +791,34 @@ Equivalent to 's' at the R prompt."
   (if (dtm-ess-r-plot-running-p)
       (let ((watch (gethash dtm-ess-r-plot-descriptor file-notify-descriptors)))
         (file-name-as-directory (file-notify--watch-directory watch)))
-    (let* ((tmp-dir (car (ess-get-words-from-vector "tempdir(check=TRUE)")))
-           (plot-dir (expand-file-name "session_plots/" tmp-dir)))
-      (unless (file-exists-p (file-name-as-directory tmp-dir))
+    (let* ((tmp-dir (file-name-as-directory
+                     (car (ess-get-words-from-vector "tempdir(check=TRUE)"))))
+           (plot-dir (expand-file-name "session_plots" tmp-dir)))
+      (unless (file-exists-p tmp-dir)
         (error "ESS: cannot get valid tempdir() from R process"))
       (make-directory plot-dir t)
-      plot-dir)))
+      (file-name-as-directory plot-dir))))
 
 ;;;###autoload
-(defun dtm-ess-r-plot-file-p (&optional file)
-  "Return t if FILE is an R plot. Defaults to `buffer-file-name'."
-  (when (dtm-ess-r-plot-running-p)
-    (when-let ((file (or file (buffer-file-name))))
-      (file-in-directory-p file (dtm-ess-r-plot-dir)))))
+(defun dtm-ess-r-plot-file-p (file)
+  "Return non-nil if FILE is an R plot."
+  (and (dtm-ess-r-plot-running-p)
+       (file-in-directory-p file (dtm-ess-r-plot-dir))))
+
+(defun dtm-ess-r-plot-buffer-p (&optional buf)
+  "Return BUF if it displays an R plot. Defaults to `current-buffer'."
+  (when-let* ((buf (or buf (current-buffer)))
+              (file (buffer-file-name buf)))
+    (when (dtm-ess-r-plot-file-p file) buf)))
 
 (defun dtm-ess-r-plot-buffers ()
-  "Returns a list of buffers associated with an R plot."
-  (delq nil
-        (cons (get-buffer dtm-ess-r-plot-dummy-name)
-              (mapcar (lambda (buf) (with-current-buffer buf
-                                 (when (dtm-ess-r-plot-file-p) buf)))
-                      (buffer-list)))))
+  "Return a list of buffers associated with an R plot."
+  (delq nil (cons (get-buffer dtm-ess-r-plot-dummy-name)
+                  (mapcar #'dtm-ess-r-plot-buffer-p (buffer-list)))))
 
 (defun dtm-ess-r-plot-window ()
   "Return the window currently displaying R plots."
-  (car (delq nil (mapcar #'get-buffer-window (dtm-ess-r-plot-buffers)))))
+  (cl-some #'get-buffer-window (dtm-ess-r-plot-buffers)))
 
 (defun dtm-ess-r-plot-force-window ()
   "Return window for displaying R plot files, create if it not exists."
