@@ -738,18 +738,14 @@ Ref: `ess--tb-start', https://github.com/seagle0128/doom-modeline/issues/410"
                                   " ")))
 
 ;;;###autoload
-(defun dtm-ess-switch-maybe-a (orig-fn TOGGLE-EOB)
-  "Only switch to the REPL if it was already visible"
-  (let* ((starting-window (selected-window))
-         (ess-process (and ess-current-process-name
-                           (get-process ess-current-process-name)))
-         (ess-buffer-visible (and ess-process
-                                  (doom-visible-buffer-p
-                                   (buffer-name (process-buffer ess-process))))))
-    (funcall orig-fn TOGGLE-EOB)
+(defun dtm-ess-switch-maybe-a (orig-fn &rest args)
+  "Only switch to the REPL if it was already visible.
+Use as `ess-switch-to-inferior-or-script-buffer' :around advice"
+  (let ((win-start (selected-window))
+        (ibuf-visible (get-buffer-window (ess-get-process-buffer))))
+    (apply orig-fn args)
     (evil-normal-state)
-    (unless ess-buffer-visible
-      (select-window starting-window))))
+    (unless ibuf-visible (select-window win-start))))
 
 ;;;###autoload
 (defun dtm/ess-eval-symbol-at-point ()
