@@ -813,6 +813,8 @@ Also used by `org-modern-mode' to calculate heights.")
              (visual-line-mode +1))
 
 
+  ;; Recenter buffer in window after sending region (SPC m ,)
+  (advice-add 'ess-eval-region-or-function-or-paragraph-and-step :after (cmd! (recenter)))
   (advice-add 'inferior-ess-reload :around #'dtm-ess-r-plot-reload-a)
 
   ;; Lag the cursor in debug mode, this leaves the point at a variable after its assigned
