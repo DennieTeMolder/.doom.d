@@ -1269,6 +1269,7 @@ Meant for hooking onto `prog-mode-hook' and `text-mode-hook'."
 (defun dtm/tempel-open-template-file ()
   "Open the last file in `tempel-path' in the other window."
   (interactive)
+  (require 'tempel)
   (let ((enable-local-variables :all))
     (find-file-other-window (last tempel-path))
     (goto-char (point-min))))
