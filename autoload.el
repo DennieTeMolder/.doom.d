@@ -870,6 +870,7 @@ Relies on using 'dtm::print_plot()' inside of R."
               dtm-ess-r-plot-descriptor nil)
         (when (called-interactively-p 'interactive)
           (message "ESS: stopped displaying plots in emacs")))
+    (ess-force-buffer-current)
     (ess-command "options(dtm.print_plot=\"png\")")
     (setq dtm-ess-r-plot-descriptor (file-notify-add-watch
                                      (dtm-ess-r-plot-dir)
