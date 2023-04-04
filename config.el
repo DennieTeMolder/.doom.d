@@ -743,6 +743,9 @@ Also used by `org-modern-mode' to calculate heights.")
 
   (add-hook! 'emacs-lisp-mode-hook :append #'dtm-elisp-extend-imenu-h))
 
+(after! edebug
+  (map! :map edebug-mode-map :n "R" #'edebug-remove-instrumentation))
+
 (after! elisp-refs
   (add-hook 'elisp-refs-mode-hook #'hide-mode-line-mode)
 
