@@ -1435,3 +1435,21 @@ Ref: `pdf-view-display-image'"
                                  `(space :align-to ,(/ (- (window-width)
                                                           img-width)
                                                        2))))))))
+
+;;* Markdown-mode
+;;;###autoload
+(defun dtm/markdown-backward-same-level ()
+  "Move to previous list item or first heading above current line."
+  (interactive)
+  (if (or (markdown-on-heading-p) (markdown-cur-list-item-bounds))
+      (markdown-outline-previous-same-level)
+    (markdown-back-to-heading-over-code-block)))
+
+;;;###autoload
+(defun dtm/markdown-up ()
+  "Move up in list or heading hierarchy. Ref: `markdown-outline-up'."
+  (interactive)
+  (unless (markdown-up-list)
+    (if (markdown-on-heading-p)
+        (markdown-up-heading 1)
+      (markdown-back-to-heading-over-code-block))))

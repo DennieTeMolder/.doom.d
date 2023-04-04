@@ -706,6 +706,17 @@ Also used by `org-modern-mode' to calculate heights.")
   ;; Disable proselint in Rmarkdown files
   (add-hook! 'markdown-mode-hook #'dtm-flycheck-disable-proselint-rmd-h))
 
+(after! evil-markdown
+  (evil-declare-motion 'dtm/markdown-backward-same-level)
+  (evil-declare-motion 'markdown-outline-next-same-level)
+  (evil-declare-motion 'dtm/markdown-up)
+
+  (map! :map evil-markdown-mode-map
+        (:prefix "g"
+         :m "k" #'dtm/markdown-backward-same-level
+         :m "j" #'markdown-outline-next-same-level
+         :m "h" #'dtm/markdown-up)))
+
 ;;* Programming Languages
 ;; General interactive programming buffer settings
 (after! comint
