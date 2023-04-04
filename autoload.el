@@ -1408,7 +1408,16 @@ Ref: https://emacs.stackexchange.com/a/33344"
   (flycheck-mode -1))
 
 ;;;###autoload
+(defun dtm/gptel-send-buffer ()
+  "Scroll to the end and call `gptel-send' to ensure the full buffer is send."
+  (interactive)
+  (goto-char (point-max))
+  (gptel-send))
+
+;;;###autoload
 (defun dtm-gptel--insert-response-a (response info)
+  "Scroll to the end of the gptel-buffer after receiving a response.
+Use as `gptel--insert-response' :after advice."
   (with-current-buffer (plist-get info :gptel-buffer)
     (goto-char (point-max))))
 

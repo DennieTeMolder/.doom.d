@@ -1004,10 +1004,11 @@ Also used by `org-modern-mode' to calculate heights.")
         "C-u" #'ctrlf-previous-page
         "C-d" #'ctrlf-next-page))
 
+;; NOTE to configure add the line below to ~/.authinfo.gpg
+;; machine openai.com login apikey password <your-key>
 (use-package gptel
   :commands gptel gptel-send
   :config
-  ;; ~/.authinfo.gpg: machine openai.com login apikey password <key>
   (setq gptel-default-mode 'markdown-mode)
 
   ;; Custom directive
@@ -1023,8 +1024,10 @@ Also used by `org-modern-mode' to calculate heights.")
 
   ;; C-u C-RET brings up `gptel-send-menu
   (map! :map gptel-mode-map
-        :gn [C-return] #'gptel-send
-        :gn "C-c C-q"  #'dtm/kill-buffer-window-rebalance))
+        :gn [C-return] #'dtm/gptel-send-buffer
+        :gn "C-c C-q"  #'dtm/kill-buffer-window-rebalance
+        :nv "g k"      #'dtm/markdown-backward-same-level
+        :nv "g j"      #'markdown-outline-next-same-level))
 
 (load! "+keybindings")
 (load! "+faces")
