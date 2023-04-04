@@ -859,24 +859,23 @@ Only kill visible plot buffers if KILL-VISIBLE is t."
   "Toggle displaying R plots in emacs.
 Relies on using 'dtm::print_plot()' inside of R."
   (interactive)
+  ;; Run `ess-command' first because it raises an `user-error' if process is busy
   (if (dtm-ess-r-plot-running-p)
       (let ((ess-local-process-name dtm-ess-r-plot-process-name))
         (when (ess-process-live-p)
-          (if (ess-process-get 'busy)
-              (user-error "ESS process not ready. Wait for command(s) to finish")
-          (ess-command "options(dtm.print_plot=NULL)")))
+          (ess-command "options(dtm.print_plot=NULL)"))
         (dtm-ess-r-plot-cleanup-buffers t)
         (file-notify-rm-watch dtm-ess-r-plot-descriptor)
         (setq dtm-ess-r-plot-process-name nil
               dtm-ess-r-plot-descriptor nil)
         (when (called-interactively-p 'interactive)
           (message "ESS: stopped displaying plots in emacs")))
+    (ess-command "options(dtm.print_plot=\"png\")")
     (setq dtm-ess-r-plot-descriptor (file-notify-add-watch
                                      (dtm-ess-r-plot-dir)
                                      '(change)
                                      #'dtm-ess-r-plot-file-notify-open)
           dtm-ess-r-plot-process-name ess-current-process-name)
-    (ess-command "options(dtm.print_plot=\"png\")")
     (dtm-ess-r-plot-force-window)
     (when (called-interactively-p 'interactive)
       (message "ESS: displaying plots in emacs"))))
