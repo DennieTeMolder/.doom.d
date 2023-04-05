@@ -36,3 +36,13 @@ block, send the entire code block."
   "Halves height of active window"
   (interactive)
   (enlarge-window (/ (window-height) -2)))
+
+;;* ESS/R
+(defun dtm-ess-switch-maybe-a (orig-fn &rest args)
+  "Only switch to the REPL if it was already visible.
+Use as `ess-switch-to-inferior-or-script-buffer' :around advice"
+  (let ((win-start (selected-window))
+        (ibuf-visible (get-buffer-window (ess-get-process-buffer))))
+    (apply orig-fn args)
+    (evil-normal-state)
+    (unless ibuf-visible (select-window win-start))))

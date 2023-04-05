@@ -212,7 +212,8 @@
 ;;* Doom Core Package Settings
 (after! evil
   ;; Indicate `evil-repeat' to ignore certain commands because they freeze emacs
-  (dtm-evil-repeat-ignore #'+workspace/switch-left #'+workspace/switch-right)
+  (evil-declare-not-repeat #'+workspace/switch-left)
+  (evil-declare-not-repeat #'+workspace/switch-right)
 
   ;; Enable granular undo (remembers delete actions during insert state)
   (setq evil-want-fine-undo t
@@ -484,7 +485,7 @@ Also used by `org-modern-mode' to calculate heights.")
     '(org-headline-done :strike-through t))
 
   ;; Mark tab-navigation through tables as non-repeatable
-  (dtm-evil-repeat-ignore #'org-cycle)
+  (evil-declare-not-repeat 'org-cycle)
 
   ;; Enable hard wrapping and automate paragraph filling
   ;; Allow for double quoting using '' and `` (`` -> “)
@@ -495,10 +496,9 @@ Also used by `org-modern-mode' to calculate heights.")
 
 ;; Keys bound in after! org seem to get overwritten, this works
 (after! org-keys
-  ;; Use old org-ref insert key, remove `org-agenda-file-to-front' binding
   (map! :map org-mode-map
         "C-c ]" #'org-cite-insert
-        "C-c [" nil
+        "C-c [" nil                     ; `org-agenda-file-to-front'
         :nv "C-j" #'+org/return
         :desc "Toggle pretty visuals" :localleader "v" #'+org-pretty-mode))
 
@@ -515,6 +515,7 @@ Also used by `org-modern-mode' to calculate heights.")
         org-odt-preferred-output-format "doc"))
 
 (use-package! org-appear
+  :after org
   :commands org-appear-mode
   :init
   (advice-add 'org-toggle-pretty-entities :after #'dtm-org-pretty-use-appear-a)
@@ -524,6 +525,7 @@ Also used by `org-modern-mode' to calculate heights.")
         org-appear-autoentities t))
 
 (use-package! org-modern
+  :after org
   :commands org-modern-mode org-modern-agenda
   :init
   (add-hook 'org-agenda-finalize-hook #'org-modern-agenda)
@@ -548,10 +550,10 @@ Also used by `org-modern-mode' to calculate heights.")
   (advice-add 'org-tree-slide-mode :around #'dtm-org-tree-slide-no-squiggles-a)
 
   (map! :map org-tree-slide-mode-map
-        :n "q" (cmd! (org-tree-slide-mode -1))
-        :n [left] #'org-tree-slide-move-previous-tree
+        :n "q"     #'org-tree-slide-mode
+        :n [left]  #'org-tree-slide-move-previous-tree
         :n [right] #'org-tree-slide-move-next-tree
-        :n [C-up] #'org-tree-slide-content))
+        :n [C-up]  #'org-tree-slide-content))
 
 ;; Org-download settings
 (after! org-download
@@ -617,7 +619,6 @@ Also used by `org-modern-mode' to calculate heights.")
            :empty-lines 1))))
 
 (when (modulep! :tools biblio)
-  ;; Citar bibliography settings
   (setq! citar-bibliography '("~/Nextcloud/Zotero/master.bib")
          citar-library-paths '("~/Nextcloud/Zotero/")))
 
@@ -638,8 +639,8 @@ Also used by `org-modern-mode' to calculate heights.")
 
 ;; Org-noter settings
 (after! org-noter
-  (setq org-noter-hide-other nil           ; Don't fold headings when navigating
-        org-noter-always-create-frame nil) ; Only crete new frames for additional sessions
+  (setq org-noter-hide-other nil
+        org-noter-always-create-frame nil)
 
   ;; Kill session map in line with other C-c bound pdf controls for one hand use
   (map! :map (org-noter-doc-mode-map org-noter-notes-mode-map)
@@ -889,7 +890,7 @@ Also used by `org-modern-mode' to calculate heights.")
 (use-package! elpy-shell
   :after python
   :config
-  ;; HACK use doom te create elpy process for pyenv support
+  ;; HACK use doom te create elpy process for pyenv support (also starts conda)
   (advice-add 'elpy-shell-get-or-create-process
               :override #'dtm-elpy-shell-get-doom-process-a)
 
@@ -944,18 +945,14 @@ Also used by `org-modern-mode' to calculate heights.")
 (use-package! good-scroll
   :commands good-scroll-mode
   :init
-  ;; Enable when not on laptop (can still be activated manually)
   (unless IS-LAPTOP
     (add-hook 'doom-first-buffer-hook #'good-scroll-mode))
-
-  ;; Override evil functions on mode activation, undo upon deactivation
-  (add-hook 'good-scroll-mode-hook #'dtm-good-scroll-evil-override-h)
-
   :config
-  ;; Increase animation time and mouse scrolling sensitivity
   (setq good-scroll-duration 0.25
         good-scroll-algorithm 'good-scroll-linear
-        good-scroll-step (round (/ (display-pixel-height) 5))))
+        good-scroll-step (round (/ (display-pixel-height) 5)))
+
+  (add-hook 'good-scroll-mode-hook #'dtm-good-scroll-evil-override-h))
 
 ;; Package for interacting with text fields, requires GhostText browser extension
 (use-package! atomic-chrome

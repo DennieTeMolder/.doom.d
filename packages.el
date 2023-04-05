@@ -50,7 +50,7 @@
 ;(unpin! t)
 
 ;;* Unpins
-(unpin! dirvish)
+;; BUG fixes void function working-dir
 (unpin! conda)
 
 ;;* Doom modifications

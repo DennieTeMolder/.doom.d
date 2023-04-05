@@ -20,14 +20,6 @@ If NAME is not provided `buffer-file-name' is used."
   (let ((name (file-name-base (or fname buffer-file-name))))
     (capitalize (replace-regexp-in-string "[^A-Za-z0-9]+" " " name))))
 
-;;;###autoload
-(defun dtm-evil-repeat-ignore (&rest symbol)
-  "Instruct `evil-repeat' to ignore commands with SYMBOL."
-  (unless symbol
-    (error "SYMBOL should be provided!"))
-  (dolist (current symbol)
-    (evil-add-command-properties current :repeat nil)))
-
 (defun dtm-region-as-string ()
   "Return the marked region as string."
   (when (use-region-p)
@@ -40,17 +32,13 @@ If NAME is not provided `buffer-file-name' is used."
 
 (defun dtm-line-empty-p ()
   "Returns t if line contains no text or whitespace."
-  (eq (line-end-position) (line-beginning-position)))
-
-(defun dtm-buffer-end-p ()
-  "Return t if point is at end of buffer"
-  (eq (point) (buffer-end +1)))
+  (and (bolp) (eolp)))
 
 (defun dtm-forward-line-non-empty ()
   "Move cursor to the start of the next non-empty line."
   (forward-line)
   (while (and (dtm-line-empty-p)
-              (not (dtm-buffer-end-p)))
+              (not (eobp)))
     (forward-line)))
 
 (defun dtm-point-mark-same-line-p ()
@@ -736,16 +724,6 @@ Ref: `ess--tb-start', https://github.com/seagle0128/doom-modeline/issues/410"
                                   "]: "
                                   (:eval (nth ess--busy-count ess-busy-strings))
                                   " ")))
-
-;;;###autoload
-(defun dtm-ess-switch-maybe-a (orig-fn &rest args)
-  "Only switch to the REPL if it was already visible.
-Use as `ess-switch-to-inferior-or-script-buffer' :around advice"
-  (let ((win-start (selected-window))
-        (ibuf-visible (get-buffer-window (ess-get-process-buffer))))
-    (apply orig-fn args)
-    (evil-normal-state)
-    (unless ibuf-visible (select-window win-start))))
 
 ;;;###autoload
 (defun dtm/ess-eval-symbol-at-point ()
