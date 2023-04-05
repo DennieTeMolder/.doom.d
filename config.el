@@ -392,13 +392,6 @@
   (setq avy-all-windows t
         avy-all-windows-alt nil))
 
-(after! hydra
-  (setq hydra-hint-display-type 'posframe
-        hydra-posframe-show-params
-        '(:poshandler posframe-poshandler-frame-bottom-center
-          :internal-border-width 1
-          :internal-border-color "#51afef")))
-
 (after! magit-todos
   ;; Show more todo items (SPC p t)
   (setq magit-todos-max-items 20))
