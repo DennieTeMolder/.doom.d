@@ -106,7 +106,7 @@
 (use-package! dirvish
   :defer t
   :general (dired-mode-map "C-c C-r" #'dirvish-rsync)
-  :after-call dired-noselect dired dired-jump
+  :init (after! dired (dirvish-override-dired-mode))
   :config
   (dirvish-override-dired-mode)
   (setq dirvish-cache-dir (concat doom-cache-dir "dirvish/"))

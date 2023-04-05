@@ -311,29 +311,20 @@
   (advice-remove 'balance-windows #'+popup-save-a))
 
 (after! dired
-  (setq dired-listing-switches "-l --human-readable --group-directories-first"
-        dired-hide-details-hide-symlink-targets nil
-        dired-dwim-target nil)
-
-  ;; REVIEW manually disable diff-hl hook until dirvish module is merged upstream
-  (remove-hook 'dired-mode-hook #'diff-hl-dired-mode)
+  (setq dired-dwim-target nil)
 
   ;; Custom overrides
-  (define-key dired-mode-map [remap dired-diff] #'dtm/dired-ediff)
-  (define-key dired-mode-map [remap dired-do-delete] #'dtm/dired-delete-marked))
+  (map! :map dired-mode-map
+        [remap dired-do-delete] #'dtm/dired-delete-marked
+        [remap dired-diff]      #'dtm/dired-ediff))
 
 (after! dired-x
-  (remove-hook 'dired-mode-hook #'dired-omit-mode))
+  (setq dired-omit-files
+        "^\\..*$\\|\\`#\\|\\.\\(?:class\\|elc\\|meta\\|pyo\\|swp\\)\\'"))
 
 (after! dirvish
   (setq dirvish-reuse-session nil
         dirvish-mode-line-height doom-modeline-height
-        dirvish-attributes
-        '(vc-state subtree-state all-the-icons file-time file-size)
-        dirvish-mode-line-format
-        '(:left (sort file-time) :right (omit yank index))
-        dirvish-preview-dispatchers
-        '(image gif archive)
         dirvish-quick-access-entries
         `(("D" "~/Downloads/" "Downloads")
           ("dc" ,doom-core-dir "Doom Core")
@@ -346,44 +337,50 @@
           ("n" "~/Nextcloud/" "Nextcloud")
           ("p" "~/Nextcloud/PhD/Projects/" "Projects")
           ("r" "/" "Root")))
+  (delq 'collapse dirvish-attributes)
+
+  ;; REVIEW manually disable diff-hl hook until dirvish module is merged upstream
+  (remove-hook 'dired-mode-hook #'diff-hl-dired-mode)
 
   ;; Make dirvish recognise custom project types
   (advice-add 'dirvish--get-project-root :override #'projectile-project-root)
 
+  ;; Tooltip
+  (advice-add 'dirvish-narrow :after
+              (cmd! (message "Run `revert-buffer' (%s) to un-narrow"
+                             (substitute-command-keys "\\[revert-buffer]"))))
+
   ;; Bind `revert-buffer' for reloading directory contents
   (map! :map dirvish-mode-map
-        :n "C-o"   #'dirvish-history-jump
-        :n "C-r"   #'revert-buffer
-        :n "C-s"   #'dtm/dirvish-search-cwd
-        :n "c"     #'dired-create-empty-file
-        :n "h"     #'dired-up-directory
-        :n "H"     #'dirvish-history-go-backward
-        :n "l"     #'dired-find-file
-        :n "L"     #'dirvish-history-go-forward
-        :n "o"     #'dirvish-quick-access
-        :n "Y"     #'dtm/dirvish-copy-file-name
-        :n "/"     #'dtm/dirvish-find-entry)
-
+        :n "C-r" #'revert-buffer
+        :n "C-o" #'dirvish-history-jump
+        :n "C-s" #'dtm/dirvish-search-cwd
+        :n "c"   #'dired-create-empty-file
+        :n "h"   #'dired-up-directory
+        :n "H"   #'dirvish-history-go-backward
+        :n "F"   #'dirvish-layout-toggle
+        :n "l"   #'dired-find-file
+        :n "L"   #'dirvish-history-go-forward
+        :n "M"   #'dirvish-chxxx-menu
+        :n "o"   #'dirvish-quick-access
+        :n "Y"   #'dtm/dirvish-copy-file-name
+        :n "/"   #'dirvish-narrow
+        :n "."   #'dtm/dirvish-find-entry)
   ;; Descriptions only work when bound to `major-mode' map
   (map! :map dired-mode-map
         :localleader
-        :desc "chmod"           "c" #'dirvish-chxxx-menu
-        :desc "fd"              "f" #'dirvish-fd
-        :desc "fd menu"         "F" #'dirvish-fd-switches-menu
-        :desc "Group files"     "g" #'dirvish-emerge-menu
-        :desc "Git menu"        "G" #'dirvish-vc-menu
+        :desc "Configure UI"    "c" #'dirvish-setup-menu
+        :desc "Emerge/group"    "e" #'dirvish-emerge-menu
+        :desc "Fd"              "f" #'dirvish-fd
+        :desc "Fd menu"         "F" #'dirvish-fd-switches-menu
+        :desc "Git menu"        "g" #'dirvish-vc-menu
         :desc "Hide/omit files" "h" #'dired-omit-mode
-        :desc "ls menu"         "l" #'dirvish-ls-switches-menu
+        :desc "Ls menu"         "l" #'dirvish-ls-switches-menu
         :desc "Mark menu"       "m" #'dirvish-mark-menu
-        :desc "Renaming menu"   "r" #'dirvish-renaming-menu
-        :desc "Setup dirvish"   "s" #'dirvish-setup-menu
-        :desc "Subtree menu"    "S" #'dirvish-subtree-menu))
+        :desc "Subtree menu"    "s" #'dirvish-subtree-menu))
 
 (after! dirvish-side
   (dirvish-side-follow-mode +1))
-
-(after! which-key
-  (setq which-key-ellipsis ".."))
 
 (after! all-the-icons
   ;; A lower scaling factor works better with the Iosevka font
