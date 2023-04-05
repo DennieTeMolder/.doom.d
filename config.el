@@ -799,7 +799,6 @@ Also used by `org-modern-mode' to calculate heights.")
              #'dtm-ess-modeline-show-busy
              (visual-line-mode +1))
 
-
   ;; Recenter buffer in window after sending region (SPC m ,)
   (advice-add 'ess-eval-region-or-function-or-paragraph-and-step :after (cmd! (recenter)))
   (advice-add 'inferior-ess-reload :around #'dtm-ess-r-plot-reload-a)
@@ -842,10 +841,12 @@ Also used by `org-modern-mode' to calculate heights.")
          :desc "Eval symbol at point"       "." #'dtm/ess-eval-symbol-at-point)
 
         (:map (ess-r-mode-map inferior-ess-r-mode-map)
-         :i "<" #'dtm/ess-r-insert-assign
-         :i ">" #'dtm/ess-r-insert-pipe
+         :i "M-o" #'ess-r-insert-obj-col-name
+         :i "<"   #'dtm/ess-r-insert-assign
+         :i ">"   #'dtm/ess-r-insert-pipe
          (:localleader
-          :desc "Toggle plotting in emacs" "t" #'dtm/ess-r-plot-toggle))
+          :desc "Toggle plotting in emacs" "t" #'dtm/ess-r-plot-toggle
+          :desc "View R object"            "o" #'ess-view-data-print))
 
         (:map inferior-ess-mode-map
          :localleader
@@ -865,17 +866,13 @@ Also used by `org-modern-mode' to calculate heights.")
 (after! ess-s-lang
   ;; Imenu search entries, best invoked with `consult-imenu' (SPC s i)
   (add-to-list 'ess-imenu-S-generic-expression
-               '("Section" "^\\(#+ [^\n]+\\) ----+" 1)))
+               '("Section" "^\\(#+ .+\\) [-=#]\\{4,\\}" 1)))
 
 (use-package! ess-view-data
-  :commands ess-view-data-print
-  :init
-  (map! :map ess-r-mode-map
-        :desc "View R object" :localleader "o" #'ess-view-data-print))
+  :commands ess-view-data-print)
 
 (use-package! ess-r-insert-obj
-  :commands ess-r-insert-obj-col-name
-  :init (map! :map ess-r-mode-map :i "M-o" #'ess-r-insert-obj-col-name))
+  :commands ess-r-insert-obj-col-name)
 
 (after! python
   ;; Add generic imenu expression and ensure python doesn't ignore them
