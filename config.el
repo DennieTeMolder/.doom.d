@@ -538,10 +538,7 @@ Also used by `org-modern-mode' to calculate heights.")
         org-modern-star ["●" "◉" "○" "◉" "○" "◉" "○" "◉"]
         org-modern-list '((?+ . "›")
                           (?- . "‒")
-                          (?* . "•")))
-
-  ;; Ensure symbols do not change when switching fonts
-  (set-face-attribute 'org-modern-symbol nil :family "Iosevka"))
+                          (?* . "•"))))
 
 (after! org-tree-slide
   ;; Make presentations even prettier
