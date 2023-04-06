@@ -144,6 +144,10 @@
   :config
   (display-battery-mode +1))
 
+;; Show line wrapping indicator if line numbers are hidden
+(add-variable-watcher 'display-line-numbers #'dtm-visual-line-sync-fringe)
+(add-hook 'visual-line-mode-hook #'dtm-visual-line-fix-linum-h)
+
 ;; Replace the default doom splash screen with a more subtle one
 (setq +doom-dashboard-ascii-banner-fn #'dtm-doom-ascii-banner-fn)
 

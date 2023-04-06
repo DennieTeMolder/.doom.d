@@ -1440,3 +1440,27 @@ Ref: `pdf-view-display-image'"
     (if (markdown-on-heading-p)
         (markdown-up-heading 1)
       (markdown-back-to-heading-over-code-block))))
+
+;;* Visual-line-mode
+;;;###autoload
+(defun dtm-visual-line-sync-fringe (symbol newval operation where)
+  "Show a left fringe continuation indicator if line numbers are hidden.
+Use with `add-variable-watcher' on `display-line-numbers'"
+  (when (and (eq symbol 'display-line-numbers)
+             (eq operation 'set)
+             (buffer-local-value 'visual-line-mode where))
+    (setcar (cdr (cl-find 'continuation
+                          (buffer-local-value 'fringe-indicator-alist where)
+                          :key #'car))
+            (when (memq newval '(nil visual)) 'left-curly-arrow))))
+
+;;;###autoload
+(defun dtm-visual-line-fix-linum-h ()
+  "Ensure appropriate `display-line-numbers' and `display-line-numbers-type'.
+Use for `visual-line-mode-hook'. Also fixes `doom/toggle-line-numbers'."
+  (let ((wrong-type (if visual-line-mode 'relative 'visual))
+        (correct-type (if visual-line-mode 'visual 'relative)))
+    (when (eq display-line-numbers wrong-type)
+      (setq-local display-line-numbers correct-type))
+    (when (eq display-line-numbers-type wrong-type)
+      (setq-local display-line-numbers-type correct-type))))
