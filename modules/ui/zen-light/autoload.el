@@ -3,9 +3,12 @@
 ;;;###autoload
 (defun +zenl-visual-fill-column-h ()
   "Toggles additional adjustments to accompany `visual-fill-column-mode'."
-  (unless visual-fill-column-width
-    (setq-local visual-fill-column-width (+ fill-column 10)))
-  (display-line-numbers-mode (if visual-fill-column-mode -1 +1)))
+  (let ((arg (if visual-fill-column-mode +1 -1)))
+    (unless visual-fill-column-width
+      (setq-local visual-fill-column-width (+ fill-column 10)))
+    (display-line-numbers-mode (- arg))
+    (when (boundp 'vi-tilde-fringe-mode)
+      (vi-tilde-fringe-mode (- arg)))))
 
 ;;;###autoload
 (defun +zenl-enable-mixed-pitch-mode-h ()
