@@ -446,9 +446,8 @@
 ;;* Writing/Organisation Tools
 ;; Spell checking
 (after! ispell
-  ;; Global and personal ispell library
   (setq ispell-dictionary "en_GB"
-        ispell-personal-dictionary "~/Nextcloud/Emacs/Dict/personal_dict.pws"))
+        ispell-personal-dictionary "~/Nextcloud/Emacs/Dict/default.aspel.en.pws"))
 
 (after! flycheck
   ;; Select flycheck window when opened

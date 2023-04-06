@@ -1471,3 +1471,32 @@ Use for `visual-line-mode-hook'. Also fixes `doom/toggle-line-numbers'."
       (setq-local display-line-numbers correct-type))
     (when (eq display-line-numbers-type wrong-type)
       (setq-local display-line-numbers-type correct-type))))
+
+;;* Ispell/Spell-fu
+(defun dtm/ispell-fu-change-dictionary ()
+  "Interactively set `ispell-local-dictionary' & `ispell-local-pdict'.
+These values are used to override `spell-fu-dictionaries'. Sets
+`ispell-local-pdict' to \"default\" if language of selected dictionary does
+not match with `ispell-dictionary', preventing \"expected language x\" errors
+caused by a language mismatch with `ispell-personal-dictionary'.
+Ref: `ispell-change-dictionary', `spell-fu-dictionary-add'"
+  (interactive)
+  (require 'consult)
+  (setq ispell-local-dictionary
+        (consult--read (mapcar #'list (ispell-valid-dictionary-list))
+                       :prompt "Change buffer-local dictionary:"
+                       :default (or ispell-local-dictionary ispell-dictionary)
+                       :require-match t)
+        ispell-local-dictionary-overridden t
+        ispell-buffer-session-localwords nil)
+  (if (string= (spell-fu--aspell-lang-from-dict ispell-local-dictionary)
+               (spell-fu--aspell-lang-from-dict ispell-dictionary))
+      (kill-local-variable 'ispell-local-pdict)
+    (setq ispell-local-pdict "default"))
+  (ispell-internal-change-dictionary)
+  (run-hooks 'ispell-change-dictionary-hook)
+  (setq spell-fu-dictionaries (spell-fu--default-dictionaries))
+  (when spell-fu-mode
+    (mapc #'spell-fu--dictionary-ensure-update spell-fu-dictionaries)
+    (spell-fu--refresh-cache-table-list)
+    (spell-fu--refresh)))
