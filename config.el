@@ -493,10 +493,7 @@ Also used by `org-modern-mode' to calculate heights.")
 
   ;; Enable hard wrapping and automate paragraph filling
   ;; Allow for double quoting using '' and `` (`` -> “)
-  (add-hook! 'org-mode-hook #'dtm-org-mode-setup-h)
-
-  ;; The `dtm-org-mode-setup-h' function always disables indent guides
-  (remove-hook 'org-mode-local-vars-hook #'+indent-guides-disable-maybe-h))
+  (add-hook! 'org-mode-hook #'dtm-org-mode-setup-h))
 
 ;; Keys bound in after! org seem to get overwritten, this works
 (after! org-keys

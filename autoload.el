@@ -8,6 +8,12 @@ Required because doctor sets `noninteractive' to nil."
   (boundp 'doom-doctor--errors))
 
 ;;;###autoload
+(defun dtm-doom-docs-p ()
+  "Return non-nil if current buffer will trigger `doom-docs-org-mode'."
+  (eq (alist-get 'mode (cdr (hack-dir-local--get-variables nil)))
+      'doom-docs-org))
+
+;;;###autoload
 (defun dtm-file-local-readable-p (file)
   "Return non-nil if FILE is local and readable."
   (unless (file-remote-p file)
@@ -380,14 +386,15 @@ For use with `dired-isearch-filenames-mode-hook'."
 (defun dtm-org-mode-setup-h ()
   "Personal org-mode customisation's after mode startup"
   (setq-local line-spacing dtm-org-line-spacing)
-  (+org-pretty-mode +1)
-  (electric-quote-local-mode +1)
   (highlight-indent-guides-mode -1)
-  (visual-line-mode -1)
-  (visual-fill-column-mode +1)
-  (auto-fill-mode +1)
-  (add-hook! 'evil-insert-state-exit-hook
-             :local #'dtm-insert-exit-fill-paragraph))
+  (unless (dtm-doom-docs-p)
+    (electric-quote-local-mode +1)
+    (+org-pretty-mode +1)
+    (visual-line-mode -1)
+    (visual-fill-column-mode +1)
+    (auto-fill-mode +1)
+    (add-hook! 'evil-insert-state-exit-hook
+               :local #'dtm-insert-exit-fill-paragraph)))
 
 ;;;###autoload
 (defun dtm-insert-exit-fill-paragraph ()
@@ -433,8 +440,7 @@ https://github.com/abo-abo/org-download/commit/137c3d2aa083283a3fc853f9ecbbc0303
 (defun dtm-org-modern-mode-maybe-h ()
   "Activate `org-modern-mode' unless in `doom-emacs-dir'.
 The additional markup used in doom-style org documents causes rendering issues."
-  (unless (file-in-directory-p default-directory doom-emacs-dir)
-    (org-modern-mode +1)))
+  (unless (dtm-doom-docs-p) (org-modern-mode +1)))
 
 ;;;###autoload
 (defun dtm-org--modern-indent-heading ()
@@ -502,7 +508,8 @@ Intended as after advice for `org-toggle-pretty-entities'."
   (find-file (expand-file-name dtm-org-roam-index-file org-roam-directory))
   (unless (org-at-heading-p t)
     (org-backward-heading-same-level 1))
-  (org-overview))
+  (org-overview)
+  (recenter))
 
 ;;;###autoload
 (defun dtm-org-element-at-point-get-content ()
