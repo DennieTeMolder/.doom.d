@@ -1,11 +1,11 @@
 ;;; ui/zen-light/config.el -*- lexical-binding: t; -*-
 
-(defvar +zenl-mixed-pitch-modes
+(defvar +zenl-reading-modes
   '(org-mode LaTeX-mode markdown-mode gfm-mode helpful-mode Info-mode adoc-mode rst-mode)
   "What major-modes to enable `mixed-pitch-mode' in with `visual-fill-column-mode'.")
 
-(defvar +zenl-text-scale 1
-  "The text-scaling level for `visual-fill-column-mode'.")
+(defvar +zenl-reading-scale 1
+  "Value to use for `text-scale-set' in `+zenl-reading-modes'.")
 
 (use-package! visual-fill-column
   :commands visual-fill-column-mode
@@ -13,9 +13,8 @@
   :custom
   ;; Text scaling is bugged: https://codeberg.org/joostkremers/visual-fill-column/issues/1
   (visual-fill-column-adjust-for-text-scale nil)
-  (visual-fill-column-width 100)
-  (visual-fill-column-center-text t)
-  (visual-fill-column-extra-text-width '(-5 . 5)))
+  (visual-fill-column-fringes-outside-margins nil)
+  (visual-fill-column-center-text t))
 
 (use-package! mixed-pitch
   :hook (visual-fill-column-mode . +zenl-enable-mixed-pitch-mode-h)
