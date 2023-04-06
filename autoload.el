@@ -496,10 +496,13 @@ Intended as after advice for `org-toggle-pretty-entities'."
 ;;* Org-roam
 ;;;###autoload
 (defun dtm/org-roam-open-index ()
-  "Opens the file specified in dtm-org-roam-index-file"
+  "Open `dtm-org-roam-index-file' in dedicated workspace, activate `org-overview'."
   (interactive)
   (dtm-org-roam-goto-workspace)
-  (find-file (expand-file-name dtm-org-roam-index-file org-roam-directory)))
+  (find-file (expand-file-name dtm-org-roam-index-file org-roam-directory))
+  (unless (org-at-heading-p t)
+    (org-backward-heading-same-level 1))
+  (org-overview))
 
 ;;;###autoload
 (defun dtm-org-element-at-point-get-content ()
