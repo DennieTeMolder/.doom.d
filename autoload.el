@@ -380,11 +380,12 @@ For use with `dired-isearch-filenames-mode-hook'."
 (defun dtm-org-mode-setup-h ()
   "Personal org-mode customisation's after mode startup"
   (setq-local line-spacing dtm-org-line-spacing)
+  (+org-pretty-mode +1)
   (electric-quote-local-mode +1)
   (highlight-indent-guides-mode -1)
   (visual-line-mode -1)
+  (visual-fill-column-mode +1)
   (auto-fill-mode +1)
-  (+org-pretty-mode +1)
   (add-hook! 'evil-insert-state-exit-hook
              :local #'dtm-insert-exit-fill-paragraph))
 
