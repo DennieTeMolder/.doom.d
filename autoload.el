@@ -287,7 +287,7 @@ Also checks if FILE exists."
 (defun dtm/buffer-move-to-workspace (name &optional alist)
   "Move `current-buffer' to workspace with NAME and switch"
   (interactive (list
-                (completing-read "Move current buffer to workspace:"
+                (completing-read "Move current buffer to workspace: "
                                  (+workspace-list-names))))
   (let ((buffer (current-buffer))
         (persp (get-current-persp))
@@ -1473,6 +1473,7 @@ Use for `visual-line-mode-hook'. Also fixes `doom/toggle-line-numbers'."
       (setq-local display-line-numbers-type correct-type))))
 
 ;;* Ispell/Spell-fu
+;;;###autoload
 (defun dtm/ispell-fu-change-dictionary ()
   "Interactively set `ispell-local-dictionary' & `ispell-local-pdict'.
 These values are used to override `spell-fu-dictionaries'. Sets
@@ -1484,7 +1485,7 @@ Ref: `ispell-change-dictionary', `spell-fu-dictionary-add'"
   (require 'consult)
   (setq ispell-local-dictionary
         (consult--read (mapcar #'list (ispell-valid-dictionary-list))
-                       :prompt "Change buffer-local dictionary:"
+                       :prompt "Change buffer-local dictionary: "
                        :default (or ispell-local-dictionary ispell-dictionary)
                        :require-match t)
         ispell-local-dictionary-overridden t
