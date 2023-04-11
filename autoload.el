@@ -1377,8 +1377,9 @@ Ref: https://emacs.stackexchange.com/a/33344"
 (defun dtm/gptel-send-buffer ()
   "Scroll to the end and call `gptel-send' to ensure the full buffer is send."
   (interactive)
-  (goto-char (point-max))
+  (goto-char (line-beginning-position))
   (recenter 0)
+  (goto-char (point-max))
   (gptel-send))
 
 ;;;###autoload
