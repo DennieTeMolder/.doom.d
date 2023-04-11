@@ -1363,32 +1363,13 @@ Ref: https://emacs.stackexchange.com/a/33344"
   (advice-remove symbol advice))
 
 ;;* ChatGPT
-;;;###autoload
-(defun dtm-gptel-goto-workspace (&rest _)
-  "Open/create workspace for ChatGPT conversations."
-  (dtm-workspace-switch-maybe "*gpt*"))
-
-;;;###autoload
-(defun dtm/gptel-new-chat ()
-  "Open a new chat in a dedicated window & workspace."
-  (interactive)
-  (require 'gptel)
-  (let ((gptel-default-session (generate-new-buffer-name "ChatGPT")))
-    (ignore-errors (gptel--api-key))
-    ;; TODO perspectives only work when buffers are dedicated to a file
-    (dtm-gptel-goto-workspace)
-    (split-window-horizontally)
-    (balance-windows)
-    (let ((maximise (not gptel-mode)))
-      (call-interactively #'gptel)
-      (when maximise
-        (delete-other-windows)))
-    (with-current-buffer gptel-default-session
-      (visual-fill-column-mode +1))))
+(defvar dtm-gptel-dir nil
+  "Directory for storing chats.")
 
 ;;;###autoload
 (defun dtm-gptel-setup-h ()
   "Personal gptel-mode customisation's. Intended for `gptel-mode-hook'."
+  (setq default-directory (or dtm-gptel-dir default-directory))
   (visual-line-mode +1)
   (flycheck-mode -1))
 
@@ -1397,14 +1378,29 @@ Ref: https://emacs.stackexchange.com/a/33344"
   "Scroll to the end and call `gptel-send' to ensure the full buffer is send."
   (interactive)
   (goto-char (point-max))
+  (recenter 0)
   (gptel-send))
 
 ;;;###autoload
-(defun dtm-gptel--insert-response-a (response info)
-  "Scroll to the end of the gptel-buffer after receiving a response.
-Use as `gptel--insert-response' :after advice."
-  (with-current-buffer (plist-get info :gptel-buffer)
-    (goto-char (point-max))))
+(defun dtm-gptel-goto-workspace (&rest _)
+  "Open/create workspace for ChatGPT conversations."
+  (dtm-workspace-switch-maybe "*gpt*"))
+
+;;;###autoload
+(defun dtm/gptel-new-chat ()
+  "Open a new chat in the dedicated workspace."
+  (interactive)
+  (require 'gptel)
+  (ignore-errors (gptel--api-key))
+  (dtm-gptel-goto-workspace)
+  (let ((gptel-default-session (generate-new-buffer-name "ChatGPT")))
+    (call-interactively #'gptel)
+    (persp-add-buffer gptel-default-session (get-current-persp) nil nil)
+    (when (length= (+workspace-buffer-list) 1)
+      (delete-other-windows))
+    (with-current-buffer gptel-default-session
+      (visual-fill-column-mode +1)
+      (push '(continuation nil nil) fringe-indicator-alist))))
 
 ;;* Image-mode
 (defun dtm-image-overlay ()

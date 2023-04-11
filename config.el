@@ -991,13 +991,14 @@ Also used by `org-modern-mode' to calculate heights.")
 (use-package gptel
   :commands gptel gptel-send
   :config
-  (setq gptel-default-mode 'markdown-mode)
+  (setq gptel-default-mode 'markdown-mode
+        dtm-gptel-dir "~/Nextcloud/Emacs/Chats/")
 
   ;; Custom directive
   (setq-default gptel--system-message "You are a large language model living inside the Doom Emacs framework. Help the user and be concise.")
 
   (add-hook 'gptel-mode-hook #'dtm-gptel-setup-h)
-  (advice-add 'gptel--insert-response :after #'dtm-gptel--insert-response-a)
+  (add-hook! 'gptel-post-response-hook (goto-char (point-max)))
 
   (set-popup-rule! "^\\*ChatGPT" :size 0.35 :select t :ttl nil)
 
