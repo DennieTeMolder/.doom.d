@@ -110,13 +110,6 @@ A larger W/H-FACTOR favours splitting vertically (i.e. down)."
       (split-window-vertically))))
 
 ;;;###autoload
-(defun dtm/kill-buffer-window-rebalance ()
-  "Call `kill-buffer-and-window' and `balance-windows'."
-  (interactive)
-  (kill-buffer-and-window)
-  (balance-windows))
-
-;;;###autoload
 (defun dtm/move-splitter-left (arg)
   "Move window splitter left. Ref: hydra-examples"
   (interactive "p")

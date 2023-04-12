@@ -1008,7 +1008,6 @@ Also used by `org-modern-mode' to calculate heights.")
   ;; C-u C-RET brings up `gptel-send-menu
   (map! :map gptel-mode-map
         :gn [C-return] #'dtm/gptel-send-buffer
-        :gn "C-c C-q"  #'dtm/kill-buffer-window-rebalance
         :nv "g k"      #'dtm/markdown-backward-same-level
         :nv "g j"      #'markdown-outline-next-same-level))
 
