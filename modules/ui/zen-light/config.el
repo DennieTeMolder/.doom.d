@@ -10,11 +10,11 @@
 (use-package! visual-fill-column
   :commands visual-fill-column-mode
   :hook (visual-fill-column-mode . +zenl-visual-fill-column-h)
-  :custom
+  :config
   ;; Text scaling is bugged: https://codeberg.org/joostkremers/visual-fill-column/issues/1
-  (visual-fill-column-adjust-for-text-scale nil)
-  (visual-fill-column-fringes-outside-margins nil)
-  (visual-fill-column-center-text t))
+  (setq visual-fill-column-adjust-for-text-scale t
+        visual-fill-column-fringes-outside-margins nil
+        visual-fill-column-center-text t))
 
 (use-package! mixed-pitch
   :hook (visual-fill-column-mode . +zenl-enable-mixed-pitch-mode-h)
