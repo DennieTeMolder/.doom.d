@@ -1204,9 +1204,11 @@ Based on `+popup/diagnose'."
 
 ;;;###autoload
 (defun dtm/dirvish-find-entry ()
-  "Like `find-file' but for use in dirvish buffers."
+  "Like `find-file' but for use in `dirvish' buffers."
   (interactive)
-  (dirvish-find-entry-a (car (find-file-read-args "Open: " t))))
+  (dirvish-find-entry-a
+   (read-file-name "Open: " nil default-directory
+                   (confirm-nonexistent-file-or-buffer))))
 
 ;;;###autoload
 (defun dtm/dirvish-search-cwd ()
