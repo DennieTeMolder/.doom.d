@@ -12,7 +12,7 @@
   :hook (visual-fill-column-mode . +zenl-visual-fill-column-h)
   :config
   ;; Text scaling is bugged: https://codeberg.org/joostkremers/visual-fill-column/issues/1
-  (setq visual-fill-column-adjust-for-text-scale t)
+  (setq visual-fill-column-adjust-for-text-scale nil)
   (setq-default visual-fill-column-fringes-outside-margins nil
                 visual-fill-column-center-text t))
 
