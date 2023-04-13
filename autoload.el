@@ -980,13 +980,11 @@ Intended as around advice for `conda--call-json'"
 ;;;###autoload
 (defun dtm-csv-mode-maybe-h ()
   "Activate csv/tsv-mode if max line is below `dtm-csv-mode-max-length'."
-  (when-let* ((file (buffer-file-name))
-              (ext (file-name-extension file)))
+  (when-let ((file (buffer-file-name)))
     (when (< (cadr (buffer-line-statistics)) dtm-csv-mode-max-length)
-      (cond ((string= ext "csv")
-             (csv-mode))
-            ((string= ext "tsv")
-             (tsv-mode))))))
+      (pcase (file-name-extension file)
+        ("csv" (csv-mode))
+        ("tsv" (tsv-mode))))))
 
 ;;* Lispy
 ;;;###autoload

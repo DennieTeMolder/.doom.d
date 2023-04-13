@@ -37,7 +37,7 @@
 
 ;; Use float for size as it indicates point size rather then pixels (better scaling)
 (setq doom-font (font-spec :family "Iosevka Term SS05" :width 'expanded
-                           :size (if IS-LAPTOP 13.0 11.0))
+                           :size (if IS-LAPTOP 12.5 10.5))
       doom-variable-pitch-font (font-spec :family "Iosevka Aile"))
 
 (dtm-doom-check-fonts)
@@ -966,8 +966,8 @@ Also used by `org-modern-mode' to calculate heights.")
 (use-package! atomic-chrome
   :commands atomic-chrome-start-server
   :config
-  (setq atomic-chrome-buffer-open-style 'full)
-  (setq atomic-chrome-url-major-mode-alist
+  (setq atomic-chrome-buffer-open-style 'full
+        atomic-chrome-url-major-mode-alist
         '(("github\\.com" . gfm-mode)
           ("overleaf\\.com" . latex-mode)
           ("azuredatabricks\\.net" . python-mode))))
