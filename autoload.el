@@ -20,6 +20,14 @@ Required because doctor sets `noninteractive' to nil."
     (file-readable-p file)))
 
 ;;;###autoload
+(defun dtm-ensure-dir (dir &optional default-dir parents)
+  "Check if DIR exists in DEFAULT-DIR, else create it and optionally its PARENTS."
+  (setq dir (expand-file-name (file-name-as-directory dir) default-dir))
+  (unless (file-exists-p dir)
+    (make-directory dir parents))
+  dir)
+
+;;;###autoload
 (defun dtm-file-name-as-title (&optional fname)
   "Convert NAME to title by replacing _,... to space and capitalising.
 If NAME is not provided `buffer-file-name' is used."
@@ -412,8 +420,7 @@ Based on drestivo's answer to this post:
 https://github.com/abo-abo/org-download/issues/40.
 Which was based off this commit message:
 https://github.com/abo-abo/org-download/commit/137c3d2aa083283a3fc853f9ecbbc03039bf397b"
-  (let* ((dir "Images/")
-         (filename (file-name-nondirectory
+  (let* ((filename (file-name-nondirectory
                     (car (url-path-and-query
                           (url-generic-parse-url link)))))
          (filename-with-timestamp
@@ -421,12 +428,11 @@ https://github.com/abo-abo/org-download/commit/137c3d2aa083283a3fc853f9ecbbc0303
                   (file-name-base (buffer-file-name))
                   (format-time-string org-download-timestamp)
                   (file-name-sans-extension filename)
-                  (file-name-extension filename))))
-    ;; Check if directory exists otherwise create it
-    (unless (file-exists-p dir)
-      (make-directory dir t))
-    (message "Image: %s saved!" (expand-file-name filename-with-timestamp dir))
-    (concat dir filename-with-timestamp)))
+                  (file-name-extension filename)))
+         (full-name (expand-file-name filename-with-timestamp
+                                      (dtm-ensure-dir "Images"))))
+    (message "Image: %s saved!" full-name)
+    full-name))
 
 ;;* Org-modern
 ;;;###autoload
@@ -767,15 +773,16 @@ Equivalent to 's' at the R prompt."
 (defun dtm-ess-r-plot-dir ()
   "Create and return the R plot dir based on `ess-current-process-name'."
   (if (dtm-ess-r-plot-running-p)
-      (let ((watch (gethash dtm-ess-r-plot-descriptor file-notify-descriptors)))
-        (file-name-as-directory (file-notify--watch-directory watch)))
-    (let* ((tmp-dir (file-name-as-directory
-                     (car (ess-get-words-from-vector "tempdir(check=TRUE)"))))
-           (plot-dir (expand-file-name "session_plots" tmp-dir)))
+      (thread-last
+        (gethash dtm-ess-r-plot-descriptor file-notify-descriptors)
+        (file-notify--watch-directory)
+        (file-name-as-directory))
+    (let ((tmp-dir (thread-last
+                     (ess-get-words-from-vector "tempdir(check=TRUE)")
+                     (car) (file-name-as-directory))))
       (unless (file-exists-p tmp-dir)
         (error "ESS: cannot get valid tempdir() from R process"))
-      (make-directory plot-dir t)
-      (file-name-as-directory plot-dir))))
+      (dtm-ensure-dir "session_plots" tmp-dir))))
 
 ;;;###autoload
 (defun dtm-ess-r-plot-file-p (file)

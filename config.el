@@ -61,11 +61,8 @@
 
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
-(setq org-directory (concat doom-data-dir "org/"))
-
-;; Make sure the org dir exists (important for id hash-tables)
-(unless (file-exists-p org-directory)
-  (make-directory org-directory t))
+;; NOTE Ensure the org dir exists (to prevent id hash-table errors)
+(setq org-directory (dtm-ensure-dir "org" doom-data-dir))
 
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
