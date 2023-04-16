@@ -1,2 +1,3 @@
-custom.el
-flycheck_config.el
+/custom.el
+/flycheck_config.el
+/local_vars.el

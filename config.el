@@ -4,10 +4,13 @@
 ;; Place your private configuration here! Remember, you do not need to run 'doom
 ;; sync' after modifying this file!
 
-;;* Flags
-;; Determine if running on a laptop based on env variable (must be set by user)
-(defvar IS-LAPTOP (string= "yes" (getenv "IS_LAPTOP")))
-(defvar FRAME-MAXIMIZE (string= "yes" (getenv "MAXIMIZE_EMACS")))
+;;* Machine local settings
+(defvar dtm-default-font-size 11.0)
+(defvar dtm-maximize-on-startup nil)
+(defvar dtm-maximize-performance nil)
+
+;; Allow above settings to be overridden
+(load! "local_vars.el" nil t)
 
 ;;* Doom preamble
 ;; Some functionality uses this to identify you, e.g. GPG configuration, email
@@ -37,8 +40,9 @@
 
 ;; Use float for size as it indicates point size rather then pixels (better scaling)
 (setq doom-font (font-spec :family "Iosevka Term SS05" :width 'expanded
-                           :size (if IS-LAPTOP 12.5 10.5))
-      doom-variable-pitch-font (font-spec :family "Iosevka Aile"))
+                           :size dtm-default-font-size)
+      doom-variable-pitch-font (font-spec :family "Iosevka Aile")
+      doom-unicode-font doom-font)
 
 (dtm-doom-check-fonts)
 
@@ -115,7 +119,7 @@
 
 ;;* UI Settings
 ;; Maximise emacs if specified in shell ENV
-(when FRAME-MAXIMIZE
+(when dtm-maximize-on-startup
   (add-to-list 'default-frame-alist '(fullscreen . maximized)))
 
 ;; Simplify window title and give a visual indication if file is edited
@@ -135,11 +139,11 @@
   ;; Only display encoding in modeline when it's not UTF-8
   (add-hook! 'after-change-major-mode-hook #'dtm-doom-modeline-conditional-buffer-encoding))
 
-;; Display battery status on laptops
 (use-package! battery
-  :if IS-LAPTOP
+  :defer 1
   :config
-  (display-battery-mode +1))
+  (unless (string= "N/A" (alist-get ?p (funcall battery-status-function)))
+    (display-battery-mode +1)))
 
 ;; Show line wrapping indicator if line numbers are hidden
 (add-variable-watcher 'display-line-numbers #'dtm-visual-line-sync-fringe)
@@ -950,7 +954,7 @@ Also used by `org-modern-mode' to calculate heights.")
 (use-package! good-scroll
   :commands good-scroll-mode
   :init
-  (unless IS-LAPTOP
+  (unless dtm-maximize-performance
     (add-hook 'doom-first-buffer-hook #'good-scroll-mode))
   :config
   (setq good-scroll-duration 0.25
