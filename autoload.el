@@ -412,7 +412,7 @@ For use with `dired-isearch-filenames-mode-hook'."
 
 ;;;###autoload
 (defun dtm-org-download-method (link)
-  "This is a helper function for org-download.
+  "This is a helper function for `org-download-method'.
 It creates the \"./Image\" folder within the same directory of the org file.
 File is named as: org-file + timestamp + download-file-name
 
@@ -428,11 +428,9 @@ https://github.com/abo-abo/org-download/commit/137c3d2aa083283a3fc853f9ecbbc0303
                   (file-name-base (buffer-file-name))
                   (format-time-string org-download-timestamp)
                   (file-name-sans-extension filename)
-                  (file-name-extension filename)))
-         (full-name (expand-file-name filename-with-timestamp
-                                      (dtm-ensure-dir "Images"))))
-    (message "Image: %s saved!" full-name)
-    full-name))
+                  (file-name-extension filename))))
+    (expand-file-name filename-with-timestamp
+                      (dtm-ensure-dir "Images"))))
 
 ;;* Org-modern
 ;;;###autoload
@@ -1231,7 +1229,7 @@ Based on `+popup/diagnose'."
 
 ;;* Tempel
 ;;;###autoload
-(defun dtm-tempel-complete-always ()
+(defun dtm/tempel-complete-always ()
   "Trigger `tempel-complete' regardless if `tempel-trigger-prefix' is provided.
 Auto-expand on exact match."
   (interactive)

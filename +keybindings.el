@@ -8,7 +8,7 @@
       "C-s"       #'ctrlf-forward-default
       "C-l"       #'+nav-flash/blink-cursor
 
-      :i "C-x C-s" #'dtm-tempel-complete-always
+      :i "C-x C-s" #'dtm/tempel-complete-always
       :v "C-x C-s" #'tempel-insert
 
       ;; Make "Z" bindings only kill buffers not the session
