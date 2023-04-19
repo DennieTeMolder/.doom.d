@@ -1020,12 +1020,21 @@ If REGION is active, call `lispy-delete' instead."
         (t
          (error "Unexpected"))))
 
+;;;###autoload
+(defun dtm/lispy-evil-yank-sexp ()
+  "Call `evil-yank' on the region of `lispy-mark-list'."
+  (interactive)
+  (save-excursion
+    (lispy-mark-list 1)
+    (evil-with-state normal
+      (call-interactively #'evil-yank))))
+
 ;;* Imenu
 ;;;###autoload
 (defun dtm-elisp-extend-imenu-h ()
   "Add `modulep!' support to `imenu' as the 2nd element."
   (cl-pushnew '("Module" "^\\s-*(when (modulep! +\\([^)]+\\))" 1)
-        (cdr imenu-generic-expression)))
+              (cdr imenu-generic-expression)))
 
 ;;;###autoload
 (defun dtm-fix-elisp-extend-imenu-a ()

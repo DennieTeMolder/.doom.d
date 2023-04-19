@@ -754,18 +754,18 @@ Also used by `org-modern-mode' to calculate heights.")
   ;; Prettier function evaluation
   (setq lispy-eval-display-style 'overlay)
 
-  ;; Do not enable lispy in the minibuffer
-  (remove-hook 'eval-expression-minibuffer-setup-hook
-               #'doom-init-lispy-in-eval-expression-h)
-
-  ;; Unbind `lispy-occur' because we drop the swiper package
-  (unbind-key "y" lispy-mode-map)
+  ;; Overwrite `lispy-occur' kbind (we drop the swiper package anyway)
+  (lispy-define-key lispy-mode-map "y" #'dtm/lispy-evil-yank-sexp)
 
   ;; Define custom special key for stepping into lists/deleting marked regions
   (lispy-define-key lispy-mode-map "i" #'dtm/lispy-step-into)
 
-  ;; Rebind the key previously on "i"
-  (map! :map lispy-mode-map "TAB" #'special-lispy-tab))
+  ;; Move around some of the keys to be more logical
+  (map! :map lispy-mode-map
+        "TAB" #'special-lispy-tab
+        "E"   #'lispy-eval-other-window
+        "p"   #'special-lispy-paste
+        "P"   #'lispy-eval-and-insert))
 
 (after! eros
   ;; Large results can freeze emacs, this limits the inconvenience
