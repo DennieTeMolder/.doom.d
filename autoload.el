@@ -1029,6 +1029,15 @@ If REGION is active, call `lispy-delete' instead."
     (evil-with-state normal
       (call-interactively #'evil-yank))))
 
+;;;###autoload
+(defmacro dtm-lispyville-smart-remap (evil-fn lispy-fn)
+  "Remap EVIL-FN to LISPY-FN unless `lispy--in-string-or-comment-p' is non-nil.
+Ref: https://github.com/noctuid/lispyville/issues/284"
+  `(define-key lispyville-mode-map
+     [remap ,evil-fn]
+     (general-predicate-dispatch ,lispy-fn
+       (lispy--in-string-or-comment-p) #',evil-fn)))
+
 ;;* Imenu
 ;;;###autoload
 (defun dtm-elisp-extend-imenu-h ()

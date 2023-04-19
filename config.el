@@ -769,6 +769,17 @@ Also used by `org-modern-mode' to calculate heights.")
         "p"   #'special-lispy-paste
         "P"   #'special-lispy-eval-and-insert))
 
+;; Delete atom-movement key-theme so we can replace it
+(when (boundp 'lispyville-key-theme)
+  (cl-delete  '(atom-movement t) lispyville-key-theme :test 'equal))
+
+;; Custom key-theme replacement
+(after! lispyville
+  (dtm-lispyville-smart-remap evil-forward-WORD-begin #'lispyville-forward-atom-begin)
+  (dtm-lispyville-smart-remap evil-forward-WORD-end #'lispyville-forward-atom-end)
+  (dtm-lispyville-smart-remap evil-backward-WORD-begin #'lispyville-backward-atom-begin)
+  (dtm-lispyville-smart-remap evil-backward-WORD-end #'lispyville-backward-atom-end))
+
 (after! eros
   ;; Large results can freeze emacs, this limits the inconvenience
   (setq eros-eval-result-duration 2))
