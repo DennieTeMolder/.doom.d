@@ -193,11 +193,12 @@ Ref: https://nullprogram.com/blog/2017/10/27/"
       (font-put spec :family nil))))
 
 ;;;###autoload
-(defun dtm-doom-modeline-conditional-buffer-encoding ()
-  "Only display encoding in modeline when it's not UTF-8"
+(defun dtm-doom-modeline-conditional-encoding-h ()
+  "Only display encoding in modeline when it's not UTF-8.
+Use for `after-change-major-mode-hook'."
   (setq-local doom-modeline-buffer-encoding
-              (unless (or (eq buffer-file-coding-system 'utf-8-unix)
-                          (eq buffer-file-coding-system 'utf-8)))))
+              (not (memq (coding-system-get buffer-file-coding-system :category)
+                         '(coding-category-undecided coding-category-utf-8)))))
 
 ;;;###autoload
 (defun dtm-doom-ascii-banner-fn ()

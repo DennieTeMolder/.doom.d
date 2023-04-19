@@ -137,7 +137,7 @@
   (setq doom-modeline-buffer-file-name-style 'truncate-except-project)
 
   ;; Only display encoding in modeline when it's not UTF-8
-  (add-hook! 'after-change-major-mode-hook #'dtm-doom-modeline-conditional-buffer-encoding))
+  (add-hook! 'after-change-major-mode-hook #'dtm-doom-modeline-conditional-encoding-h))
 
 (use-package! battery
   :defer 1
