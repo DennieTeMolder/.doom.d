@@ -437,7 +437,7 @@
 (use-package! tempel
   :commands tempel-complete tempel-expand tempel-insert
   :config
-  (setq tempel-path (expand-file-name "snippets.eld" doom-user-dir)
+  (setq tempel-path (file-name-concat doom-user-dir "snippets.eld")
         tempel-user-elements '(dtm-tempel-whitespace
                                dtm-tempel-double-quote
                                dtm-tempel-include)

@@ -430,8 +430,8 @@ https://github.com/abo-abo/org-download/commit/137c3d2aa083283a3fc853f9ecbbc0303
                   (format-time-string org-download-timestamp)
                   (file-name-sans-extension filename)
                   (file-name-extension filename))))
-    (expand-file-name filename-with-timestamp
-                      (dtm-ensure-dir "Images"))))
+    (file-name-concat (dtm-ensure-dir "Images")
+                      filename-with-timestamp)))
 
 ;;* Org-modern
 ;;;###autoload
