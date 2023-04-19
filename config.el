@@ -518,10 +518,12 @@ Also used by `org-modern-mode' to calculate heights.")
         org-cite-export-processors '((latex biblatex "ieee/numeric-comp")
                                      (t csl "ieee.csl"))))
 
-(after! ox-odt
-  ;; Ensure latest styles are used for ODT export
-  (setq org-odt-styles-dir (expand-file-name "straight/repos/org/etc/styles" doom-local-dir)
-        org-odt-preferred-output-format "doc"))
+;; Load enhanced `org-mode-ox-odt'. Ref: https://github.com/kjambunathan/org-mode-ox-odt/discussions/133
+(after! ox
+  (let ((load-path (cons (cl-find-if (lambda (x) (s-ends-with-p "ox-odt" x))
+                                     load-path)
+                         load-path)))
+    (load-library "ox-odt")))
 
 (use-package! org-appear
   :after org
