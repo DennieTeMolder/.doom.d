@@ -765,9 +765,9 @@ Also used by `org-modern-mode' to calculate heights.")
   ;; Move around some of the keys to be more logical
   (map! :map lispy-mode-map
         "TAB" #'special-lispy-tab
-        "E"   #'lispy-eval-other-window
+        "E"   #'special-lispy-eval-other-window
         "p"   #'special-lispy-paste
-        "P"   #'lispy-eval-and-insert))
+        "P"   #'special-lispy-eval-and-insert))
 
 (after! eros
   ;; Large results can freeze emacs, this limits the inconvenience
