@@ -1397,7 +1397,7 @@ Ref: https://emacs.stackexchange.com/a/33344"
   (goto-char (line-beginning-position))
   (recenter 0)
   (goto-char (point-max))
-  (gptel-send))
+  (call-interactively #'gptel-send))
 
 ;;;###autoload
 (defun dtm-gptel-goto-workspace (&rest _)
