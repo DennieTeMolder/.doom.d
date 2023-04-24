@@ -14,12 +14,12 @@ Required because doctor sets `noninteractive' to nil."
       'doom-docs-org))
 
 ;;;###autoload
-(defun dtm-move-to-front (elm lst &optional testfn)
-  "Move ELM to front of LST using TESTFN or `equal'. See `seq-position'."
-  (if-let* ((n (seq-position lst elm testfn))
-            ((/= n 0)))
-      (cons elm (append (seq-take lst n) (seq-drop lst (1+ n))))
-    lst))
+(defmacro dtm-to-front (x place)
+  "Move/add X to the front of list in PLACE using `equal'.
+Will remove duplicates of X as a side-effect."
+  (let ((tmpvar (make-symbol "x")))
+    `(let ((,tmpvar ,x))
+       (setq ,place (cons ,tmpvar (remove ,tmpvar ,place))))))
 
 ;;;###autoload
 (defun dtm-file-local-readable-p (file)
