@@ -14,6 +14,14 @@ Required because doctor sets `noninteractive' to nil."
       'doom-docs-org))
 
 ;;;###autoload
+(defun dtm-move-to-front (elm lst &optional testfn)
+  "Move ELM to front of LST using TESTFN or `equal'. See `seq-position'."
+  (if-let* ((n (seq-position lst elm testfn))
+            ((/= n 0)))
+      (cons elm (append (seq-take lst n) (seq-drop lst (1+ n))))
+    lst))
+
+;;;###autoload
 (defun dtm-file-local-readable-p (file)
   "Return non-nil if FILE is local and readable."
   (unless (file-remote-p file)
