@@ -73,7 +73,10 @@
        :desc "Trash deleted files" "T" #'dtm/toggle-trash-delete)
 
       ;; Window management
-      "w e" #'evil-window-prev
+      (:prefix "w"
+       :desc "window-as-frame" "F" #'tear-off-window
+                               "e" #'evil-window-prev
+                               "T" #'transpose-frame)
 
       ;; Popups
       "/" nil ; Unbind `+default/search-project' (also bound to "SPC s p")

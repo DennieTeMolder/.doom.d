@@ -95,6 +95,7 @@
 (package! trashed)
 (package! xr)
 (package! info-colors)
+(package! transpose-frame)
 (package! ctrlf)
 (package! org-modern)
 (package! org-appear)
