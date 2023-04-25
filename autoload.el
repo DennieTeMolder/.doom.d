@@ -1,19 +1,16 @@
 ;;; autoloads.el -*- lexical-binding: t; -*-
 
 ;;* Utility
-;;;###autoload
 (defun dtm-doctor-running-p ()
   "Returns t when the doom doctor CLI is running.
 Required because doctor sets `noninteractive' to nil."
   (boundp 'doom-doctor--errors))
 
-;;;###autoload
 (defun dtm-doom-docs-p ()
   "Return non-nil if current buffer will trigger `doom-docs-org-mode'."
   (eq (alist-get 'mode (cdr (hack-dir-local--get-variables nil)))
       'doom-docs-org))
 
-;;;###autoload
 (defmacro dtm-to-front (x place)
   "Move/add X to the front of list in PLACE using `equal'.
 Will remove duplicates of X as a side-effect."
@@ -21,13 +18,11 @@ Will remove duplicates of X as a side-effect."
     `(let ((,tmpvar ,x))
        (setq ,place (cons ,tmpvar (remove ,tmpvar ,place))))))
 
-;;;###autoload
 (defun dtm-file-local-readable-p (file)
   "Return non-nil if FILE is local and readable."
   (unless (file-remote-p file)
     (file-readable-p file)))
 
-;;;###autoload
 (defun dtm-ensure-dir (dir &optional default-dir parents)
   "Check if DIR exists in DEFAULT-DIR, else create it and optionally its PARENTS."
   (setq dir (expand-file-name (file-name-as-directory dir) default-dir))
@@ -35,7 +30,6 @@ Will remove duplicates of X as a side-effect."
     (make-directory dir parents))
   dir)
 
-;;;###autoload
 (defun dtm-file-name-as-title (&optional fname)
   "Convert NAME to title by replacing _,... to space and capitalising.
 If NAME is not provided `buffer-file-name' is used."
@@ -132,7 +126,6 @@ A larger W/H-FACTOR favours splitting vertically (i.e. down)."
         (split-window-horizontally)
       (split-window-vertically))))
 
-;;;###autoload
 (defun dtm/move-splitter-left (arg)
   "Move window splitter left. Ref: hydra-examples"
   (interactive "p")
@@ -141,7 +134,6 @@ A larger W/H-FACTOR favours splitting vertically (i.e. down)."
       (shrink-window-horizontally arg)
     (enlarge-window-horizontally arg)))
 
-;;;###autoload
 (defun dtm/move-splitter-right (arg)
   "Move window splitter right. Ref: hydra-examples"
   (interactive "p")
@@ -150,7 +142,6 @@ A larger W/H-FACTOR favours splitting vertically (i.e. down)."
       (enlarge-window-horizontally arg)
     (shrink-window-horizontally arg)))
 
-;;;###autoload
 (defun dtm/move-splitter-up (arg)
   "Move window splitter up. Ref: hydra-examples"
   (interactive "p")
@@ -159,7 +150,6 @@ A larger W/H-FACTOR favours splitting vertically (i.e. down)."
       (enlarge-window arg)
     (shrink-window arg)))
 
-;;;###autoload
 (defun dtm/move-splitter-down (arg)
   "Move window splitter down. Ref: hydra-examples"
   (interactive "p")
@@ -173,7 +163,6 @@ A larger W/H-FACTOR favours splitting vertically (i.e. down)."
   "Return THEME1 of not currently active, else return THEME2"
   (if (eq theme1 (car custom-enabled-themes)) theme2 theme1))
 
-;;;###autoload
 (defun dtm-recommend-theme ()
   "Recommend a NEW theme to use based on context and time of day."
  (if (bound-and-true-p org-tree-slide-mode)
@@ -183,7 +172,6 @@ A larger W/H-FACTOR favours splitting vertically (i.e. down)."
          (dtm--theme-which-inactive dtm-day-theme dtm-solarized-theme)
        (dtm--theme-which-inactive dtm-night-theme dtm-dark-theme)))))
 
-;;;###autoload
 (defun dtm/consult-theme ()
   "Call `consult-theme' interactively with `dtm-recommend-theme' as default.
 This is achieved by locally redefining `consult--read'.
@@ -199,7 +187,6 @@ Ref: https://nullprogram.com/blog/2017/10/27/"
     (call-interactively #'consult-theme)))
 
 ;;* UI
-;;;###autoload
 (defun dtm-doom-check-fonts ()
   "Check if doom fonts are installed, otherwise prevent a blank display."
   (dolist (spec (list doom-font doom-serif-font doom-variable-pitch-font))
@@ -207,7 +194,6 @@ Ref: https://nullprogram.com/blog/2017/10/27/"
       (warn "Font \"%s\" not found!" (font-get spec :family))
       (font-put spec :family nil))))
 
-;;;###autoload
 (defun dtm-doom-modeline-conditional-encoding-h ()
   "Only display encoding in modeline when it's not UTF-8.
 Use for `after-change-major-mode-hook'."
@@ -215,7 +201,6 @@ Use for `after-change-major-mode-hook'."
               (not (memq (coding-system-get buffer-file-coding-system :category)
                          '(coding-category-undecided coding-category-utf-8)))))
 
-;;;###autoload
 (defun dtm-doom-ascii-banner-fn ()
   (let* ((banner
           '(",---.,-.-.,---.,---.,---."
@@ -235,7 +220,6 @@ Use for `after-change-major-mode-hook'."
      'face 'doom-dashboard-banner)))
 
 ;;* Projectile
-;;;###autoload
 (defun dtm-project-ignored-p (project-root)
   "Return non-nil if remote or temporary file or a straight package."
   (or (file-remote-p project-root)
@@ -243,7 +227,6 @@ Use for `after-change-major-mode-hook'."
       (file-in-directory-p project-root doom-local-dir)))
 
 ;;* Workspaces/perspectives
-;;;###autoload
 (defun dtm/load-session (file)
   "Stripped down `doom/load-session' with proper default value.
 Also checks if FILE exists."
@@ -261,13 +244,11 @@ Also checks if FILE exists."
   (let ((buf (or buf (current-buffer))))
     (not (persp--buffer-in-persps (dtm-get-buffer buf)))))
 
-;;;###autoload
 (defun dtm/switch-orphan-buffer ()
   "Prompt user to select buffer matching `dtm-buffer-orphan-p'."
   (interactive)
   (dtm-read-display-buffer "Select orphan buffer" #'dtm-buffer-orphan-p))
 
-;;;###autoload
 (defun dtm/ibuffer-orphans ()
   "Open an ibuffer window with all orphan buffers."
   (interactive)
@@ -285,22 +266,18 @@ Also checks if FILE exists."
       (+workspace-rename (+workspace-current-name) name))
     (+workspace/display)))
 
-;;;###autoload
 (defun dtm-doom-private-goto-workspace ()
   "Open/create the dedicated private config workspace"
   (dtm-workspace-switch-maybe "*config*"))
 
-;;;###autoload
 (defun dtm-org-roam-goto-workspace (&rest _)
   "Open/create the dedicated org-roam workspace"
   (dtm-workspace-switch-maybe "*roam*"))
 
-;;;###autoload
 (defun dtm-citar-goto-workspace (&rest _)
   "Open/create the dedicated citar bibliography workspace"
   (dtm-workspace-switch-maybe "*bib*"))
 
-;;;###autoload
 (defun dtm/buffer-move-to-workspace (name &optional alist)
   "Move `current-buffer' to workspace with NAME and switch"
   (interactive (list
@@ -322,7 +299,6 @@ Intended for use in `display-buffer-alist'."
     (let ((alist (remove (assq 'workspace alist) alist)))
       (dtm/buffer-move-to-workspace name alist))))
 
-;;;###autoload
 (defun dtm-set-workspace-rule (predicate name)
   "Move buffers matching PREDICATE to workspace NAME.
 This is achieved by adding a rule to `display-buffer-alist'."
@@ -342,7 +318,6 @@ This is achieved by adding a rule to `display-buffer-alist'."
                       :test 'string=)
            (list persp-nil-name))))
 
-;;;###autoload
 (defun dtm-ibuffer-group-by-workspace-h ()
   "Set the current filter groups to filter by perspective.
 Based on `ibuffer-projectile-set-filter-groups' from the ibuffer-projectile package:
@@ -357,7 +332,6 @@ https://github.com/purcell/ibuffer-projectile"
         (ibuffer-update nil t)))))
 
 ;;* Ediff
-;;;###autoload
 (defun dtm/ediff-this-file ()
   "Ediff file associated with current buffer to file selected in prompt."
   (interactive)
@@ -370,7 +344,6 @@ https://github.com/purcell/ibuffer-projectile"
     (ediff current (read-file-name "Diff current file with:" nil nil t))))
 
 ;;* Dired
-;;;###autoload
 (defun dtm/dired-delete-marked ()
   "Delete marked or current file(s), with C-u toggle `delete-by-moving-to-trash'."
   (interactive)
@@ -379,7 +352,6 @@ https://github.com/purcell/ibuffer-projectile"
                                      delete-by-moving-to-trash)))
     (dired-do-delete)))
 
-;;;###autoload
 (defun dtm/dired-ediff ()
   "Compare file under cursor to file selected in prompt using Ediff"
   (interactive)
@@ -390,7 +362,6 @@ https://github.com/purcell/ibuffer-projectile"
                                  default nil t)))
     (ediff (expand-file-name file dir) target)))
 
-;;;###autoload
 (defun dtm-dired-isearch-successful-find-file-h ()
   "Open the file under cursor if `dired-isearch-filenames' was successful.
 For use with `dired-isearch-filenames-mode-hook'."
@@ -399,7 +370,6 @@ For use with `dired-isearch-filenames-mode-hook'."
     (dired-find-file)))
 
 ;;* Org-mode
-;;;###autoload
 (defun dtm-org-mode-setup-h ()
   "Personal org-mode customisation's after mode startup"
   (setq-local line-spacing dtm-org-line-spacing)
@@ -413,13 +383,11 @@ For use with `dired-isearch-filenames-mode-hook'."
     (add-hook! 'evil-insert-state-exit-hook
                :local #'dtm-insert-exit-fill-paragraph)))
 
-;;;###autoload
 (defun dtm-org-src-flycheck-h ()
   "Disable annoying flycheck messages. Use with `org-src-mode-hook'."
   (when (eq major-mode 'emacs-lisp-mode)
     (flycheck-mode -1)))
 
-;;;###autoload
 (defun dtm-insert-exit-fill-paragraph ()
   "Perform `org-fill-paragraph' unless el at point is a src block"
   ;; Check if `auto-fill-mode' is active
@@ -432,7 +400,6 @@ For use with `dired-isearch-filenames-mode-hook'."
   "Returns the value of #+TITLE for the current document"
   (cadar (org-collect-keywords '("TITLE"))))
 
-;;;###autoload
 (defun dtm-org-download-method (link)
   "This is a helper function for `org-download-method'.
 It creates the \"./Image\" folder within the same directory of the org file.
@@ -455,13 +422,11 @@ https://github.com/abo-abo/org-download/commit/137c3d2aa083283a3fc853f9ecbbc0303
                       filename-with-timestamp)))
 
 ;;* Org-modern
-;;;###autoload
 (defun dtm-org-modern-mode-maybe-h ()
   "Activate `org-modern-mode' unless in `doom-emacs-dir'.
 The additional markup used in doom-style org documents causes rendering issues."
   (unless (dtm-doom-docs-p) (org-modern-mode +1)))
 
-;;;###autoload
 (defun dtm-org--modern-indent-heading ()
   "Correctly indents heading assuming leading stars are fully hidden (not invisible)."
   (dotimes (n org-indent--deepest-level)
@@ -473,7 +438,6 @@ The additional markup used in doom-style org documents causes rendering issues."
               (org-add-props heading-prefix nil 'face 'org-indent))))))
 
 ;;* Org-tree-slide
-;;;###autoload
 (defun dtm-org-tree-slide-setup-h ()
   "Additional settings to prettify presentations"
   (if org-tree-slide-mode
@@ -493,7 +457,6 @@ The additional markup used in doom-style org documents causes rendering issues."
       (remove-hook! 'minibuffer-exit-hook #'redraw-frame)
       (remove-hook! 'pdf-view-mode-hook #'org-tree-slide-mode))))
 
-;;;###autoload
 (defun dtm-org-tree-slide-no-squiggles-a (orig-fn &optional ARG)
   "Toggle modes that litter the buffer with squiggly lines.
 Intended as around advice for `org-tree-slide-mode'."
@@ -512,14 +475,12 @@ Intended as around advice for `org-tree-slide-mode'."
       (spell-fu-mode +1))))
 
 ;;* Org-appear
-;;;###autoload
 (defun dtm-org-pretty-use-appear-a ()
   "Activate `org-appear-mode' based on `org-pretty-entities'.
 Intended as after advice for `org-toggle-pretty-entities'."
   (org-appear-mode (if org-pretty-entities +1 -1)))
 
 ;;* Org-roam
-;;;###autoload
 (defun dtm/org-roam-open-index ()
   "Open `dtm-org-roam-index-file' in dedicated workspace, activate `org-overview'."
   (interactive)
@@ -530,7 +491,6 @@ Intended as after advice for `org-toggle-pretty-entities'."
   (org-overview)
   (recenter))
 
-;;;###autoload
 (defun dtm-org-element-at-point-get-content ()
   "Return the current element's content without properties.
 Based on `org-mark-element' and `org-roam-preview-default-function'."
@@ -542,7 +502,6 @@ Based on `org-mark-element' and `org-roam-preview-default-function'."
          (end (org-element-property :end element)))
     (string-trim (buffer-substring-no-properties beg end))))
 
-;;;###autoload
 (defun dtm-org-roam-add-preamble-a (string)
   "Add information about current node to top of org roam buffer.
 Ref: https://github.com/hlissner/.doom.d"
@@ -568,7 +527,6 @@ Ref: https://github.com/hlissner/.doom.d"
 
 (defvar dtm-org-roam-old-slug nil)
 
-;;;###autoload
 (defun dtm-org-roam-update-slug-h ()
   "Rename the current file if #+title has changed.
 Will ask for confirmation if the new filename already exists.
@@ -594,7 +552,6 @@ Ref: https://github.com/hlissner/.doom.d"
         (error
          (setq dtm-org-roam-old-slug old-slug))))))
 
-;;;###autoload
 (defun dtm-org-roam-update-slug-on-save-h ()
   "Set up auto-updating for the current node's filename.
 Calls `dtm-org-roam-update-slug-h' on `after-save-hook'.
@@ -603,7 +560,6 @@ Ref: https://github.com/hlissner/.doom.d"
   (add-hook 'after-save-hook #'dtm-org-roam-update-slug-h 'append 'local))
 
 ;;* Org-roam-dailies
-;;;###autoload
 (defun dtm-org-roam-dailies-goto-date-a ()
   "Ensure function is executed from a roam buffer to activate keybindings.
 Intended as :before advice for `org-roam-dailies-goto-date'"
@@ -626,13 +582,11 @@ Intended as :before advice for `org-roam-dailies-goto-date'"
       (pop files))
     files))
 
-;;;###autoload
 (defun dtm-org-roam-dailies-sync-agenda (&rest _)
   "Scan the dailies-directory and add current and future dates to agenda."
   (mapc (lambda (x) (cl-pushnew x org-agenda-files :test #'string=))
         (dtm-org-roam-dailies-active-files)))
 
-;;;###autoload
 (defun dtm/org-roam-dailies-schedule-time ()
   "Wrapper around `org-schedule' that only prompts for time.
 The DATE is derived from the #+title which must match the Org date format."
@@ -643,7 +597,6 @@ The DATE is derived from the #+title which must match the Org date format."
         (time (read-string "Schedule headline at (HH:MM): ")))
     (org-schedule nil (concat date " " time (when (length< time 3) ":00")))))
 
-;;;###autoload
 (defun dtm/org-roam-dailies-insert-timeblock ()
   "Inserts an org roam headline for each hour in START to END with a timestamp.
 The DATE is derived from the #+title which must match the Org date format."
@@ -662,7 +615,6 @@ The DATE is derived from the #+title which must match the Org date format."
       (end-of-line))))
 
 ;;* Pdf-tools
-;;;###autoload
 (defun dtm/pdf-view-fit-half-height ()
   "Fit PDF height to 2x window (minus 0.1 to fix scrolling)"
   (interactive)
@@ -676,28 +628,24 @@ The DATE is derived from the #+title which must match the Org date format."
           (- (* 2 scale) 0.1))
     (pdf-view-redisplay t)))
 
-;;;###autoload
 (defun dtm/org-noter-insert-maybe ()
   "Call `org-noter-insert-note' if `org-noter-doc-mode' is active."
   (interactive)
   (when org-noter-doc-mode (call-interactively #'org-noter-insert-note)))
 
 ;;* Vterm
-;;;###autoload
 (defun dtm-vterm-redraw-cursor-a (orig-fn &rest args)
   "Prevent vterm from modifying `cursor-type'..
 Intended as around advice for `vterm--redraw'
 Ref: https://github.com/akermu/emacs-libvterm/issues/313#issuecomment-1191400836"
   (let ((cursor-type cursor-type)) (apply orig-fn args)))
 
-;;;###autoload
 (defun dtm-vterm-sync-cursor-a (&rest _)
   "Keep vterm cursor position consistent with evil.
 Intended as before advice for `vterm-send-key'"
   (vterm-goto-char (point)))
 
 ;;* Sh-mode
-;;;###autoload
 (defun dtm/vterm-execute-current-line ()
   "Execute the current line in the vterm buffer."
   (interactive)
@@ -726,24 +674,20 @@ Intended as before advice for `vterm-send-key'"
              (replace-match "")))
           (t (insert mystr)))))
 
-;;;###autoload
 (defun dtm/ess-r-insert-assign ()
   "Rewrite of `ess-insert-assign' that respects white space, invoke twice to undo"
   (interactive)
   (dtm-ess-insert-string "<-"))
 
-;;;###autoload
 (defun dtm/ess-r-insert-pipe ()
   "Based on `ess-insert-assign', invoking the command twice reverts the insert"
   (interactive)
   (dtm-ess-insert-string "%>%"))
 
-;;;###autoload
 (defun dtm-ess-startup-dir ()
   "Returns `default-directory' unless in `ess-r-package-mode'."
   (unless ess-r-package-mode default-directory))
 
-;;;###autoload
 (defun dtm-ess-modeline-show-busy ()
   "Display spinner if ESS process is busy.
 Ref: `ess--tb-start', https://github.com/seagle0128/doom-modeline/issues/410"
@@ -755,7 +699,6 @@ Ref: `ess--tb-start', https://github.com/seagle0128/doom-modeline/issues/410"
                                   (:eval (nth ess--busy-count ess-busy-strings))
                                   " ")))
 
-;;;###autoload
 (defun dtm/ess-eval-symbol-at-point ()
   "Send the symbol under the cursor to the current ESS process"
   (interactive)
@@ -764,7 +707,6 @@ Ref: `ess--tb-start', https://github.com/seagle0128/doom-modeline/issues/410"
    (symbol-name (ess-symbol-at-point))
    t))
 
-;;;###autoload
 (defun dtm/ess-debug-command-step ()
   "Step into in debug mode.
 Equivalent to 's' at the R prompt."
@@ -804,7 +746,6 @@ Equivalent to 's' at the R prompt."
         (error "ESS: cannot get valid tempdir() from R process"))
       (dtm-ensure-dir "session_plots" tmp-dir))))
 
-;;;###autoload
 (defun dtm-ess-r-plot-file-p (file)
   "Return non-nil if FILE is an R plot."
   (and (dtm-ess-r-plot-running-p)
@@ -859,7 +800,6 @@ Only kill visible plot buffers if KILL-VISIBLE is t."
     (dtm-ess-r-plot-cleanup-buffers)
     (message "ESS: updated plot")))
 
-;;;###autoload
 (defun dtm/ess-r-plot-toggle ()
   "Toggle displaying R plots in emacs.
 Relies on using 'dtm::print_plot()' inside of R."
@@ -886,7 +826,6 @@ Relies on using 'dtm::print_plot()' inside of R."
     (when (called-interactively-p 'interactive)
       (message "ESS: displaying plots in emacs"))))
 
-;;;###autoload
 (defun dtm-ess-r-plot-reload-a (orig-fn &rest args)
   "Reload R plot display if active and attached to `ess-current-process-name'.
 Intended as :around advice for `inferior-ess-reload'."
@@ -916,14 +855,12 @@ Intended as :around advice for `inferior-ess-reload'."
                            (conda-env-dir-to-name env-path)))
          (conda-env-activate env-path))))
 
-;;;###autoload
 (defun dtm-conda-env-infer-prompt ()
   "Prompt the user to activate the inferred conda env.
 Respects the value of `conda-activate-base-by-default'"
   (unless (or non-essential (dtm-buffer-remote-p))
     (dtm-conda-path-promt-activate)))
 
-;;;###autoload
 (defun dtm/conda-env-guess-prompt ()
   "Guess the currently relevant conda env and prompt user to activate it"
   (interactive)
@@ -933,7 +870,6 @@ Respects the value of `conda-activate-base-by-default'"
       (dtm-conda-path-promt-activate path)
     (message "No Conda environment found for <%s>" (buffer-file-name))))
 
-;;;###autoload
 (defun dtm-conda-call-json-a (orig-fn &rest args)
   "Advice that forces `json-parse-string' to use nil to represent false.
 Intended as around advice for `conda--call-json'"
@@ -945,7 +881,6 @@ Intended as around advice for `conda--call-json'"
     (apply orig-fn args)))
 
 ;;* atomic-chrome
-;;;###autoload
 (defun dtm/atomic-chrome-toggle-server ()
   (interactive)
   (if (bound-and-true-p global-atomic-chrome-edit-mode)
@@ -957,17 +892,14 @@ Intended as around advice for `conda--call-json'"
       (message "Started GhostText Server"))))
 
 ;;* Good-scroll-mode
-;;;###autoload
 (defun dtm/good-scroll-down-half ()
   (interactive)
   (good-scroll-move (/ (good-scroll--window-usable-height) 2)))
 
-;;;###autoload
 (defun dtm/good-scroll-up-half ()
   (interactive)
   (good-scroll-move (/ (good-scroll--window-usable-height) -2)))
 
-;;;###autoload
 (defun dtm-good-scroll-evil-override-h ()
   (if good-scroll-mode
       (progn
@@ -978,7 +910,6 @@ Intended as around advice for `conda--call-json'"
       (advice-remove 'evil-scroll-up #'dtm/good-scroll-up-half))))
 
 ;;* Toggles
-;;;###autoload
 (defun dtm/toggle-trash-delete ()
   "Toggle between trashing and deleting files"
   (interactive)
@@ -993,7 +924,6 @@ Intended as around advice for `conda--call-json'"
 (defvar dtm-left-margin 30
   "Size of left margin that can be added to selected-window on demand")
 
-;;;###autoload
 (defun dtm/window-toggle-left-margin ()
   "Toggle left margin on selected window."
   (interactive)
@@ -1004,7 +934,6 @@ Intended as around advice for `conda--call-json'"
 (defvar dtm-csv-mode-max-length 300
   "Maximum characters per line for csv/tsv-mode to be enabled.")
 
-;;;###autoload
 (defun dtm-csv-mode-maybe-h ()
   "Activate csv/tsv-mode if max line is below `dtm-csv-mode-max-length'."
   (when-let ((file (buffer-file-name)))
@@ -1014,7 +943,6 @@ Intended as around advice for `conda--call-json'"
         ("tsv" (tsv-mode))))))
 
 ;;* Lispy
-;;;###autoload
 (defun dtm/lispy-step-into (arg)
   "Step into the list at point, moving the point to after ARG atoms.
 If REGION is active, call `lispy-delete' instead."
@@ -1041,7 +969,6 @@ If REGION is active, call `lispy-delete' instead."
         (t
          (error "Unexpected"))))
 
-;;;###autoload
 (defun dtm/lispy-evil-yank-sexp ()
   "Call `evil-yank' on the region of `lispy-mark-list'."
   (interactive)
@@ -1050,7 +977,6 @@ If REGION is active, call `lispy-delete' instead."
     (evil-with-state normal
       (call-interactively #'evil-yank))))
 
-;;;###autoload
 (defmacro dtm-lispyville-smart-remap (evil-fn lispy-fn)
   "Remap EVIL-FN to LISPY-FN unless `lispy--in-string-or-comment-p' is non-nil.
 Ref: https://github.com/noctuid/lispyville/issues/284"
@@ -1060,13 +986,11 @@ Ref: https://github.com/noctuid/lispyville/issues/284"
        (lispy--in-string-or-comment-p) #',evil-fn)))
 
 ;;* Imenu
-;;;###autoload
 (defun dtm-elisp-extend-imenu-h ()
   "Add `modulep!' support to `imenu' as the 2nd element."
   (cl-pushnew '("Module" "^\\s-*(when (modulep! +\\([^)]+\\))" 1)
               (cdr imenu-generic-expression)))
 
-;;;###autoload
 (defun dtm-fix-elisp-extend-imenu-a ()
   (cl-replace imenu-generic-expression
               '(("Section" "^[ \t]*;;[;*]+[ \t]+\\(.+\\)" 1))))
@@ -1074,7 +998,6 @@ Ref: https://github.com/noctuid/lispyville/issues/284"
 (defvar dtm-imenu-orginal-index-function nil
   "Original indexing function before calling `dtm-imenu-merge-index-h'")
 
-;;;###autoload
 (defun dtm-imenu-merge-index-h ()
   "Append results from `imenu-generic-expression' to the current imenu (add to major-mode hook).
 This is useful when the index function does not utilise the generic expression such as in python-mode."
@@ -1091,7 +1014,6 @@ This is useful when the index function does not utilise the generic expression s
 (defvar dtm-lagging-point-actual nil
   "Position of cursor when `dtm-with-lagging-point-a' would not have been active.")
 
-;;;###autoload
 (defun dtm-with-lagging-point-a (orig-fn)
   "Keep/lag the cursor position one command execution behind.
 Indented to advise functions that move the point."
@@ -1101,7 +1023,6 @@ Indented to advise functions that move the point."
     (sleep-for .05)
     (setq-local dtm-lagging-point-actual (point))))
 
-;;;###autoload
 (defun dtm/lagging-point-goto-actual ()
   "Restore cursor to the unlagged position."
   (interactive)
@@ -1109,13 +1030,11 @@ Indented to advise functions that move the point."
     (goto-char dtm-lagging-point-actual)
     (recenter nil)))
 
-;;;###autoload
 (defun dtm-lagging-point-reset ()
   "Reset `dtm-lagging-point-actual'."
   (setq-local dtm-lagging-point-actual nil))
 
 ;;* Flycheck
-;;;###autoload
 (defun dtm-flycheck-disable-proselint-rmd-h ()
   "Disable the 'proselint' flycheck checker when in R markdown.
 Intended for `markdown-mode-hook'."
@@ -1124,7 +1043,6 @@ Intended for `markdown-mode-hook'."
       (flycheck-disable-checker 'proselint))))
 
 ;;* Python
-;;;###autoload
 (defun dtm-elpy-shell-get-doom-process-a (&optional sit)
   "Obtain a Python process using `+python/open-repl'.
 Intended as override advice for `elpy-shell-get-or-create-process'.
@@ -1147,7 +1065,6 @@ STR is first stripped and indented according to mode."
     (indent-according-to-mode)
     (call-interactively #'elpy-shell-send-buffer)))
 
-;;;###autoload
 (defun dtm/elpy-send-region-and-step ()
   "Send current region to Python shell, step if region is multi-line."
   (interactive)
@@ -1156,14 +1073,12 @@ STR is first stripped and indented according to mode."
   (dtm-elpy-shell-send-string (dtm-region-as-string))
   (dtm-deactivate-mark))
 
-;;;###autoload
 (defun dtm/elpy-send-statement-or-line ()
   (interactive)
   (if (python-info-statement-starts-block-p)
       (call-interactively #'elpy-shell-send-statement)
     (dtm-elpy-shell-send-string (dtm-current-line-as-string))))
 
-;;;###autoload
 (defun dtm/elpy-send-statement-or-line-and-step ()
   (interactive)
   (if (python-info-statement-starts-block-p)
@@ -1171,7 +1086,6 @@ STR is first stripped and indented according to mode."
     (dtm-elpy-shell-send-string (dtm-current-line-as-string))
     (forward-line)))
 
-;;;###autoload
 (defun dtm/elpy-send-current-and-step ()
   "Send current region, statement, or line to Python shell and step."
   (interactive)
@@ -1179,7 +1093,6 @@ STR is first stripped and indented according to mode."
       (dtm/elpy-send-region-and-step)
     (dtm/elpy-send-statement-or-line-and-step)))
 
-;;;###autoload
 (defun dtm/elpy-print-symbol-or-region ()
   "Print the symbol at point or active region in the Python shell."
   (interactive)
@@ -1191,14 +1104,12 @@ STR is first stripped and indented according to mode."
     (dtm-deactivate-mark)))
 
 ;;* Doom popup module
-;;;###autoload
 (defun dtm/popup-raise ()
   "Wrapper for `+popup/raise' that will ensure a popup is selected."
   (interactive)
   (unless (+popup-window-p) (+popup/other))
   (call-interactively #'+popup/raise))
 
-;;;###autoload
 (defun dtm/popup-kill ()
   "Kill the currently open popup."
   (interactive)
@@ -1222,14 +1133,12 @@ Based on `+popup/diagnose'."
               (rule (dtm-popup-get-rule buf)))
     (eq '+popup-buffer (caadr rule))))
 
-;;;###autoload
 (defun dtm/switch-popup-buffer ()
   "Prompt user to select buffer matching `dtm-popup-buffer-p'."
   (interactive)
   (dtm-read-display-buffer "Select popup" #'dtm-popup-buffer-p))
 
 ;;* Dirvish
-;;;###autoload
 (defun dtm/dirvish-side ()
   "Wrapper for `dirvish-side' that always closes the window if visible."
   (interactive)
@@ -1238,7 +1147,6 @@ Based on `+popup/diagnose'."
       (progn (select-window window) (dirvish-quit))
     (call-interactively #'dirvish-side)))
 
-;;;###autoload
 (defun dtm/dirvish-copy-file-name ()
   "Copy file name, or path with C-u. Also works for multiple marked files."
   (interactive)
@@ -1247,7 +1155,6 @@ Based on `+popup/diagnose'."
        #'dirvish-copy-file-path
      #'dirvish-copy-file-name)))
 
-;;;###autoload
 (defun dtm/dirvish-find-entry ()
   "Like `find-file' but for use in `dirvish' buffers."
   (interactive)
@@ -1255,7 +1162,6 @@ Based on `+popup/diagnose'."
    (read-file-name "Open: " nil default-directory
                    (confirm-nonexistent-file-or-buffer))))
 
-;;;###autoload
 (defun dtm/dirvish-search-cwd ()
   "Text search files from current working directory, kill dirvish on confirm."
   (interactive)
@@ -1268,7 +1174,6 @@ Based on `+popup/diagnose'."
       (switch-to-buffer buf))))
 
 ;;* Tempel
-;;;###autoload
 (defun dtm/tempel-complete-always ()
   "Trigger `tempel-complete' regardless if `tempel-trigger-prefix' is provided.
 Auto-expand on exact match."
@@ -1280,7 +1185,6 @@ Auto-expand on exact match."
                (tempel-expand))
       (call-interactively #'tempel-expand))))
 
-;;;###autoload
 (defun dtm-tempel-setup-capf-h ()
   "Add the Tempel Capf to `completion-at-point-functions'.
 Caution: make sure `tempel-trigger-prefix' is not nil.
@@ -1288,7 +1192,6 @@ Meant for hooking onto `prog-mode-hook' and `text-mode-hook'."
   (setq-local completion-at-point-functions
               (cons #'tempel-complete completion-at-point-functions)))
 
-;;;###autoload
 (defun dtm/tempel-open-template-file ()
   "Open the last file in `tempel-path' in the other window."
   (interactive)
@@ -1297,7 +1200,6 @@ Meant for hooking onto `prog-mode-hook' and `text-mode-hook'."
     (find-file-other-window (last tempel-path))
     (goto-char (point-min))))
 
-;;;###autoload
 (defun dtm/tempel-add-template ()
   "Open the last file in `tempel-path' & insert a heading for current major-mode."
   (interactive)
@@ -1322,7 +1224,6 @@ Copied from the 'file-templates' doom module.")
   (require 'tempel)
   (alist-get '__ (tempel--templates)))
 
-;;;###autoload
 (defun dtm-tempel-autoinsert-check-h ()
   "Expand the autoinsert/emtpy file template into the current buffer.
 The buffer must be non-read-only, empty, and there must
@@ -1337,13 +1238,11 @@ be an entry for __ in `tempel-path' for the current mode."
        (when-let ((template (dtm-tempel-autoinsert-template)))
          (tempel-insert template))))
 
-;;;###autoload
 (defun dtm-tempel-double-quote (elt)
   "Insert a single double quote using the 'd' as template ELT.
 For use in `tempel-user-elements'."
   (when (eq elt 'd) "\""))
 
-;;;###autoload
 (defun dtm-tempel-whitespace (elt)
   "Insert a space using '_' or N spaces using '(_ N)' as template ELT.
 For use in `tempel-user-elements'."
@@ -1351,7 +1250,6 @@ For use in `tempel-user-elements'."
                       ((eq (car-safe elt) '_) (cadr elt)))))
     (make-string n 32)))
 
-;;;###autoload
 (defun dtm-tempel-include (elt)
   "Insert template with NAME using '(i NAME)' as template ELT.
 Ref: https://github.com/minad/tempel"
@@ -1362,7 +1260,6 @@ Ref: https://github.com/minad/tempel"
       nil)))
 
 ;;* CTRLF
-;;;###autoload
 (defun dtm-translate-fuzzy-multi-literal (input)
   "Build a fuzzy-matching regexp from literal INPUT.
 See `ctrlf-split-fuzzy' for how INPUT is split into subinputs.
@@ -1371,7 +1268,6 @@ This enables the each word of the query to be on a consecutive non-blank line."
   (string-join (mapcar #'regexp-quote (ctrlf-split-fuzzy input)) ".*\n*.*"))
 
 ;;* Elisp-refs
-;;;###autoload
 (defun dtm-elisp-refs--find-file-a (button)
   "Open the file referenced by BUTTON in the other window.
 Intended as :around advice for `elisp-refs--find-file'."
@@ -1386,7 +1282,6 @@ Intended as :around advice for `elisp-refs--find-file'."
      symbol)
     (nreverse result)))
 
-;;;###autoload
 (defun dtm/advice-remove (symbol advice)
   "Remove ADVICE from SYMBOL, with interactive support.
 Ref: https://emacs.stackexchange.com/a/33344"
@@ -1404,14 +1299,12 @@ Ref: https://emacs.stackexchange.com/a/33344"
 (defvar dtm-gptel-dir nil
   "Directory for storing chats.")
 
-;;;###autoload
 (defun dtm-gptel-setup-h ()
   "Personal gptel-mode customisation's. Intended for `gptel-mode-hook'."
   (setq default-directory (or dtm-gptel-dir default-directory))
   (visual-line-mode +1)
   (flycheck-mode -1))
 
-;;;###autoload
 (defun dtm/gptel-send-buffer ()
   "Scroll to the end and call `gptel-send' to ensure the full buffer is send."
   (interactive)
@@ -1420,12 +1313,10 @@ Ref: https://emacs.stackexchange.com/a/33344"
   (goto-char (point-max))
   (call-interactively #'gptel-send))
 
-;;;###autoload
 (defun dtm-gptel-goto-workspace (&rest _)
   "Open/create workspace for ChatGPT conversations."
   (dtm-workspace-switch-maybe "*gpt*"))
 
-;;;###autoload
 (defun dtm/gptel-new-chat ()
   "Open a new chat in the dedicated workspace."
   (interactive)
@@ -1448,7 +1339,6 @@ Ref: https://emacs.stackexchange.com/a/33344"
       (alist-get 'overlay (image-mode-window-put
                            'overlay (make-overlay (point-min) (point-max))))))
 
-;;;###autoload
 (defun dtm/image-center (&optional window)
   "Centre the current image in the window.
 Can also be used as :after advice for `image-fit-to-window'.
@@ -1466,7 +1356,6 @@ Ref: `pdf-view-display-image'"
                                                        2))))))))
 
 ;;* Markdown-mode
-;;;###autoload
 (defun dtm/markdown-backward-same-level ()
   "Move to previous list item or first heading above current line."
   (interactive)
@@ -1474,7 +1363,6 @@ Ref: `pdf-view-display-image'"
       (markdown-outline-previous-same-level)
     (markdown-back-to-heading-over-code-block)))
 
-;;;###autoload
 (defun dtm/markdown-up ()
   "Move up in list or heading hierarchy. Ref: `markdown-outline-up'."
   (interactive)
@@ -1484,7 +1372,6 @@ Ref: `pdf-view-display-image'"
       (markdown-back-to-heading-over-code-block))))
 
 ;;* Visual-line-mode
-;;;###autoload
 (defun dtm-visual-line-sync-fringe (symbol newval operation where)
   "Show a left fringe continuation indicator if line numbers are hidden.
 Use with `add-variable-watcher' on `display-line-numbers'"
@@ -1496,7 +1383,6 @@ Use with `add-variable-watcher' on `display-line-numbers'"
                           :key #'car))
             (when (memq newval '(nil visual)) 'left-curly-arrow))))
 
-;;;###autoload
 (defun dtm-visual-line-fix-linum-h ()
   "Ensure appropriate `display-line-numbers' and `display-line-numbers-type'.
 Use for `visual-line-mode-hook'. Also fixes `doom/toggle-line-numbers'."
@@ -1508,7 +1394,6 @@ Use for `visual-line-mode-hook'. Also fixes `doom/toggle-line-numbers'."
       (setq-local display-line-numbers-type correct-type))))
 
 ;;* Ispell/Spell-fu
-;;;###autoload
 (defun dtm/ispell-fu-change-dictionary ()
   "Interactively set `ispell-local-dictionary' & `ispell-local-pdict'.
 These values are used to override `spell-fu-dictionaries'. Sets
@@ -1537,7 +1422,6 @@ Ref: `ispell-change-dictionary', `spell-fu-dictionary-add'"
     (spell-fu--refresh-cache-table-list)
     (spell-fu--refresh)))
 
-;;;###autoload
 (defun dtm/spell-correct-previous ()
   "Correct the previous spelling error."
   (interactive)
