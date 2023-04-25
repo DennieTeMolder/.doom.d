@@ -80,6 +80,13 @@ If NAME is not provided `buffer-file-name' is used."
       (progn (setf (nth (1+ pos) lst) replacement) lst)
     (append lst (list key replacement))))
 
+(defun dtm-straight-prioritize (dir)
+  "Move straight package DIR to the front of `load-path'."
+  (let ((lib-dir (file-name-concat straight-base-dir "straight"
+                                   straight-build-dir dir)))
+    (when (file-exists-p lib-dir)
+      (setq load-path (cons lib-dir (delete lib-dir load-path))))))
+
 ;;* Buffer functions
 (defun dtm-buffer-remote-p (&optional buf)
   "Returns t if BUF belongs to a remote directory."

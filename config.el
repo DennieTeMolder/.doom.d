@@ -525,9 +525,7 @@ Also used by `org-modern-mode' to calculate heights.")
 (after! doom-packages
   ;; Ensure `org-mode-ox-odt' takes precedence over org's ox-odt.el.
   ;; Ref: https://github.com/kjambunathan/org-mode-ox-odt/discussions/133
-  (dtm-to-front (file-name-concat straight-base-dir "straight"
-                                  straight-build-dir "ox-odt")
-                load-path))
+  (dtm-straight-prioritize "ox-odt"))
 
 (use-package! org-appear
   :after org
