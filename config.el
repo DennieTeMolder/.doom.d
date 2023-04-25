@@ -663,10 +663,10 @@ Also used by `org-modern-mode' to calculate heights.")
   (map! :map pdf-view-mode-map :n "i" #'dtm/org-noter-insert-maybe))
 
 (after! pdf-tools
+  (setq pdf-view-resize-factor 1.1)
+
   ;; Distinguish current match
   (custom-set-faces! '(pdf-isearch-match :inherit highlight))
-
-  (setq pdf-view-resize-factor 1.1)
 
   (add-to-list 'evil-snipe-disabled-modes 'pdf-view-mode)
 

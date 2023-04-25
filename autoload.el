@@ -1106,8 +1106,8 @@ Indented to advise functions that move the point."
 (defun dtm-flycheck-disable-proselint-rmd-h ()
   "Disable the 'proselint' flycheck checker when in R markdown.
 Intended for `markdown-mode-hook'."
-  (let ((fname (buffer-file-name)))
-    (when (and fname (string-match-p "\\.Rmd$" fname))
+  (when-let ((fname (buffer-file-name)))
+    (when (string-match-p "\\.Rmd$" fname)
       (flycheck-disable-checker 'proselint))))
 
 ;;* Python
