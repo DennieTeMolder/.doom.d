@@ -1523,3 +1523,11 @@ Ref: `ispell-change-dictionary', `spell-fu-dictionary-add'"
     (mapc #'spell-fu--dictionary-ensure-update spell-fu-dictionaries)
     (spell-fu--refresh-cache-table-list)
     (spell-fu--refresh)))
+
+;;;###autoload
+(defun dtm/spell-correct-previous ()
+  "Correct the previous spelling error."
+  (interactive)
+  (save-excursion
+    (+spell/previous-error)
+    (+spell/correct)))

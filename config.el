@@ -212,7 +212,10 @@
   (remove-hook! 'text-mode-hook #'visual-line-mode)
 
   ;; Automatically load changes (should mostly be in log files)
-  (add-hook! 'text-mode-hook (auto-revert-mode +1)))
+  (add-hook! 'text-mode-hook (auto-revert-mode +1))
+
+  (general-evil-define-key '(normal insert) 'text-mode-map
+    "M-o" #'dtm/spell-correct-previous))
 
 ;;* Doom Core Package Settings
 (after! evil
