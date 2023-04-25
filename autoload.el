@@ -407,6 +407,12 @@ For use with `dired-isearch-filenames-mode-hook'."
                :local #'dtm-insert-exit-fill-paragraph)))
 
 ;;;###autoload
+(defun dtm-org-src-flycheck-h ()
+  "Disable annoying flycheck messages. Use with `org-src-mode-hook'."
+  (when (eq major-mode 'emacs-lisp-mode)
+    (flycheck-mode -1)))
+
+;;;###autoload
 (defun dtm-insert-exit-fill-paragraph ()
   "Perform `org-fill-paragraph' unless el at point is a src block"
   ;; Check if `auto-fill-mode' is active

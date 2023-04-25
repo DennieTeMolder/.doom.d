@@ -181,8 +181,7 @@
          :action doom/help)))
 
 ;;* General Doom Settings
-;; Default major mode for scratch buffer
-(setq doom-scratch-initial-major-mode 'lisp-interaction-mode)
+(add-hook! 'doom-scratch-buffer-created-hook (flycheck-mode -1))
 
 ;; Disable global hl-line-mode
 (remove-hook! 'doom-first-buffer-hook #'global-hl-line-mode)
@@ -504,7 +503,8 @@ Also used by `org-modern-mode' to calculate heights.")
 
   ;; Enable hard wrapping and automate paragraph filling
   ;; Allow for double quoting using '' and `` (`` -> “)
-  (add-hook! 'org-mode-hook #'dtm-org-mode-setup-h))
+  (add-hook! 'org-mode-hook #'dtm-org-mode-setup-h)
+  (add-hook! 'org-src-mode-hook #'dtm-org-src-flycheck-h))
 
 ;; Keys bound in after! org seem to get overwritten, this works
 (after! org-keys
