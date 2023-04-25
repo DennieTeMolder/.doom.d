@@ -638,19 +638,16 @@ Also used by `org-modern-mode' to calculate heights.")
          citar-library-paths '("~/Nextcloud/Zotero/")))
 
 (after! citar
-  ;; Ensure notes can be accessed by `citar-open-notes'
-  (require 'citar-org-roam)
-
   (setq citar-org-roam-note-title-template "${=key=}: ${title}\n\n* Notes"
         citar-org-roam-subdir "notes")
+
+  ;; Ensure notes are shown by `citar-open-notes'
+  (add-transient-hook! 'citar-has-notes (require 'citar-org-roam))
 
   ;; Dedicated workspaces
   (advice-add 'citar-open-files :before #'dtm-citar-goto-workspace)
   (advice-add 'citar--open-entry :before #'dtm-citar-goto-workspace)
-  (advice-add 'citar-open-notes :before #'dtm-org-roam-goto-workspace)
-
-  ;; Disable citation delete binding
-  (map! :map citar-org-citation-map "C-d" nil))
+  (advice-add 'citar-open-notes :before #'dtm-org-roam-goto-workspace))
 
 ;; Org-noter settings
 (after! org-noter
