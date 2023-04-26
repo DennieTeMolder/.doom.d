@@ -69,12 +69,6 @@ If NAME is not provided `buffer-file-name' is used."
     (exchange-point-and-mark))
   (deactivate-mark))
 
-(defun dtm-cl-replace-key (key replacement lst)
-  "Overwrite the value of KEY in LIST with REPLACEMENT."
-  (if-let ((pos (cl-position key lst)))
-      (progn (setf (nth (1+ pos) lst) replacement) lst)
-    (append lst (list key replacement))))
-
 (defun dtm-straight-prioritize (dir)
   "Move straight package DIR to the front of `load-path'."
   (let ((lib-dir (file-name-concat straight-base-dir "straight"
@@ -129,10 +123,9 @@ This is achieved by locally redefining `consult--read'.
 Ref: https://nullprogram.com/blog/2017/10/27/"
   (interactive)
   (require 'consult)
-  (letf! ((defun consult--read (&rest args)
-            (apply consult--read (dtm-cl-replace-key
-                                  :default (symbol-name (dtm-recommend-theme))
-                                  args))))
+  (letf! ((defun consult--read (candidates &rest options)
+            (apply consult--read candidates
+                   (plist-put options :default (symbol-name (dtm-recommend-theme))))))
     (call-interactively #'consult-theme)))
 
 ;;* UI
