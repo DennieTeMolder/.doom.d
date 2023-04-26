@@ -425,16 +425,11 @@
   :after vertico
   :config (vertico-mouse-mode +1))
 
-;; Manage trash folder inside emacs
-(use-package! trashed
-  :commands trashed)
-
-;; Reverse `rx' operation, for turning regex into lisp
-(use-package! xr
-  :commands xr)
-
 (use-package! tempel
-  :commands tempel-complete tempel-expand tempel-insert
+  :defer t
+  :init
+  ;; Templates for new/empty files
+  (add-hook 'doom-switch-buffer-hook #'dtm-tempel-autoinsert-check-h)
   :config
   (setq tempel-path (file-name-concat doom-user-dir "snippets.eld")
         tempel-user-elements '(dtm-tempel-whitespace
@@ -447,9 +442,6 @@
         "<backtab>" #'tempel-previous
         "C-c C-c"   #'tempel-done
         "C-c C-k"   #'tempel-abort))
-
-;; Templates for new/empty files
-(add-hook 'doom-switch-buffer-hook #'dtm-tempel-autoinsert-check-h)
 
 ;;* Writing/Organisation Tools
 ;; Spell checking
@@ -525,8 +517,8 @@ Also used by `org-modern-mode' to calculate heights.")
   (dtm-straight-prioritize "ox-odt"))
 
 (use-package! org-appear
+  :defer t
   :after org
-  :commands org-appear-mode
   :init
   (advice-add 'org-toggle-pretty-entities :after #'dtm-org-pretty-use-appear-a)
   :config
@@ -535,8 +527,8 @@ Also used by `org-modern-mode' to calculate heights.")
         org-appear-autoentities t))
 
 (use-package! org-modern
+  :defer t
   :after org
-  :commands org-modern-mode org-modern-agenda
   :init
   (add-hook 'org-agenda-finalize-hook #'org-modern-agenda)
   (add-hook 'org-mode-hook #'dtm-org-modern-mode-maybe-h)
@@ -886,12 +878,6 @@ Also used by `org-modern-mode' to calculate heights.")
   (add-to-list 'ess-imenu-S-generic-expression
                '("Section" "^\\(#+ .+\\) [-=#]\\{4,\\}" 1)))
 
-(use-package! ess-view-data
-  :commands ess-view-data-print)
-
-(use-package! ess-r-insert-obj
-  :commands ess-r-insert-obj-col-name)
-
 (after! python
   ;; Add generic imenu expression and ensure python doesn't ignore them
   (add-hook! 'python-mode-hook
@@ -956,7 +942,6 @@ Also used by `org-modern-mode' to calculate heights.")
 ;; REVIEW activating mode with line numbers on seems to cause high CPU usage
 ;; even in idle (https://github.com/io12/good-scroll.el/issues/31)
 (use-package! good-scroll
-  :commands good-scroll-mode
   :init
   (unless dtm-maximize-performance
     (add-hook 'doom-first-buffer-hook #'good-scroll-mode))
@@ -969,7 +954,7 @@ Also used by `org-modern-mode' to calculate heights.")
 
 ;; Improved isearch
 (use-package! ctrlf
-  :commands ctrlf-forward-default
+  :defer t
   :config
   ;; Use 'M-s s' while searching to change styles
   (setq ctrlf-default-search-style 'fuzzy-multi
@@ -977,11 +962,10 @@ Also used by `org-modern-mode' to calculate heights.")
         ctrlf-auto-recenter t)
 
   ;; Fuzzy matching across multiple lines
-  (add-to-list
-   'ctrlf-style-alist
-   '(fuzzy-multi . (:prompt "fuzzy multi-line"
-                    :translator dtm-translate-fuzzy-multi-literal
-                    :case-fold ctrlf-no-uppercase-literal-p)))
+  (push '(fuzzy-multi . (:prompt "fuzzy multi-line"
+                         :translator dtm-translate-fuzzy-multi-literal
+                         :case-fold ctrlf-no-uppercase-literal-p))
+        ctrlf-style-alist)
 
   (map! :map ctrlf-minibuffer-mode-map
         "C-s" #'ctrlf-next-match
@@ -991,8 +975,8 @@ Also used by `org-modern-mode' to calculate heights.")
 
 ;; NOTE to configure add the line below to ~/.authinfo.gpg
 ;; machine openai.com login apikey password <your-key>
-(use-package gptel
-  :commands gptel gptel-send
+(use-package! gptel
+  :defer t
   :config
   (setq gptel-default-mode 'markdown-mode
         dtm-gptel-dir "~/Nextcloud/Emacs/Chats/")
