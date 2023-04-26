@@ -1,4 +1,5 @@
-;;; autoloads.el -*- lexical-binding: t; -*-
+;;; dtm-lib.el -*- lexical-binding: t; -*-
+;; Library of personal functions
 
 ;;* Utility
 (defun dtm-doctor-running-p ()
@@ -88,24 +89,6 @@ If NAME is not provided `buffer-file-name' is used."
          (dir (buffer-local-value 'default-directory buf)))
     (ignore-errors (file-remote-p dir))))
 
-(defun dtm-get-buffer (b-or-n)
-  "Wrapper for `get-buffer', that handles `read-buffer' cons cells."
-  (let ((buf (cond ((listp b-or-n) (cdr b-or-n))
-                   ((stringp b-or-n) (get-buffer b-or-n))
-                   (t b-or-n))))
-    (unless (bufferp buf)
-      (error "No buffer found for: %s" b-or-n))
-    buf))
-
-(defun dtm-get-buffer-name (b-or-n)
-  "Wrapper for `buffer-name', that handles `read-buffer' cons cells."
-  (let ((bname (cond ((listp b-or-n) (car b-or-n))
-                     ((bufferp b-or-n) (buffer-name b-or-n))
-                     (t b-or-n))))
-    (unless (stringp bname)
-      (error "Could not find buffer string for: %s" b-or-n))
-    bname))
-
 (defun dtm-read-display-buffer (prompt &optional predicate)
   "Display buffer by providing user with PROMPT on buffers matching PREDICATE."
   (when-let ((buf (read-buffer (format-prompt prompt nil)
@@ -125,38 +108,6 @@ A larger W/H-FACTOR favours splitting vertically (i.e. down)."
     (if (> w/h w/h-factor)
         (split-window-horizontally)
       (split-window-vertically))))
-
-(defun dtm/move-splitter-left (arg)
-  "Move window splitter left. Ref: hydra-examples"
-  (interactive "p")
-  (if (let ((windmove-wrap-around))
-        (windmove-find-other-window 'right))
-      (shrink-window-horizontally arg)
-    (enlarge-window-horizontally arg)))
-
-(defun dtm/move-splitter-right (arg)
-  "Move window splitter right. Ref: hydra-examples"
-  (interactive "p")
-  (if (let ((windmove-wrap-around))
-        (windmove-find-other-window 'right))
-      (enlarge-window-horizontally arg)
-    (shrink-window-horizontally arg)))
-
-(defun dtm/move-splitter-up (arg)
-  "Move window splitter up. Ref: hydra-examples"
-  (interactive "p")
-  (if (let ((windmove-wrap-around))
-        (windmove-find-other-window 'up))
-      (enlarge-window arg)
-    (shrink-window arg)))
-
-(defun dtm/move-splitter-down (arg)
-  "Move window splitter down. Ref: hydra-examples"
-  (interactive "p")
-  (if (let ((windmove-wrap-around))
-        (windmove-find-other-window 'up))
-      (shrink-window arg)
-    (enlarge-window arg)))
 
 ;;* Theme recommendations
 (defun dtm--theme-which-inactive (theme1 theme2)
@@ -178,12 +129,10 @@ This is achieved by locally redefining `consult--read'.
 Ref: https://nullprogram.com/blog/2017/10/27/"
   (interactive)
   (require 'consult)
-  (cl-letf* ((this-fn (symbol-function 'consult--read))
-             ((symbol-function 'consult--read)
-              (lambda (&rest args)
-                (apply this-fn (dtm-cl-replace-key
-                                :default (symbol-name (dtm-recommend-theme))
-                                args)))))
+  (letf! ((defun consult--read (&rest args)
+            (apply consult--read (dtm-cl-replace-key
+                                  :default (symbol-name (dtm-recommend-theme))
+                                  args))))
     (call-interactively #'consult-theme)))
 
 ;;* UI
@@ -219,43 +168,7 @@ Use for `after-change-major-mode-hook'."
                "\n"))
      'face 'doom-dashboard-banner)))
 
-;;* Projectile
-(defun dtm-project-ignored-p (project-root)
-  "Return non-nil if remote or temporary file or a straight package."
-  (or (file-remote-p project-root)
-      (file-in-directory-p project-root temporary-file-directory)
-      (file-in-directory-p project-root doom-local-dir)))
-
 ;;* Workspaces/perspectives
-(defun dtm/load-session (file)
-  "Stripped down `doom/load-session' with proper default value.
-Also checks if FILE exists."
-  (interactive
-   (let ((session-file (doom-session-file)))
-     (list (read-file-name "Session to restore: "
-                           (file-name-directory session-file)
-                           session-file
-                           t))))
-  (doom-load-session file)
-  (message "Session restored. Welcome back."))
-
-(defun dtm-buffer-orphan-p (&optional buf)
-  "Return t if buffer BUF does not belong to any workspace/perspective."
-  (let ((buf (or buf (current-buffer))))
-    (not (persp--buffer-in-persps (dtm-get-buffer buf)))))
-
-(defun dtm/switch-orphan-buffer ()
-  "Prompt user to select buffer matching `dtm-buffer-orphan-p'."
-  (interactive)
-  (dtm-read-display-buffer "Select orphan buffer" #'dtm-buffer-orphan-p))
-
-(defun dtm/ibuffer-orphans ()
-  "Open an ibuffer window with all orphan buffers."
-  (interactive)
-  (let ((ibuffer-never-show-predicates '(persp--buffer-in-persps))
-        (ibuffer-hook nil))
-    (ibuffer)))
-
 (defun dtm-workspace-switch-maybe (name)
   "Switch to workspace NAME if not already current"
   (unless (equal name (+workspace-current-name))
@@ -269,10 +182,6 @@ Also checks if FILE exists."
 (defun dtm-doom-private-goto-workspace ()
   "Open/create the dedicated private config workspace"
   (dtm-workspace-switch-maybe "*config*"))
-
-(defun dtm-org-roam-goto-workspace (&rest _)
-  "Open/create the dedicated org-roam workspace"
-  (dtm-workspace-switch-maybe "*roam*"))
 
 (defun dtm-citar-goto-workspace (&rest _)
   "Open/create the dedicated citar bibliography workspace"
@@ -292,23 +201,126 @@ Also checks if FILE exists."
       (dtm-workspace-switch-maybe name))
     (display-buffer-same-window buffer alist)))
 
-(defun dtm-display-buffer-in-workspace (buffer alist)
-  "Display BUFFER in (workspace . name) defined in ALIST.
-Intended for use in `display-buffer-alist'."
-  (let ((name (cdr (assq 'workspace alist))))
-    (let ((alist (remove (assq 'workspace alist) alist)))
-      (dtm/buffer-move-to-workspace name alist))))
+(defun dtm-get-buffer (b-or-n)
+  "Wrapper for `get-buffer', that handles `read-buffer' cons cells."
+  (let ((buf (cond ((listp b-or-n) (cdr b-or-n))
+                   ((stringp b-or-n) (get-buffer b-or-n))
+                   (t b-or-n))))
+    (unless (bufferp buf)
+      (error "No buffer found for: %s" b-or-n))
+    buf))
 
-(defun dtm-set-workspace-rule (predicate name)
-  "Move buffers matching PREDICATE to workspace NAME.
-This is achieved by adding a rule to `display-buffer-alist'."
-  (let ((rule `(,predicate (dtm-display-buffer-in-workspace)
-                           (workspace . ,name))))
-    (push rule display-buffer-alist)
-    ;; HACK prevent rule from being overridden by `set-popup-rule!'
-    (when (boundp '+popup--display-buffer-alist)
-      (push rule +popup--display-buffer-alist)))
-  t)
+(defun dtm-buffer-orphan-p (&optional buf)
+  "Return t if buffer BUF does not belong to any workspace/perspective."
+  (let ((buf (or buf (current-buffer))))
+    (not (persp--buffer-in-persps (dtm-get-buffer buf)))))
+
+(defun dtm/switch-orphan-buffer ()
+  "Prompt user to select buffer matching `dtm-buffer-orphan-p'."
+  (interactive)
+  (dtm-read-display-buffer "Select orphan buffer" #'dtm-buffer-orphan-p))
+
+;;* Projectile
+(defun dtm-project-ignored-p (project-root)
+  "Return non-nil if remote or temporary file or a straight package."
+  (or (file-remote-p project-root)
+      (file-in-directory-p project-root temporary-file-directory)
+      (file-in-directory-p project-root doom-local-dir)))
+
+;;* Visual-line-mode
+(defun dtm-visual-line-sync-fringe (symbol newval operation where)
+  "Show a left fringe continuation indicator if line numbers are hidden.
+Use with `add-variable-watcher' on `display-line-numbers'"
+  (when (and (eq symbol 'display-line-numbers)
+             (eq operation 'set)
+             (buffer-local-value 'visual-line-mode where))
+    (setcar (cdr (cl-find 'continuation
+                          (buffer-local-value 'fringe-indicator-alist where)
+                          :key #'car))
+            (when (memq newval '(nil visual)) 'left-curly-arrow))))
+
+(defun dtm-visual-line-fix-linum-h ()
+  "Ensure appropriate `display-line-numbers' and `display-line-numbers-type'.
+Use for `visual-line-mode-hook'. Also fixes `doom/toggle-line-numbers'."
+  (let ((wrong-type (if visual-line-mode 'relative 'visual))
+        (correct-type (if visual-line-mode 'visual 'relative)))
+    (when (eq display-line-numbers wrong-type)
+      (setq-local display-line-numbers correct-type))
+    (when (eq display-line-numbers-type wrong-type)
+      (setq-local display-line-numbers-type correct-type))))
+
+;;* Doom Popup
+(defun dtm/popup-raise ()
+  "Wrapper for `+popup/raise' that will ensure a popup is selected."
+  (interactive)
+  (unless (+popup-window-p) (+popup/other))
+  (call-interactively #'+popup/raise))
+
+(defun dtm/popup-kill ()
+  "Kill the currently open popup."
+  (interactive)
+  (unless (+popup-window-p) (+popup/other))
+  (+popup--remember (list (selected-window)))
+  (kill-buffer-and-window))
+
+(defun dtm-get-buffer-name (b-or-n)
+  "Wrapper for `buffer-name', that handles `read-buffer' cons cells."
+  (let ((bname (cond ((listp b-or-n) (car b-or-n))
+                     ((bufferp b-or-n) (buffer-name b-or-n))
+                     (t b-or-n))))
+    (unless (stringp bname)
+      (error "Could not find buffer string for: %s" b-or-n))
+    bname))
+
+(defun dtm-popup-get-rule (buf)
+  "Returns (predicate . action) for BUF in `display-buffer-alist'.
+Based on `+popup/diagnose'."
+  (let ((bname (dtm-get-buffer-name buf)))
+    (cl-loop for (pred . action) in display-buffer-alist
+             if (and (functionp pred) (funcall pred bname action))
+             return (cons pred action)
+             else if (and (stringp pred) (string-match-p pred bname))
+             return (cons pred action))))
+
+(defun dtm-popup-buffer-p (&optional buf)
+  "Returns t if BUF has a non-nil `set-popup-rule!' in `display-buffer-alist'."
+  (when-let* ((buf (or buf (current-buffer)))
+              (rule (dtm-popup-get-rule buf)))
+    (eq '+popup-buffer (caadr rule))))
+
+(defun dtm/switch-popup-buffer ()
+  "Prompt user to select buffer matching `dtm-popup-buffer-p'."
+  (interactive)
+  (dtm-read-display-buffer "Select popup" #'dtm-popup-buffer-p))
+
+;;* Imenu
+(defun dtm-elisp-extend-imenu-h ()
+  "Add `modulep!' support to `imenu' as the 2nd element."
+  (push '("Module" "^\\s-*(when (modulep! +\\([^)]+\\))" 1)
+        (cdr imenu-generic-expression)))
+
+(defvar dtm-imenu-orginal-index-function nil
+  "Original indexing function before calling `dtm-imenu-merge-index-h'")
+
+(defun dtm-imenu-merge-index-h ()
+  "Append results from `imenu-generic-expression' to the current imenu (add to major-mode hook).
+This is useful when the index function does not utilise the generic expression such as in python-mode."
+  (setq-local dtm-imenu-orginal-index-function imenu-create-index-function
+              imenu-create-index-function 'dtm-imenu-merge-index))
+
+(defun dtm-imenu-merge-index ()
+  "See `dtm-imenu-merge-index-h'."
+  (let ((original-index (funcall dtm-imenu-orginal-index-function))
+        (generic-index (imenu--generic-function imenu-generic-expression)))
+    (append generic-index original-index)))
+
+;;* Ibuffer
+(defun dtm/ibuffer-orphans ()
+  "Open an ibuffer window with all orphan buffers."
+  (interactive)
+  (let ((ibuffer-never-show-predicates '(persp--buffer-in-persps))
+        (ibuffer-hook nil))
+    (ibuffer)))
 
 (defun dtm-ibuffer-workspace-filter-groups ()
   "Generate value for `ibuffer-filter-groups' based on perspectives."
@@ -331,19 +343,7 @@ https://github.com/purcell/ibuffer-projectile"
         (pop-to-buffer ibuf)
         (ibuffer-update nil t)))))
 
-;;* Ediff
-(defun dtm/ediff-this-file ()
-  "Ediff file associated with current buffer to file selected in prompt."
-  (interactive)
-  (when (and (buffer-modified-p)
-             (y-or-n-p "Save current buffer?"))
-    (save-buffer))
-  (let ((current (buffer-file-name (current-buffer))))
-    (unless current
-      (user-error "No file associated with current buffer!"))
-    (ediff current (read-file-name "Diff current file with:" nil nil t))))
-
-;;* Dired
+;;* Dired/Dirvish
 (defun dtm/dired-delete-marked ()
   "Delete marked or current file(s), with C-u toggle `delete-by-moving-to-trash'."
   (interactive)
@@ -362,19 +362,229 @@ https://github.com/purcell/ibuffer-projectile"
                                  default nil t)))
     (ediff (expand-file-name file dir) target)))
 
-(defun dtm-dired-isearch-successful-find-file-h ()
-  "Open the file under cursor if `dired-isearch-filenames' was successful.
-For use with `dired-isearch-filenames-mode-hook'."
-  (unless (or dired-isearch-filenames-mode
-              isearch-mode-end-hook-quit)
-    (dired-find-file)))
+(defun dtm/dirvish-side ()
+  "Wrapper for `dirvish-side' that always closes the window if visible."
+  (interactive)
+  (if-let (window (and (fboundp 'dirvish-side--session-visible-p)
+                       (dirvish-side--session-visible-p)))
+      (progn (select-window window) (dirvish-quit))
+    (call-interactively #'dirvish-side)))
+
+(defun dtm/dirvish-copy-file-name ()
+  "Copy file name, or path with C-u. Also works for multiple marked files."
+  (interactive)
+  (call-interactively
+   (if current-prefix-arg
+       #'dirvish-copy-file-path
+     #'dirvish-copy-file-name)))
+
+(defun dtm/dirvish-find-entry ()
+  "Like `find-file' but for use in `dirvish' buffers."
+  (interactive)
+  (dirvish-find-entry-a
+   (read-file-name "Open: " nil default-directory
+                   (confirm-nonexistent-file-or-buffer))))
+
+(defun dtm/dirvish-search-cwd ()
+  "Text search files from current working directory, kill dirvish on confirm."
+  (interactive)
+  (require 'consult)
+  (let ((consult--buffer-display #'identity)
+        (dv (dirvish-curr)))
+    (+default/search-cwd)
+    (let ((buf (current-buffer)))
+      (dirvish-kill dv)
+      (switch-to-buffer buf))))
+
+(defun dtm/dirvish-narrow ()
+  "Run `dirvish-narrow' and provide revert instruction after finish."
+  (interactive)
+  (call-interactively #'dirvish-narrow)
+  (message "Run `revert-buffer' (%s) to un-narrow"
+           (substitute-command-keys "\\[revert-buffer]")))
+
+;;* CSV/TSV-mode
+(defvar dtm-csv-mode-max-length 300
+  "Maximum characters per line for csv/tsv-mode to be enabled.")
+
+(defun dtm-csv-mode-maybe-h ()
+  "Activate csv/tsv-mode if max line is below `dtm-csv-mode-max-length'."
+  (when-let ((file (buffer-file-name)))
+    (when (< (cadr (buffer-line-statistics)) dtm-csv-mode-max-length)
+      (pcase (file-name-extension file)
+        ("csv" (csv-mode))
+        ("tsv" (tsv-mode))))))
+
+;;* Image-mode
+(defun dtm-image-overlay ()
+  "Return current image overlay, create if not exists."
+  (or (image-mode-window-get 'overlay)
+      (alist-get 'overlay (image-mode-window-put
+                           'overlay (make-overlay (point-min) (point-max))))))
+
+(defun dtm/image-center (&optional window)
+  "Centre the current image in the window.
+Can also be used as :after advice for `image-fit-to-window'.
+Ref: `pdf-view-display-image'"
+  (interactive)
+  (with-selected-window (or window (selected-window))
+    (unless (derived-mode-p 'image-mode)
+      (error "Not in 'image-mode'!"))
+    (let ((img-width (floor (car (image-size (image-get-display-property))))))
+      (overlay-put (dtm-image-overlay) 'before-string
+                   (when (> (window-width) img-width)
+                     (propertize " " 'display
+                                 `(space :align-to ,(/ (- (window-width)
+                                                          img-width)
+                                                       2))))))))
+
+;;* Elisp-refs
+(defun dtm-elisp-refs--find-file-a (button)
+  "Open the file referenced by BUTTON in the other window.
+Intended as :around advice for `elisp-refs--find-file'."
+  (find-file-other-window (button-get button 'path))
+  (goto-char (point-min)))
+
+;;*Lispy
+(defun dtm/lispy-step-into (arg)
+  "Step into the list at point, moving the point to after ARG atoms.
+If REGION is active, call `lispy-delete' instead."
+  (interactive "p")
+  (cond ((region-active-p)
+         (call-interactively #'lispy-delete))
+        ((lispy-left-p)
+         (lispy-dotimes arg
+           (if (lispy-left-p)
+               (progn
+                 ;; Step into list
+                 (forward-char 1)
+                 ;; If not at the next list move to end of atom
+                 (unless (or (lispy-left-p)
+                             (lispy--in-empty-list-p
+                              lispy-parens-preceding-syntax-alist))
+                   (lispyville-forward-atom-end)))
+             (lispyville-forward-atom-end))))
+        ((lispy-right-p)
+         (lispy-dotimes arg
+           (if (lispy-right-p)
+               (forward-char -1)
+             (lispyville-backward-atom-end))))
+        (t
+         (error "Unexpected"))))
+
+(defun dtm/lispy-evil-yank-sexp ()
+  "Call `evil-yank' on the region of `lispy-mark-list'."
+  (interactive)
+  (save-excursion
+    (lispy-mark-list 1)
+    (let ((evil-move-cursor-back nil))
+      (evil-with-state normal
+        (call-interactively #'evil-yank)))))
+
+;;* Lispyville
+(defmacro dtm-lispyville-smart-remap (evil-fn lispy-fn)
+  "Remap EVIL-FN to LISPY-FN unless `lispy--in-string-or-comment-p' is non-nil.
+Ref: https://github.com/noctuid/lispyville/issues/284"
+  `(define-key lispyville-mode-map
+     [remap ,evil-fn]
+     (general-predicate-dispatch ,lispy-fn
+       (lispy--in-string-or-comment-p) #',evil-fn)))
+
+;;* Vterm
+(defun dtm-vterm-redraw-cursor-a (orig-fn &rest args)
+  "Prevent vterm from modifying `cursor-type'..
+Intended as around advice for `vterm--redraw'
+Ref: https://github.com/akermu/emacs-libvterm/issues/313#issuecomment-1191400836"
+  (let ((cursor-type cursor-type)) (apply orig-fn args)))
+
+(defun dtm-vterm-sync-cursor-a (&rest _)
+  "Keep vterm cursor position consistent with evil.
+Intended as before advice for `vterm-send-key'"
+  (vterm-goto-char (point)))
+
+(defun dtm/vterm-execute-current-line ()
+  "Execute the current line in the vterm buffer."
+  (interactive)
+  (when (dtm-line-empty-p) (dtm-forward-line-non-empty))
+  (+nav-flash-blink-cursor)
+  (let ((command (dtm-current-line-as-string)))
+    (save-selected-window
+      (vterm-other-window)
+      (vterm--goto-line -1)
+      (vterm-send-string command)
+      (vterm-send-return)))
+  (dtm-forward-line-non-empty))
+
+;;* Ispell-fu
+(defun dtm/ispell-fu-change-dictionary ()
+  "Interactively set `ispell-local-dictionary' & `ispell-local-pdict'.
+These values are used to override `spell-fu-dictionaries'. Sets
+`ispell-local-pdict' to \"default\" if language of selected dictionary does
+not match with `ispell-dictionary', preventing \"expected language x\" errors
+caused by a language mismatch with `ispell-personal-dictionary'.
+Ref: `ispell-change-dictionary', `spell-fu-dictionary-add'"
+  (interactive)
+  (require 'consult)
+  (setq ispell-local-dictionary
+        (consult--read (mapcar #'list (ispell-valid-dictionary-list))
+                       :prompt "Change buffer-local dictionary: "
+                       :default (or ispell-local-dictionary ispell-dictionary)
+                       :require-match t)
+        ispell-local-dictionary-overridden t
+        ispell-buffer-session-localwords nil)
+  (if (string= (spell-fu--aspell-lang-from-dict ispell-local-dictionary)
+               (spell-fu--aspell-lang-from-dict ispell-dictionary))
+      (kill-local-variable 'ispell-local-pdict)
+    (setq ispell-local-pdict "default"))
+  (ispell-internal-change-dictionary)
+  (run-hooks 'ispell-change-dictionary-hook)
+  (setq spell-fu-dictionaries (spell-fu--default-dictionaries))
+  (when spell-fu-mode
+    (mapc #'spell-fu--dictionary-ensure-update spell-fu-dictionaries)
+    (spell-fu--refresh-cache-table-list)
+    (spell-fu--refresh)))
+
+(defun dtm/spell-correct-previous ()
+  "Correct the previous spelling error."
+  (interactive)
+  (save-excursion
+    (+spell/previous-error)
+    (+spell/correct)))
+
+;;* Markdown
+(defun dtm-flycheck-disable-proselint-rmd-h ()
+  "Disable the 'proselint' flycheck checker when in R markdown.
+Intended for `markdown-mode-hook'."
+  (when-let ((fname (buffer-file-name)))
+    (when (string-match-p "\\.Rmd$" fname)
+      (flycheck-disable-checker 'proselint))))
+
+(defun dtm/markdown-backward-same-level ()
+  "Move to previous list item or first heading above current line."
+  (interactive)
+  (if (or (markdown-on-heading-p) (markdown-cur-list-item-bounds))
+      (markdown-outline-previous-same-level)
+    (markdown-back-to-heading-over-code-block)))
+
+(defun dtm/markdown-up ()
+  "Move up in list or heading hierarchy. Ref: `markdown-outline-up'."
+  (interactive)
+  (unless (markdown-up-list)
+    (if (markdown-on-heading-p)
+        (markdown-up-heading 1)
+      (markdown-back-to-heading-over-code-block))))
 
 ;;* Org-mode
+(defun dtm-org-limit-styling-p ()
+  "Return non-nil if limited styling should be applied."
+  (or (doom-temp-buffer-p (current-buffer))
+      (dtm-doom-docs-p)))
+
 (defun dtm-org-mode-setup-h ()
   "Personal org-mode customisation's after mode startup"
   (setq-local line-spacing dtm-org-line-spacing)
   (highlight-indent-guides-mode -1)
-  (unless (dtm-doom-docs-p)
+  (unless (dtm-org-limit-styling-p)
     (electric-quote-local-mode +1)
     (+org-pretty-mode +1)
     (visual-line-mode -1)
@@ -382,6 +592,10 @@ For use with `dired-isearch-filenames-mode-hook'."
     (auto-fill-mode +1)
     (add-hook! 'evil-insert-state-exit-hook
                :local #'dtm-insert-exit-fill-paragraph)))
+
+(defun dtm-org-get-title-value ()
+  "Returns the value of #+TITLE for the current document"
+  (cadar (org-collect-keywords '("TITLE"))))
 
 (defun dtm-org-src-flycheck-h ()
   "Disable annoying flycheck messages. Use with `org-src-mode-hook'."
@@ -396,10 +610,29 @@ For use with `dired-isearch-filenames-mode-hook'."
                   '(src-block comment-block))
       (org-fill-paragraph))))
 
-(defun dtm-org-get-title-value ()
-  "Returns the value of #+TITLE for the current document"
-  (cadar (org-collect-keywords '("TITLE"))))
+;;* Org-modern
+(defun dtm-org-modern-mode-maybe-h ()
+  "Activate `org-modern-mode' unless in `doom-emacs-dir'.
+The additional markup used in doom-style org documents causes rendering issues."
+  (unless (dtm-org-limit-styling-p) (org-modern-mode +1)))
 
+(defun dtm-org-modern-indent-heading ()
+  "Correctly indents heading assuming leading stars are fully hidden (not invisible)."
+  (dotimes (n org-indent--deepest-level)
+    (unless (= n 0)
+      (let* ((indentation (* org-indent-indentation-per-level (1- n)))
+             (heading-prefix (make-string indentation ?\s)))
+        (aset org-indent--heading-line-prefixes
+              n
+              (org-add-props heading-prefix nil 'face 'org-indent))))))
+
+;;* Org-appear
+(defun dtm-org-pretty-use-appear-a ()
+  "Activate `org-appear-mode' based on `org-pretty-entities'.
+Intended as after advice for `org-toggle-pretty-entities'."
+  (org-appear-mode (if org-pretty-entities +1 -1)))
+
+;;* Org-download
 (defun dtm-org-download-method (link)
   "This is a helper function for `org-download-method'.
 It creates the \"./Image\" folder within the same directory of the org file.
@@ -421,22 +654,6 @@ https://github.com/abo-abo/org-download/commit/137c3d2aa083283a3fc853f9ecbbc0303
     (file-name-concat (dtm-ensure-dir "Images")
                       filename-with-timestamp)))
 
-;;* Org-modern
-(defun dtm-org-modern-mode-maybe-h ()
-  "Activate `org-modern-mode' unless in `doom-emacs-dir'.
-The additional markup used in doom-style org documents causes rendering issues."
-  (unless (dtm-doom-docs-p) (org-modern-mode +1)))
-
-(defun dtm-org--modern-indent-heading ()
-  "Correctly indents heading assuming leading stars are fully hidden (not invisible)."
-  (dotimes (n org-indent--deepest-level)
-    (unless (= n 0)
-      (let* ((indentation (* org-indent-indentation-per-level (1- n)))
-             (heading-prefix (make-string indentation ?\s)))
-        (aset org-indent--heading-line-prefixes
-              n
-              (org-add-props heading-prefix nil 'face 'org-indent))))))
-
 ;;* Org-tree-slide
 (defun dtm-org-tree-slide-setup-h ()
   "Additional settings to prettify presentations"
@@ -457,30 +674,18 @@ The additional markup used in doom-style org documents causes rendering issues."
       (remove-hook! 'minibuffer-exit-hook #'redraw-frame)
       (remove-hook! 'pdf-view-mode-hook #'org-tree-slide-mode))))
 
-(defun dtm-org-tree-slide-no-squiggles-a (orig-fn &optional ARG)
+(defun dtm-org-tree-slide-no-squiggles-a ()
   "Toggle modes that litter the buffer with squiggly lines.
-Intended as around advice for `org-tree-slide-mode'."
-  (let ((ARG (if (memq ARG '(nil toggle))
-                 (if org-tree-slide-mode -1 +1)
-               ARG)))
-    (if (< 0 ARG)
-        (progn
-          (outline-show-all)
-          (flycheck-mode -1)
-          (spell-fu-mode -1)
-          (funcall orig-fn ARG))
-      (funcall orig-fn ARG)
-      (outline-show-all)
-      (flycheck-mode +1)
-      (spell-fu-mode +1))))
-
-;;* Org-appear
-(defun dtm-org-pretty-use-appear-a ()
-  "Activate `org-appear-mode' based on `org-pretty-entities'.
-Intended as after advice for `org-toggle-pretty-entities'."
-  (org-appear-mode (if org-pretty-entities +1 -1)))
+Use as advice :before `org-tree-slide--setup'."
+  (outline-show-all)
+  (flycheck-mode -1)
+  (spell-fu-mode -1))
 
 ;;* Org-roam
+(defun dtm-org-roam-goto-workspace (&rest _)
+  "Open/create the dedicated org-roam workspace"
+  (dtm-workspace-switch-maybe "*roam*"))
+
 (defun dtm/org-roam-open-index ()
   "Open `dtm-org-roam-index-file' in dedicated workspace, activate `org-overview'."
   (interactive)
@@ -524,40 +729,6 @@ Ref: https://github.com/hlissner/.doom.d"
                  (string-join aliases ", ")
                "-"))
      ?\n)))
-
-(defvar dtm-org-roam-old-slug nil)
-
-(defun dtm-org-roam-update-slug-h ()
-  "Rename the current file if #+title has changed.
-Will ask for confirmation if the new filename already exists.
-Ref: https://github.com/hlissner/.doom.d"
-  (when (org-roam-buffer-p)
-    (when-let* ((node (org-roam-node-at-point))
-                (new-slug (org-roam-node-slug node))
-                (old-slug dtm-org-roam-old-slug)
-                (old-slug-re (concat "/[^/]*\\(" (regexp-quote old-slug) "\\)[^/]*\\.org$"))
-                (file-name (org-roam-node-file node))
-                ((not (equal old-slug new-slug)))
-                ((string-match-p old-slug-re file-name)))
-      (setq dtm-org-roam-old-slug new-slug)
-      (condition-case _
-          (let ((new-file-name
-                 (replace-regexp-in-string
-                  old-slug-re (regexp-quote new-slug)
-                  file-name nil nil 1)))
-            (message "Updating slug in filename (%S -> %S)" old-slug new-slug)
-            (rename-file file-name new-file-name 1)
-            (set-visited-file-name new-file-name t t)
-            (org-roam-db-autosync--setup-file-h))
-        (error
-         (setq dtm-org-roam-old-slug old-slug))))))
-
-(defun dtm-org-roam-update-slug-on-save-h ()
-  "Set up auto-updating for the current node's filename.
-Calls `dtm-org-roam-update-slug-h' on `after-save-hook'.
-Ref: https://github.com/hlissner/.doom.d"
-  (setq-local dtm-org-roam-old-slug (ignore-errors (org-roam-node-slug (org-roam-node-at-point))))
-  (add-hook 'after-save-hook #'dtm-org-roam-update-slug-h 'append 'local))
 
 ;;* Org-roam-dailies
 (defun dtm-org-roam-dailies-goto-date-a ()
@@ -633,33 +804,7 @@ The DATE is derived from the #+title which must match the Org date format."
   (interactive)
   (when org-noter-doc-mode (call-interactively #'org-noter-insert-note)))
 
-;;* Vterm
-(defun dtm-vterm-redraw-cursor-a (orig-fn &rest args)
-  "Prevent vterm from modifying `cursor-type'..
-Intended as around advice for `vterm--redraw'
-Ref: https://github.com/akermu/emacs-libvterm/issues/313#issuecomment-1191400836"
-  (let ((cursor-type cursor-type)) (apply orig-fn args)))
-
-(defun dtm-vterm-sync-cursor-a (&rest _)
-  "Keep vterm cursor position consistent with evil.
-Intended as before advice for `vterm-send-key'"
-  (vterm-goto-char (point)))
-
-;;* Sh-mode
-(defun dtm/vterm-execute-current-line ()
-  "Execute the current line in the vterm buffer."
-  (interactive)
-  (when (dtm-line-empty-p) (dtm-forward-line-non-empty))
-  (+nav-flash-blink-cursor)
-  (let ((command (dtm-current-line-as-string)))
-    (save-selected-window
-      (vterm-other-window)
-      (vterm--goto-line -1)
-      (vterm-send-string command)
-      (vterm-send-return)))
-  (dtm-forward-line-non-empty))
-
-;;* ESS/R
+;;* ESS
 (defun dtm-ess-insert-string (mystr)
   "Insert string, undo if the same input event is issued twice"
   (let* ((event (event-basic-type last-input-event))
@@ -718,7 +863,7 @@ Equivalent to 's' at the R prompt."
       (ess-send-string (ess-get-process) "0")
     (ess-send-string (ess-get-process) "s")))
 
-;;** R plots
+;;** dtm-ess-r-plot
 (defvar dtm-ess-r-plot-dummy-name "*R plot*"
   "Name of the placeholder plot buffer.")
 
@@ -837,180 +982,7 @@ Intended as :around advice for `inferior-ess-reload'."
          (apply orig-fn args)
          (when running-p (dtm/ess-r-plot-toggle)))))
 
-;;* Conda
-(defun dtm-conda-infer-env-path ()
-  "Returns the path found by `conda-env-activate-for-buffer' without activating."
-  (let ((conda-message-on-environment-switch nil)
-        (dtm-env-path nil))
-    (cl-letf (((symbol-function 'conda-env-activate)
-               (lambda (name) (setq dtm-env-path name))))
-      (conda-env-activate-for-buffer))
-    dtm-env-path))
-
-(defun dtm-conda-path-promt-activate (&optional env-path)
-  "Prompt to activate ENV-PATH if not already active."
-  (when-let ((env-path (or env-path (dtm-conda-infer-env-path))))
-    (and (not (string= env-path conda-env-current-path))
-         (y-or-n-p (format "Activate Conda env: %s?"
-                           (conda-env-dir-to-name env-path)))
-         (conda-env-activate env-path))))
-
-(defun dtm-conda-env-infer-prompt ()
-  "Prompt the user to activate the inferred conda env.
-Respects the value of `conda-activate-base-by-default'"
-  (unless (or non-essential (dtm-buffer-remote-p))
-    (dtm-conda-path-promt-activate)))
-
-(defun dtm/conda-env-guess-prompt ()
-  "Guess the currently relevant conda env and prompt user to activate it"
-  (interactive)
-  (require 'conda)
-  (if-let* ((conda-activate-base-by-default t)
-            (path (dtm-conda-infer-env-path)))
-      (dtm-conda-path-promt-activate path)
-    (message "No Conda environment found for <%s>" (buffer-file-name))))
-
-(defun dtm-conda-call-json-a (orig-fn &rest args)
-  "Advice that forces `json-parse-string' to use nil to represent false.
-Intended as around advice for `conda--call-json'"
-  (require 'json)
-  (cl-letf* ((json-fn (symbol-function 'json-parse-string))
-             ((symbol-function 'json-parse-string)
-              (lambda (&rest ARGS)
-                (apply json-fn (dtm-cl-replace-key :false-object nil ARGS)))))
-    (apply orig-fn args)))
-
-;;* atomic-chrome
-(defun dtm/atomic-chrome-toggle-server ()
-  (interactive)
-  (if (bound-and-true-p global-atomic-chrome-edit-mode)
-      (progn
-        (atomic-chrome-stop-server)
-        (message "Stopped GhostText Server"))
-    (progn
-      (atomic-chrome-start-server)
-      (message "Started GhostText Server"))))
-
-;;* Good-scroll-mode
-(defun dtm/good-scroll-down-half ()
-  (interactive)
-  (good-scroll-move (/ (good-scroll--window-usable-height) 2)))
-
-(defun dtm/good-scroll-up-half ()
-  (interactive)
-  (good-scroll-move (/ (good-scroll--window-usable-height) -2)))
-
-(defun dtm-good-scroll-evil-override-h ()
-  (if good-scroll-mode
-      (progn
-        (advice-add 'evil-scroll-down :override #'dtm/good-scroll-down-half)
-        (advice-add 'evil-scroll-up :override #'dtm/good-scroll-up-half))
-    (progn
-      (advice-remove 'evil-scroll-down #'dtm/good-scroll-down-half)
-      (advice-remove 'evil-scroll-up #'dtm/good-scroll-up-half))))
-
-;;* Toggles
-(defun dtm/toggle-trash-delete ()
-  "Toggle between trashing and deleting files"
-  (interactive)
-  (if delete-by-moving-to-trash
-      (progn
-        (setq delete-by-moving-to-trash nil)
-        (message "Now deleting files PERMANTLY"))
-    (progn
-      (setq delete-by-moving-to-trash t)
-      (message "Now moving deleted files to trash"))))
-
-(defvar dtm-left-margin 30
-  "Size of left margin that can be added to selected-window on demand")
-
-(defun dtm/window-toggle-left-margin ()
-  "Toggle left margin on selected window."
-  (interactive)
-  (let ((window (selected-window)))
-    (set-window-margins window (unless (car (window-margins window)) dtm-left-margin))))
-
-;;* So-long-mode/csv-mode/tsv-mode
-(defvar dtm-csv-mode-max-length 300
-  "Maximum characters per line for csv/tsv-mode to be enabled.")
-
-(defun dtm-csv-mode-maybe-h ()
-  "Activate csv/tsv-mode if max line is below `dtm-csv-mode-max-length'."
-  (when-let ((file (buffer-file-name)))
-    (when (< (cadr (buffer-line-statistics)) dtm-csv-mode-max-length)
-      (pcase (file-name-extension file)
-        ("csv" (csv-mode))
-        ("tsv" (tsv-mode))))))
-
-;;* Lispy
-(defun dtm/lispy-step-into (arg)
-  "Step into the list at point, moving the point to after ARG atoms.
-If REGION is active, call `lispy-delete' instead."
-  (interactive "p")
-  (cond ((region-active-p)
-         (call-interactively #'lispy-delete))
-        ((lispy-left-p)
-         (lispy-dotimes arg
-           (if (lispy-left-p)
-               (progn
-                 ;; Step into list
-                 (forward-char 1)
-                 ;; If not at the next list move to end of atom
-                 (unless (or (lispy-left-p)
-                             (lispy--in-empty-list-p
-                              lispy-parens-preceding-syntax-alist))
-                   (lispyville-forward-atom-end)))
-             (lispyville-forward-atom-end))))
-        ((lispy-right-p)
-         (lispy-dotimes arg
-           (if (lispy-right-p)
-               (forward-char -1)
-             (lispyville-backward-atom-end))))
-        (t
-         (error "Unexpected"))))
-
-(defun dtm/lispy-evil-yank-sexp ()
-  "Call `evil-yank' on the region of `lispy-mark-list'."
-  (interactive)
-  (save-excursion
-    (lispy-mark-list 1)
-    (evil-with-state normal
-      (call-interactively #'evil-yank))))
-
-(defmacro dtm-lispyville-smart-remap (evil-fn lispy-fn)
-  "Remap EVIL-FN to LISPY-FN unless `lispy--in-string-or-comment-p' is non-nil.
-Ref: https://github.com/noctuid/lispyville/issues/284"
-  `(define-key lispyville-mode-map
-     [remap ,evil-fn]
-     (general-predicate-dispatch ,lispy-fn
-       (lispy--in-string-or-comment-p) #',evil-fn)))
-
-;;* Imenu
-(defun dtm-elisp-extend-imenu-h ()
-  "Add `modulep!' support to `imenu' as the 2nd element."
-  (cl-pushnew '("Module" "^\\s-*(when (modulep! +\\([^)]+\\))" 1)
-              (cdr imenu-generic-expression)))
-
-(defun dtm-fix-elisp-extend-imenu-a ()
-  (cl-replace imenu-generic-expression
-              '(("Section" "^[ \t]*;;[;*]+[ \t]+\\(.+\\)" 1))))
-
-(defvar dtm-imenu-orginal-index-function nil
-  "Original indexing function before calling `dtm-imenu-merge-index-h'")
-
-(defun dtm-imenu-merge-index-h ()
-  "Append results from `imenu-generic-expression' to the current imenu (add to major-mode hook).
-This is useful when the index function does not utilise the generic expression such as in python-mode."
-  (setq-local dtm-imenu-orginal-index-function imenu-create-index-function
-              imenu-create-index-function 'dtm--imenu-merge-index))
-
-(defun dtm--imenu-merge-index ()
-  "See `dtm-imenu-merge-index-h'."
-  (let ((original-index (funcall dtm-imenu-orginal-index-function))
-        (generic-index (imenu--generic-function imenu-generic-expression)))
-    (append generic-index original-index)))
-
-;;* With lagging point functions
+;;** dtm-with-lagging-point
 (defvar dtm-lagging-point-actual nil
   "Position of cursor when `dtm-with-lagging-point-a' would not have been active.")
 
@@ -1034,15 +1006,7 @@ Indented to advise functions that move the point."
   "Reset `dtm-lagging-point-actual'."
   (setq-local dtm-lagging-point-actual nil))
 
-;;* Flycheck
-(defun dtm-flycheck-disable-proselint-rmd-h ()
-  "Disable the 'proselint' flycheck checker when in R markdown.
-Intended for `markdown-mode-hook'."
-  (when-let ((fname (buffer-file-name)))
-    (when (string-match-p "\\.Rmd$" fname)
-      (flycheck-disable-checker 'proselint))))
-
-;;* Python
+;;* Python/Elpy-shell
 (defun dtm-elpy-shell-get-doom-process-a (&optional sit)
   "Obtain a Python process using `+python/open-repl'.
 Intended as override advice for `elpy-shell-get-or-create-process'.
@@ -1052,7 +1016,7 @@ Also prompts to activate a Conda env if executable is found."
       proc
     (when (and (fboundp #'conda--get-executable-path)
                (ignore-errors (conda--get-executable-path)))
-      (dtm-conda-path-promt-activate))
+      (dtm-conda-env-infer-prompt))
     (let ((buf (save-selected-window (+python/open-repl))))
       (when sit (sit-for sit))
       (get-buffer-process buf))))
@@ -1103,75 +1067,55 @@ STR is first stripped and indented according to mode."
   (when (use-region-p)
     (dtm-deactivate-mark)))
 
-;;* Doom popup module
-(defun dtm/popup-raise ()
-  "Wrapper for `+popup/raise' that will ensure a popup is selected."
+;;* Conda
+(defun dtm-conda-infer-env-path ()
+  "Returns the path found by `conda-env-activate-for-buffer' without activating."
+  (let ((conda-message-on-environment-switch nil)
+        (dtm-env-path nil))
+    (cl-letf (((symbol-function 'conda-env-activate)
+               (lambda (name) (setq dtm-env-path name))))
+      (conda-env-activate-for-buffer))
+    dtm-env-path))
+
+(defun dtm-conda-path-promt-activate (&optional env-path)
+  "Prompt to activate ENV-PATH if not already active."
+  (when-let ((env-path (or env-path (dtm-conda-infer-env-path))))
+    (and (not (string= env-path conda-env-current-path))
+         (y-or-n-p (format "Activate Conda env: %s?"
+                           (conda-env-dir-to-name env-path)))
+         (conda-env-activate env-path))))
+
+(defun dtm-conda-env-infer-prompt ()
+  "Prompt the user to activate the inferred conda env.
+Respects the value of `conda-activate-base-by-default'"
+  (unless (or non-essential (dtm-buffer-remote-p))
+    (dtm-conda-path-promt-activate)))
+
+(defun dtm/conda-env-guess-prompt ()
+  "Guess the currently relevant conda env and prompt user to activate it"
   (interactive)
-  (unless (+popup-window-p) (+popup/other))
-  (call-interactively #'+popup/raise))
+  (require 'conda)
+  (if-let* ((conda-activate-base-by-default t)
+            (path (dtm-conda-infer-env-path)))
+      (dtm-conda-path-promt-activate path)
+    (message "No Conda environment found for <%s>" (buffer-file-name))))
 
-(defun dtm/popup-kill ()
-  "Kill the currently open popup."
-  (interactive)
-  (unless (+popup-window-p) (+popup/other))
-  (+popup--remember (list (selected-window)))
-  (kill-buffer-and-window))
+(defun dtm-conda-call-json-a (orig-fn &rest args)
+  "Advice that forces `json-parse-string' to use nil to represent false.
+Intended as around advice for `conda--call-json'"
+  (require 'json)
+  (letf! ((defun json-parse-string (&rest json-args)
+            (apply json-parse-string
+                   (dtm-cl-replace-key :false-object nil json-args))))
+    (apply orig-fn args)))
 
-(defun dtm-popup-get-rule (buf)
-  "Returns (predicate . action) for BUF in `display-buffer-alist'.
-Based on `+popup/diagnose'."
-  (let ((bname (dtm-get-buffer-name buf)))
-    (cl-loop for (pred . action) in display-buffer-alist
-             if (and (functionp pred) (funcall pred bname action))
-             return (cons pred action)
-             else if (and (stringp pred) (string-match-p pred bname))
-             return (cons pred action))))
-
-(defun dtm-popup-buffer-p (&optional buf)
-  "Returns t if BUF has a non-nil `set-popup-rule!' in `display-buffer-alist'."
-  (when-let* ((buf (or buf (current-buffer)))
-              (rule (dtm-popup-get-rule buf)))
-    (eq '+popup-buffer (caadr rule))))
-
-(defun dtm/switch-popup-buffer ()
-  "Prompt user to select buffer matching `dtm-popup-buffer-p'."
-  (interactive)
-  (dtm-read-display-buffer "Select popup" #'dtm-popup-buffer-p))
-
-;;* Dirvish
-(defun dtm/dirvish-side ()
-  "Wrapper for `dirvish-side' that always closes the window if visible."
-  (interactive)
-  (if-let (window (and (fboundp 'dirvish-side--session-visible-p)
-                       (dirvish-side--session-visible-p)))
-      (progn (select-window window) (dirvish-quit))
-    (call-interactively #'dirvish-side)))
-
-(defun dtm/dirvish-copy-file-name ()
-  "Copy file name, or path with C-u. Also works for multiple marked files."
-  (interactive)
-  (call-interactively
-   (if current-prefix-arg
-       #'dirvish-copy-file-path
-     #'dirvish-copy-file-name)))
-
-(defun dtm/dirvish-find-entry ()
-  "Like `find-file' but for use in `dirvish' buffers."
-  (interactive)
-  (dirvish-find-entry-a
-   (read-file-name "Open: " nil default-directory
-                   (confirm-nonexistent-file-or-buffer))))
-
-(defun dtm/dirvish-search-cwd ()
-  "Text search files from current working directory, kill dirvish on confirm."
-  (interactive)
-  (require 'consult)
-  (let ((consult--buffer-display #'identity)
-        (dv (dirvish-curr)))
-    (+default/search-cwd)
-    (let ((buf (current-buffer)))
-      (dirvish-kill dv)
-      (switch-to-buffer buf))))
+;;* CTRLF
+(defun dtm-translate-fuzzy-multi-literal (input)
+  "Build a fuzzy-matching regexp from literal INPUT.
+See `ctrlf-split-fuzzy' for how INPUT is split into subinputs.
+Each subinput is quoted and the results are joined with \".*\n*.*\".
+This enables the each word of the query to be on a consecutive non-blank line."
+  (string-join (mapcar #'regexp-quote (ctrlf-split-fuzzy input)) ".*\n*.*"))
 
 ;;* Tempel
 (defun dtm/tempel-complete-always ()
@@ -1184,13 +1128,6 @@ Auto-expand on exact match."
     (when (and (not tempel--active)
                (tempel-expand))
       (call-interactively #'tempel-expand))))
-
-(defun dtm-tempel-setup-capf-h ()
-  "Add the Tempel Capf to `completion-at-point-functions'.
-Caution: make sure `tempel-trigger-prefix' is not nil.
-Meant for hooking onto `prog-mode-hook' and `text-mode-hook'."
-  (setq-local completion-at-point-functions
-              (cons #'tempel-complete completion-at-point-functions)))
 
 (defun dtm/tempel-open-template-file ()
   "Open the last file in `tempel-path' in the other window."
@@ -1259,43 +1196,33 @@ Ref: https://github.com/minad/tempel"
       (message "Template %s not found" (cadr elt))
       nil)))
 
-;;* CTRLF
-(defun dtm-translate-fuzzy-multi-literal (input)
-  "Build a fuzzy-matching regexp from literal INPUT.
-See `ctrlf-split-fuzzy' for how INPUT is split into subinputs.
-Each subinput is quoted and the results are joined with \".*\n*.*\".
-This enables the each word of the query to be on a consecutive non-blank line."
-  (string-join (mapcar #'regexp-quote (ctrlf-split-fuzzy input)) ".*\n*.*"))
+;; Unused
+(defun dtm-tempel-setup-capf-h ()
+  "Add the Tempel Capf to `completion-at-point-functions'.
+Caution: make sure `tempel-trigger-prefix' is not nil.
+Meant for hooking onto `prog-mode-hook' and `text-mode-hook'."
+  (setq-local completion-at-point-functions
+              (cons #'tempel-complete completion-at-point-functions)))
 
-;;* Elisp-refs
-(defun dtm-elisp-refs--find-file-a (button)
-  "Open the file referenced by BUTTON in the other window.
-Intended as :around advice for `elisp-refs--find-file'."
-  (find-file-other-window (button-get button 'path))
-  (goto-char (point-min)))
+;;* Good-scroll
+(defun dtm/good-scroll-down-half ()
+  (interactive)
+  (good-scroll-move (/ (good-scroll--window-usable-height) 2)))
 
-;;* Advice management
-(defun dtm-advice-list (symbol)
-  "Return the list of functions advising SYMBOL."
-  (let (result)
-    (advice-mapc (lambda (ad props) (push ad result))
-     symbol)
-    (nreverse result)))
+(defun dtm/good-scroll-up-half ()
+  (interactive)
+  (good-scroll-move (/ (good-scroll--window-usable-height) -2)))
 
-(defun dtm/advice-remove (symbol advice)
-  "Remove ADVICE from SYMBOL, with interactive support.
-Ref: https://emacs.stackexchange.com/a/33344"
-  (interactive
-   (let* ((sym (intern (completing-read "Function: " obarray #'dtm-advice-list t)))
-          (advice (let ((advice-names
-                         (mapcar (lambda (ad) (cons (prin1-to-string ad) ad))
-                                 (dtm-advice-list sym))))
-                    (cdr (assoc (completing-read "Remove advice: " advice-names nil t)
-                                advice-names)))))
-     (list sym advice)))
-  (advice-remove symbol advice))
+(defun dtm-good-scroll-evil-override-h ()
+  (if good-scroll-mode
+      (progn
+        (advice-add 'evil-scroll-down :override #'dtm/good-scroll-down-half)
+        (advice-add 'evil-scroll-up :override #'dtm/good-scroll-up-half))
+    (progn
+      (advice-remove 'evil-scroll-down #'dtm/good-scroll-down-half)
+      (advice-remove 'evil-scroll-up #'dtm/good-scroll-up-half))))
 
-;;* ChatGPT
+;;* GPTEL
 (defvar dtm-gptel-dir nil
   "Directory for storing chats.")
 
@@ -1332,99 +1259,99 @@ Ref: https://emacs.stackexchange.com/a/33344"
       (visual-fill-column-mode +1)
       (push '(continuation nil nil) fringe-indicator-alist))))
 
-;;* Image-mode
-(defun dtm-image-overlay ()
-  "Return current image overlay, create if not exists."
-  (or (image-mode-window-get 'overlay)
-      (alist-get 'overlay (image-mode-window-put
-                           'overlay (make-overlay (point-min) (point-max))))))
+;;* Commands
+(defun dtm/load-session (file)
+  "Stripped down `doom/load-session' with proper default value.
+Also checks if FILE exists."
+  (interactive
+   (let ((session-file (doom-session-file)))
+     (list (read-file-name "Session to restore: "
+                           (file-name-directory session-file)
+                           session-file
+                           t))))
+  (doom-load-session file)
+  (message "Session restored. Welcome back."))
 
-(defun dtm/image-center (&optional window)
-  "Centre the current image in the window.
-Can also be used as :after advice for `image-fit-to-window'.
-Ref: `pdf-view-display-image'"
+(defun dtm/toggle-trash-delete ()
+  "Toggle between trashing and deleting files"
   (interactive)
-  (with-selected-window (or window (selected-window))
-    (unless (derived-mode-p 'image-mode)
-      (error "Not in 'image-mode'!"))
-    (let ((img-width (floor (car (image-size (image-get-display-property))))))
-      (overlay-put (dtm-image-overlay) 'before-string
-                   (when (> (window-width) img-width)
-                     (propertize " " 'display
-                                 `(space :align-to ,(/ (- (window-width)
-                                                          img-width)
-                                                       2))))))))
+  (if delete-by-moving-to-trash
+      (progn
+        (setq delete-by-moving-to-trash nil)
+        (message "Now deleting files PERMANTLY"))
+    (progn
+      (setq delete-by-moving-to-trash t)
+      (message "Now moving deleted files to trash"))))
 
-;;* Markdown-mode
-(defun dtm/markdown-backward-same-level ()
-  "Move to previous list item or first heading above current line."
+(defvar dtm-left-margin 30
+  "Size of left margin that can be added to selected-window on demand")
+
+(defun dtm/window-toggle-left-margin ()
+  "Toggle left margin on selected window."
   (interactive)
-  (if (or (markdown-on-heading-p) (markdown-cur-list-item-bounds))
-      (markdown-outline-previous-same-level)
-    (markdown-back-to-heading-over-code-block)))
+  (let ((window (selected-window)))
+    (set-window-margins window (unless (car (window-margins window)) dtm-left-margin))))
 
-(defun dtm/markdown-up ()
-  "Move up in list or heading hierarchy. Ref: `markdown-outline-up'."
+(defun dtm-advice-list (symbol)
+  "Return the list of functions advising SYMBOL."
+  (let (result)
+    (advice-mapc (lambda (ad props) (push ad result))
+     symbol)
+    (nreverse result)))
+
+(defun dtm/advice-remove (symbol advice)
+  "Remove ADVICE from SYMBOL, with interactive support.
+Ref: https://emacs.stackexchange.com/a/33344"
+  (interactive
+   (let* ((sym (intern (completing-read "Function: " obarray #'dtm-advice-list t)))
+          (advice (let ((advice-names
+                         (mapcar (lambda (ad) (cons (prin1-to-string ad) ad))
+                                 (dtm-advice-list sym))))
+                    (cdr (assoc (completing-read "Remove advice: " advice-names nil t)
+                                advice-names)))))
+     (list sym advice)))
+  (advice-remove symbol advice))
+
+(defun dtm/ediff-this-file ()
+  "Ediff file associated with current buffer to file selected in prompt."
   (interactive)
-  (unless (markdown-up-list)
-    (if (markdown-on-heading-p)
-        (markdown-up-heading 1)
-      (markdown-back-to-heading-over-code-block))))
+  (when (and (buffer-modified-p)
+             (y-or-n-p "Save current buffer?"))
+    (save-buffer))
+  (let ((current (buffer-file-name (current-buffer))))
+    (unless current
+      (user-error "No file associated with current buffer!"))
+    (ediff current (read-file-name "Diff current file with:" nil nil t))))
 
-;;* Visual-line-mode
-(defun dtm-visual-line-sync-fringe (symbol newval operation where)
-  "Show a left fringe continuation indicator if line numbers are hidden.
-Use with `add-variable-watcher' on `display-line-numbers'"
-  (when (and (eq symbol 'display-line-numbers)
-             (eq operation 'set)
-             (buffer-local-value 'visual-line-mode where))
-    (setcar (cdr (cl-find 'continuation
-                          (buffer-local-value 'fringe-indicator-alist where)
-                          :key #'car))
-            (when (memq newval '(nil visual)) 'left-curly-arrow))))
+;;** Move-splitter
+(defun dtm/move-splitter-left (arg)
+  "Move window splitter left. Ref: hydra-examples"
+  (interactive "p")
+  (if (let ((windmove-wrap-around))
+        (windmove-find-other-window 'right))
+      (shrink-window-horizontally arg)
+    (enlarge-window-horizontally arg)))
 
-(defun dtm-visual-line-fix-linum-h ()
-  "Ensure appropriate `display-line-numbers' and `display-line-numbers-type'.
-Use for `visual-line-mode-hook'. Also fixes `doom/toggle-line-numbers'."
-  (let ((wrong-type (if visual-line-mode 'relative 'visual))
-        (correct-type (if visual-line-mode 'visual 'relative)))
-    (when (eq display-line-numbers wrong-type)
-      (setq-local display-line-numbers correct-type))
-    (when (eq display-line-numbers-type wrong-type)
-      (setq-local display-line-numbers-type correct-type))))
+(defun dtm/move-splitter-right (arg)
+  "Move window splitter right. Ref: hydra-examples"
+  (interactive "p")
+  (if (let ((windmove-wrap-around))
+        (windmove-find-other-window 'right))
+      (enlarge-window-horizontally arg)
+    (shrink-window-horizontally arg)))
 
-;;* Ispell/Spell-fu
-(defun dtm/ispell-fu-change-dictionary ()
-  "Interactively set `ispell-local-dictionary' & `ispell-local-pdict'.
-These values are used to override `spell-fu-dictionaries'. Sets
-`ispell-local-pdict' to \"default\" if language of selected dictionary does
-not match with `ispell-dictionary', preventing \"expected language x\" errors
-caused by a language mismatch with `ispell-personal-dictionary'.
-Ref: `ispell-change-dictionary', `spell-fu-dictionary-add'"
-  (interactive)
-  (require 'consult)
-  (setq ispell-local-dictionary
-        (consult--read (mapcar #'list (ispell-valid-dictionary-list))
-                       :prompt "Change buffer-local dictionary: "
-                       :default (or ispell-local-dictionary ispell-dictionary)
-                       :require-match t)
-        ispell-local-dictionary-overridden t
-        ispell-buffer-session-localwords nil)
-  (if (string= (spell-fu--aspell-lang-from-dict ispell-local-dictionary)
-               (spell-fu--aspell-lang-from-dict ispell-dictionary))
-      (kill-local-variable 'ispell-local-pdict)
-    (setq ispell-local-pdict "default"))
-  (ispell-internal-change-dictionary)
-  (run-hooks 'ispell-change-dictionary-hook)
-  (setq spell-fu-dictionaries (spell-fu--default-dictionaries))
-  (when spell-fu-mode
-    (mapc #'spell-fu--dictionary-ensure-update spell-fu-dictionaries)
-    (spell-fu--refresh-cache-table-list)
-    (spell-fu--refresh)))
+(defun dtm/move-splitter-up (arg)
+  "Move window splitter up. Ref: hydra-examples"
+  (interactive "p")
+  (if (let ((windmove-wrap-around))
+        (windmove-find-other-window 'up))
+      (enlarge-window arg)
+    (shrink-window arg)))
 
-(defun dtm/spell-correct-previous ()
-  "Correct the previous spelling error."
-  (interactive)
-  (save-excursion
-    (+spell/previous-error)
-    (+spell/correct)))
+(defun dtm/move-splitter-down (arg)
+  "Move window splitter down. Ref: hydra-examples"
+  (interactive "p")
+  (if (let ((windmove-wrap-around))
+        (windmove-find-other-window 'up))
+      (shrink-window arg)
+    (enlarge-window arg)))

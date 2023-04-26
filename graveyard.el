@@ -46,3 +46,57 @@ Use as `ess-switch-to-inferior-or-script-buffer' :around advice"
     (apply orig-fn args)
     (evil-normal-state)
     (unless ibuf-visible (select-window win-start))))
+
+;;* Perspectives/workspaces
+(defun dtm-display-buffer-in-workspace (buffer alist)
+  "Display BUFFER in (workspace . name) defined in ALIST.
+Intended for use in `display-buffer-alist'."
+  (let ((name (cdr (assq 'workspace alist))))
+    (let ((alist (remove (assq 'workspace alist) alist)))
+      (dtm/buffer-move-to-workspace name alist))))
+
+(defun dtm-set-workspace-rule (predicate name)
+  "Move buffers matching PREDICATE to workspace NAME.
+This is achieved by adding a rule to `display-buffer-alist'."
+  (let ((rule `(,predicate (dtm-display-buffer-in-workspace)
+                           (workspace . ,name))))
+    (push rule display-buffer-alist)
+    ;; HACK prevent rule from being overridden by `set-popup-rule!'
+    (when (boundp '+popup--display-buffer-alist)
+      (push rule +popup--display-buffer-alist)))
+  t)
+
+;;* Org-roam
+(defvar dtm-org-roam-old-slug nil)
+
+(defun dtm-org-roam-update-slug-h ()
+  "Rename the current file if #+title has changed.
+Will ask for confirmation if the new filename already exists.
+Ref: https://github.com/hlissner/.doom.d"
+  (when (org-roam-buffer-p)
+    (when-let* ((node (org-roam-node-at-point))
+                (new-slug (org-roam-node-slug node))
+                (old-slug dtm-org-roam-old-slug)
+                (old-slug-re (concat "/[^/]*\\(" (regexp-quote old-slug) "\\)[^/]*\\.org$"))
+                (file-name (org-roam-node-file node))
+                ((not (equal old-slug new-slug)))
+                ((string-match-p old-slug-re file-name)))
+      (setq dtm-org-roam-old-slug new-slug)
+      (condition-case _
+          (let ((new-file-name
+                 (replace-regexp-in-string
+                  old-slug-re (regexp-quote new-slug)
+                  file-name nil nil 1)))
+            (message "Updating slug in filename (%S -> %S)" old-slug new-slug)
+            (rename-file file-name new-file-name 1)
+            (set-visited-file-name new-file-name t t)
+            (org-roam-db-autosync--setup-file-h))
+        (error
+         (setq dtm-org-roam-old-slug old-slug))))))
+
+(defun dtm-org-roam-update-slug-on-save-h ()
+  "Set up auto-updating for the current node's filename.
+Calls `dtm-org-roam-update-slug-h' on `after-save-hook'.
+Ref: https://github.com/hlissner/.doom.d"
+  (setq-local dtm-org-roam-old-slug (ignore-errors (org-roam-node-slug (org-roam-node-at-point))))
+  (add-hook 'after-save-hook #'dtm-org-roam-update-slug-h 'append 'local))

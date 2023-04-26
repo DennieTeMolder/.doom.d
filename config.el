@@ -1,6 +1,6 @@
 ;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
 ;; NOTE custom functions/variables/macros are prefixed with 'dtm'
-(load! "autoload.el")
+(load! "dtm-lib")
 
 ;; Place your private configuration here! Remember, you do not need to run 'doom
 ;; sync' after modifying this file!
@@ -11,7 +11,7 @@
 (defvar dtm-maximize-performance nil)
 
 ;; Allow above settings to be overridden
-(load! "local_vars.el" nil t)
+(load! "local_vars" nil t)
 
 ;;* Doom preamble
 ;; Some functionality uses this to identify you, e.g. GPG configuration, email
@@ -546,7 +546,7 @@ Also used by `org-modern-mode' to calculate heights.")
   (add-hook 'org-mode-hook #'dtm-org-modern-mode-maybe-h)
 
   ;; Correct indentation of headings
-  (advice-add 'org-indent--compute-prefixes :after #'dtm-org--modern-indent-heading)
+  (advice-add 'org-indent--compute-prefixes :after #'dtm-org-modern-indent-heading)
   :config
   (setq org-modern-label-border dtm-org-line-spacing
         org-modern-statistics nil
@@ -561,7 +561,7 @@ Also used by `org-modern-mode' to calculate heights.")
   (add-hook! 'org-tree-slide-mode-hook :append #'dtm-org-tree-slide-setup-h)
 
   ;; Disable `flycheck-mode' and `spell-fu-mode' when presenting
-  (advice-add 'org-tree-slide-mode :around #'dtm-org-tree-slide-no-squiggles-a)
+  (advice-add 'org-tree-slide--setup :before #'dtm-org-tree-slide-no-squiggles-a)
 
   (map! :map org-tree-slide-mode-map
         :n "q"     #'org-tree-slide-mode
@@ -594,9 +594,6 @@ Also used by `org-modern-mode' to calculate heights.")
 
   ;; Custom org-roam buffer preview function
   (setq org-roam-preview-function #'dtm-org-element-at-point-get-content)
-
-  ;; Automatically update the slug in the filename when #+title: has changed.
-  (add-hook 'org-roam-find-file-hook #'dtm-org-roam-update-slug-on-save-h)
 
   ;; Make the backlinks buffer easier to peruse by folding leaves by default.
   (add-hook 'org-roam-buffer-postrender-functions #'magit-section-show-level-2)
@@ -738,7 +735,9 @@ Also used by `org-modern-mode' to calculate heights.")
 
 (when (modulep! :lang emacs-lisp)
   ;; REVIEW fix the doom custom "Section" imenu entry
-  (advice-add '+emacs-lisp-extend-imenu-h :after #'dtm-fix-elisp-extend-imenu-a)
+  (advice-add '+emacs-lisp-extend-imenu-h :after
+              (cmd! (cl-replace imenu-generic-expression
+                                '(("Section" "^[ \t]*;;[;*]+[ \t]+\\(.+\\)" 1)))))
 
   (add-hook! 'emacs-lisp-mode-hook :append #'dtm-elisp-extend-imenu-h))
 
@@ -975,16 +974,6 @@ Also used by `org-modern-mode' to calculate heights.")
         good-scroll-step (round (/ (display-pixel-height) 5)))
 
   (add-hook 'good-scroll-mode-hook #'dtm-good-scroll-evil-override-h))
-
-;; Package for interacting with text fields, requires GhostText browser extension
-(use-package! atomic-chrome
-  :commands atomic-chrome-start-server
-  :config
-  (setq atomic-chrome-buffer-open-style 'full
-        atomic-chrome-url-major-mode-alist
-        '(("github\\.com" . gfm-mode)
-          ("overleaf\\.com" . latex-mode)
-          ("azuredatabricks\\.net" . python-mode))))
 
 ;; Improved isearch
 (use-package! ctrlf

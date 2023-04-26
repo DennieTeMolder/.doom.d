@@ -91,7 +91,6 @@
 
 ;;* Custom packages
 (package! good-scroll)
-(package! atomic-chrome)
 (package! trashed)
 (package! xr)
 (package! info-colors)
