@@ -79,9 +79,8 @@ If NAME is not provided `buffer-file-name' is used."
 ;;* Buffer functions
 (defun dtm-buffer-remote-p (&optional buf)
   "Returns t if BUF belongs to a remote directory."
-  (let* ((buf (or buf (current-buffer)))
-         (dir (buffer-local-value 'default-directory buf)))
-    (ignore-errors (file-remote-p dir))))
+  (or buf (setq buf (current-buffer)))
+  (ignore-errors (file-remote-p (buffer-local-value 'default-directory buf))))
 
 (defun dtm-read-display-buffer (prompt &optional predicate)
   "Display buffer by providing user with PROMPT on buffers matching PREDICATE."
@@ -1008,7 +1007,7 @@ Also prompts to activate a Conda env if executable is found."
       proc
     (when (and (fboundp #'conda--get-executable-path)
                (ignore-errors (conda--get-executable-path)))
-      (dtm-conda-env-infer-prompt))
+      (dtm/conda-env-guess))
     (let ((buf (save-selected-window (+python/open-repl))))
       (when sit (sit-for sit))
       (get-buffer-process buf))))
@@ -1060,46 +1059,31 @@ STR is first stripped and indented according to mode."
     (dtm-deactivate-mark)))
 
 ;;* Conda
-(defun dtm-conda-infer-env-path ()
-  "Returns the path found by `conda-env-activate-for-buffer' without activating."
-  (let ((conda-message-on-environment-switch nil)
-        (dtm-env-path nil))
-    (cl-letf (((symbol-function 'conda-env-activate)
-               (lambda (name) (setq dtm-env-path name))))
-      (conda-env-activate-for-buffer))
-    dtm-env-path))
+(defun dtm-conda-env-infer-name ()
+  "Alternative `conda--infer-env-from-buffer' that ignores auto_activate_base
+from `conda--get-config'. Still respects `conda-activate-base-by-default'."
+  (or (and (bound-and-true-p conda-project-env-path)
+           (conda-env-dir-to-name conda-project-env-path))
+      (when-let* ((filename (buffer-file-name))
+                  (dir (if filename (f-dirname filename) default-directory)))
+        (conda--get-name-from-env-yml (conda--find-env-yml dir)))
+      (and conda-activate-base-by-default "base")))
 
-(defun dtm-conda-path-promt-activate (&optional env-path)
-  "Prompt to activate ENV-PATH if not already active."
-  (when-let ((env-path (or env-path (dtm-conda-infer-env-path))))
-    (and (not (string= env-path conda-env-current-path))
-         (y-or-n-p (format "Activate Conda env: %s?"
-                           (conda-env-dir-to-name env-path)))
-         (conda-env-activate env-path))))
-
-(defun dtm-conda-env-infer-prompt ()
-  "Prompt the user to activate the inferred conda env.
-Respects the value of `conda-activate-base-by-default'"
-  (unless (or non-essential (dtm-buffer-remote-p))
-    (dtm-conda-path-promt-activate)))
-
-(defun dtm/conda-env-guess-prompt ()
-  "Guess the currently relevant conda env and prompt user to activate it"
+(defun dtm/conda-env-guess ()
+  "Prompt the user to activate env from `dtm-conda-env-infer-name'.
+Alternative `conda-env-activate-for-buffer' that prompts before activation"
   (interactive)
   (require 'conda)
-  (if-let* ((conda-activate-base-by-default t)
-            (path (dtm-conda-infer-env-path)))
-      (dtm-conda-path-promt-activate path)
-    (message "No Conda environment found for <%s>" (buffer-file-name))))
+  (let ((conda-activate-base-by-default (called-interactively-p 'interactive)))
+    (when-let ((name (dtm-conda-env-infer-name)))
+      (and (not (string= name conda-env-current-name))
+           (y-or-n-p (format "Activate Conda env: %s?" name))
+           (conda-env-activate name)))))
 
-(defun dtm-conda-call-json-a (orig-fn &rest args)
-  "Advice that forces `json-parse-string' to use nil to represent false.
-Intended as around advice for `conda--call-json'"
-  (require 'json)
-  (letf! ((defun json-parse-string (&rest json-args)
-            (apply json-parse-string
-                   (dtm-cl-replace-key :false-object nil json-args))))
-    (apply orig-fn args)))
+(defun dtm-conda-env-guess-maybe ()
+  "Run `dtm/conda-env-guess' unless `non-essential' or `dtm-buffer-remote-p'."
+  (unless (or non-essential (dtm-buffer-remote-p))
+    (dtm/conda-env-guess)))
 
 ;;* CTRLF
 (defun dtm-translate-fuzzy-multi-literal (input)

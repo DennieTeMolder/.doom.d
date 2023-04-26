@@ -936,17 +936,13 @@ Also used by `org-modern-mode' to calculate heights.")
          :desc "Switch to script" "TAB" #'elpy-shell-switch-to-buffer)))
 
 (after! conda
-  ;; BUG this fixes `conda--infer-env-from-buffer' returning 'base' instead of
-  ;; nil if `conda-activate-base-by-default' is nil
-  (advice-add 'conda--call-json :around #'dtm-conda-call-json-a)
-
-  (add-hook 'compilation-mode-hook #'dtm-conda-env-infer-prompt)
+  (add-hook 'compilation-mode-hook #'dtm-conda-env-guess-maybe)
 
   (map! :map (python-mode-map inferior-python-mode-map)
         :localleader :prefix ("c" . "Conda")
-        :desc "Guess conda env" "g" #'dtm/conda-env-guess-prompt
-                                "a" #'conda-env-activate
-                                "d" #'conda-env-deactivate))
+        "g" #'dtm/conda-env-guess
+        "a" #'conda-env-activate
+        "d" #'conda-env-deactivate))
 
 (after! csv-mode
   ;; Assume the first line of a csv is a header

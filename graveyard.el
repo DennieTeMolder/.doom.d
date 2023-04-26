@@ -31,6 +31,16 @@ block, send the entire code block."
         (t
          (call-interactively #'dtm/python-shell-send-statment-and-step))))
 
+;;* Conda
+(defun dtm-conda-call-json-a (orig-fn &rest args)
+  "Advice that forces `json-parse-string' to use nil to represent false.
+Intended as around advice for `conda--call-json'"
+  (require 'json)
+  (letf! ((defun json-parse-string (str &rest options)
+            (apply json-parse-string str
+                   (plist-put options :false-object nil))))
+    (apply orig-fn args)))
+
 ;;* Window management
 (defun dtm/window-half-height ()
   "Halves height of active window"
