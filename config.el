@@ -339,8 +339,8 @@
           ("dc" ,doom-core-dir "Doom Core")
           ("dl" ,doom-local-dir "Doom Local")
           ("dm" ,doom-modules-dir "Doom Modules")
-          ("dr" ,(concat straight-base-dir "straight/repos/") "Doom Repos")
-          ("du" ,doom-user-dir "Doom User")
+          ("dp" ,doom-user-dir "Doom Private")
+          ("dr" ,(concat doom-local-dir "straight/repos/") "Doom Repos")
           ("h" "~/" "Home")
           ("m" "/mnt/" "Mount")
           ("n" "~/Nextcloud/" "Nextcloud")
@@ -353,11 +353,6 @@
 
   ;; Make dirvish recognise custom project types
   (advice-add 'dirvish--get-project-root :override #'projectile-project-root)
-
-  ;; Tooltip
-  (advice-add 'dirvish-narrow :after
-              (cmd! (message "Run `revert-buffer' (%s) to un-narrow"
-                             (substitute-command-keys "\\[revert-buffer]"))))
 
   ;; Bind `revert-buffer' for reloading directory contents
   (map! :map dirvish-mode-map
@@ -373,7 +368,7 @@
         :n "M"   #'dirvish-chxxx-menu
         :n "o"   #'dirvish-quick-access
         :n "Y"   #'dtm/dirvish-copy-file-name
-        :n "/"   #'dirvish-narrow
+        :n "/"   #'dtm/dirvish-narrow
         :n "."   #'dtm/dirvish-find-entry)
   ;; Descriptions only work when bound to `major-mode' map
   (map! :map dired-mode-map
