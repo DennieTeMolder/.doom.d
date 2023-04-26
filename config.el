@@ -900,9 +900,7 @@ Also used by `org-modern-mode' to calculate heights.")
                          '(("Rule" "^rule \\(\\_<[^ \t():\n]+\\_>\\):" 1)))))
 
 ;; Snakefiles in python mode
-(push auto-mode-alist
-      '("Snakefile\\'" . python-mode)
-      '("\\.smk\\'" . python-mode))
+(push '("\\(Snakefile\\|\\.smk\\)\\'" . python-mode) auto-mode-alist)
 
 (use-package! elpy-shell
   :after python
@@ -948,7 +946,7 @@ Also used by `org-modern-mode' to calculate heights.")
     (setq-local buffer-invisibility-spec nil)))
 
 ;; Start csv/tsv files in so-long-mode to prevent freezing
-(push auto-mode-alist '("\\.\\(c\\|t\\)sv\\'" . so-long-mode))
+(push '("\\.\\(c\\|t\\)sv\\'" . so-long-mode) auto-mode-alist)
 
 ;; Enable csv/tsv mode on files with short lines
 (add-hook 'so-long-mode-hook #'dtm-csv-mode-maybe-h)
