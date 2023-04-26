@@ -182,6 +182,7 @@
          :action doom/help)))
 
 ;;* General Doom Settings
+(setq doom-scratch-initial-major-mode t)
 (add-hook! 'doom-scratch-buffer-created-hook (flycheck-mode -1))
 
 ;; Disable global hl-line-mode
@@ -899,9 +900,9 @@ Also used by `org-modern-mode' to calculate heights.")
                          '(("Rule" "^rule \\(\\_<[^ \t():\n]+\\_>\\):" 1)))))
 
 ;; Snakefiles in python mode
-(pushnew! auto-mode-alist
-          '("Snakefile" . python-mode)
-          '("\\.smk\\'" . python-mode))
+(push auto-mode-alist
+      '("Snakefile\\'" . python-mode)
+      '("\\.smk\\'" . python-mode))
 
 (use-package! elpy-shell
   :after python
@@ -947,9 +948,7 @@ Also used by `org-modern-mode' to calculate heights.")
     (setq-local buffer-invisibility-spec nil)))
 
 ;; Start csv/tsv files in so-long-mode to prevent freezing
-(pushnew! auto-mode-alist
-          '(".csv" . so-long-mode)
-          '(".tsv" . so-long-mode))
+(push auto-mode-alist '("\\.\\(c\\|t\\)sv\\'" . so-long-mode))
 
 ;; Enable csv/tsv mode on files with short lines
 (add-hook 'so-long-mode-hook #'dtm-csv-mode-maybe-h)
