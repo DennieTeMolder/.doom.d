@@ -138,7 +138,7 @@
   (setq doom-modeline-buffer-file-name-style 'truncate-except-project)
 
   ;; Only display encoding in modeline when it's not UTF-8
-  (add-hook! 'after-change-major-mode-hook #'dtm-doom-modeline-conditional-encoding-h))
+  (add-hook 'after-change-major-mode-hook #'dtm-doom-modeline-conditional-encoding-h))
 
 (use-package! battery
   :defer 1
@@ -499,8 +499,8 @@ Also used by `org-modern-mode' to calculate heights.")
 
   ;; Enable hard wrapping and automate paragraph filling
   ;; Allow for double quoting using '' and `` (`` -> “)
-  (add-hook! 'org-mode-hook #'dtm-org-mode-setup-h)
-  (add-hook! 'org-src-mode-hook #'dtm-org-src-flycheck-h))
+  (add-hook 'org-mode-hook #'dtm-org-mode-setup-h)
+  (add-hook 'org-src-mode-hook #'dtm-org-src-flycheck-h))
 
 ;; Keys bound in after! org seem to get overwritten, this works
 (after! org-keys
@@ -553,7 +553,7 @@ Also used by `org-modern-mode' to calculate heights.")
 
 (after! org-tree-slide
   ;; Make presentations even prettier
-  (add-hook! 'org-tree-slide-mode-hook :append #'dtm-org-tree-slide-setup-h)
+  (add-hook 'org-tree-slide-mode-hook #'dtm-org-tree-slide-setup-h t)
 
   ;; Disable `flycheck-mode' and `spell-fu-mode' when presenting
   (advice-add 'org-tree-slide--setup :before #'dtm-org-tree-slide-no-squiggles-a)
@@ -695,7 +695,7 @@ Also used by `org-modern-mode' to calculate heights.")
 
 (after! markdown-mode
   ;; Disable proselint in Rmarkdown files
-  (add-hook! 'markdown-mode-hook #'dtm-flycheck-disable-proselint-rmd-h))
+  (add-hook 'markdown-mode-hook #'dtm-flycheck-disable-proselint-rmd-h))
 
 (after! evil-markdown
   (evil-declare-motion 'dtm/markdown-backward-same-level)
@@ -734,7 +734,7 @@ Also used by `org-modern-mode' to calculate heights.")
               (cmd! (cl-replace imenu-generic-expression
                                 '(("Section" "^[ \t]*;;[;*]+[ \t]+\\(.+\\)" 1)))))
 
-  (add-hook! 'emacs-lisp-mode-hook :append #'dtm-elisp-extend-imenu-h))
+  (add-hook 'emacs-lisp-mode-hook #'dtm-elisp-extend-imenu-h t))
 
 (after! edebug
   (map! :map edebug-mode-map :n "R" #'edebug-remove-instrumentation))
@@ -952,7 +952,7 @@ Also used by `org-modern-mode' to calculate heights.")
           '(".tsv" . so-long-mode))
 
 ;; Enable csv/tsv mode on files with short lines
-(add-hook! 'so-long-mode-hook #'dtm-csv-mode-maybe-h)
+(add-hook 'so-long-mode-hook #'dtm-csv-mode-maybe-h)
 
 ;;* Misc Packages
 ;; Smooth scrolling
