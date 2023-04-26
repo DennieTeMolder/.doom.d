@@ -415,6 +415,9 @@
 (after! image-mode
   (advice-add 'image-fit-to-window :after #'dtm/image-center))
 
+;;;###package highlight-indent-guides
+(remove-hook 'text-mode-hook #'highlight-indent-guides-mode)
+
 ;;* Core functionality extensions
 ;; Add colours to info pages to make them more readable
 (use-package! info-colors

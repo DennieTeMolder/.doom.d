@@ -575,9 +575,8 @@ Intended for `markdown-mode-hook'."
 
 (defun dtm-org-mode-setup-h ()
   "Personal org-mode customisation's after mode startup"
-  (setq-local line-spacing dtm-org-line-spacing)
-  (highlight-indent-guides-mode -1)
   (unless (dtm-org-limit-styling-p)
+    (setq-local line-spacing dtm-org-line-spacing)
     (electric-quote-local-mode +1)
     (+org-pretty-mode +1)
     (visual-line-mode -1)
