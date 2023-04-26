@@ -218,7 +218,7 @@
   (general-evil-define-key '(normal insert) 'text-mode-map
     "M-o" #'dtm/spell-correct-previous))
 
-;;* Doom Core Package Settings
+;;* Core functionality modifications
 (after! evil
   ;; Indicate `evil-repeat' to ignore certain commands because they freeze emacs
   (evil-declare-not-repeat #'+workspace/switch-left)
@@ -415,7 +415,7 @@
 (after! image-mode
   (advice-add 'image-fit-to-window :after #'dtm/image-center))
 
-;;* Doom Core Package Extensions
+;;* Core functionality extensions
 ;; Add colours to info pages to make them more readable
 (use-package! info-colors
   :hook (Info-selection . info-colors-fontify-node))
@@ -425,6 +425,7 @@
   :after vertico
   :config (vertico-mouse-mode +1))
 
+;; Template/snippet system
 (use-package! tempel
   :defer t
   :init
@@ -442,6 +443,27 @@
         "<backtab>" #'tempel-previous
         "C-c C-c"   #'tempel-done
         "C-c C-k"   #'tempel-abort))
+
+;; Improved isearch
+(use-package! ctrlf
+  :defer t
+  :config
+  ;; Use 'M-s s' while searching to change styles
+  (setq ctrlf-default-search-style 'fuzzy-multi
+        ctrlf-show-match-count-at-eol t
+        ctrlf-auto-recenter t)
+
+  ;; Fuzzy matching across multiple lines
+  (push '(fuzzy-multi . (:prompt "fuzzy multi-line"
+                         :translator dtm-translate-fuzzy-multi-literal
+                         :case-fold ctrlf-no-uppercase-literal-p))
+        ctrlf-style-alist)
+
+  (map! :map ctrlf-minibuffer-mode-map
+        "C-s" #'ctrlf-next-match
+        "C-r" #'ctrlf-previous-match
+        "C-u" #'ctrlf-previous-page
+        "C-d" #'ctrlf-next-page))
 
 ;;* Writing/Organisation Tools
 ;; Spell checking
@@ -951,27 +973,6 @@ Also used by `org-modern-mode' to calculate heights.")
         good-scroll-step (round (/ (display-pixel-height) 5)))
 
   (add-hook 'good-scroll-mode-hook #'dtm-good-scroll-evil-override-h))
-
-;; Improved isearch
-(use-package! ctrlf
-  :defer t
-  :config
-  ;; Use 'M-s s' while searching to change styles
-  (setq ctrlf-default-search-style 'fuzzy-multi
-        ctrlf-show-match-count-at-eol t
-        ctrlf-auto-recenter t)
-
-  ;; Fuzzy matching across multiple lines
-  (push '(fuzzy-multi . (:prompt "fuzzy multi-line"
-                         :translator dtm-translate-fuzzy-multi-literal
-                         :case-fold ctrlf-no-uppercase-literal-p))
-        ctrlf-style-alist)
-
-  (map! :map ctrlf-minibuffer-mode-map
-        "C-s" #'ctrlf-next-match
-        "C-r" #'ctrlf-previous-match
-        "C-u" #'ctrlf-previous-page
-        "C-d" #'ctrlf-next-page))
 
 ;; NOTE to configure add the line below to ~/.authinfo.gpg
 ;; machine openai.com login apikey password <your-key>
