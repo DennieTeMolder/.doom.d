@@ -11,7 +11,7 @@
 (defvar dtm-maximize-performance nil)
 
 ;; Allow above settings to be overridden
-(load! "local_vars" nil t)
+(load! "local_vars.el" nil t)
 
 ;;* Doom preamble
 ;; Some functionality uses this to identify you, e.g. GPG configuration, email
@@ -183,7 +183,11 @@
 
 ;;* General Doom Settings
 (setq doom-scratch-initial-major-mode t)
-(add-hook! 'doom-scratch-buffer-created-hook (flycheck-mode -1))
+
+;; Don't recognise non file visiting buffers as packages
+(defadvice! dtm-base-buffer-file-name ()
+  :before-while #'+emacs-lisp--in-package-buffer-p
+  (buffer-file-name (buffer-base-buffer)))
 
 ;; Disable global hl-line-mode
 (remove-hook! 'doom-first-buffer-hook #'global-hl-line-mode)
@@ -517,8 +521,7 @@ Also used by `org-modern-mode' to calculate heights.")
 
   ;; Enable hard wrapping and automate paragraph filling
   ;; Allow for double quoting using '' and `` (`` -> “)
-  (add-hook 'org-mode-hook #'dtm-org-mode-setup-h)
-  (add-hook 'org-src-mode-hook #'dtm-org-src-flycheck-h))
+  (add-hook 'org-mode-hook #'dtm-org-mode-setup-h))
 
 ;; Keys bound in after! org seem to get overwritten, this works
 (after! org-keys

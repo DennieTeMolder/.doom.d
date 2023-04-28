@@ -603,11 +603,6 @@ Intended for `markdown-mode-hook'."
   "Returns the value of #+TITLE for the current document"
   (cadar (org-collect-keywords '("TITLE"))))
 
-(defun dtm-org-src-flycheck-h ()
-  "Disable annoying flycheck messages. Use with `org-src-mode-hook'."
-  (when (eq major-mode 'emacs-lisp-mode)
-    (flycheck-mode -1)))
-
 (defun dtm-insert-exit-fill-paragraph ()
   "Perform `org-fill-paragraph' unless el at point is a src block"
   ;; Check if `auto-fill-mode' is active
