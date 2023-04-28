@@ -12,12 +12,27 @@ Required because doctor sets `noninteractive' to nil."
   (eq (alist-get 'mode (cdr (hack-dir-local--get-variables nil)))
       'doom-docs-org))
 
-(defmacro dtm-to-front (x place)
-  "Move/add X to the front of list in PLACE using `equal'.
-Will remove duplicates of X as a side-effect."
-  (let ((tmpvar (make-symbol "x")))
-    `(let ((,tmpvar ,x))
-       (setq ,place (cons ,tmpvar (remove ,tmpvar ,place))))))
+(defun dtm-member-previous (item lst &optional test key)
+  "Return the sublist of LST where the KEY of `cdr' matches ITEM using TEST.
+Defaults to comparing with `car' using `equal'."
+  (or test (setq test #'equal))
+  (or key (setq key #'car))
+  (unless (listp lst)
+    (signal 'wrong-type-argument (list 'listp lst)))
+  (named-let loop-list ((curr lst)
+                        (prev nil))
+    (cond ((not curr) nil)
+          ((funcall test item (funcall key curr)) prev)
+          (t (loop-list (cdr curr) curr)))))
+
+(defmacro dtm-to-front (item lst &optional test key)
+  "Push ITEM to the front of LST, modifying it in place.
+ITEM is matched by comparing to KEY using TEST, see `dtm-member-previous'."
+  `(progn
+     (when-let ((prev (dtm-member-previous ,item ,lst ,test ,key)))
+       (push (cadr prev) ,lst)
+       (setcdr prev (cddr prev)))
+     ,lst))
 
 (defun dtm-file-local-readable-p (file)
   "Return non-nil if FILE is local and readable."
