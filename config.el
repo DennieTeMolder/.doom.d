@@ -70,8 +70,8 @@
 (setq org-directory (dtm-ensure-dir "org" doom-data-dir))
 
 ;; This determines the style of line numbers in effect. If set to `nil', line
-;; numbers are disabled. For relative line numbers, set this to `visual'.
-(setq display-line-numbers-type 'visual)
+;; numbers are disabled. For relative line numbers, set this to `relative'.
+(setq display-line-numbers-type 'relative)
 
 ;; Whenever you reconfigure a package, make sure to wrap your config in an
 ;; `after!' block, otherwise Doom's defaults may override your settings. E.g.
@@ -148,6 +148,7 @@
 
 ;; Show line wrapping indicator if line numbers are hidden
 (add-variable-watcher 'display-line-numbers #'dtm-visual-line-sync-fringe)
+(add-hook 'visual-line-mode-hook #'dtm-visual-line-fix-linum-h)
 
 ;; Replace the default doom splash screen with a more subtle one
 (setq +doom-dashboard-ascii-banner-fn #'dtm-doom-ascii-banner-fn)
