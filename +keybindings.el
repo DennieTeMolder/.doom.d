@@ -67,7 +67,7 @@
       ;; Toggles
       (:prefix "t"
        :desc "Auto linebreaks"     "a" #'auto-fill-mode
-       :desc "GhostText server"    "G" #'dtm/atomic-chrome-toggle-server
+       :desc "Line numbers"        "l" #'dtm/toggle-line-numbers
        :desc "Margin (left)"       "M" #'dtm/window-toggle-left-margin
        :desc "Smooth scrolling"    "S" #'good-scroll-mode
        :desc "Trash deleted files" "T" #'dtm/toggle-trash-delete)

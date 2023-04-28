@@ -246,16 +246,6 @@ Use with `add-variable-watcher' on `display-line-numbers'"
                           :key #'car))
             (when (memq newval '(nil visual)) 'left-curly-arrow))))
 
-(defun dtm-visual-line-fix-linum-h ()
-  "Ensure appropriate `display-line-numbers' and `display-line-numbers-type'.
-Use for `visual-line-mode-hook'. Also fixes `doom/toggle-line-numbers'."
-  (let ((wrong-type (if visual-line-mode 'relative 'visual))
-        (correct-type (if visual-line-mode 'visual 'relative)))
-    (when (eq display-line-numbers wrong-type)
-      (setq-local display-line-numbers correct-type))
-    (when (eq display-line-numbers-type wrong-type)
-      (setq-local display-line-numbers-type correct-type))))
-
 ;;* Doom Popup
 (defun dtm/popup-raise ()
   "Wrapper for `+popup/raise' that will ensure a popup is selected."
@@ -1346,3 +1336,13 @@ Ref: https://emacs.stackexchange.com/a/33344"
         (windmove-find-other-window 'up))
       (shrink-window arg)
     (enlarge-window arg)))
+
+(defun dtm/toggle-line-numbers ()
+  "Like `doom/toggle-line-numbers' but always uses visual instead of relative."
+  (interactive)
+  (let ((visual-line-mode t)
+        (display-line-numbers-type
+         (if (eq display-line-numbers-type 'relative)
+             'visual
+           display-line-numbers-type)))
+    (doom/toggle-line-numbers)))
