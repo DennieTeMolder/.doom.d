@@ -437,7 +437,7 @@ Intended as :around advice for `elisp-refs--find-file'."
   (find-file-other-window (button-get button 'path))
   (goto-char (point-min)))
 
-;;*Lispy
+;;* Lispy
 (defun dtm/lispy-step-into (arg)
   "Step into the list at point, moving the point to after ARG atoms.
 If REGION is active, call `lispy-delete' instead."
@@ -468,9 +468,9 @@ If REGION is active, call `lispy-delete' instead."
   "Call `evil-yank' on the region of `lispy-mark-list'."
   (interactive)
   (save-excursion
-    (lispy-mark-list 1)
     (let ((evil-move-cursor-back nil))
       (evil-with-state normal
+        (lispy-mark-list 1)
         (call-interactively #'evil-yank)))))
 
 ;;* Lispyville
