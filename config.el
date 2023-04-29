@@ -146,6 +146,10 @@
   (unless (string= "N/A" (alist-get ?p (funcall battery-status-function)))
     (display-battery-mode +1)))
 
+;; Improve consistency of line numbering
+(defadvice! dtm-fix-toggle-line-numbers-a ()
+  :before 'doom/toggle-line-numbers
+  (setq doom--line-number-style display-line-numbers))
 (add-hook 'visual-line-mode-hook #'dtm-visual-line-fix-linum-h)
 
 ;; Replace the default doom splash screen with a more subtle one
