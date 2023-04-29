@@ -605,16 +605,6 @@ Intended for `markdown-mode-hook'."
 The additional markup used in doom-style org documents causes rendering issues."
   (unless (dtm-org-limit-styling-p) (org-modern-mode +1)))
 
-(defun dtm-org-modern-indent-heading ()
-  "Correctly indents heading assuming leading stars are fully hidden (not invisible)."
-  (dotimes (n org-indent--deepest-level)
-    (unless (= n 0)
-      (let* ((indentation (* org-indent-indentation-per-level (1- n)))
-             (heading-prefix (make-string indentation ?\s)))
-        (aset org-indent--heading-line-prefixes
-              n
-              (org-add-props heading-prefix nil 'face 'org-indent))))))
-
 ;;* Org-appear
 (defun dtm-org-pretty-use-appear-a ()
   "Activate `org-appear-mode' based on `org-pretty-entities'.

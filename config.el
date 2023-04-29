@@ -560,11 +560,9 @@ Also used by `org-modern-mode' to calculate heights.")
   :init
   (add-hook 'org-agenda-finalize-hook #'org-modern-agenda)
   (add-hook 'org-mode-hook #'dtm-org-modern-mode-maybe-h)
-
-  ;; Correct indentation of headings
-  (advice-add 'org-indent--compute-prefixes :after #'dtm-org-modern-indent-heading)
   :config
   (setq org-modern-label-border dtm-org-line-spacing
+        org-modern-hide-stars (org-add-props " " nil 'face 'org-indent)
         org-modern-statistics nil
         org-modern-table nil
         org-modern-star ["●" "◉" "○" "◉" "○" "◉" "○" "◉"]
