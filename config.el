@@ -190,9 +190,6 @@
 ;; Disable global hl-line-mode
 (remove-hook! 'doom-first-buffer-hook #'global-hl-line-mode)
 
-;; This prevents stepping into the left side window from the bottom side window
-(advice-remove 'windmove-up #'+popup--ignore-window-parameters-a)
-
 ;; Do not scroll horizontally if auto-fill-mode is active
 (add-hook! 'auto-fill-mode-hook (setq-local auto-hscroll-mode (not auto-fill-function)))
 
