@@ -2,22 +2,14 @@
 
 (defvar +zenl-reading-modes
   '(org-mode LaTeX-mode markdown-mode gfm-mode helpful-mode Info-mode adoc-mode rst-mode)
-  "What major-modes to enable `mixed-pitch-mode' in with `visual-fill-column-mode'.")
+  "Major-modes with additional reading optimizations for `+zen-light-toggle'.
+Most importantly this controls usage of `mixed-pitch-mode'.")
 
 (defvar +zenl-reading-scale 1
   "Value to use for `text-scale-set' in `+zenl-reading-modes'.")
 
-(use-package! visual-fill-column
-  :commands visual-fill-column-mode
-  :hook (visual-fill-column-mode . +zenl-visual-fill-column-h)
-  :config
-  ;; Text scaling is bugged: https://codeberg.org/joostkremers/visual-fill-column/issues/1
-  (setq visual-fill-column-adjust-for-text-scale nil)
-  (setq-default visual-fill-column-fringes-outside-margins nil
-                visual-fill-column-center-text t))
-
 (use-package! mixed-pitch
-  :hook (visual-fill-column-mode . +zenl-enable-mixed-pitch-mode-h)
+  :defer t
   :config
   (pushnew! mixed-pitch-fixed-pitch-faces
             'solaire-line-number-face))

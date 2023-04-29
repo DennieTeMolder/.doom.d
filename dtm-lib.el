@@ -593,9 +593,8 @@ Intended for `markdown-mode-hook'."
     (setq-local line-spacing dtm-org-line-spacing)
     (electric-quote-local-mode +1)
     (+org-pretty-mode +1)
-    (visual-line-mode -1)
-    (visual-fill-column-mode +1)
     (auto-fill-mode +1)
+    (+zen-light-toggle +1)
     (add-hook! 'evil-insert-state-exit-hook
                :local #'dtm-insert-exit-fill-paragraph)))
 
@@ -1242,7 +1241,7 @@ Meant for hooking onto `prog-mode-hook' and `text-mode-hook'."
     (when (length= (+workspace-buffer-list) 1)
       (delete-other-windows))
     (with-current-buffer gptel-default-session
-      (visual-fill-column-mode +1)
+      (+zen-light-toggle 1)
       (push '(continuation nil nil) fringe-indicator-alist))))
 
 ;;* Commands

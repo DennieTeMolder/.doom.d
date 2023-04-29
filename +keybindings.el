@@ -90,7 +90,7 @@
 ;;* Custom modules
 (map! :leader
       ;; :when (modulep! :ui zen-light)
-      :desc "Zen writing mode"     "t z" #'visual-fill-column-mode
+      :desc "Zen/focus mode"     "t z" #'+zen-light-toggle
 
       ;; :when (modulep! :ui keycast)
       ;; :desc "Keycast mode"        "t k" #'keycast-mode
