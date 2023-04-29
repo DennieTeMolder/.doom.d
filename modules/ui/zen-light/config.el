@@ -8,6 +8,9 @@ Most importantly this controls usage of `mixed-pitch-mode'.")
 (defvar +zenl-reading-scale 1
   "Value to use for `text-scale-set' in `+zenl-reading-modes'.")
 
+(defalias 'visual-fill-column-mode #'fill-column-visual-mode
+  "HACK alias of `fill-column-visual-mode' for partial interop.")
+
 (use-package! mixed-pitch
   :defer t
   :config

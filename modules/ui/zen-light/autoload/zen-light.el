@@ -4,7 +4,9 @@
 (defun +zen-light-toggle (&optional arg)
   "Toggle zen/focus mode. Uses `+zenl-reading-modes' & `+zenl-reading-scale'."
   (interactive)
-  (setq arg (if arg (< 0 arg) (not (bound-and-true-p centered-buffer-mode))))
+  (setq arg (if (numberp arg)
+                (< 0 arg)
+              (not (bound-and-true-p fill-column-center-mode))))
   (when (apply #'derived-mode-p +zenl-reading-modes)
     (text-scale-set (if arg +zenl-reading-scale 0))
     (mixed-pitch-mode (if arg 1 0)))
@@ -14,4 +16,4 @@
       (setq display-line-numbers display-line-numbers-type)))
   (when (boundp 'vi-tilde-fringe-mode)
     (vi-tilde-fringe-mode (if arg 0 1)))
-  (centered-buffer-mode (if arg 1 0)))
+  (fill-column-center-mode (if arg 1 0)))
