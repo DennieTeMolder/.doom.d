@@ -1196,7 +1196,7 @@ Meant for hooking onto `prog-mode-hook' and `text-mode-hook'."
 (defun dtm-gptel-setup-h ()
   "Personal gptel-mode customisation's. Intended for `gptel-mode-hook'."
   (setq default-directory (or dtm-gptel-dir default-directory))
-  (+word-wrap-mode 1)
+  (visual-fill-column-mode 1)
   (flycheck-mode 0))
 
 (defun dtm/gptel-send-buffer ()
@@ -1224,7 +1224,7 @@ Meant for hooking onto `prog-mode-hook' and `text-mode-hook'."
       (delete-other-windows))
     (with-current-buffer gptel-default-session
       (+zen-light-toggle 1)
-      (push '(continuation nil nil) fringe-indicator-alist))))
+      (+word-wrap-mode 1))))
 
 ;;* Commands
 (defun dtm/load-session (file)

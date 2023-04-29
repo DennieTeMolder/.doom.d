@@ -146,10 +146,6 @@
   (unless (string= "N/A" (alist-get ?p (funcall battery-status-function)))
     (display-battery-mode +1)))
 
-;; Improve consistency of line numbering
-(defadvice! dtm-fix-toggle-line-numbers-a ()
-  :before 'doom/toggle-line-numbers
-  (setq doom--line-number-style display-line-numbers))
 (add-hook 'visual-line-mode-hook #'dtm-visual-line-fix-linum-h)
 
 ;; Replace the default doom splash screen with a more subtle one
@@ -199,6 +195,11 @@
 
 ;; Do not scroll horizontally if auto-fill-mode is active
 (add-hook! 'auto-fill-mode-hook (setq-local auto-hscroll-mode (not auto-fill-function)))
+
+(defadvice! dtm-fix-toggle-line-numbers-a ()
+  "Fix interaction with other functions that affect `display-line-numbers-mode'."
+  :before 'doom/toggle-line-numbers
+  (setq doom--line-number-style display-line-numbers))
 
 ;; Search options for "SPC s o" (`+lookup/online')
 (setq +lookup-provider-url-alist
@@ -421,6 +422,9 @@
 
 ;;;###package highlight-indent-guides
 (remove-hook 'text-mode-hook #'highlight-indent-guides-mode)
+
+(when (modulep! :editor word-wrap)
+  (setq +word-wrap-fill-style 'auto))
 
 ;;* Core functionality extensions
 ;; Add colours to info pages to make them more readable
