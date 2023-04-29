@@ -76,6 +76,8 @@
       (:prefix "w"
        :desc "window-as-frame" "F" #'tear-off-window
                                "e" #'evil-window-prev
+                               "s" #'dtm/split-window-optimally
+                               "S" #'evil-window-split
                                "T" #'transpose-frame)
 
       ;; Popups
