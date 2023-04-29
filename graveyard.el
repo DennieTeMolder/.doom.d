@@ -110,3 +110,15 @@ Calls `dtm-org-roam-update-slug-h' on `after-save-hook'.
 Ref: https://github.com/hlissner/.doom.d"
   (setq-local dtm-org-roam-old-slug (ignore-errors (org-roam-node-slug (org-roam-node-at-point))))
   (add-hook 'after-save-hook #'dtm-org-roam-update-slug-h 'append 'local))
+
+;;* Visual-line-mode
+(defun dtm-visual-line-sync-fringe (symbol newval operation where)
+  "Show a left fringe continuation indicator if line numbers are hidden.
+Use with `add-variable-watcher' on `display-line-numbers'"
+  (when (and (eq symbol 'display-line-numbers)
+             (eq operation 'set)
+             (buffer-local-value 'visual-line-mode where))
+    (setcar (cdr (cl-find 'continuation
+                          (buffer-local-value 'fringe-indicator-alist where)
+                          :key #'car))
+            (when (memq newval '(nil visual)) 'left-curly-arrow))))

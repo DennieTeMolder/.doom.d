@@ -146,8 +146,6 @@
   (unless (string= "N/A" (alist-get ?p (funcall battery-status-function)))
     (display-battery-mode +1)))
 
-;; Show line wrapping indicator if line numbers are hidden
-(add-variable-watcher 'display-line-numbers #'dtm-visual-line-sync-fringe)
 (add-hook 'visual-line-mode-hook #'dtm-visual-line-fix-linum-h)
 
 ;; Replace the default doom splash screen with a more subtle one
@@ -213,11 +211,9 @@
         ("Anaconda packages" "https://anaconda.org/search?q=%s")))
 
 (after! text-mode
-  ;; Disable visual line mode as it can be expensive on long lines
-  (remove-hook! 'text-mode-hook #'visual-line-mode)
-
-  ;; Automatically load changes (should mostly be in log files)
-  (add-hook! 'text-mode-hook (auto-revert-mode +1))
+  ;; Disable visual line mode by default
+  (remove-hook 'text-mode-hook #'visual-line-mode)
+  (remove-hook 'text-mode-hook #'+word-wrap-mode)
 
   (general-evil-define-key '(normal insert) 'text-mode-map
     "M-o" #'dtm/spell-correct-previous))

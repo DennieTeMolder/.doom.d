@@ -235,17 +235,6 @@ Use for `after-change-major-mode-hook'."
       (file-in-directory-p project-root doom-local-dir)))
 
 ;;* Visual-line-mode
-(defun dtm-visual-line-sync-fringe (symbol newval operation where)
-  "Show a left fringe continuation indicator if line numbers are hidden.
-Use with `add-variable-watcher' on `display-line-numbers'"
-  (when (and (eq symbol 'display-line-numbers)
-             (eq operation 'set)
-             (buffer-local-value 'visual-line-mode where))
-    (setcar (cdr (cl-find 'continuation
-                          (buffer-local-value 'fringe-indicator-alist where)
-                          :key #'car))
-            (when (memq newval '(nil visual)) 'left-curly-arrow))))
-
 (defun dtm-visual-line-fix-linum-h ()
   "Ensure appropriate `display-line-numbers' and `display-line-numbers-type'.
 Use for `visual-line-mode-hook'. Also fixes `doom/toggle-line-numbers'."
@@ -1214,8 +1203,8 @@ Meant for hooking onto `prog-mode-hook' and `text-mode-hook'."
 (defun dtm-gptel-setup-h ()
   "Personal gptel-mode customisation's. Intended for `gptel-mode-hook'."
   (setq default-directory (or dtm-gptel-dir default-directory))
-  (visual-line-mode +1)
-  (flycheck-mode -1))
+  (+word-wrap-mode 1)
+  (flycheck-mode 0))
 
 (defun dtm/gptel-send-buffer ()
   "Scroll to the end and call `gptel-send' to ensure the full buffer is send."
