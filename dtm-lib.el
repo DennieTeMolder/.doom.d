@@ -104,21 +104,15 @@ If NAME is not provided `buffer-file-name' is used."
     (display-buffer buf)))
 
 ;;* Window functions
-(defun dtm/split-window-optimally (&optional w/h-factor)
-  "Split window based on width/height of `window-inside-pixel-edges'.
-A larger W/H-FACTOR favours splitting vertically (i.e. up/down)."
+(defun dtm/split-window-optimally (&optional w/h-ratio)
+  "Split window based on width to height ratio (including margins/fringes/bars).
+A larger W/H-RATIO favours splitting above over left."
   (interactive)
-  (or w/h-factor (setq w/h-factor 1.5))
-  (let* ((w-edges (window-inside-pixel-edges))
-         (width (- (caddr w-edges) (car w-edges)))
-         (height (- (cadddr w-edges) (cadr w-edges)))
-         (w/h (/ width height 1.0))
-         (new (if (> w/h w/h-factor)
-                  (split-window-horizontally)
-                (split-window-vertically))))
-    (if (called-interactively-p 'any)
-        (select-window new)
-      new)))
+  (or w/h-ratio (setq w/h-ratio 1.5))
+  (let ((w/h (/ (float (window-pixel-width))
+                (window-pixel-height))))
+    (split-window (selected-window) nil
+                  (if (< w/h w/h-ratio) 'above 'left))))
 
 ;;* Theme recommendations
 (defun dtm--theme-which-inactive (theme1 theme2)
@@ -900,7 +894,7 @@ Equivalent to 's' at the R prompt."
         (unless (eq (ess-get-process-buffer dtm-ess-r-plot-process-name)
                     (current-buffer))
           (ess-switch-to-ESS t))
-        (select-window (dtm/split-window-optimally))
+        (dtm/split-window-optimally)
         (switch-to-buffer (generate-new-buffer dtm-ess-r-plot-dummy-name))
         (setq-local default-directory (dtm-ess-r-plot-dir))
         (selected-window))))
