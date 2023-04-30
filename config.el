@@ -71,7 +71,7 @@
 
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
-(setq display-line-numbers-type 'relative)
+(setq display-line-numbers-type t)
 
 ;; Whenever you reconfigure a package, make sure to wrap your config in an
 ;; `after!' block, otherwise Doom's defaults may override your settings. E.g.
@@ -769,6 +769,10 @@ Also used by `org-modern-mode' to calculate heights.")
 (after! lispy
   ;; Prettier function evaluation
   (setq lispy-eval-display-style 'overlay)
+
+  ;; Fix ESC not un-marking selections on first press
+  (add-hook! 'lispy-mode-hook
+    (add-hook 'evil-insert-state-exit-hook #'deactivate-mark nil 'local))
 
   ;; Overwrite `lispy-occur' kbind (we drop the swiper package anyway)
   (lispy-define-key lispy-mode-map "y" #'dtm/lispy-evil-yank-sexp)
