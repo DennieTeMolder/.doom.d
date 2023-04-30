@@ -40,7 +40,7 @@
     (fill-column-master-reset window)
     (when (or fill-column-center-mode fill-column-visual-mode)
       (let* ((scale (expt text-scale-mode-step text-scale-mode-amount))
-             (margin (- (window-width) (truncate (* (1+ fill-column) scale)))))
+             (margin (- (window-width) (truncate (* fill-column scale)))))
         (when (< 0 margin)
           (let* ((left (if fill-column-center-mode (/ margin 2) 0))
                  (right (if fill-column-visual-mode (- margin left) 0)))
