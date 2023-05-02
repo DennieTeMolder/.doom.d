@@ -1244,15 +1244,6 @@ Also checks if FILE exists."
       (setq delete-by-moving-to-trash t)
       (message "Now moving deleted files to trash"))))
 
-(defvar dtm-left-margin 30
-  "Size of left margin that can be added to selected-window on demand")
-
-(defun dtm/window-toggle-left-margin ()
-  "Toggle left margin on selected window."
-  (interactive)
-  (let ((window (selected-window)))
-    (set-window-margins window (unless (car (window-margins window)) dtm-left-margin))))
-
 (defun dtm-advice-list (symbol)
   "Return the list of functions advising SYMBOL."
   (let (result)
