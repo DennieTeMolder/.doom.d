@@ -967,8 +967,12 @@ Also used by `org-modern-mode' to calculate heights.")
     (add-hook 'doom-first-buffer-hook #'good-scroll-mode))
   :config
   (setq good-scroll-duration 0.25
-        good-scroll-algorithm 'good-scroll-linear
-        good-scroll-step (round (/ (display-pixel-height) 5)))
+        good-scroll-algorithm 'good-scroll-linear)
+  
+  (defadvice! dtm-good-scroll-set-step-a (&rest _)
+    :before #'good-scroll-up :before #'good-scroll-down
+    (unless (eq last-command 'mwheel-scroll)
+      (setq good-scroll-step (/ (good-scroll--window-usable-height) 5))))
 
   (add-hook 'good-scroll-mode-hook #'dtm-good-scroll-evil-override-h))
 
