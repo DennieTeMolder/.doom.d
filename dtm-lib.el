@@ -1190,7 +1190,7 @@ Meant for hooking onto `prog-mode-hook' and `text-mode-hook'."
 (defun dtm-gptel-setup-h ()
   "Personal gptel-mode customisation's. Intended for `gptel-mode-hook'."
   (setq default-directory (or dtm-gptel-dir default-directory))
-  (visual-fill-column-mode 1)
+  (visual-line-mode 1)
   (flycheck-mode 0))
 
 (defun dtm/gptel-send-buffer ()
