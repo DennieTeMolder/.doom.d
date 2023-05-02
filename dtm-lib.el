@@ -231,17 +231,6 @@ Use for `after-change-major-mode-hook'."
       (file-in-directory-p project-root temporary-file-directory)
       (file-in-directory-p project-root doom-local-dir)))
 
-;;* Visual-line-mode
-(defun dtm-visual-line-fix-linum-h ()
-  "Ensure appropriate `display-line-numbers' and `display-line-numbers-type'.
-Use for `visual-line-mode-hook'. Also fixes `doom/toggle-line-numbers'."
-  (let ((wrong-type (if visual-line-mode 'relative 'visual))
-        (correct-type (if visual-line-mode 'visual 'relative)))
-    (when (eq display-line-numbers wrong-type)
-      (setq-local display-line-numbers correct-type))
-    (when (eq display-line-numbers-type wrong-type)
-      (setq-local display-line-numbers-type correct-type))))
-
 ;;* Doom Popup
 (defun dtm/popup-raise ()
   "Wrapper for `+popup/raise' that will ensure a popup is selected."
@@ -1274,6 +1263,17 @@ Ref: https://emacs.stackexchange.com/a/33344"
     (unless current
       (user-error "No file associated with current buffer!"))
     (ediff current (read-file-name "Diff current file with:" nil nil t))))
+
+(defun dtm/toggle-line-numbers ()
+  "Toggle `display-line-numbers' on or off. With C-u toggle visual lines.
+Relative lines are more performant, but fail with folded/wrapped lines"
+  (interactive)
+  (setq display-line-numbers
+        (if current-prefix-arg
+            (if (eq 'visual display-line-numbers) t 'visual)
+          (not display-line-numbers)))
+  (when (xor display-line-numbers display-line-numbers-mode)
+    (display-line-numbers-mode 'toggle)))
 
 ;;** Move-splitter
 (defun dtm/move-splitter-left (arg)

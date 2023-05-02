@@ -146,8 +146,6 @@
   (unless (string= "N/A" (alist-get ?p (funcall battery-status-function)))
     (display-battery-mode +1)))
 
-(add-hook 'visual-line-mode-hook #'dtm-visual-line-fix-linum-h)
-
 ;; Replace the default doom splash screen with a more subtle one
 (setq +doom-dashboard-ascii-banner-fn #'dtm-doom-ascii-banner-fn)
 
@@ -192,11 +190,6 @@
 
 ;; Do not scroll horizontally if auto-fill-mode is active
 (add-hook! 'auto-fill-mode-hook (setq-local auto-hscroll-mode (not auto-fill-function)))
-
-(defadvice! dtm-fix-toggle-line-numbers-a ()
-  "Fix interaction with other functions that affect `display-line-numbers-mode'."
-  :before 'doom/toggle-line-numbers
-  (setq doom--line-number-style display-line-numbers))
 
 ;; Search options for "SPC s o" (`+lookup/online')
 (setq +lookup-provider-url-alist

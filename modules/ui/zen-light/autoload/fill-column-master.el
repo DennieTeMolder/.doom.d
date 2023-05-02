@@ -16,15 +16,14 @@
   (when (not fill-column-center-mode)
     (fill-column-master-manage-hooks fill-column-visual-mode)))
 
-;; TODO find some way to hook onto changes of `display-line-numbers'
 (defun fill-column-master-manage-hooks (enable)
   (if enable
       (progn
         (add-hook 'window-configuration-change-hook #'fill-column-master-adjust 'append 'local)
-        (add-hook 'window-state-change-functions #'fill-column-master-adjust 'append 'local)
+        (add-hook 'display-line-numbers-mode-hook #'fill-column-master-adjust 'append 'local)
         (add-hook 'text-scale-mode-hook #'fill-column-master-adjust 'append 'local))
     (remove-hook 'window-configuration-change-hook #'fill-column-master-adjust 'local)
-    (remove-hook 'window-state-change-functions #'fill-column-master-adjust 'local)
+    (remove-hook 'display-line-numbers-mode-hook #'fill-column-master-adjust 'local)
     (remove-hook 'text-scale-mode-hook #'fill-column-master-adjust 'local)))
 
 (defun fill-column-master-reset (window)

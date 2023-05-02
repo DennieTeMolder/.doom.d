@@ -122,3 +122,13 @@ Use with `add-variable-watcher' on `display-line-numbers'"
                           (buffer-local-value 'fringe-indicator-alist where)
                           :key #'car))
             (when (memq newval '(nil visual)) 'left-curly-arrow))))
+
+(defun dtm-visual-line-fix-linum-h ()
+  "Ensure appropriate `display-line-numbers' and `display-line-numbers-type'.
+Use for `visual-line-mode-hook'."
+  (let ((wrong-type (if visual-line-mode 'relative 'visual))
+        (correct-type (if visual-line-mode 'visual 'relative)))
+    (when (eq display-line-numbers wrong-type)
+      (setq-local display-line-numbers correct-type))
+    (when (eq display-line-numbers-type wrong-type)
+      (setq-local display-line-numbers-type correct-type))))
