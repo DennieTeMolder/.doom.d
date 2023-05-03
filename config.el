@@ -189,7 +189,7 @@
 (remove-hook! 'doom-first-buffer-hook #'global-hl-line-mode)
 
 ;; Do not scroll horizontally if auto-fill-mode is active
-(add-hook! 'auto-fill-mode-hook (setq-local auto-hscroll-mode (not auto-fill-function)))
+(setq-hook! 'auto-fill-mode-hook auto-hscroll-mode (not auto-fill-function))
 
 ;; Search options for "SPC s o" (`+lookup/online')
 (setq +lookup-provider-url-alist
@@ -236,10 +236,10 @@
         company-dabbrev-code-everywhere t)
 
   ;; Enable auto pop-up in elisp mode as it is less expensive
-  (add-hook! 'emacs-lisp-mode-hook (setq-local company-idle-delay 0.2))
+  (setq-hook! 'emacs-lisp-mode-hook company-idle-delay 0.2)
 
   ;; Make dabbrev (C-x C-n) case sensitive in programming modes
-  (add-hook! 'prog-mode-hook (setq-local company-dabbrev-ignore-case nil)))
+  (setq-hook! 'prog-mode-hook company-dabbrev-ignore-case nil))
 
 (after! projectile
   ;; Projectle sorting by recently opened
@@ -566,7 +566,7 @@ Also used by `org-modern-mode' to calculate heights.")
 
 (after! org-tree-slide
   ;; Make presentations even prettier
-  (add-hook 'org-tree-slide-mode-hook #'dtm-org-tree-slide-setup-h t)
+  (add-hook 'org-tree-slide-mode-hook #'dtm-org-tree-slide-setup-h 'append)
 
   ;; Disable `flycheck-mode' and `spell-fu-mode' when presenting
   (advice-add 'org-tree-slide--setup :before #'dtm-org-tree-slide-no-squiggles-a)
@@ -747,7 +747,7 @@ Also used by `org-modern-mode' to calculate heights.")
               (cmd! (cl-replace imenu-generic-expression
                                 '(("Section" "^[ \t]*;;[;*]+[ \t]+\\(.+\\)" 1)))))
 
-  (add-hook 'emacs-lisp-mode-hook #'dtm-elisp-extend-imenu-h t))
+  (add-hook 'emacs-lisp-mode-hook #'dtm-elisp-extend-imenu-h 'append))
 
 (after! edebug
   (map! :map edebug-mode-map :n "R" #'edebug-remove-instrumentation))
@@ -828,10 +828,8 @@ Also used by `org-modern-mode' to calculate heights.")
         ess-style 'RStudio)
 
   ;; Make evil tab width same as ESS offset
-  (add-hook! 'ess-mode-hook (setq-local evil-shift-width ess-indent-offset))
-  (add-hook! 'inferior-ess-mode-hook
-             #'dtm-ess-modeline-show-busy
-             (visual-line-mode +1))
+  (setq-hook! 'ess-mode-hook evil-shift-width ess-indent-offset)
+  (add-hook 'inferior-ess-mode-hook #'dtm-ess-modeline-show-busy)
 
   ;; Recenter buffer in window after sending region (SPC m ,)
   (advice-add 'ess-eval-region-or-function-or-paragraph-and-step :after (cmd! (recenter)))
@@ -904,10 +902,9 @@ Also used by `org-modern-mode' to calculate heights.")
 
 (after! python
   ;; Add generic imenu expression and ensure python doesn't ignore them
-  (add-hook! 'python-mode-hook
-             #'dtm-imenu-merge-index-h
-             (setq-local imenu-generic-expression
-                         '(("Rule" "^rule \\(\\_<[^ \t():\n]+\\_>\\):" 1)))))
+  (setq-hook! 'python-mode-hook imenu-generic-expression
+              '(("Rule" "^rule \\(\\_<[^ \t():\n]+\\_>\\):" 1)))
+  (add-hook 'python-mode-hook #'dtm-imenu-merge-index-h 'append))
 
 ;; Snakefiles in python mode
 (push '("\\(Snakefile\\|\\.smk\\)\\'" . python-mode) auto-mode-alist)
@@ -948,8 +945,8 @@ Also used by `org-modern-mode' to calculate heights.")
   (setq csv-header-lines 1)
 
   ;; Ensure delimiters are not hidden when aligning
-  (add-hook! 'csv-mode-hook
-    (setq-local buffer-invisibility-spec nil)))
+  (setq-hook! 'csv-mode-hook
+    buffer-invisibility-spec nil))
 
 ;; Start csv/tsv files in so-long-mode to prevent freezing
 (push '("\\.\\(c\\|t\\)sv\\'" . so-long-mode) auto-mode-alist)
