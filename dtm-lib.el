@@ -981,15 +981,15 @@ Indented to advise functions that move the point."
   "Obtain a Python process using `+python/open-repl'.
 Intended as override advice for `elpy-shell-get-or-create-process'.
 Also prompts to activate a Conda env if executable is found."
-  (if-let* ((bufname (format "*%s*" (python-shell-get-process-name nil)))
-            (proc (get-buffer-process bufname)))
-      proc
-    (when (and (fboundp #'conda--get-executable-path)
-               (ignore-errors (conda--get-executable-path)))
-      (dtm/conda-env-guess))
-    (let ((buf (save-selected-window (+python/open-repl))))
-      (when sit (sit-for sit))
-      (get-buffer-process buf))))
+  (or (python-shell-get-process)
+      (progn
+        (when (and (fboundp #'conda-env-list)
+                   (require 'conda)
+                   (ignore-errors (conda--get-executable-path)))
+          (dtm/conda-env-guess))
+        (let ((buf (save-selected-window (+python/open-repl))))
+          (and sit (sit-for sit))
+          (get-buffer-process buf)))))
 
 (defun dtm-elpy-shell-send-string (str)
   "Send STR to Python shell using `elpy-shell-send-buffer'.

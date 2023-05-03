@@ -907,24 +907,14 @@ Also used by `org-modern-mode' to calculate heights.")
   ;; Add generic imenu expression and ensure python doesn't ignore them
   (setq-hook! 'python-mode-hook imenu-generic-expression
               '(("Rule" "^rule \\(\\_<[^ \t():\n]+\\_>\\):" 1)))
-  (add-hook 'python-mode-hook #'dtm-imenu-merge-index-h 'append))
-
-;; Snakefiles in python mode
-(push '("\\(Snakefile\\|\\.smk\\)\\'" . python-mode) auto-mode-alist)
-
-(use-package! elpy-shell
-  :after python
-  :config
-  ;; HACK use doom te create elpy process for pyenv support (also starts conda)
-  (advice-add 'elpy-shell-get-or-create-process
-              :override #'dtm-elpy-shell-get-doom-process-a)
+  (add-hook 'python-mode-hook #'dtm-imenu-merge-index-h 'append)
 
   (map! (:map python-mode-map
          :nv [C-return] #'dtm/elpy-send-current-and-step
          (:localleader
           :desc "Eval buffer"            "b"   #'elpy-shell-send-buffer
           :desc "Eval defun"             "d"   #'elpy-shell-send-defun
-          :desc "Send file to REPL"      "f"   #'python-shell-send-file
+          :desc "Send file to REPL"      "f"   #'elpy-shell-send-file
           :desc "Eval line"              "l"   #'dtm/elpy-send-statement-or-line
           :desc "Eval top statement"     "s"   #'elpy-shell-send-top-statement
           :desc "Print symbol or region" "."   #'dtm/elpy-print-symbol-or-region
@@ -932,14 +922,23 @@ Also used by `org-modern-mode' to calculate heights.")
 
         (:map inferior-python-mode-map
          :localleader
-         :desc "Switch to script" "TAB" #'elpy-shell-switch-to-buffer)))
+         :desc "Switch to script" "TAB" #'elpy-shell-switch-to-buffer)
 
-(after! conda
-  (map! :map (python-mode-map inferior-python-mode-map)
-        :localleader :prefix ("c" . "Conda")
-        "g" #'dtm/conda-env-guess
-        "a" #'conda-env-activate
-        "d" #'conda-env-deactivate))
+        (:map (python-mode-map inferior-python-mode-map)
+         :localleader :prefix ("c" . "Conda")
+         "g" #'dtm/conda-env-guess
+         "a" #'conda-env-activate
+         "d" #'conda-env-deactivate)))
+
+;; Snakefiles in python mode
+(push '("\\(Snakefile\\|\\.smk\\)\\'" . python-mode) auto-mode-alist)
+
+(use-package! elpy-shell
+  :defer t
+  :config
+  ;; HACK use doom te create elpy process for pyenv support (also starts conda)
+  (advice-add 'elpy-shell-get-or-create-process
+              :override #'dtm-elpy-shell-get-doom-process-a))
 
 (after! csv-mode
   ;; Assume the first line of a csv is a header
