@@ -1043,9 +1043,10 @@ STR is first stripped and indented according to mode."
 from `conda--get-config'. Still respects `conda-activate-base-by-default'."
   (or (and (bound-and-true-p conda-project-env-path)
            (conda-env-dir-to-name conda-project-env-path))
-      (when-let* ((filename (buffer-file-name))
-                  (dir (if filename (f-dirname filename) default-directory)))
-        (conda--get-name-from-env-yml (conda--find-env-yml dir)))
+      (let* ((filename (buffer-file-name))
+             (dir (if filename (f-dirname filename) default-directory)))
+        (when dir
+          (conda--get-name-from-env-yml (conda--find-env-yml dir))))
       (and conda-activate-base-by-default "base")))
 
 (defun dtm/conda-env-guess ()

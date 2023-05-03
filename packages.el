@@ -49,10 +49,6 @@
 ;; ...Or *all* packages (NOT RECOMMENDED; will likely break things)
 ;(unpin! t)
 
-;;* Unpins
-;; BUG fixes void function working-dir
-(unpin! conda)
-
 ;;* Doom modifications
 ;; Evil-escape will exit insert state after a key sequence ("jk")
 ;; Disable it as I am not using it and might create typing delay
