@@ -111,8 +111,8 @@ A larger W/H-RATIO favours splitting above over left."
   (or w/h-ratio (setq w/h-ratio 1.5))
   (let ((w/h (/ (float (window-pixel-width))
                 (window-pixel-height))))
-    (split-window (selected-window) nil
-                  (if (< w/h w/h-ratio) 'above 'left))))
+    (select-window (split-window (selected-window) nil
+                                 (if (< w/h w/h-ratio) 'below 'right)))))
 
 ;;* Theme recommendations
 (defun dtm--theme-which-inactive (theme1 theme2)
