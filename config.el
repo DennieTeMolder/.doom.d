@@ -844,7 +844,7 @@ Also used by `org-modern-mode' to calculate heights.")
 
   ;; Add company-R-library backend
   ;; REVIEW https://github.com/doomemacs/doomemacs/pull/6455
-  (set-company-backend! 'ess-r-mode
+  (set-company-backend! '(ess-r-mode inferior-ess-r-mode)
     '(company-R-args company-R-objects company-R-library company-dabbrev-code :separate))
 
   (add-hook 'ess-r-mode-local-vars-hook #'tree-sitter! 'append)
