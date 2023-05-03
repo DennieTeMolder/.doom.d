@@ -729,12 +729,15 @@ Also used by `org-modern-mode' to calculate heights.")
         comint-scroll-to-bottom-on-output t
         comint-move-point-for-output t)
 
+  (add-hook 'comint-mode-hook #'dtm-word-wrap-mode-no-fill)
+
   ;; Shell style clear REPL binding
   (map! :map comint-mode-map
         "C-l" #'comint-clear-buffer))
 
 (after! compile
-  (add-hook! 'compilation-mode-hook (visual-line-mode +1)))
+  (add-hook 'compilation-mode-hook #'dtm-word-wrap-mode-no-fill)
+  (add-hook 'compilation-mode-hook #'dtm-conda-env-guess-maybe))
 
 (after! tree-sitter
   (custom-set-faces!
@@ -932,8 +935,6 @@ Also used by `org-modern-mode' to calculate heights.")
          :desc "Switch to script" "TAB" #'elpy-shell-switch-to-buffer)))
 
 (after! conda
-  (add-hook 'compilation-mode-hook #'dtm-conda-env-guess-maybe)
-
   (map! :map (python-mode-map inferior-python-mode-map)
         :localleader :prefix ("c" . "Conda")
         "g" #'dtm/conda-env-guess

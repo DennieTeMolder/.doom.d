@@ -172,6 +172,11 @@ Use for `after-change-major-mode-hook'."
                "\n"))
      'face 'doom-dashboard-banner)))
 
+(defun dtm-word-wrap-mode-no-fill ()
+  "Enable `+word-wrap-mode' with `+word-wrap-fill-style' set to nil."
+  (setq-local +word-wrap-fill-style nil)
+  (+word-wrap-mode 1))
+
 ;;* Workspaces/perspectives
 (defun dtm-workspace-switch-maybe (name)
   "Switch to workspace NAME if not already current"
