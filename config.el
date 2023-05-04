@@ -827,6 +827,7 @@ Also used by `org-modern-mode' to calculate heights.")
   (setq ess-ask-for-ess-directory nil
         ess-startup-directory-function #'dtm-ess-startup-dir
         ess-r-prettify-symbols nil
+        ess-use-ido nil
         ess-auto-width 'window
         ess-style 'RStudio)
 

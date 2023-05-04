@@ -49,6 +49,8 @@
 ;; ...Or *all* packages (NOT RECOMMENDED; will likely break things)
 ;(unpin! t)
 
+(package! doom-modeline :pin "918730eff72e155cfb31b012493a7f425bc48ff8")
+
 ;;* Doom modifications
 ;; Evil-escape will exit insert state after a key sequence ("jk")
 ;; Disable it as I am not using it and might create typing delay
