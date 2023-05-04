@@ -974,26 +974,16 @@ Also used by `org-modern-mode' to calculate heights.")
 ;; machine openai.com login apikey password <your-key>
 (use-package! gptel
   :defer t
+  :init
+  (setq-default gptel--system-message "You are a large language model living inside the Doom Emacs framework. Help the user and be concise.")
   :config
   (setq gptel-default-mode 'markdown-mode
         dtm-gptel-dir "~/Nextcloud/Emacs/Chats/")
 
-  ;; Custom directive
-  (setq-default gptel--system-message "You are a large language model living inside the Doom Emacs framework. Help the user and be concise.")
-
   (add-hook 'gptel-mode-hook #'dtm-gptel-setup-h)
   (add-hook! 'gptel-post-response-hook (goto-char (point-max)))
 
-  (set-popup-rule! "^\\*ChatGPT" :size 0.35 :select t :ttl nil)
-
-  ;; BUG this fixes `gptel-system-prompt' related errors
-  (require 'gptel-transient)
-
-  ;; C-u C-RET brings up `gptel-send-menu
-  (map! :map gptel-mode-map
-        :gn [C-return] #'dtm/gptel-send-buffer
-        :nv "g k"      #'dtm/markdown-backward-same-level
-        :nv "g j"      #'markdown-outline-next-same-level))
+  (set-popup-rule! "^\\*ChatGPT" :size 0.35 :select t :ttl nil))
 
 (load! "+keybindings")
 (load! "+faces")

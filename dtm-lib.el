@@ -1179,6 +1179,8 @@ Meant for hooking onto `prog-mode-hook' and `text-mode-hook'."
 
 (defun dtm-gptel-setup-h ()
   "Personal gptel-mode customisation's. Intended for `gptel-mode-hook'."
+  (general-evil-define-key '(n i) 'local
+    [C-return] #'dtm/gptel-send-buffer)
   (setq default-directory (or dtm-gptel-dir default-directory))
   (visual-line-mode 1)
   (flycheck-mode 0))
