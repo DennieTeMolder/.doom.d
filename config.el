@@ -658,13 +658,8 @@ Also used by `org-modern-mode' to calculate heights.")
   (setq org-noter-hide-other nil
         org-noter-always-create-frame nil)
 
-  ;; Kill session map in line with other C-c bound pdf controls for one hand use
-  (map! :map (org-noter-doc-mode-map org-noter-notes-mode-map)
-        "C-c q" #'org-noter-kill-session)
-
-  ;; The pdf-view major mode overwrites the i binding with =ignore= for all minor modes
-  ;; This works around that by incorporating the binding into the major mode
-  (map! :map pdf-view-mode-map :n "i" #'dtm/org-noter-insert-maybe))
+  (map! :map (org-noter-notes-mode-map org-noter-doc-mode-map)
+        "C-c q" #'org-noter-kill-session))
 
 (after! pdf-tools
   (setq pdf-view-resize-factor 1.1)
@@ -678,6 +673,7 @@ Also used by `org-modern-mode' to calculate heights.")
          :n "C-e" #'pdf-view-scroll-down-or-previous-page
          :n "C-s" #'isearch-forward-word
          :n "S"   #'dtm/pdf-view-fit-half-height
+         :n "i"   #'org-noter-insert-note
          :v "h"   #'pdf-annot-add-highlight-markup-annotation
          :v "s"   #'pdf-annot-add-strikeout-markup-annotation
          :v "u"   #'pdf-annot-add-underline-markup-annotation

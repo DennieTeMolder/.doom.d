@@ -50,6 +50,7 @@
 ;(unpin! t)
 
 (package! doom-modeline :pin "918730eff72e155cfb31b012493a7f425bc48ff8")
+(unpin! org-noter)
 
 ;;* Doom modifications
 ;; Evil-escape will exit insert state after a key sequence ("jk")

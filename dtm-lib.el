@@ -769,11 +769,6 @@ The DATE is derived from the #+title which must match the Org date format."
           (- (* 2 scale) 0.1))
     (pdf-view-redisplay t)))
 
-(defun dtm/org-noter-insert-maybe ()
-  "Call `org-noter-insert-note' if `org-noter-doc-mode' is active."
-  (interactive)
-  (when org-noter-doc-mode (call-interactively #'org-noter-insert-note)))
-
 ;;* ESS
 (defun dtm-ess-insert-string (mystr)
   "Insert string, undo if the same input event is issued twice"
