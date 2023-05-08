@@ -415,6 +415,9 @@
 (when (modulep! :editor word-wrap)
   (setq +word-wrap-fill-style 'auto))
 
+(after! helpful
+  (setq helpful-max-buffers 10))
+
 ;;* Core functionality extensions
 ;; Add colours to info pages to make them more readable
 (use-package! info-colors
@@ -711,10 +714,9 @@ Also used by `org-modern-mode' to calculate heights.")
   (evil-declare-motion 'dtm/markdown-up)
 
   (map! :map evil-markdown-mode-map
-        (:prefix "g"
-         :m "k" #'dtm/markdown-backward-same-level
-         :m "j" #'markdown-outline-next-same-level
-         :m "h" #'dtm/markdown-up)))
+        [remap markdown-backward-same-level] #'dtm/markdown-backward-same-level
+        [remap markdown-forward-same-level] #'markdown-outline-next-same-level
+        [remap markdown-up-heading] #'dtm/markdown-up))
 
 ;;* Programming Languages
 ;; General interactive programming buffer settings
