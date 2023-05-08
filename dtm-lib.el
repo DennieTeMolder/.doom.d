@@ -438,7 +438,7 @@ Ref: `pdf-view-display-image'"
 ;;* Elisp-refs
 (defun dtm-elisp-refs--find-file-a (button)
   "Open the file referenced by BUTTON in the other window.
-Intended as :around advice for `elisp-refs--find-file'."
+Intended as :override advice for `elisp-refs--find-file'."
   (find-file-other-window (button-get button 'path))
   (goto-char (point-min)))
 

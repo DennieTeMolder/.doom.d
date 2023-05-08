@@ -306,9 +306,8 @@
        :slot 2 :vslot -8 :size 0.42 :select t :ttl nil)
       ("^\\*info\\*$"
        :slot 2 :vslot 2 :size 0.45 :select t :ttl nil)
-      ;; New rules
-      ("\\*refs:"
-       :size 0.42 :select t :ttl nil)))
+      ("^\\*Backtrace"
+       :vslot 99 :size 0.4 :select t :quit t :ttl nil)))
   (unless (dtm-doctor-running-p)
     (+popup-cleanup-rules-h))
 
@@ -752,11 +751,16 @@ Also used by `org-modern-mode' to calculate heights.")
   (map! :map edebug-mode-map :n "R" #'edebug-remove-instrumentation))
 
 (after! elisp-refs
+  ;; Include buffers in `helpful-max-buffers' & `helpful-kill-buffers'
+  (setq-hook! 'elisp-refs-mode-hook major-mode 'helpful-mode)
   (add-hook 'elisp-refs-mode-hook #'hide-mode-line-mode)
+
+  (set-popup-rule! "\\*refs:" :slot 2 :vslot -8 :size 0.42 :select t :ttl nil)
 
   ;; Open files in other window to preserve the popup window
   (advice-add 'elisp-refs--find-file :override #'dtm-elisp-refs--find-file-a)
-  (map! :map elisp-refs-mode-map :n "RET" #'elisp-refs-visit-match-other-window))
+  (map! :map elisp-refs-mode-map
+        [remap elisp-refs-visit-match] #'elisp-refs-visit-match-other-window))
 
 (after! lispy
   ;; Prettier function evaluation
