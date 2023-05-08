@@ -86,6 +86,7 @@
        :desc "Switch popup"    "." #'dtm/switch-popup-buffer
        :desc "Buffer to popup" "b" #'+popup/buffer
        :desc "Kill popup"      "k" #'dtm/popup-kill
+       :desc "Kill other"      "o" #'dtm/popup-only
        :desc "Popup to buffer" "r" #'dtm/popup-raise))
 
 ;;* Custom modules

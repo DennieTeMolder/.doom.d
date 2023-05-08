@@ -97,12 +97,6 @@ If NAME is not provided `buffer-file-name' is used."
   (or buf (setq buf (current-buffer)))
   (ignore-errors (file-remote-p (buffer-local-value 'default-directory buf))))
 
-(defun dtm-read-display-buffer (prompt &optional predicate)
-  "Display buffer by providing user with PROMPT on buffers matching PREDICATE."
-  (when-let ((buf (read-buffer (format-prompt prompt nil)
-                               nil t predicate)))
-    (display-buffer buf)))
-
 ;;* Window functions
 (defun dtm/split-window-optimally (&optional w/h-ratio)
   "Split window based on width to height ratio (including margins/fringes/bars).
@@ -224,10 +218,11 @@ Use for `after-change-major-mode-hook'."
   (let ((buf (or buf (current-buffer))))
     (not (persp--buffer-in-persps (dtm-get-buffer buf)))))
 
-(defun dtm/switch-orphan-buffer ()
+(defun dtm/switch-orphan-buffer (buf)
   "Prompt user to select buffer matching `dtm-buffer-orphan-p'."
-  (interactive)
-  (dtm-read-display-buffer "Select orphan buffer" #'dtm-buffer-orphan-p))
+  (interactive
+   (list (read-buffer "Select orphan-buffer: " nil t #'dtm-buffer-orphan-p)))
+  (display-buffer buf))
 
 ;;* Projectile
 (defun dtm-project-ignored-p (project-root)
@@ -237,16 +232,23 @@ Use for `after-change-major-mode-hook'."
       (file-in-directory-p project-root doom-local-dir)))
 
 ;;* Doom Popup
+(defun dtm-popup-ensure ()
+  "Ensure a popup is selected."
+  (unless (+popup-window-p)
+    (unless (+popup/other)
+      (user-error "No popups are open")))
+  (current-buffer))
+
 (defun dtm/popup-raise ()
   "Wrapper for `+popup/raise' that will ensure a popup is selected."
   (interactive)
-  (unless (+popup-window-p) (+popup/other))
+  (dtm-popup-ensure)
   (call-interactively #'+popup/raise))
 
 (defun dtm/popup-kill ()
   "Kill the currently open popup."
   (interactive)
-  (unless (+popup-window-p) (+popup/other))
+  (dtm-popup-ensure)
   (+popup--remember (list (selected-window)))
   (kill-buffer-and-window))
 
@@ -258,6 +260,13 @@ Use for `after-change-major-mode-hook'."
     (unless (stringp bname)
       (error "Could not find buffer string for: %s" b-or-n))
     bname))
+
+(defun dtm/popup-only ()
+  "Close all other popup except the currently selected one."
+  (interactive)
+  (let ((buf (dtm-popup-ensure)))
+    (+popup/close-all)
+    (display-buffer buf)))
 
 (defun dtm-popup-get-rule (buf)
   "Returns (predicate . action) for BUF in `display-buffer-alist'.
@@ -275,10 +284,11 @@ Based on `+popup/diagnose'."
               (rule (dtm-popup-get-rule buf)))
     (eq '+popup-buffer (caadr rule))))
 
-(defun dtm/switch-popup-buffer ()
+(defun dtm/switch-popup-buffer (buf)
   "Prompt user to select buffer matching `dtm-popup-buffer-p'."
-  (interactive)
-  (dtm-read-display-buffer "Select popup" #'dtm-popup-buffer-p))
+  (interactive
+   (list (read-buffer "Select popup: " nil t #'dtm-popup-buffer-p)))
+  (display-buffer buf))
 
 ;;* Imenu
 (defun dtm-elisp-extend-imenu-h ()
