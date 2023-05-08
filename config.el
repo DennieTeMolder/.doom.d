@@ -774,16 +774,23 @@ Also used by `org-modern-mode' to calculate heights.")
 
   ;; Overwrite `lispy-occur' kbind (we drop the swiper package anyway)
   (lispy-define-key lispy-mode-map "y" #'dtm/lispy-evil-yank-sexp)
-
-  ;; Define custom special key for stepping into lists/deleting marked regions
+  (lispy-define-key lispy-mode-map "S" #'dtm/lispy-surround-sexp)
+  (lispy-define-key lispy-mode-map "D" #'dtm/lispy-delete-sexp)
   (lispy-define-key lispy-mode-map "i" #'dtm/lispy-step-into)
 
   ;; Move around some of the keys to be more logical
   (map! :map lispy-mode-map
         "TAB" #'special-lispy-tab
+        "H"   #'special-lispy-move-left
+        "J"   #'special-lispy-move-down
+        "K"   #'special-lispy-move-up
+        "L"   #'special-lispy-move-right
+        "C"   #'special-lispy-clone
         "E"   #'special-lispy-eval-other-window
-        "p"   #'special-lispy-paste
-        "P"   #'special-lispy-eval-and-insert))
+        "R"   #'special-lispy-convolute
+        "Y"   #'special-lispy-clone
+        "c"   #'special-lispy-ace-symbol-replace
+        "p"   #'special-lispy-paste))
 
 ;; Delete atom-movement key-theme so we can replace it
 (when (boundp 'lispyville-key-theme)

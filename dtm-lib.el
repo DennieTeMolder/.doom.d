@@ -63,8 +63,10 @@ If NAME is not provided `buffer-file-name' is used."
                                   (line-end-position)))
 
 (defun dtm-line-empty-p ()
-  "Returns t if line contains no text or whitespace."
-  (and (bolp) (eolp)))
+  "Returns t if line contains only whitespace"
+  (save-excursion
+    (beginning-of-line)
+    (looking-at-p "[[:space:]]*$")))
 
 (defun dtm-forward-line-non-empty ()
   "Move cursor to the start of the next non-empty line."
@@ -448,7 +450,7 @@ Intended as :override advice for `elisp-refs--find-file'."
 If REGION is active, call `lispy-delete' instead."
   (interactive "p")
   (cond ((region-active-p)
-         (call-interactively #'lispy-delete))
+         (lispy-mark-car))
         ((lispy-left-p)
          (lispy-dotimes arg
            (if (lispy-left-p)
@@ -477,6 +479,36 @@ If REGION is active, call `lispy-delete' instead."
       (evil-with-state normal
         (lispy-mark-list 1)
         (call-interactively #'evil-yank)))))
+
+(defun dtm/lispy-surround-sexp ()
+  "Surround the region of `lispy-mark-list' with parenthesis."
+  (interactive)
+  (unless (region-active-p)
+    (lispy-mark-list 1))
+  (lispy-parens nil)
+  (lispy--normalize-1)
+  (backward-list)
+  (forward-char))
+
+(defun dtm/lispy-delete-sexp ()
+  "Call `lispy-delete-backward' on the current S-expression."
+  (interactive)
+  (let ((left-p (cond ((lispy-left-p) t)
+                      ((lispy-right-p) nil)
+                      ((region-active-p) nil)
+                      (t (user-error "Unexpected")))))
+    (unless (region-active-p) (lispy-mark-list 1))
+    ;; FIXME make `lispy-delete-backward' save to kill ring
+    (call-interactively #'evil-delete)
+    (deactivate-mark)
+    (when (lispy-bolp) (lispy-delete-backward 1))
+    (unless (and (lispy-right-p)
+                 (or (not left-p)
+                     (save-excursion
+                       (forward-char)
+                       (lispy-right-p))))
+      (lispy-forward 1))
+    (when left-p (lispy-different))))
 
 ;;* Lispyville
 (defmacro dtm-lispyville-smart-remap (evil-fn lispy-fn)
