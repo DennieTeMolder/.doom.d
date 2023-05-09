@@ -482,15 +482,11 @@ If REGION is active, call `lispy-delete' instead."
           (lispy-mark-list 1)
           (call-interactively #'lispyville-yank))))))
 
-(defun dtm/lispy-surround-sexp ()
+(defun dtm/lispy-wrap-round (arg)
   "Surround the region of `lispy-mark-list' with parenthesis."
-  (interactive)
-  (unless (region-active-p)
-    (lispy-mark-list 1))
-  (lispy-parens nil)
-  (lispy--normalize-1)
-  (backward-list)
-  (forward-char))
+  (interactive "P")
+  (let ((lispy-insert-space-after-wrap))
+    (lispy-wrap-round arg)))
 
 (defun dtm/lispy-delete-sexp ()
   "Call `lispy-delete-backward' on the current S-expression."
@@ -510,6 +506,13 @@ If REGION is active, call `lispy-delete' instead."
                          (lispy-right-p))))
         (lispy-forward 1))
       (when left-p (backward-list)))))
+
+(defun dtm/lispy-change-symbol (arg)
+  "Call or `lispy-ace-symbol-replace' or delete region."
+  (interactive "p")
+  (if (region-active-p)
+      (call-interactively #'lispyville-delete)
+    (lispy-ace-symbol-replace arg)))
 
 ;;* Lispyville
 (defmacro dtm-lispyville-smart-remap (evil-fn lispy-fn)

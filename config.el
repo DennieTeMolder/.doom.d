@@ -770,20 +770,23 @@ Also used by `org-modern-mode' to calculate heights.")
 
   ;; Overwrite `lispy-occur' kbind (we drop the swiper package anyway)
   (lispy-define-key lispy-mode-map "y" #'dtm/lispy-evil-yank-sexp)
-  (lispy-define-key lispy-mode-map "S" #'dtm/lispy-surround-sexp)
-  (lispy-define-key lispy-mode-map "D" #'dtm/lispy-delete-sexp)
   (lispy-define-key lispy-mode-map "i" #'dtm/lispy-step-into)
+  (lispy-define-key lispy-mode-map "c" #'dtm/lispy-change-symbol)
+  (lispy-define-key lispy-mode-map "D" #'dtm/lispy-delete-sexp)
+  (lispy-define-key lispy-mode-map "S" #'dtm/lispy-wrap-round)
+  (lispy-define-key lispy-mode-map "H" #'lispy-slurp-or-barf-left)
+  (lispy-define-key lispy-mode-map "L" #'lispy-slurp-or-barf-right)
+  (lispy-define-key lispy-mode-map "I" #'lispy-eval-and-comment)
 
-  ;; Move around some of the keys to be more Evil
+  ;; Add/move around some of the keys to be more Evil
   (map! :map lispy-mode-map
         "TAB" #'special-lispy-tab
-        "H"   #'special-lispy-move-left
+        "E"   #'special-lispy-eval-other-window
         "J"   #'special-lispy-move-down
         "K"   #'special-lispy-move-up
-        "L"   #'special-lispy-move-right
-        "E"   #'special-lispy-eval-other-window
         "T"   #'special-lispy-other-mode
-        "d"   #'special-lispy-ace-symbol-replace
+        "V"   #'special-lispy-view
+        "Y"   #'special-lispy-clone
         "o"   #'special-lispy-different
         "p"   #'special-lispy-paste))
 
