@@ -523,9 +523,11 @@ Ref: https://github.com/noctuid/lispyville/issues/284"
      (general-predicate-dispatch ,lispy-fn
        (lispy--in-string-or-comment-p) #',evil-fn)))
 
-(defun dtm-lispyville-toggle-mark-a (oldfun &rest args)
+(defun dtm-lispyville-toggle-mark-type-a (oldfun &rest args)
   "Around advice for `lispyville-toggle-mark-type' that preserves cursor position."
-  (let ((evil-move-cursor-back)) (apply oldfun args)))
+  (let ((evil-move-cursor-back nil)
+        (evil-move-beyond-eol t))
+    (apply oldfun args)))
 
 ;;* Vterm
 (defun dtm-vterm-redraw-cursor-a (orig-fn &rest args)

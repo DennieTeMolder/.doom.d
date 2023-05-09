@@ -799,7 +799,7 @@ Also used by `org-modern-mode' to calculate heights.")
 
   ;; mark-toggle key-theme tweaks
   (lispy-define-key lispy-mode-map "v" #'lispyville-toggle-mark-type)
-  (advice-add 'lispyville-toggle-mark-type :around #'dtm-lispyville-toggle-mark-a))
+  (advice-add 'lispyville-toggle-mark-type :around #'dtm-lispyville-toggle-mark-type-a))
 
 ;; Modify key-theme
 (setq lispyville-key-theme
