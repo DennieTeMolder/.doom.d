@@ -445,12 +445,20 @@ Intended as :override advice for `elisp-refs--find-file'."
   (goto-char (point-min)))
 
 ;;* Lispy
+(defun dtm/lispy-mark-car ()
+  "Wrap `lispy-mark-car' to also work on sharp-quoted symbols."
+  (interactive)
+  (letf! ((defun looking-at (regexp)
+            "HACK add the sharp symbol to the regex (potential side-effects)."
+            (funcall looking-at (string-replace "'" "#'" regexp))))
+    (lispy-mark-car)))
+
 (defun dtm/lispy-step-into (arg)
   "Step into the list at point, moving the point to after ARG atoms.
-If REGION is active, call `lispy-delete' instead."
+If REGION is active, call `dtm/lispy-mark-car' instead."
   (interactive "p")
   (cond ((region-active-p)
-         (lispy-mark-car))
+         (dtm/lispy-mark-car))
         ((lispy-left-p)
          (lispy-dotimes arg
            (if (lispy-left-p)
@@ -471,16 +479,15 @@ If REGION is active, call `lispy-delete' instead."
         (t
          (error "Unexpected"))))
 
-(defun dtm/lispy-evil-yank-sexp ()
-  "Call `evil-yank' on the region of `lispy-mark-list'."
+(defun dtm/lispy-yank-list ()
+  "Copy region or result of `lispy-mark-list' to kill-ring."
   (interactive)
-  (if (region-active-p)
-      (call-interactively #'lispyville-yank)
-    (save-excursion
-      (let ((evil-move-cursor-back nil))
-        (evil-with-state normal
-          (lispy-mark-list 1)
-          (call-interactively #'lispyville-yank))))))
+  (unless (region-active-p)
+    (lispy-mark-list 1)
+    (exchange-point-and-mark)
+    (evil-goggles--show-async-hint (region-beginning) (region-end)))
+  (lispy-new-copy)
+  (deactivate-mark))
 
 (defun dtm/lispy-wrap-round (arg)
   "Surround the region of `lispy-mark-list' with parenthesis."
@@ -488,31 +495,37 @@ If REGION is active, call `lispy-delete' instead."
   (let ((lispy-insert-space-after-wrap))
     (lispy-wrap-round arg)))
 
-(defun dtm/lispy-delete-sexp ()
+(defun dtm/lispy-delete-list ()
   "Call `lispy-delete-backward' on the current S-expression."
   (interactive)
   (if (region-active-p)
-      (call-interactively #'lispyville-delete)
-    (let ((left-p (cond ((lispy-left-p) t)
-                        ((lispy-right-p) nil)
+      (lispy-kill-at-point)
+    (let ((right-p (cond ((lispy-right-p) t)
+                        ((lispy-left-p) nil)
                         (t (user-error "Unexpected")))))
-      (lispy-mark-list 1)
-      (call-interactively #'lispyville-delete)
+      (lispy-kill-at-point)
       (when (lispy-bolp) (lispy-delete-backward 1))
       (unless (and (lispy-right-p)
-                   (or (not left-p)
+                   (or right-p
                        (save-excursion
                          (forward-char)
                          (lispy-right-p))))
         (lispy-forward 1))
-      (when left-p (backward-list)))))
+      (unless right-p (backward-list)))))
 
 (defun dtm/lispy-change-symbol (arg)
   "Call or `lispy-ace-symbol-replace' or delete region."
   (interactive "p")
   (if (region-active-p)
-      (call-interactively #'lispyville-delete)
+      (lispy-kill-at-point)
     (lispy-ace-symbol-replace arg)))
+
+(defun dtm/lispy-eval-and-insert (arg)
+  "Call `lispy-eval-and-comment', if arg != 1 `lispy-eval-and-insert'."
+  (interactive "p")
+  (if (eq arg 1)
+      (lispy-eval-and-comment)
+    (lispy-eval-and-insert)))
 
 ;;* Lispyville
 (defmacro dtm-lispyville-smart-remap (evil-fn lispy-fn)
