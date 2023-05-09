@@ -768,10 +768,6 @@ Also used by `org-modern-mode' to calculate heights.")
   ;; Prettier function evaluation
   (setq lispy-eval-display-style 'overlay)
 
-  ;; Fix ESC not un-marking selections on first press
-  (add-hook! 'lispy-mode-hook
-    (add-hook 'evil-insert-state-exit-hook #'deactivate-mark nil 'local))
-
   ;; Overwrite `lispy-occur' kbind (we drop the swiper package anyway)
   (lispy-define-key lispy-mode-map "y" #'dtm/lispy-evil-yank-sexp)
   (lispy-define-key lispy-mode-map "S" #'dtm/lispy-surround-sexp)
@@ -791,16 +787,21 @@ Also used by `org-modern-mode' to calculate heights.")
         "o"   #'special-lispy-different
         "p"   #'special-lispy-paste))
 
-;; Delete atom-movement key-theme so we can replace it
-(when (boundp 'lispyville-key-theme)
-  (cl-delete  '(atom-movement t) lispyville-key-theme :test 'equal))
-
-;; Custom key-theme replacement
 (after! lispyville
+  ;; Custom (atom-movement t) key-theme
   (dtm-lispyville-smart-remap evil-forward-WORD-begin #'lispyville-forward-atom-begin)
   (dtm-lispyville-smart-remap evil-forward-WORD-end #'lispyville-forward-atom-end)
   (dtm-lispyville-smart-remap evil-backward-WORD-begin #'lispyville-backward-atom-begin)
-  (dtm-lispyville-smart-remap evil-backward-WORD-end #'lispyville-backward-atom-end))
+  (dtm-lispyville-smart-remap evil-backward-WORD-end #'lispyville-backward-atom-end)
+
+  ;; mark-toggle key-theme tweaks
+  (lispy-define-key lispy-mode-map "v" #'lispyville-toggle-mark-type)
+  (advice-add 'lispyville-toggle-mark-type :around #'dtm-lispyville-toggle-mark-a))
+
+;; Modify key-theme
+(setq lispyville-key-theme
+      '((operators normal) (prettify insert) mark-toggle c-w
+        slurp/barf-lispy additional additional-insert))
 
 (after! eros
   ;; Large results can freeze emacs, this limits the inconvenience
