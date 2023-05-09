@@ -778,18 +778,17 @@ Also used by `org-modern-mode' to calculate heights.")
   (lispy-define-key lispy-mode-map "D" #'dtm/lispy-delete-sexp)
   (lispy-define-key lispy-mode-map "i" #'dtm/lispy-step-into)
 
-  ;; Move around some of the keys to be more logical
+  ;; Move around some of the keys to be more Evil
   (map! :map lispy-mode-map
         "TAB" #'special-lispy-tab
         "H"   #'special-lispy-move-left
         "J"   #'special-lispy-move-down
         "K"   #'special-lispy-move-up
         "L"   #'special-lispy-move-right
-        "C"   #'special-lispy-clone
         "E"   #'special-lispy-eval-other-window
-        "R"   #'special-lispy-convolute
-        "Y"   #'special-lispy-clone
-        "c"   #'special-lispy-ace-symbol-replace
+        "T"   #'special-lispy-other-mode
+        "d"   #'special-lispy-ace-symbol-replace
+        "o"   #'special-lispy-different
         "p"   #'special-lispy-paste))
 
 ;; Delete atom-movement key-theme so we can replace it

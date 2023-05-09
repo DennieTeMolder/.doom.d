@@ -474,11 +474,13 @@ If REGION is active, call `lispy-delete' instead."
 (defun dtm/lispy-evil-yank-sexp ()
   "Call `evil-yank' on the region of `lispy-mark-list'."
   (interactive)
-  (save-excursion
-    (let ((evil-move-cursor-back nil))
-      (evil-with-state normal
-        (lispy-mark-list 1)
-        (call-interactively #'evil-yank)))))
+  (if (region-active-p)
+      (call-interactively #'lispyville-yank)
+    (save-excursion
+      (let ((evil-move-cursor-back nil))
+        (evil-with-state normal
+          (lispy-mark-list 1)
+          (call-interactively #'lispyville-yank))))))
 
 (defun dtm/lispy-surround-sexp ()
   "Surround the region of `lispy-mark-list' with parenthesis."
@@ -493,22 +495,21 @@ If REGION is active, call `lispy-delete' instead."
 (defun dtm/lispy-delete-sexp ()
   "Call `lispy-delete-backward' on the current S-expression."
   (interactive)
-  (let ((left-p (cond ((lispy-left-p) t)
-                      ((lispy-right-p) nil)
-                      ((region-active-p) nil)
-                      (t (user-error "Unexpected")))))
-    (unless (region-active-p) (lispy-mark-list 1))
-    ;; FIXME make `lispy-delete-backward' save to kill ring
-    (call-interactively #'evil-delete)
-    (deactivate-mark)
-    (when (lispy-bolp) (lispy-delete-backward 1))
-    (unless (and (lispy-right-p)
-                 (or (not left-p)
-                     (save-excursion
-                       (forward-char)
-                       (lispy-right-p))))
-      (lispy-forward 1))
-    (when left-p (lispy-different))))
+  (if (region-active-p)
+      (call-interactively #'lispyville-delete)
+    (let ((left-p (cond ((lispy-left-p) t)
+                        ((lispy-right-p) nil)
+                        (t (user-error "Unexpected")))))
+      (lispy-mark-list 1)
+      (call-interactively #'lispyville-delete)
+      (when (lispy-bolp) (lispy-delete-backward 1))
+      (unless (and (lispy-right-p)
+                   (or (not left-p)
+                       (save-excursion
+                         (forward-char)
+                         (lispy-right-p))))
+        (lispy-forward 1))
+      (when left-p (backward-list)))))
 
 ;;* Lispyville
 (defmacro dtm-lispyville-smart-remap (evil-fn lispy-fn)
