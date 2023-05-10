@@ -742,10 +742,11 @@ Also used by `org-modern-mode' to calculate heights.")
     '(tree-sitter-hl-face:type.builtin :inherit font-lock-warning-face :weight bold)))
 
 (when (modulep! :lang emacs-lisp)
-  ;; REVIEW fix the doom custom "Section" imenu entry
+  ;; `lispy-outline' style regexes
+  (setq +emacs-lisp-outline-regexp "^;;\\(?:;[^#]\\|\\*+\\)")
   (advice-add '+emacs-lisp-extend-imenu-h :after
               (cmd! (cl-replace imenu-generic-expression
-                                '(("Section" "^[ \t]*;;[;*]+[ \t]+\\(.+\\)" 1)))))
+                                '(("Section" "^;;\\(?:;[^#]\\|\\*+\\)[ \t]*\\(.+\\)" 1)))))
 
   (add-hook 'emacs-lisp-mode-hook #'dtm-elisp-extend-imenu-h 'append))
 
