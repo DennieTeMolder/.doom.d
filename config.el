@@ -850,6 +850,7 @@ Also used by `org-modern-mode' to calculate heights.")
 
   ;; Make evil tab width same as ESS offset
   (setq-hook! 'ess-mode-hook evil-shift-width ess-indent-offset)
+  (setq-hook! 'inferior-ess-mode-hook font-lock-string-face nil)
   (add-hook 'inferior-ess-mode-hook #'dtm-ess-modeline-show-busy)
 
   ;; Recenter buffer in window after sending region (SPC m ,)
