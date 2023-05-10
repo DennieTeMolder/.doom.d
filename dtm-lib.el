@@ -449,7 +449,6 @@ Intended as :override advice for `elisp-refs--find-file'."
   "Wrap `lispy-mark-car' to also work on sharp-quoted symbols."
   (interactive)
   (letf! ((defun looking-at (regexp)
-            "HACK add the sharp symbol to the regex (potential side-effects)."
             (funcall looking-at (string-replace "'" "#'" regexp))))
     (lispy-mark-car)))
 
@@ -476,8 +475,7 @@ If REGION is active, call `dtm/lispy-mark-car' instead."
            (if (lispy-right-p)
                (forward-char -1)
              (lispyville-backward-atom-end))))
-        (t
-         (error "Unexpected"))))
+        (t (user-error "Unexpected"))))
 
 (defun dtm/lispy-yank-list ()
   "Copy region or result of `lispy-mark-list' to kill-ring."
@@ -521,11 +519,12 @@ If REGION is active, call `dtm/lispy-mark-car' instead."
     (lispy-ace-symbol-replace arg)))
 
 (defun dtm/lispy-eval-and-insert (arg)
-  "Call `lispy-eval-and-comment', if arg != 1 `lispy-eval-and-insert'."
+  "ARG = 1 `lispy-eval-and-comment', ARG = 0/4 `lispy-eval-and-replace'.
+Else call `lispy-eval-and-insert'."
   (interactive "p")
-  (if (eq arg 1)
-      (lispy-eval-and-comment)
-    (lispy-eval-and-insert)))
+  (cond ((eq arg 1) (lispy-eval-and-comment))
+        ((memq arg '(0 4)) (lispy-eval-and-replace))
+        (t (lispy-eval-and-insert))))
 
 ;;* Lispyville
 (defmacro dtm-lispyville-smart-remap (evil-fn lispy-fn)

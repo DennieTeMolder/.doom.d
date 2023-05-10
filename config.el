@@ -781,16 +781,18 @@ Also used by `org-modern-mode' to calculate heights.")
   ;; Add/move around some of the keys to be more Evil
   (map! :map lispy-mode-map
         "TAB" #'special-lispy-tab
-        "C-l" #'special-lispy-view
+        "C-l" #'lispy-view
+        "A"   #'special-lispy-ace-subword
         "E"   #'special-lispy-eval-other-window
-        "G"   #'special-lispy-ace-char
         "J"   #'special-lispy-move-down
         "K"   #'special-lispy-move-up
-        "Q"   #'special-lispy-ace-subword
         "Y"   #'special-lispy-clone
         "g"   #'special-lispy-other-mode
+        "G"   #'special-lispy-beginning-of-defun
         "o"   #'special-lispy-different
-        "p"   #'special-lispy-paste))
+        "p"   #'special-lispy-paste
+        "s"   #'special-lispy-outline-next
+        "w"   #'special-lispy-outline-prev))
 
 (after! lispyville
   ;; Custom (atom-movement t) key-theme
