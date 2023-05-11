@@ -892,6 +892,15 @@ Equivalent to 's' at the R prompt."
       (ess-send-string (ess-get-process) "0")
     (ess-send-string (ess-get-process) "s")))
 
+(defun dtm-ess-lookup-documentation (identifier)
+  "Wrapper for `ess-display-help-on-object' to improve `+lookup/documentation'.
+Doesn't prompt (see `+lookup--run-handler'), indicates if process is busy."
+  (condition-case err
+      (ess-display-help-on-object identifier)
+    (user-error (progn
+                  (message "%s" (error-message-string err))
+                  'deferred))))
+
 ;;** dtm-ess-r-plot
 (defvar dtm-ess-r-plot-dummy-name "*R plot*"
   "Name of the placeholder plot buffer.")
