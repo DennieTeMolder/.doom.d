@@ -865,7 +865,7 @@ Also used by `org-modern-mode' to calculate heights.")
     (advice-add symbol :after #'dtm-lagging-point-reset))
 
   (set-lookup-handlers! '(ess-r-mode inferior-ess-r-mode ess-julia-mode)
-    :documentation #'dtm-ess-lookup-documentation)
+    :documentation #'dtm/ess-lookup-documentation)
 
   ;; Add company-R-library backend
   ;; REVIEW https://github.com/doomemacs/doomemacs/pull/6455
