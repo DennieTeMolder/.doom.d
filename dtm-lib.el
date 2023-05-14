@@ -168,11 +168,6 @@ Use for `after-change-major-mode-hook'."
                "\n"))
      'face 'doom-dashboard-banner)))
 
-(defun dtm-word-wrap-mode-no-fill ()
-  "Enable `+word-wrap-mode' with `+word-wrap-fill-style' set to nil."
-  (setq-local +word-wrap-fill-style nil)
-  (+word-wrap-mode 1))
-
 ;;* Workspaces/perspectives
 (defun dtm-workspace-switch-maybe (name)
   "Switch to workspace NAME if not already current"
@@ -1353,6 +1348,12 @@ Relative lines are more performant, but fail with folded/wrapped lines"
           (not display-line-numbers)))
   (when (xor display-line-numbers display-line-numbers-mode)
     (display-line-numbers-mode 'toggle)))
+
+(defun dtm/word-wrap-mode-no-fill ()
+  "Enable `+word-wrap-mode' without wrapping at `fill-column'."
+  (interactive)
+  (setq-local +word-wrap-fill-style nil)
+  (+word-wrap-mode 1))
 
 ;;** Move-splitter
 (defun dtm/move-splitter-left (arg)

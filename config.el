@@ -732,7 +732,7 @@ Also used by `org-modern-mode' to calculate heights.")
     "C-l" #'comint-clear-buffer))
 
 (after! compile
-  (add-hook 'compilation-mode-hook #'dtm-word-wrap-mode-no-fill)
+  (add-hook 'compilation-mode-hook #'dtm/word-wrap-mode-no-fill)
   (add-hook 'compilation-mode-hook #'dtm-conda-env-guess-maybe))
 
 (after! tree-sitter
