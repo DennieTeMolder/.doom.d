@@ -723,14 +723,13 @@ Also used by `org-modern-mode' to calculate heights.")
 (after! comint
   (setq ansi-color-for-comint-mode 'filter
         comint-scroll-to-bottom-on-input t
-        comint-scroll-to-bottom-on-output t
-        comint-move-point-for-output t)
+        comint-scroll-to-bottom-on-output t)
 
-  (add-hook 'comint-mode-hook #'dtm-word-wrap-mode-no-fill)
+  (setq-hook! 'comint-mode-hook +word-wrap-fill-style nil)
 
   ;; Shell style clear REPL binding
-  (map! :map comint-mode-map
-        "C-l" #'comint-clear-buffer))
+  (general-evil-define-key '(n i) 'comint-mode-map
+    "C-l" #'comint-clear-buffer))
 
 (after! compile
   (add-hook 'compilation-mode-hook #'dtm-word-wrap-mode-no-fill)
