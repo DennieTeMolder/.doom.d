@@ -1343,12 +1343,12 @@ Ref: https://emacs.stackexchange.com/a/33344"
   "Toggle `display-line-numbers' on or off. With C-u toggle visual lines.
 Relative lines are more performant, but fail with folded/wrapped lines"
   (interactive)
-  (setq display-line-numbers
-        (if current-prefix-arg
-            (if (eq 'visual display-line-numbers) t 'visual)
-          (not display-line-numbers)))
-  (when (xor display-line-numbers display-line-numbers-mode)
-    (display-line-numbers-mode 'toggle)))
+  (let ((type (if current-prefix-arg
+                  (if (eq 'visual display-line-numbers) t 'visual)
+                (not display-line-numbers))))
+    (when (xor type display-line-numbers-mode)
+      (display-line-numbers-mode 'toggle))
+    (setq display-line-numbers type)))
 
 (defun dtm/word-wrap-mode-no-fill ()
   "Enable `+word-wrap-mode' without wrapping at `fill-column'."
