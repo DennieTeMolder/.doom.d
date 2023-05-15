@@ -1254,7 +1254,8 @@ Meant for hooking onto `prog-mode-hook' and `text-mode-hook'."
     [C-return] #'dtm/gptel-send-buffer)
   (setq default-directory (or dtm-gptel-dir default-directory))
   (visual-line-mode 1)
-  (flycheck-mode 0))
+  (flycheck-mode 0)
+  (evil-insert-state))
 
 (defun dtm/gptel-send-buffer ()
   "Scroll to the end and call `gptel-send' to ensure the full buffer is send."

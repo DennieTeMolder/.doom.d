@@ -11,8 +11,9 @@ emacs-lisp-mode
 
 (__ ";;; " (file-name-nondirectory (buffer-file-name)) " -*- lexical-binding: t; -*-" n
     (ignore (setq lexical-binding t)))
-(auto ";;;###autoload")
 (pt "(point)")
+(pkg ";;;###package")
+(message "(message \"!! %s\" " r ")" q)
 (lambda "(lambda (" p ")" n> r> ")")
 (var "(defvar " p "\n  \"" p "\")")
 (local "(defvar-local " p "\n  \"" p "\")")
