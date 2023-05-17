@@ -522,10 +522,12 @@ Also used by `org-modern-mode' to calculate heights.")
 ;; Keys bound in after! org seem to get overwritten, this works
 (after! org-keys
   (map! :map org-mode-map
-        "C-c ]" #'org-cite-insert
-        "C-c [" nil                     ; `org-agenda-file-to-front'
-        :nv "C-j" #'+org/return
-        :desc "Toggle pretty visuals" :localleader "v" #'+org-pretty-mode))
+        [remap org-edit-special] #'dtm/org-edit-special
+        :n "C-j"                 #'+org/return
+        "C-c ]"                  #'org-cite-insert
+        "C-c ["                  nil
+        (:localleader
+         :desc "Toggle pretty visuals" "v" #'+org-pretty-mode)))
 
 ;; Org-cite settings
 (after! oc
