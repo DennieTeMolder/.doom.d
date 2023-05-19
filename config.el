@@ -772,6 +772,9 @@ Also used by `org-modern-mode' to calculate heights.")
   ;; Prettier function evaluation
   (setq lispy-eval-display-style 'overlay)
 
+  (advice-add 'lispy-goto-symbol :before (cmd! (evil-set-jump)))
+  (advice-add 'lispy-goto-symbol :after #'evil-insert-state)
+
   ;; Overwrite `lispy-occur' kbind (we drop the swiper package anyway)
   (lispy-define-key lispy-mode-map "y" #'dtm/lispy-yank-list)
   (lispy-define-key lispy-mode-map "c" #'dtm/lispy-change-symbol)
