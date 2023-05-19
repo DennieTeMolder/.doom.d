@@ -112,6 +112,7 @@ A larger W/H-RATIO favours splitting above over left."
 
 (defun dtm-ace-select-other-window ()
   "Wrap `ace-select-window' to ensure an other-window exists."
+  (require 'ace-window)
   (or (when (let ((this-command 'ace-select-window))
               (eq 1 (length (aw-window-list))))
         (dtm/split-window-optimally))
