@@ -1388,6 +1388,19 @@ Relative lines are more performant, but fail with folded/wrapped lines"
   (setq-local +word-wrap-fill-style nil)
   (+word-wrap-mode 1))
 
+(defun dtm/list-loaded-files ()
+  "List loaded elisp files (`load-history'). C-u retains load order."
+  (interactive)
+  (with-current-buffer (get-buffer-create "*loaded-files*")
+    (erase-buffer)
+    (pop-to-buffer (current-buffer))
+    (let ((files (seq-filter #'stringp (mapcar #'car load-history))))
+      (insert (format "%s elisp files loaded:\n" (length files)))
+      (unless current-prefix-arg
+        (setq files (sort files #'string-lessp)))
+      (dolist (file files) (insert "\n" file)))
+    (goto-char (point-min))))
+
 ;;** Move-splitter
 (defun dtm/move-splitter-left (arg)
   "Move window splitter left. Ref: hydra-examples"
