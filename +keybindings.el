@@ -39,9 +39,11 @@
       ;; Buffers
       (:prefix "b"
        :desc "Move buffer to workspace" "TAB" #'dtm/buffer-move-to-workspace
-                                        "D"   #'kill-buffer-and-window
-       :desc "Show undo history"        "h"   #'vundo
-       :desc "Switch orphan buffer"     "o"   #'dtm/switch-orphan-buffer)
+       :desc "Kill buffer and window"   "D"   #'kill-buffer-and-window
+       :desc "Switch hidden buffer"     "h"   #'dtm/switch-orphan-buffer
+       :desc "Other window move"        "o"   #'dtm/buffer-move-to-window
+       :desc "Undo history"             "u"   #'vundo
+       :desc "Save buffer as root"      "U"   #'doom/sudo-save-buffer)
 
       ;; Help
       "h t" #'dtm/consult-theme

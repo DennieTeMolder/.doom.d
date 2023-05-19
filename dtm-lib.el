@@ -110,6 +110,22 @@ A larger W/H-RATIO favours splitting above over left."
     (select-window (split-window (selected-window) nil
                                  (if (< w/h w/h-ratio) 'below 'right)))))
 
+(defun dtm-ace-select-other-window ()
+  "Wrap `ace-select-window' to ensure an other-window exists."
+  (or (when (let ((this-command 'ace-select-window))
+              (eq 1 (length (aw-window-list))))
+        (dtm/split-window-optimally))
+      (ace-select-window)))
+
+(defun dtm/buffer-move-to-window (from-win to-win)
+  "Move the buffer in window FROM-WIN to window TO-WIN."
+  (interactive (list (selected-window) (dtm-ace-select-other-window)))
+  (select-window from-win)
+  (with-selected-window to-win
+    (switch-to-buffer (window-buffer from-win)))
+  (kill-current-buffer)
+  (select-window to-win))
+
 ;;* Theme recommendations
 (defun dtm--theme-which-inactive (theme1 theme2)
   "Return THEME1 of not currently active, else return THEME2"
