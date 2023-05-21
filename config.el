@@ -586,12 +586,16 @@ Also used by `org-modern-mode' to calculate heights.")
         :n [right] #'org-tree-slide-move-next-tree
         :n [C-up]  #'org-tree-slide-content))
 
-;; Org-download settings
 (after! org-download
-  (setq org-download-method 'dtm-org-download-method
-        org-download-link-format "[[file:%s]]\n"))
+  ;; BUG the doom custom download: link-format ignores the WIDTH attribute
+  (setq org-download-link-format "[[file:%s]]\n"
+        org-download-abbreviate-filename-function #'file-relative-name
+        org-download-file-format-function #'dtm-org-download-file-format
+        org-download-method #'directory
+        org-download-image-dir "Images/"
+        org-download-timestamp "__%Y%m%d%H%M%S"
+        org-download-heading-lvl nil))
 
-;; Org-pomodoro settings
 (after! org-pomodoro
   (setq org-pomodoro-format "%s"
         org-pomodoro-manual-break t

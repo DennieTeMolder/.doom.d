@@ -704,26 +704,14 @@ Intended as after advice for `org-toggle-pretty-entities'."
   (org-appear-mode (if org-pretty-entities +1 -1)))
 
 ;;* Org-download
-(defun dtm-org-download-method (link)
-  "This is a helper function for `org-download-method'.
-It creates the \"./Image\" folder within the same directory of the org file.
-File is named as: org-file + timestamp + download-file-name
-
-Based on drestivo's answer to this post:
-https://github.com/abo-abo/org-download/issues/40.
-Which was based off this commit message:
-https://github.com/abo-abo/org-download/commit/137c3d2aa083283a3fc853f9ecbbc03039bf397b"
-  (let* ((filename (file-name-nondirectory
-                    (car (url-path-and-query
-                          (url-generic-parse-url link)))))
-         (filename-with-timestamp
-          (format "%s%s--%s.%s"
-                  (file-name-base (buffer-file-name))
-                  (format-time-string org-download-timestamp)
-                  (file-name-sans-extension filename)
-                  (file-name-extension filename))))
-    (file-name-concat (dtm-ensure-dir "Images")
-                      filename-with-timestamp)))
+(defun dtm-org-download-file-format (filename)
+  "Prefix FILENAME with `buffer-file-name' and `org-download-timestamp'."
+  (unless (buffer-file-name)
+    (user-error "No file on disk, save the current buffer first"))
+  (format "%s%s--%s"
+          (file-name-base (buffer-file-name))
+          (format-time-string org-download-timestamp)
+          filename))
 
 ;;* Org-tree-slide
 (defun dtm-org-tree-slide-setup-h ()
