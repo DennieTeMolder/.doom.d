@@ -102,30 +102,24 @@ If NAME is not provided `buffer-file-name' is used."
 ;;* Window functions
 (defun dtm/split-window-optimally (&optional w/h-ratio)
   "Split window based on width to height ratio (including margins/fringes/bars).
-A larger W/H-RATIO favours splitting above over left."
+When W/H is lower then W/H-RATIO split below, else split right."
   (interactive)
   (or w/h-ratio (setq w/h-ratio 1.5))
-  (let ((w/h (/ (float (window-pixel-width))
-                (window-pixel-height))))
-    (select-window (split-window (selected-window) nil
-                                 (if (< w/h w/h-ratio) 'below 'right)))))
+  (let ((type (if (< (window-pixel-width) (* w/h-ratio (window-pixel-height)))
+                  'below 'right)))
+    (select-window (split-window (selected-window) nil type))))
 
-(defun dtm-ace-select-other-window ()
-  "Wrap `ace-select-window' to ensure an other-window exists."
-  (require 'ace-window)
-  (or (when (let ((this-command 'ace-select-window))
-              (eq 1 (length (aw-window-list))))
-        (dtm/split-window-optimally))
-      (ace-select-window)))
-
-(defun dtm/buffer-move-to-window (from-win to-win)
+(defun dtm/buffer-move-to-window ()
   "Move the buffer in window FROM-WIN to window TO-WIN."
-  (interactive (list (selected-window) (dtm-ace-select-other-window)))
-  (select-window from-win)
-  (with-selected-window to-win
-    (switch-to-buffer (window-buffer from-win)))
-  (kill-current-buffer)
-  (select-window to-win))
+  (interactive)
+  (require 'ace-window)
+  (when (let ((this-command 'ace-select-window))
+          (eq 1 (length (aw-window-list))))
+    (save-selected-window (dtm/split-window-optimally)))
+  (let ((aw-ignore-current t)
+        (aw-dispatch-when-more-than 2)
+        aw-dispatch-always)
+    (aw-select "Move Buffer" #'aw-move-window)))
 
 ;;* Theme recommendations
 (defun dtm-theme-which-inactive (theme1 theme2)

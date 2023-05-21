@@ -418,6 +418,11 @@
 (after! helpful
   (setq helpful-max-buffers 10))
 
+(after! ace-window
+  (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)
+        aw-minibuffer-flag t)
+  (custom-set-faces! '(aw-leading-char-face :inherit highlight :foreground nil)))
+
 ;;* Core functionality extensions
 ;; Add colours to info pages to make them more readable
 (use-package! info-colors
