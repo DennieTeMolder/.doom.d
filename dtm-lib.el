@@ -110,16 +110,15 @@ When W/H is lower then W/H-RATIO split below, else split right."
     (select-window (split-window (selected-window) nil type))))
 
 (defun dtm/buffer-move-to-window ()
-  "Move the buffer in window FROM-WIN to window TO-WIN."
+  "Move the current buffer to the window of `aw-select'."
   (interactive)
   (require 'ace-window)
-  (when (let ((this-command 'ace-select-window))
-          (eq 1 (length (aw-window-list))))
-    (save-selected-window (dtm/split-window-optimally)))
-  (let ((aw-ignore-current t)
+  (let ((this-command 'ace-select-window)
         (aw-dispatch-when-more-than 2)
-        aw-dispatch-always)
-    (aw-select "Move Buffer" #'aw-move-window)))
+        (aw-dispatch-always nil))
+    (when (eq 1 (length (aw-window-list)))
+      (save-selected-window (dtm/split-window-optimally)))
+    (aw-select " Ace - Move Buffer" #'aw-move-window)))
 
 ;;* Theme recommendations
 (defun dtm-theme-which-inactive (theme1 theme2)
