@@ -54,11 +54,11 @@
 ;; Settings for smart defaults in `dtm-recommend-theme' & `dtm/consult-theme'
 (defvar dtm-first-hour-of-day 8)
 (defvar dtm-last-hour-of-day 17)
-(defvar dtm-day-theme 'doom-one-light)
-(defvar dtm-night-theme 'doom-vibrant)
+(defvar dtm-light-theme 'doom-one-light)
+(defvar dtm-dark-theme 'doom-vibrant)
 (defvar dtm-presentation-theme 'doom-tomorrow-day)
-(defvar dtm-solarized-theme 'doom-flatwhite)
-(defvar dtm-dark-theme 'doom-monokai-ristretto)
+(defvar dtm-alternative-light-theme 'doom-flatwhite)
+(defvar dtm-alternative-dark-theme 'doom-monokai-ristretto)
 
 ;; Load theme based on custom function
 (setq doom-flatwhite-no-highlight-variables t

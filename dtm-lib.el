@@ -128,7 +128,7 @@ A larger W/H-RATIO favours splitting above over left."
   (select-window to-win))
 
 ;;* Theme recommendations
-(defun dtm--theme-which-inactive (theme1 theme2)
+(defun dtm-theme-which-inactive (theme1 theme2)
   "Return THEME1 of not currently active, else return THEME2"
   (if (eq theme1 (car custom-enabled-themes)) theme2 theme1))
 
@@ -138,8 +138,8 @@ A larger W/H-RATIO favours splitting above over left."
      dtm-presentation-theme
    (let ((hour (string-to-number (substring (current-time-string) 11 13))))
      (if (member hour (number-sequence dtm-first-hour-of-day dtm-last-hour-of-day))
-         (dtm--theme-which-inactive dtm-day-theme dtm-solarized-theme)
-       (dtm--theme-which-inactive dtm-night-theme dtm-dark-theme)))))
+         (dtm-theme-which-inactive dtm-light-theme dtm-alternative-light-theme)
+       (dtm-theme-which-inactive dtm-dark-theme dtm-alternative-dark-theme)))))
 
 (defun dtm/consult-theme ()
   "Call `consult-theme' interactively with `dtm-recommend-theme' as default.
