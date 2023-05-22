@@ -1040,13 +1040,13 @@ Relies on using 'dtm::print_plot()' inside of R."
 (defun dtm-ess-r-plot-reload-a (orig-fn &rest args)
   "Reload R plot display if active and attached to `ess-current-process-name'.
 Intended as :around advice for `inferior-ess-reload'."
-  (and (dtm-ess-r-plot-running-p)
-       (ess-force-buffer-current)
-       (string= ess-current-process-name dtm-ess-r-plot-process-name)
-       (let ((running-p (dtm-ess-r-plot-running-p)))
-         (when running-p (dtm/ess-r-plot-toggle))
-         (apply orig-fn args)
-         (when running-p (dtm/ess-r-plot-toggle)))))
+  (inferior-ess-force)
+  (let ((running-p (and (dtm-ess-r-plot-running-p)
+                        (string= ess-current-process-name
+                                 dtm-ess-r-plot-process-name))))
+    (when running-p (dtm/ess-r-plot-toggle))
+    (apply orig-fn args)
+    (when running-p (dtm/ess-r-plot-toggle))))
 
 ;;** dtm-with-lagging-point
 (defvar dtm-lagging-point-actual nil
