@@ -208,10 +208,7 @@
 (after! text-mode
   ;; Disable visual line mode by default
   (remove-hook 'text-mode-hook #'visual-line-mode)
-  (remove-hook 'text-mode-hook #'+word-wrap-mode)
-
-  (general-evil-define-key '(normal insert) 'text-mode-map
-    "M-o" #'dtm/spell-correct-previous))
+  (remove-hook 'text-mode-hook #'+word-wrap-mode))
 
 ;;* Core functionality modifications
 (after! evil
