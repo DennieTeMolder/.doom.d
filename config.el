@@ -180,6 +180,10 @@
 ;;* General Doom Settings
 (setq doom-scratch-initial-major-mode t)
 
+;; Report package load times when running 'emacs --debug-init'
+(when init-file-debug
+  (add-hook 'doom-after-init-hook #'use-package-report))
+
 ;; Don't recognise non file visiting buffers as packages
 (defadvice! dtm-base-buffer-file-name ()
   :before-while #'+emacs-lisp--in-package-buffer-p
