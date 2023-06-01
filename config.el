@@ -864,8 +864,8 @@ Also used by `org-modern-mode' to calculate heights.")
         ess-auto-width 'window
         ess-style 'RStudio)
 
-  ;; Make evil tab width same as ESS offset
-  (setq-hook! 'ess-mode-hook evil-shift-width ess-indent-offset)
+  ;; Setting `tab-with' also affects `evil-shift-width' (doom specific)
+  (setq-hook! 'ess-mode-hook tab-width ess-indent-offset)
   (setq-hook! 'inferior-ess-mode-hook font-lock-string-face nil)
   (add-hook 'inferior-ess-mode-hook #'dtm-ess-modeline-show-busy)
 
