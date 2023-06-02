@@ -600,12 +600,44 @@ Ref: `ispell-change-dictionary', `spell-fu-dictionary-add'"
     (spell-fu--refresh-cache-table-list)
     (spell-fu--refresh)))
 
+(defun dtm-company-ispell-fu-lookup-words (word &rest _)
+  "Lookup word in `spell-fu-dictionaries' if `company-ispell-dictionary' is unset.
+Can be used to replace `company-ispell--lookup-words' (i.e. via `defalias')."
+  (require 'spell-fu)
+  (let ((dicts (or (and company-ispell-dictionary
+                        (list company-ispell-dictionary))
+                   (mapcar #'spell-fu--words-file spell-fu-dictionaries)
+                   (and ispell-complete-word-dict
+                        (list ispell-complete-word-dict)))))
+    (apply #'nconc (mapcar (lambda (dict) (ispell-lookup-words word dict)) dicts))))
+
+(defun dtm-spell-fu--buffer-as-line-list-a (buffer lines)
+  "Add lines (alnum only) from BUFFER to LINES, returning the updated LINES.
+Use as :override `spell-fu--buffer-as-line-list' advice."
+  (with-current-buffer buffer
+    (save-excursion
+      (goto-char (point-min))
+      (while (not (eobp))
+        (push (replace-regexp-in-string
+               "[^[:alnum:] ]" ""
+               (buffer-substring-no-properties (pos-bol) (pos-eol)))
+              lines)
+        (forward-line 1))))
+  lines)
+
 (defun dtm/spell-correct-previous ()
   "Correct the previous spelling error."
   (interactive)
   (save-excursion
     (+spell/previous-error)
-    (+spell/correct)))
+    (let ((bounds (bounds-of-thing-at-point 'word))
+          (evil-goggles--commands `((,this-command :face isearch-fail)))
+          (evil-goggles-async-duration 10.0))
+      (evil-goggles--show-async-hint (car bounds) (cdr bounds)))
+    (when (let (inhibit-message) (+spell/correct))
+      (message "No corrections found for %s"
+               (funcall ispell-format-word-function (thing-at-point 'word t))))
+    (evil-goggles--vanish)))
 
 ;;* Markdown
 (defun dtm-flycheck-disable-proselint-rmd-h ()

@@ -182,7 +182,7 @@
 
 ;; Report package load times when running 'emacs --debug-init'
 (when init-file-debug
-  (add-hook 'doom-after-init-hook #'use-package-report))
+  (add-hook 'doom-after-init-hook #'use-package-report 110))
 
 ;; Don't recognise non file visiting buffers as packages
 (defadvice! dtm-base-buffer-file-name ()
@@ -478,7 +478,18 @@
 ;; Spell checking
 (after! ispell
   (setq ispell-dictionary "en_GB"
-        ispell-personal-dictionary "~/Nextcloud/Emacs/Dict/default.aspel.en.pws"))
+        ispell-personal-dictionary "~/Nextcloud/Emacs/Dict/default.aspel.en.pws")
+
+  ;; Correct word BEFORE point, 'C-x s' completes word AT point
+  (map! :map text-mode-map :i "M-o" #'dtm/spell-correct-previous))
+
+(after! spell-fu
+  ;; Make spell-fu files compatible w/ `ispell-complete-word-dict' (and linux look)
+  (advice-add 'spell-fu--buffer-as-line-list :override #'dtm-spell-fu--buffer-as-line-list-a))
+
+(after! company-ispell
+  ;; Use `spell-fu-dictionaries' for word completion
+  (defalias 'company-ispell--lookup-words 'dtm-company-ispell-fu-lookup-words))
 
 (after! flycheck
   ;; Select flycheck window when opened
