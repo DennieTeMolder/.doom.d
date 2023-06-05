@@ -484,6 +484,10 @@
   (map! :map text-mode-map :i "M-o" #'dtm/spell-correct-previous))
 
 (after! spell-fu
+  ;; Remove org-block from excluded-faces to enable spell checking in #+CAPTION blocks
+  (when-let ((cell (assq 'org-mode +spell-excluded-faces-alist)))
+    (setcdr cell (cl-remove 'org-block (cdr cell))))
+
   ;; Make spell-fu files compatible w/ `ispell-complete-word-dict' (and linux look)
   (advice-add 'spell-fu--buffer-as-line-list :override #'dtm-spell-fu--buffer-as-line-list-a))
 
@@ -539,10 +543,9 @@ Also used by `org-modern-mode' to calculate heights.")
 ;; Keys bound in after! org seem to get overwritten, this works
 (after! org-keys
   (map! :map org-mode-map
-        [remap org-edit-special] #'dtm/org-edit-special
-        :n "C-j"                 #'+org/return
-        "C-c ]"                  #'org-cite-insert
-        "C-c ["                  nil
+        :n "C-j"   #'+org/return
+        :i "C-c ]" #'org-cite-insert
+        :g "C-c [" nil
         (:localleader
          :desc "Toggle pretty visuals" "v" #'+org-pretty-mode)))
 

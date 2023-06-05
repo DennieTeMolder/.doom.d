@@ -76,6 +76,39 @@ This is achieved by adding a rule to `display-buffer-alist'."
       (push rule +popup--display-buffer-alist)))
   t)
 
+;;* Org-mode
+(defun dtm-org-at-keyword-p ()
+  "Return non-nil if point is at a #+KEYWORD: line."
+  (string-match org-keyword-regexp (buffer-substring-no-properties (bol) (eol))))
+
+(defun dtm-org-edit-keyword ()
+  "Narrow to keyword value and fill. This makes it easy to edit long lines."
+  (when (dtm-org-at-keyword-p)
+    (beginning-of-line)
+    (search-forward ":")
+    (forward-to-word 1)
+    (insert "\n")
+    (narrow-to-region (bol) (eol))
+    (org-fill-paragraph)
+    (add-hook 'org-ctrl-c-ctrl-c-hook #'dtm-org-edit-keyword-finalize nil 'local)
+    (message (substitute-command-keys
+              "Press \\[org-ctrl-c-ctrl-c] to commit your changes."))))
+
+(defun dtm-org-edit-keyword-finalize ()
+  "Collect new keyword value and widen buffer."
+  (when (buffer-narrowed-p)
+    (join-line nil (point-min) (point-max))
+    (widen)
+    (join-line)
+    (recenter)
+    (remove-hook 'org-ctrl-c-ctrl-c-hook #'dtm-org-edit-keyword-finalize 'local)))
+
+(defun dtm/org-edit-special ()
+  "Modified version of `org-edit-special' that also works on #+KEYWORDS:."
+  (interactive)
+  (unless (dtm-org-edit-keyword)
+    (call-interactively #'org-edit-special)))
+
 ;;* Org-roam
 (defvar dtm-org-roam-old-slug nil)
 
