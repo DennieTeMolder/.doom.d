@@ -3,12 +3,11 @@
 ;;* Undefined builtin capture-names
 (defface tree-sitter-hl-face:float
   '((t :inherit tree-sitter-hl-face:number))
-  "Face for floats."
+  "Face for floating point numbers."
   :group 'tree-sitter-hl-faces)
 
 (defface tree-sitter-hl-face:boolean
-  '((t :inherit font-lock-warning-face
-     :weight bold))
+  '((t :inherit tree-sitter-hl-face:type.builtin))
   "Face for booleans."
   :group 'tree-sitter-hl-faces)
 
@@ -24,7 +23,7 @@
 
 (defface tree-sitter-hl-face:keyword.function
   '((t :inherit font-lock-keyword-face))
-  "Face for repeats (for, while)."
+  "Face for function arguments."
   :group 'tree-sitter-hl-faces)
 
 (defface tree-sitter-hl-face:namespace
