@@ -11,6 +11,10 @@
       :i "C-x C-s" #'dtm/tempel-complete-always
       :v "C-x C-s" #'tempel-insert
       :i "C-x C-k" #'dtm/company-manual-dict-ispell
+      :i "C-x s"   #'dtm/spell-correct-previous
+
+      ;; Create parity with spell-fu highlighting
+      [remap ispell-word] #'dtm/spell-correct
 
       ;; Make "Z" bindings only kill buffers not the session
       :n "ZQ" #'kill-buffer-and-window

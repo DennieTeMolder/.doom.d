@@ -480,7 +480,7 @@
   (setq ispell-dictionary "en_GB"
         ispell-personal-dictionary "~/Nextcloud/Emacs/Dict/default.aspel.en.pws")
 
-  ;; Correct word BEFORE point, 'C-x s' completes word AT point
+  ;; Correct word BEFORE point (also bound to 'C-x s'), 'C-x C-k' completes word AT point
   (map! :map text-mode-map :i "M-o" #'dtm/spell-correct-previous))
 
 (after! spell-fu

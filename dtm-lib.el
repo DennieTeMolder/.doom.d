@@ -636,18 +636,42 @@ Can be used to replace `company-ispell--lookup-words' (i.e. via `defalias')."
     (unless (company-manual-begin)
       (message "No completions found in %s" company-backends))))
 
+(defun dtm-spell-fu-bounds-word-at-point ()
+  "Return the bounds of word at the current point or nil.
+Based on `spell-fu--word-at-point'."
+  (let ((point-init (point))
+        (pos-beg (pos-bol))
+        (pos-end (pos-eol)))
+    (save-excursion
+      (goto-char pos-beg)
+      (catch 'result
+        (with-syntax-table spell-fu-syntax-table
+          (save-match-data
+            (while (re-search-forward spell-fu-word-regexp pos-end t)
+              (when (and (<= (match-beginning 0) point-init) (<= point-init (match-end 0)))
+                (throw 'result (cons (match-beginning 0) (match-end 0)))))))
+        (throw 'result nil)))))
+
+(defun dtm/spell-correct ()
+  "Wrap `+spell/correct' to use `dtm-spell-fu-bounds-word-at-point'."
+  (interactive)
+  (letf! ((defun bounds-of-thing-at-point (&rest _)
+            (dtm-spell-fu-bounds-word-at-point))
+          (defun thing-at-point (&rest _)
+            (when-let ((bounds (dtm-spell-fu-bounds-word-at-point)))
+              (buffer-substring-no-properties (car bounds) (cdr bounds)))))
+    (+spell/correct)))
+
 (defun dtm/spell-correct-previous ()
-  "Correct the previous spelling error."
+  "Correct the first spelling error before word at point."
   (interactive)
   (save-excursion
     (+spell/previous-error)
-    (let ((bounds (bounds-of-thing-at-point 'word))
+    (let ((bounds (dtm-spell-fu-bounds-word-at-point))
           (evil-goggles--commands `((,this-command :face isearch-fail)))
           (evil-goggles-async-duration 10.0))
       (evil-goggles--show-async-hint (car bounds) (cdr bounds)))
-    (when (let (inhibit-message) (+spell/correct))
-      (message "No corrections found for %s"
-               (funcall ispell-format-word-function (thing-at-point 'word t))))
+    (dtm/spell-correct)
     (evil-goggles--vanish)))
 
 ;;* Markdown
