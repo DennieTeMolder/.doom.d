@@ -600,17 +600,6 @@ Ref: `ispell-change-dictionary', `spell-fu-dictionary-add'"
     (spell-fu--refresh-cache-table-list)
     (spell-fu--refresh)))
 
-(defun dtm-company-ispell-fu-lookup-words (word &rest _)
-  "Lookup word in `spell-fu-dictionaries' if `company-ispell-dictionary' is unset.
-Can be used to replace `company-ispell--lookup-words' (i.e. via `defalias')."
-  (require 'spell-fu)
-  (let ((dicts (or (and company-ispell-dictionary
-                        (list company-ispell-dictionary))
-                   (mapcar #'spell-fu--words-file spell-fu-dictionaries)
-                   (and ispell-complete-word-dict
-                        (list ispell-complete-word-dict)))))
-    (apply #'nconc (mapcar (lambda (dict) (ispell-lookup-words word dict)) dicts))))
-
 (defun dtm-spell-fu--buffer-as-line-list-a (buffer lines)
   "Add lines (alnum only) from BUFFER to LINES, returning the updated LINES.
 Use as :override `spell-fu--buffer-as-line-list' advice."
@@ -624,6 +613,28 @@ Use as :override `spell-fu--buffer-as-line-list' advice."
               lines)
         (forward-line 1))))
   lines)
+
+(defun dtm-company-ispell-fu-lookup-words (word &rest _)
+  "Lookup word in `spell-fu-dictionaries' if `company-ispell-dictionary' is unset.
+Can be used to replace `company-ispell--lookup-words' (i.e. via `defalias')."
+  (require 'spell-fu)
+  (let ((dicts (or (and company-ispell-dictionary
+                        (list company-ispell-dictionary))
+                   (and spell-fu-dictionaries
+                        (mapcar #'spell-fu--words-file spell-fu-dictionaries))
+                   (list (or ispell-complete-word-dict
+                             ispell-alternate-dictionary)))))
+    (apply #'nconc (mapcar (lambda (dict) (ispell-lookup-words word dict)) dicts))))
+
+(defun dtm/company-manual-dict-ispell ()
+  "Call `company-dict' and `company-ispell', based on `spell-fu-faces-include'."
+  (interactive)
+  (require 'spell-fu)
+  (let ((company-backends (list (if (spell-fu--check-faces-at-point (point))
+                                    '(company-ispell company-dict)
+                                  '(company-dict :separate company-ispell)))))
+    (unless (company-manual-begin)
+      (message "No completions found in %s" company-backends))))
 
 (defun dtm/spell-correct-previous ()
   "Correct the previous spelling error."
