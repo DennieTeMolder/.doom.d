@@ -510,7 +510,7 @@ Also used by `org-modern-mode' to calculate heights.")
         org-indent-indentation-per-level 1
         org-list-demote-modify-bullet '(("+" . "-") ("-" . "+") ("*" . "+"))
         org-use-property-inheritance t  ; can cause slowdown when searching
-        org-image-actual-width '(800)   ; default if not ATTR is provided
+        org-image-actual-width '(640)   ; default if no ATTR_ is provided
         org-agenda-start-day nil
         org-agenda-span 14
         org-agenda-time-grid '((daily today require-timed)
@@ -532,6 +532,9 @@ Also used by `org-modern-mode' to calculate heights.")
   (custom-set-faces!
     '(org-ellipsis :foreground nil :background nil :weight regular)
     '(org-headline-done :strike-through t))
+
+  ;; Custom link type [[as_png:<file_name>]] with builtin conversion to .png
+  (push '("as_png" . dtm-org-link-as-png) org-link-abbrev-alist)
 
   ;; Mark tab-navigation through tables as non-repeatable
   (evil-declare-not-repeat 'org-cycle)

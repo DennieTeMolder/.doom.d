@@ -726,6 +726,45 @@ Intended for `markdown-mode-hook'."
                   '(src-block comment-block))
       (org-fill-paragraph))))
 
+(defun dtm-org-link-as-png (tag)
+  "Convert TAG to .png using ImageMagick/convert and return the resulting file.
+The TAG can include an additional nested tag, in which case the result will be
+placed in ./img/$NESTED_TAG/$PATH (as defined by '#+LINK: nested_tag path')
+
+Intended for use in `org-link-abbrev-alist'."
+  (let ((proc-buf (get-buffer-create "*Org:as_png-output*"))
+        (dummy "./your_plot_could_not_be_created.txt")
+        (infile (org-link-expand-abbrev tag))
+        (outfile (concat (file-name-sans-extension
+                          (if-let ((split-at (string-search ":" tag)))
+                              (file-name-concat
+                               "./img"
+                               (substring tag nil split-at)
+                               (substring tag (1+ split-at) nil))
+                            tag))
+                         ".png"))
+        (status 0))
+    (if (not (file-readable-p infile))
+        (setq outfile dummy)
+      (unless (and (file-readable-p outfile)
+                   (file-newer-than-file-p outfile infile))
+        (with-current-buffer proc-buf
+          (goto-char (point-max))
+          (let ((msg (format "Org[as_png]: Converting '%s' -> '%s'"
+                             infile outfile)))
+            (message "%s" msg)
+            (insert "\n" msg "\n")))
+        (when-let ((dir (file-name-directory outfile)))
+          (make-directory dir t))
+        (setq status (call-process "convert" nil proc-buf nil
+                                   "-density" "288" infile outfile))))
+    (unless (and (numberp status) (= 0 status))
+      (setq outfile dummy)
+      (with-selected-window (display-buffer proc-buf)
+        (goto-char (point-max))
+        (insert (format "Error, convert exited with status %s\n" status))))
+    outfile))
+
 ;;* Org-modern
 (defun dtm-org-modern-mode-maybe-h ()
   "Activate `org-modern-mode' unless in `doom-emacs-dir'.
