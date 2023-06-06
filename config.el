@@ -811,6 +811,7 @@ Also used by `org-modern-mode' to calculate heights.")
   (lispy-define-key lispy-mode-map "I" #'dtm/lispy-eval-and-insert)
   (lispy-define-key lispy-mode-map "H" #'lispy-slurp-or-barf-left)
   (lispy-define-key lispy-mode-map "L" #'lispy-slurp-or-barf-right)
+  (lispy-define-key lispy-mode-map "P" #'dtm/lispy-paste-before)
 
   ;; Add/move around some of the keys to be more Evil
   (map! :map lispy-mode-map
