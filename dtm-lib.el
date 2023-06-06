@@ -726,15 +726,19 @@ Intended for `markdown-mode-hook'."
                   '(src-block comment-block))
       (org-fill-paragraph))))
 
+(defvar dtm-org-link-as-png-executable 'undefined
+  "Absolute path to the convert program.")
+
+(defvar dtm-org-link-as-png-convert 'undefined
+  "Indicates if `dtm-org-link-as-png' should attempt to convert files.")
+
 (defun dtm-org-link-as-png (tag)
   "Convert TAG to .png using ImageMagick/convert and return the resulting file.
 The TAG can include an additional nested tag, in which case the result will be
 placed in ./img/$NESTED_TAG/$PATH (as defined by '#+LINK: nested_tag path')
 
 Intended for use in `org-link-abbrev-alist'."
-  (let ((proc-buf (get-buffer-create "*Org:as_png-output*"))
-        (dummy "./your_plot_could_not_be_created.txt")
-        (infile (org-link-expand-abbrev tag))
+  (let ((infile (org-link-expand-abbrev tag))
         (outfile (concat (file-name-sans-extension
                           (if-let ((split-at (string-search ":" tag)))
                               (file-name-concat
@@ -742,28 +746,44 @@ Intended for use in `org-link-abbrev-alist'."
                                (substring tag nil split-at)
                                (substring tag (1+ split-at) nil))
                             tag))
-                         ".png"))
-        (status 0))
-    (if (not (file-readable-p infile))
-        (setq outfile dummy)
-      (unless (and (file-readable-p outfile)
-                   (file-newer-than-file-p outfile infile))
-        (with-current-buffer proc-buf
-          (goto-char (point-max))
-          (let ((msg (format "Org[as_png]: Converting '%s' -> '%s'"
-                             infile outfile)))
-            (message "%s" msg)
-            (insert "\n" msg "\n")))
-        (when-let ((dir (file-name-directory outfile)))
-          (make-directory dir t))
-        (setq status (call-process "convert" nil proc-buf nil
-                                   "-density" "288" infile outfile))))
-    (unless (and (numberp status) (= 0 status))
-      (setq outfile dummy)
-      (with-selected-window (display-buffer proc-buf)
-        (goto-char (point-max))
-        (insert (format "Error, convert exited with status %s\n" status))))
-    outfile))
+                         ".png")))
+    (catch 'result
+      ;; Short-circuit if outfile does not need to or can not be generated
+      (if (file-readable-p outfile)
+          (unless (and (file-readable-p infile)
+                       (file-newer-than-file-p infile outfile))
+            (throw 'result outfile))
+        (unless (file-readable-p infile)
+          (throw 'result infile)))
+      ;; Check + set user variables
+      (or (if (eq 'undefined dtm-org-link-as-png-convert)
+              (setq-local dtm-org-link-as-png-convert
+                          (y-or-n-p "Outdated/missing PNG conversions detected, Update?"))
+            dtm-org-link-as-png-convert)
+          (throw 'result (if (file-readable-p outfile) outfile infile)))
+      (or (and (if (eq 'undefined dtm-org-link-as-png-executable)
+                   (setq dtm-org-link-as-png-executable
+                         (executable-find "convert"))
+                 dtm-org-link-as-png-executable)
+               (file-executable-p dtm-org-link-as-png-executable))
+          (error "Error in Org[as_png]: convert program unset or non-executable!"))
+      ;; Execute conversion
+      (let ((msg (format "Org[as_png]: Converting '%s' -> '%s'" infile outfile))
+            (dir (file-name-directory outfile))
+            status)
+        (message "%s" msg)
+        (when dir (make-directory dir t))
+        (with-temp-buffer
+          (insert "\n" msg "\n")
+          (setq status
+                (call-process dtm-org-link-as-png-executable nil (current-buffer) nil
+                              "-density" "250" "-quality" "90"
+                              infile (concat "PNG32:" outfile)))
+          (when (and (numberp status) (= 0 status))
+            (throw 'result outfile))
+          (insert (format "Error, convert exited with status %s" status))
+          (warn (buffer-string))
+          infile)))))
 
 ;;* Org-modern
 (defun dtm-org-modern-mode-maybe-h ()
