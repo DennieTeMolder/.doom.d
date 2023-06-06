@@ -480,6 +480,12 @@
   (setq ispell-dictionary "en_GB"
         ispell-personal-dictionary "~/Nextcloud/Emacs/Dict/default.aspel.en.pws")
 
+  ;; BUG Aspell --run-together marks misspelled words like "wether" as correct
+  (when (string= ispell-program-name "aspell")
+    (delete "--run-together" ispell-extra-args)
+    (delete "--sug-mode=ultra" ispell-extra-args) ; More but slower suggestions
+    (remove-hook 'text-mode-hook #'+spell-remove-run-together-switch-for-aspell-h))
+
   ;; Correct word BEFORE point (also bound to 'C-x s'), 'C-x C-k' completes word AT point
   (map! :map text-mode-map :i "M-o" #'dtm/spell-correct-previous))
 
