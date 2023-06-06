@@ -726,48 +726,40 @@ Intended for `markdown-mode-hook'."
                   '(src-block comment-block))
       (org-fill-paragraph))))
 
-(defvar dtm-org-link-as-png-executable 'undefined
-  "Absolute path to the convert program.")
+;;** Org-link
+(defvar dtm-org-link-convert-p 'ask
+  "Indicates if `dtm-org-link-as-png-convert' should attempt to convert files.")
 
-(defvar dtm-org-link-as-png-convert 'undefined
-  "Indicates if `dtm-org-link-as-png' should attempt to convert files.")
+(defvar dtm-org-link-convert-executable
+  ;; Avoid using the MS Windows command convert.exe .
+  (unless (memq system-type '(ms-dos windows-nt))
+    'executable-find)
+  "Absolute path to the ImageMagick/convert program.")
 
-(defun dtm-org-link-as-png (tag)
-  "Convert TAG to .png using ImageMagick/convert and return the resulting file.
-The TAG can include an additional nested tag, in which case the result will be
-placed in ./img/$NESTED_TAG/$PATH (as defined by '#+LINK: nested_tag path')
-
-Intended for use in `org-link-abbrev-alist'."
-  (let ((infile (org-link-expand-abbrev tag))
-        (outfile (concat (file-name-sans-extension
-                          (if-let ((split-at (string-search ":" tag)))
-                              (file-name-concat
-                               "./img"
-                               (substring tag nil split-at)
-                               (substring tag (1+ split-at) nil))
-                            tag))
-                         ".png")))
-    (catch 'result
-      ;; Short-circuit if outfile does not need to or can not be generated
-      (if (file-readable-p outfile)
-          (unless (and (file-readable-p infile)
-                       (file-newer-than-file-p infile outfile))
-            (throw 'result outfile))
-        (unless (file-readable-p infile)
-          (throw 'result infile)))
-      ;; Check + set user variables
-      (or (if (eq 'undefined dtm-org-link-as-png-convert)
-              (setq-local dtm-org-link-as-png-convert
-                          (y-or-n-p "Outdated/missing PNG conversions detected, Update?"))
-            dtm-org-link-as-png-convert)
-          (throw 'result (if (file-readable-p outfile) outfile infile)))
-      (or (and (if (eq 'undefined dtm-org-link-as-png-executable)
-                   (setq dtm-org-link-as-png-executable
-                         (executable-find "convert"))
-                 dtm-org-link-as-png-executable)
-               (file-executable-p dtm-org-link-as-png-executable))
-          (error "Error in Org[as_png]: convert program unset or non-executable!"))
-      ;; Execute conversion
+(defun dtm-org-link-as-png-maybe (infile outfile)
+  "Convert INFILE to OUTFILE as .png using `dtm-org-link-convert-executable'.
+Controlled by `dtm-org-link-convert-p'. Only runs if INFILE newer then OUTFILE.
+Returns the created file or nil on failure."
+  (setq outfile (concat (file-name-sans-extension outfile) ".png"))
+  (catch 'result
+    ;; Short-circuit if outfile does not need to or can not be generated
+    (unless (and dtm-org-link-convert-p
+                 (file-readable-p infile)
+                 (or (not (file-readable-p outfile))
+                     (file-newer-than-file-p infile outfile)))
+      (throw 'result outfile))
+    ;; Set user variables if they contain special placeholder values
+    (when (eq 'ask dtm-org-link-convert-p)
+      (or (setq-local dtm-org-link-convert-p
+                      (y-or-n-p "Outdated/missing PNG conversions detected, Update?"))
+          (throw 'result outfile)))
+    (when (eq 'executable-find dtm-org-link-convert-executable)
+      (setq dtm-org-link-convert-executable (executable-find "convert")))
+    ;; Check if executable is valid
+    (if (not (and dtm-org-link-convert-executable
+                  (file-executable-p dtm-org-link-convert-executable)))
+        (warn "Org[as_png]: `dtm-org-link-convert-executable' unset or non-executable!")
+      ;; Start conversion
       (let ((msg (format "Org[as_png]: Converting '%s' -> '%s'" infile outfile))
             (dir (file-name-directory outfile))
             status)
@@ -776,14 +768,37 @@ Intended for use in `org-link-abbrev-alist'."
         (with-temp-buffer
           (insert "\n" msg "\n")
           (setq status
-                (call-process dtm-org-link-as-png-executable nil (current-buffer) nil
+                ;; The PNG32 prefix seems to prevent certain colorspace issues
+                (call-process dtm-org-link-convert-executable nil (current-buffer) nil
                               "-density" "250" "-quality" "90"
                               infile (concat "PNG32:" outfile)))
           (when (and (numberp status) (= 0 status))
             (throw 'result outfile))
-          (insert (format "Error, convert exited with status %s" status))
-          (warn (buffer-string))
-          infile)))))
+          (insert (format "Error, '%s' exited with status %s"
+                          dtm-org-link-convert-executable status))
+          (warn (buffer-string)))))
+    ;; No result catched
+    ;; TODO add to list of ignored input files
+    (setq-local
+     dtm-org-link-convert-p
+     (not (y-or-n-p (concat "Conversion to PNG failed, disable all PNG "
+                            "conversions for this buffer?"))))
+    nil))
+
+(defun dtm-org-link-as-png (tag)
+  "Convert TAG to .png using `dtm-org-link-as-png-maybe', always returns a string.
+The TAG can include an additional nested \"linkkey\", in which case the result
+will be placed in ./img/$NESTED_LINKKEY/$NESTED_TAG (as defined by \"#+LINK:\").
+
+Intended for use in `org-link-abbrev-alist'."
+  (or (dtm-org-link-as-png-maybe
+       (org-link-expand-abbrev tag)
+       (if-let ((split-at (string-search ":" tag)))
+           (file-name-concat "./img"
+                             (substring tag nil split-at)
+                             (substring tag (1+ split-at) nil))
+         tag))
+      "/file_could_not_be_converted_to_png.txt"))
 
 ;;* Org-modern
 (defun dtm-org-modern-mode-maybe-h ()
