@@ -132,6 +132,8 @@ markdown-mode
 (src "```{" (p "r") _ (p "name") "}" n q n "```")
 
 ;; Local Variables:
-;; mode: lisp-data
+;; mode: emacs-lisp
 ;; imenu-generic-expression: ((nil "^\\([A-za-z+][A-za-z +-]+\\)" 1))
+;; flycheck-checkers: nil
+;; company-idle-delay: nil
 ;; End:
