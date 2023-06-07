@@ -1,4 +1,4 @@
-;; See `tempo-define-template' for the syntax (use-package tempo)
+;; For syntax see the README, `tempel--element', or `tempo-define-template' (find-library 'tempo)
 fundamental-mode ;; Available everywhere
 
 (today (format-time-string "%Y-%m-%d"))
@@ -9,7 +9,8 @@ lisp-mode emacs-lisp-mode ;; Specify multiple modes
 
 emacs-lisp-mode
 
-(__ ";;; " (file-name-nondirectory (buffer-file-name)) " -*- lexical-binding: t; -*-" n
+(__ ";;; " (file-name-nondirectory (or (buffer-file-name) (buffer-name)))
+    " -*- lexical-binding: t; -*-" n
     (ignore (setq lexical-binding t)))
 (pt "(point)")
 (pkg ";;;###package")
@@ -64,10 +65,13 @@ eshell-mode
 (unl "unless { " p " } { " q " }")
 (unle "unless { " p " } { " p " } { " q " }")
 
+;; BUG prompts or dynamically computed text messes-up tree-sitter in larger R file.
+;; Inserting named fields (s NAME) messes tree-sitter-hl, but no errors appear
 ess-r-mode
 
-(h1 "### " (r "Title") " ------" q)
-(h2 "## " (r "Title") " ------" q)
+(div "------")
+(h1 "### " (r nil) " " (i div) q :post (forward-char 1))
+(h2 "## " (r nil) " " (i div) q :post (forward-char 1))
 (fun p " <- function(" p ") {" n> q n "}")
 (timer "tstart <- Sys.time()" n r "print(Sys.time() - tstart)" n)
 
