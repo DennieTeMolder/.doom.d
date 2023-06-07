@@ -492,10 +492,7 @@
 (after! spell-fu
   ;; Remove org-block from excluded-faces to enable spell checking in #+CAPTION blocks
   (when-let ((cell (assq 'org-mode +spell-excluded-faces-alist)))
-    (setcdr cell (cl-remove 'org-block (cdr cell))))
-
-  ;; Make spell-fu files compatible w/ `ispell-complete-word-dict' (and linux look)
-  (advice-add 'spell-fu--buffer-as-line-list :override #'dtm-spell-fu--buffer-as-line-list-a))
+    (setcdr cell (cl-remove 'org-block (cdr cell)))))
 
 (after! company-ispell
   ;; Use `spell-fu-dictionaries' for word completion

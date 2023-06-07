@@ -609,20 +609,6 @@ Ref: `ispell-change-dictionary', `spell-fu-dictionary-add'"
     (spell-fu--refresh-cache-table-list)
     (spell-fu--refresh)))
 
-(defun dtm-spell-fu--buffer-as-line-list-a (buffer lines)
-  "Add lines (alnum only) from BUFFER to LINES, returning the updated LINES.
-Use as :override `spell-fu--buffer-as-line-list' advice."
-  (with-current-buffer buffer
-    (save-excursion
-      (goto-char (point-min))
-      (while (not (eobp))
-        (push (replace-regexp-in-string
-               "[^[:alnum:] ]" ""
-               (buffer-substring-no-properties (pos-bol) (pos-eol)))
-              lines)
-        (forward-line 1))))
-  lines)
-
 (defun dtm-company-ispell-fu-lookup-words (word &rest _)
   "Lookup word in `spell-fu-dictionaries' if `company-ispell-dictionary' is unset.
 Can be used to replace `company-ispell--lookup-words' (i.e. via `defalias')."
