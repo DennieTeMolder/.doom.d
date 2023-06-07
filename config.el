@@ -542,8 +542,7 @@ Also used by `org-modern-mode' to calculate heights.")
   ;; Mark tab-navigation through tables as non-repeatable
   (evil-declare-not-repeat 'org-cycle)
 
-  ;; Enable hard wrapping and automate paragraph filling
-  ;; Allow for double quoting using '' and `` (`` -> “)
+  ;; Prettify, enable hard wrapping and automate paragraph filling
   (add-hook 'org-mode-hook #'dtm-org-mode-setup-h))
 
 ;; Keys bound in after! org seem to get overwritten, this works

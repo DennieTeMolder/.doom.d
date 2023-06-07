@@ -729,7 +729,6 @@ Intended for `markdown-mode-hook'."
   "Personal org-mode customisation's after mode startup"
   (unless (dtm-org-limit-styling-p)
     (setq-local line-spacing dtm-org-line-spacing)
-    (electric-quote-local-mode +1)
     (+org-pretty-mode +1)
     (auto-fill-mode +1)
     (+zen-light-toggle +1)
