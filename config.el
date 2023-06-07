@@ -496,7 +496,7 @@
 
 (after! company-ispell
   ;; Use `spell-fu-dictionaries' for word completion
-  (defalias 'company-ispell--lookup-words 'dtm-company-ispell-fu-lookup-words))
+  (defalias 'company-ispell--lookup-words 'dtm-ispell-fu-lookup-words))
 
 (after! flycheck
   ;; Select flycheck window when opened

@@ -609,17 +609,44 @@ Ref: `ispell-change-dictionary', `spell-fu-dictionary-add'"
     (spell-fu--refresh-cache-table-list)
     (spell-fu--refresh)))
 
-(defun dtm-company-ispell-fu-lookup-words (word &rest _)
+(defun dtm-ispell-fu-ensure-dicts ()
+  "Sorts `spell-fu-dictionaries' and returns the corresponding files.
+Ensures compatibility with `ispell-complete-word-dict' (and linux look)."
+  (unless spell-fu-mode
+    (mapc #'spell-fu--dictionary-ensure-update spell-fu-dictionaries))
+  (mapcar (lambda (dict)
+            (let ((file (spell-fu--words-file dict))
+                  (cache (spell-fu--cache-file dict))
+                  timestamp status)
+              (setq timestamp
+                    (file-name-concat
+                     (file-name-directory file)
+                     (concat "." (file-name-nondirectory file) ".last_sorted")))
+              (unless (and (file-exists-p timestamp)
+                           (file-newer-than-file-p timestamp file))
+                ;; Sort only on [[:alnum:] ] -> required for look's binary search
+                (setq status
+                      (call-process "sort" nil nil nil
+                                    "-f" "-d" file "-o" file))
+                (unless (and (numberp status) (= 0 status))
+                  (warn "Ispell-fu: 'sort' process for '%s' returned %s" file status))
+                (call-process "touch" nil nil nil cache)
+                ;; Update timestamp
+                (write-region "" nil timestamp))
+              file))
+          spell-fu-dictionaries))
+
+(defun dtm-ispell-fu-lookup-words (word &rest _)
   "Lookup word in `spell-fu-dictionaries' if `company-ispell-dictionary' is unset.
 Can be used to replace `company-ispell--lookup-words' (i.e. via `defalias')."
   (require 'spell-fu)
-  (let ((dicts (or (and company-ispell-dictionary
-                        (list company-ispell-dictionary))
-                   (and spell-fu-dictionaries
-                        (mapcar #'spell-fu--words-file spell-fu-dictionaries))
-                   (list (or ispell-complete-word-dict
-                             ispell-alternate-dictionary)))))
-    (apply #'nconc (mapcar (lambda (dict) (ispell-lookup-words word dict)) dicts))))
+  (apply #'nconc (mapcar (lambda (dict) (when dict (ispell-lookup-words word dict)))
+                         (or (and company-ispell-dictionary
+                                  (list company-ispell-dictionary))
+                             (and spell-fu-dictionaries
+                                  (dtm-ispell-fu-ensure-dicts))
+                             (list (or ispell-complete-word-dict
+                                       ispell-alternate-dictionary))))))
 
 (defun dtm/company-manual-dict-ispell ()
   "Call `company-dict' and `company-ispell', based on `spell-fu-faces-include'."
