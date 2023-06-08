@@ -242,6 +242,9 @@
   ;; Make dabbrev (C-x C-n) case sensitive in programming modes
   (setq-hook! 'prog-mode-hook company-dabbrev-ignore-case nil))
 
+(after! dabbrev
+  (setq company-dabbrev-char-regexp "[[:alnum:]-_:]"))
+
 (after! projectile
   ;; Projectle sorting by recently opened
   (setq projectile-sort-order 'recently-active
