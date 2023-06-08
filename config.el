@@ -770,6 +770,10 @@ Also used by `org-modern-mode' to calculate heights.")
   (add-hook 'compilation-mode-hook #'dtm-conda-env-guess-maybe))
 
 (after! tree-sitter
+  ;; Spell-fu compatibility
+  (add-hook 'spell-fu-mode-hook #'dtm-spell-fu-tree-sitter-h)
+
+  ;; Modify existing faces (see +faces.el for new faces)
   (custom-set-faces!
     '(tree-sitter-hl-face:number :inherit highlight-numbers-number)
     '(tree-sitter-hl-face:type.builtin :inherit font-lock-warning-face :weight bold)))
