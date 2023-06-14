@@ -148,10 +148,11 @@ Ref: https://nullprogram.com/blog/2017/10/27/"
 ;;* UI
 (defun dtm-doom-check-fonts ()
   "Check if doom fonts are installed, otherwise prevent a blank display."
-  (dolist (spec (list doom-font doom-serif-font doom-variable-pitch-font))
-    (when (and spec (not (find-font spec)))
-      (warn "Font \"%s\" not found!" (font-get spec :family))
-      (font-put spec :family nil))))
+  (when (display-graphic-p)
+   (dolist (spec (list doom-font doom-serif-font doom-variable-pitch-font))
+     (when (and spec (not (find-font spec)))
+       (warn "Font \"%s\" not found!" (font-get spec :family))
+       (font-put spec :family nil)))))
 
 (defun dtm-doom-modeline-conditional-encoding-h ()
   "Only display encoding in modeline when it's not UTF-8.
