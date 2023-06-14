@@ -826,7 +826,7 @@ Intended for use in `org-link-abbrev-alist'."
   (or (dtm-org-link-as-png-maybe
        (org-link-expand-abbrev tag)
        (if-let ((split-at (string-search ":" tag)))
-           (file-name-concat "." "img"
+           (file-name-concat "." "Media"
                              (substring tag nil split-at)
                              (substring tag (1+ split-at) nil))
          tag))
