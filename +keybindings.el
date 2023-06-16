@@ -57,9 +57,10 @@
       :desc "snippet" "i s" #'tempel-insert
 
       ;; Notes roam
-      (:prefix "n r"
-       :desc "Open index"        "o"   #'dtm/org-roam-open-index
-       :desc "Schedule headline" "d s" #'dtm/org-roam-dailies-schedule-time)
+      (:prefix "n"
+       :desc "Bibliography"      "b"     #'citar-open
+       :desc "Open index"        "r o"   #'dtm/org-roam-open-index
+       :desc "Schedule headline" "r d s" #'dtm/org-roam-dailies-schedule-time)
 
       ;; Open
       (:prefix "o"
