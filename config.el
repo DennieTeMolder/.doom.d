@@ -251,7 +251,7 @@
         ;; Replace the doom-project-ignored-p function to ignore remote projects
         projectile-ignored-project-function #'dtm-project-ignored-p)
 
-  ;; Define a generic project as .projectile is not synced by Nextcloud
+  ;; Define a generic project as we ignore dotfiles for syncing
   (projectile-register-project-type 'generic '("PROJECT") :project-file "PROJECT")
 
   ;; Append the project name to the title frame format
@@ -342,9 +342,9 @@
           ("dr" ,(concat doom-local-dir "straight/repos/") "Doom Repos")
           ("h" "~/" "Home")
           ("m" "/mnt/" "Mount")
-          ("n" "~/Nextcloud/" "Nextcloud")
-          ("p" "~/Nextcloud/PhD/Projects/" "Projects")
-          ("r" "/" "Root")))
+          ("p" "~/Sync/PhD/Projects/" "Projects")
+          ("r" "/" "Root")
+          ("s" "~/Sync/" "Sync")))
   (delq 'collapse dirvish-attributes)
 
   ;; REVIEW manually disable diff-hl hook until dirvish module is merged upstream
@@ -481,7 +481,7 @@
 ;; Spell checking
 (after! ispell
   (setq ispell-dictionary "en_GB"
-        ispell-personal-dictionary "~/Nextcloud/Emacs/Dict/default.aspel.en.pws")
+        ispell-personal-dictionary "~/Sync/Emacs/Dict/default.aspel.en.pws")
 
   ;; BUG Aspell --run-together marks misspelled words like "wether" as correct
   (when (string= ispell-program-name "aspell")
@@ -560,7 +560,7 @@ Also used by `org-modern-mode' to calculate heights.")
 ;; Org-cite settings
 (after! oc
   ;; according to the `oc-biblatex.el' you should use bibstyle/citestyle
-  (setq org-cite-csl-styles-dir "~/Nextcloud/Zotero/Styles"
+  (setq org-cite-csl-styles-dir "~/Sync/Zotero/Styles"
         org-cite-export-processors '((latex biblatex "ieee/numeric-comp")
                                      (t csl "ieee.csl"))))
 
@@ -626,7 +626,7 @@ Also used by `org-modern-mode' to calculate heights.")
 
 ;; Org-roam init settings
 (when (modulep! :lang org +roam2)
-  (setq org-roam-directory "~/Nextcloud/PKM/"
+  (setq org-roam-directory "~/Sync/PKM/"
         org-roam-dailies-directory "journals/"
         org-roam-file-exclude-regexp "Rubbish/")
 
@@ -674,8 +674,8 @@ Also used by `org-modern-mode' to calculate heights.")
            :empty-lines 1))))
 
 (when (modulep! :tools biblio)
-  (setq! citar-bibliography '("~/Nextcloud/Zotero/master.bib")
-         citar-library-paths '("~/Nextcloud/Zotero/")))
+  (setq! citar-bibliography '("~/Sync/Zotero/master.bib")
+         citar-library-paths '("~/Sync/Zotero/")))
 
 (after! citar
   (setq citar-org-roam-note-title-template "${=key=}: ${title}\n\n* Notes"
@@ -1046,7 +1046,7 @@ Also used by `org-modern-mode' to calculate heights.")
   (setq-default gptel--system-message "You are a large language model living inside the Doom Emacs framework. Help the user and be concise.")
   :config
   (setq gptel-default-mode 'markdown-mode
-        dtm-gptel-dir "~/Nextcloud/Emacs/Chats/")
+        dtm-gptel-dir "~/Sync/Emacs/Chats/")
 
   (add-hook 'gptel-mode-hook #'dtm-gptel-setup-h)
   (add-hook! 'gptel-post-response-hook (goto-char (point-max)))
