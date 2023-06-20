@@ -1309,9 +1309,9 @@ Alternative `conda-env-activate-for-buffer' that prompts before activation"
 (defun dtm-translate-fuzzy-multi-literal (input)
   "Build a fuzzy-matching regexp from literal INPUT.
 See `ctrlf-split-fuzzy' for how INPUT is split into subinputs.
-Each subinput is quoted and the results are joined with \".*\n*.*\".
+Each subinput is quoted and the results are joined with a non-greedy \".*\n?.*\".
 This enables the each word of the query to be on a consecutive non-blank line."
-  (string-join (mapcar #'regexp-quote (ctrlf-split-fuzzy input)) ".*\n*.*"))
+  (string-join (mapcar #'regexp-quote (ctrlf-split-fuzzy input))  ".*?\\(?:\n.*?\\)??"))
 
 ;;* Tempel
 (defun dtm/tempel-complete-always ()
