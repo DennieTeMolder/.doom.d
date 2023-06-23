@@ -885,9 +885,10 @@ Also used by `org-modern-mode' to calculate heights.")
 
   ;; BUG highlight single warning messages + more visible font
   (pushnew! ess-R-message-prefixes "Warning message")
-  (setq ess-R-fl-keyword:messages
+  (setq ess-R-error-face 'show-paren-mismatch
+        ess-R-fl-keyword:messages
         (cons (regexp-opt ess-R-message-prefixes 'enc-paren)
-              'compilation-error-face))
+              'ess-R-error-face))
 
   ;; Setting `tab-with' also affects `evil-shift-width' (doom specific)
   (setq-hook! 'ess-mode-hook tab-width ess-indent-offset)
