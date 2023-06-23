@@ -883,6 +883,12 @@ Also used by `org-modern-mode' to calculate heights.")
         ess-auto-width 'window
         ess-style 'RStudio)
 
+  ;; BUG highlight single warning messages + more visible font
+  (pushnew! ess-R-message-prefixes "Warning message")
+  (setq ess-R-fl-keyword:messages
+        (cons (regexp-opt ess-R-message-prefixes 'enc-paren)
+              'compilation-error-face))
+
   ;; Setting `tab-with' also affects `evil-shift-width' (doom specific)
   (setq-hook! 'ess-mode-hook tab-width ess-indent-offset)
   (setq-hook! 'inferior-ess-mode-hook font-lock-string-face nil)
