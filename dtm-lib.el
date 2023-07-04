@@ -327,8 +327,9 @@ This is useful when the index function does not utilise the generic expression s
         (ibuffer-hook nil))
     (ibuffer)))
 
-(defun dtm-ibuffer-workspace-filter-groups ()
+(defun dtm-ibuffer-persp-filter-groups ()
   "Generate value for `ibuffer-filter-groups' based on perspectives.
+Requires \"persp\" to be defined via `define-ibuffer-filter'.
 Ref: `ibuffer-mode' section on 'Filter Groups'"
   (nconc
    (mapcar #'(lambda (pn) (list pn (cons 'persp pn)))
@@ -338,12 +339,12 @@ Ref: `ibuffer-mode' section on 'Filter Groups'"
      ("proc" (process))
      (,persp-nil-name (persp . ,persp-nil-name)))))
 
-(defun dtm-ibuffer-group-by-workspace-h ()
+(defun dtm-ibuffer-group-by-persp-h ()
   "Set the current filter groups to filter by perspective.
 Based on `ibuffer-projectile-set-filter-groups' from the ibuffer-projectile package:
 https://github.com/purcell/ibuffer-projectile"
   (interactive)
-  (setq ibuffer-filter-groups (dtm-ibuffer-workspace-filter-groups))
+  (setq ibuffer-filter-groups (dtm-ibuffer-persp-filter-groups))
   (message "persp-ibuffer: grouping buffers by workspace")
   (let ((ibuf (get-buffer "*Ibuffer*")))
     (when ibuf

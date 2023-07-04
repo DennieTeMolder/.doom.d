@@ -290,8 +290,16 @@
   (global-set-key [remap doom/load-session] #'dtm/load-session))
 
 (after! ibuffer
-  ;; See also `ibuffer-filter-chosen-by-completion'
-  (add-hook 'ibuffer-hook #'dtm-ibuffer-group-by-workspace-h))
+  (unless noninteractive
+    ;; Ref: https://gist.github.com/Bad-ptr/1aca1ec54c3bdb2ee80996eb2b68ad2d#file-persp-mode-ibuffer-groups-el
+    (define-ibuffer-filter persp
+        "Toggle current view to buffers of selected perspective."
+      (:description "persp-mode"
+       :reader (persp-read-persp nil nil (safe-persp-name (get-frame-persp)) t))
+      (cl-find buf (safe-persp-buffers (persp-get-by-name qualifier))))
+
+    ;; Group buffers based on perspective/workspace
+    (add-hook 'ibuffer-hook #'dtm-ibuffer-group-by-persp-h)))
 
 (when (modulep! :ui popup)
   (set-popup-rules!
