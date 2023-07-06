@@ -331,13 +331,14 @@ This is useful when the index function does not utilise the generic expression s
   "Generate value for `ibuffer-filter-groups' based on perspectives.
 Requires \"persp\" to be defined via `define-ibuffer-filter'.
 Ref: `ibuffer-mode' section on 'Filter Groups'"
-  (nconc
-   (mapcar #'(lambda (pn) (list pn (cons 'persp pn)))
-           (cl-delete persp-nil-name (persp-names-current-frame-fast-ordered)
-                      :test 'string=))
-   `(("popups" (predicate dtm-popup-buffer-p))
-     ("proc" (process))
-     (,persp-nil-name (persp . ,persp-nil-name)))))
+  (let ((persps (mapcar #'(lambda (pn) (list pn (cons 'persp pn)))
+                        (cl-delete persp-nil-name
+                                   (persp-names-current-frame-fast-ordered)
+                                   :test 'string=))))
+    `(("proc" (process))
+      ,@persps
+      ("popups" (predicate dtm-popup-buffer-p))
+      (,persp-nil-name (persp . ,persp-nil-name)))))
 
 (defun dtm-ibuffer-group-by-persp-h ()
   "Set the current filter groups to filter by perspective.
