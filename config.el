@@ -779,13 +779,13 @@ Also used by `org-modern-mode' to calculate heights.")
     '(tree-sitter-hl-face:type.builtin :inherit font-lock-warning-face :weight bold)))
 
 (when (modulep! :lang emacs-lisp)
-  (setq lispy-outline "^[ \t]*;;\\(?:;[^#]\\|\\*+\\)"
+  (setq lispy-outline "^[ \t]*;;[;*]+[^#]"
         +emacs-lisp-outline-regexp lispy-outline)
 
   (defadvice! dtm-elisp-extend-imenu-a ()
     :after #'+emacs-lisp-extend-imenu-h
     (cl-replace imenu-generic-expression
-                `(("Section" ,(concat lispy-outline "[ \t]+\\([^\n]+\\)") 1))))
+                `(("Section" ,(concat lispy-outline "[ \t]*\\([^\n]+\\)") 1))))
 
   (add-hook 'emacs-lisp-mode-hook #'dtm-elisp-extend-imenu-h 'append))
 
