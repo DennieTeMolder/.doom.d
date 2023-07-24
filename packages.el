@@ -50,7 +50,6 @@
 ;(unpin! t)
 
 (package! doom-modeline :pin "918730eff72e155cfb31b012493a7f425bc48ff8")
-(unpin! org-noter)
 
 ;;* Doom modifications
 ;; Evil-escape will exit insert state after a key sequence ("jk")
@@ -76,7 +75,7 @@
 (package! yasnippet :ignore t)
 (package! company-auctex :disable t)
 
-;; Only used by `lispy-occur'
+;; Only used by `lispy-occur', use `consult-line' instead
 (package! swiper :ignore t)
 
 ;; Improved Org ODT export
