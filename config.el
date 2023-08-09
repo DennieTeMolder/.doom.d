@@ -268,7 +268,7 @@
 (after! recentf
   ;;Exclude non-existent & remote files from recent files list after cleanup
   (setq recentf-keep '(dtm-file-local-readable-p))
-  (add-to-list 'recentf-exclude #'dtm-ess-r-plot-file-p t)
+  (add-to-list 'recentf-exclude #'dtm-ess-plot-file-p t)
 
   ;; Revert back to running cleanup on mode start instead of emacs shutdown
   (remove-hook! 'kill-emacs-hook #'recentf-cleanup)
@@ -883,6 +883,10 @@ Also used by `org-modern-mode' to calculate heights.")
         :localleader "TAB"      #'vterm-other-window))
 
 (after! ess
+  ;; REVIEW remove when package is on github
+  (add-to-list 'load-path (expand-file-name "~/Sync/Emacs/ESS-plot"))
+  (require 'ess-plot)
+
   ;; Use current dir for session
   (setq ess-ask-for-ess-directory nil
         ess-startup-directory-function #'dtm-ess-startup-dir
@@ -905,7 +909,6 @@ Also used by `org-modern-mode' to calculate heights.")
 
   ;; Recenter buffer in window after sending region (SPC m ,)
   (advice-add 'ess-eval-region-or-function-or-paragraph-and-step :after (cmd! (recenter)))
-  (advice-add 'inferior-ess-reload :around #'dtm-ess-r-plot-reload-a)
 
   ;; Lag the cursor in debug mode, this leaves the point at a variable after its assigned
   (advice-add 'ess-debug-command-next :around #'dtm-with-lagging-point-a)
@@ -952,8 +955,8 @@ Also used by `org-modern-mode' to calculate heights.")
          :i "<"   #'dtm/ess-r-insert-assign
          :i ">"   #'dtm/ess-r-insert-pipe
          (:localleader
-          :desc "Toggle plotting in emacs" "t" #'dtm/ess-r-plot-toggle
           :desc "View R object"            "o" #'ess-view-data-print))
+          :desc "Toggle plotting in emacs" "t" #'ess-plot-toggle
 
         (:map inferior-ess-mode-map
          :localleader
