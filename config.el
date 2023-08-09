@@ -135,7 +135,8 @@
        (if (buffer-modified-p) " +" ""))))
 
 (after! doom-modeline
-  (setq doom-modeline-buffer-file-name-style 'truncate-except-project)
+  (setq doom-modeline-buffer-file-name-style 'truncate-except-project
+        dirvish-mode-line-height doom-modeline-height)
 
   ;; Only display encoding in modeline when it's not UTF-8
   (add-hook 'after-change-major-mode-hook #'dtm-doom-modeline-conditional-encoding-h))
@@ -332,7 +333,6 @@
 
 (after! dirvish
   (setq dirvish-reuse-session nil
-        dirvish-mode-line-height doom-modeline-height
         dirvish-quick-access-entries
         `(("D" "~/Downloads/" "Downloads")
           ("dc" ,doom-core-dir "Doom Core")
@@ -382,8 +382,8 @@
         :desc "Mark menu"       "m" #'dirvish-mark-menu
         :desc "Subtree menu"    "s" #'dirvish-subtree-menu))
 
-(after! dirvish-side
-  (dirvish-side-follow-mode +1))
+;; (after! dirvish-side
+;;   (dirvish-side-follow-mode +1))
 
 (after! all-the-icons
   ;; A lower scaling factor works better with the Iosevka font
