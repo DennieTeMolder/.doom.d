@@ -73,7 +73,7 @@ ess-r-mode
 (h1 "### " (r nil) " " (i div) q :post (forward-char 1))
 (h2 "## " (r nil) " " (i div) q :post (forward-char 1))
 (fun p " <- function(" p ") {" n> q n "}")
-(timer "tstart <- Sys.time()" n r "print(Sys.time() - tstart)" n)
+(timer "system.time({" n r> "})" n)
 
 python-mode
 
