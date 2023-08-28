@@ -536,7 +536,7 @@ Also used by `org-modern-mode' to calculate heights.")
 
   ;; Give ellipsis same colour as text
   (custom-set-faces!
-    '(org-ellipsis :foreground nil :background nil :weight regular)
+    '(org-ellipsis :foreground unspecified :background unspecified :weight regular)
     '(org-headline-done :strike-through t))
 
   ;; Custom link type [[as_png:<file_name>]] with builtin conversion to .png
