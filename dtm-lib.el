@@ -1288,23 +1288,39 @@ Meant for hooking onto `prog-mode-hook' and `text-mode-hook'."
   (setq-local completion-at-point-functions
               (cons #'tempel-complete completion-at-point-functions)))
 
-;;* Good-scroll
-(defun dtm/good-scroll-down-half ()
-  (interactive)
-  (good-scroll-move (/ (good-scroll--window-usable-height) 2)))
+;;* Pixel-scroll-precision-mode
+(defun dtm-window-usable-height ()
+  "Return the usable height of the selected window.
+Return the pixel height of the area of the selected window
+that the cursor is allowed to be inside.
+This is from the bottom of the header line to the top of the mode line.
+Ref: `good-scroll--window-usable-height'."
+  (let ((hl-height (window-header-line-height))
+        (tl-height (window-tab-line-height))
+        (w-edges (window-inside-pixel-edges)))
+    (let ((w-top (- (nth 1 w-edges) hl-height))
+          (w-bottom (+ (nth 3 w-edges) tl-height)))
+      (- w-bottom w-top (+ hl-height tl-height)))))
 
-(defun dtm/good-scroll-up-half ()
-  (interactive)
-  (good-scroll-move (/ (good-scroll--window-usable-height) -2)))
+(defun dtm-precision-scroll-window-fraction (fraction)
+  "Scroll window by FRACTION of total height."
+  (let ((delta (* fraction (dtm-window-usable-height)))
+        (pixel-scroll-precision-interpolation-total-time 0.25))
+    (pixel-scroll-precision-interpolate delta nil 1)))
 
-(defun dtm-good-scroll-evil-override-h ()
-  (if good-scroll-mode
-      (progn
-        (advice-add 'evil-scroll-down :override #'dtm/good-scroll-down-half)
-        (advice-add 'evil-scroll-up :override #'dtm/good-scroll-up-half))
-    (progn
-      (advice-remove 'evil-scroll-down #'dtm/good-scroll-down-half)
-      (advice-remove 'evil-scroll-up #'dtm/good-scroll-up-half))))
+(defun dtm-precision-scroll-up-half ()
+  "Scroll up half a window, obeying `pixel-scroll-precision-mode'."
+  (interactive)
+  (if pixel-scroll-precision-mode
+      (dtm-precision-scroll-window-fraction 0.49)
+    (call-interactively #'evil-scroll-up)))
+
+(defun dtm-precision-scroll-down-half ()
+  "Scroll down half a window, obeying `pixel-scroll-precision-mode'."
+  (interactive)
+  (if pixel-scroll-precision-mode
+      (dtm-precision-scroll-window-fraction -0.49)
+    (call-interactively #'evil-scroll-down)))
 
 ;;* GPTEL
 (defvar dtm-gptel-dir nil

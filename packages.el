@@ -86,7 +86,6 @@
                    "contrib/odt/LibreOffice")))
 
 ;;* Custom packages
-(package! good-scroll)
 (package! trashed)
 (package! xr)
 (package! info-colors)

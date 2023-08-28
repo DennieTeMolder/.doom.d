@@ -427,6 +427,16 @@
         aw-minibuffer-flag t)
   (custom-set-faces! '(aw-leading-char-face :inherit highlight :foreground nil)))
 
+(use-package! pixel-scroll
+  :if EMACS29+
+  :hook (doom-first-buffer . pixel-scroll-precision-mode)
+  :config
+  (setq pixel-scroll-precision-interpolation-total-time 0.15
+        pixel-scroll-precision-interpolate-page t)
+
+  (global-set-key [remap evil-scroll-up] #'dtm-precision-scroll-up-half)
+  (global-set-key [remap evil-scroll-down] #'dtm-precision-scroll-down-half))
+
 ;;* Core functionality extensions
 ;; Add colours to info pages to make them more readable
 (use-package! info-colors
@@ -1030,24 +1040,6 @@ Also used by `org-modern-mode' to calculate heights.")
 (add-hook 'so-long-mode-hook #'dtm-csv-mode-maybe-h)
 
 ;;* Misc Packages
-;; Smooth scrolling
-;; REVIEW activating mode with line numbers on seems to cause high CPU usage
-;; even in idle (https://github.com/io12/good-scroll.el/issues/31)
-(use-package! good-scroll
-  :init
-  (unless dtm-maximize-performance
-    (add-hook 'doom-first-buffer-hook #'good-scroll-mode))
-  :config
-  (setq good-scroll-duration 0.25
-        good-scroll-algorithm 'good-scroll-linear)
-  
-  (defadvice! dtm-good-scroll-set-step-a (&rest _)
-    :before #'good-scroll-up :before #'good-scroll-down
-    (unless (eq last-command 'mwheel-scroll)
-      (setq good-scroll-step (/ (good-scroll--window-usable-height) 5))))
-
-  (add-hook 'good-scroll-mode-hook #'dtm-good-scroll-evil-override-h))
-
 ;; NOTE to configure add the line below to ~/.authinfo.gpg
 ;; machine openai.com login apikey password <your-key>
 (use-package! gptel

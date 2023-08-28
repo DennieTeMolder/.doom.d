@@ -76,7 +76,7 @@
       (:prefix "t"
        :desc "Auto line-breaks"    "a" #'auto-fill-mode
        :desc "Line numbers"        "l" #'dtm/toggle-line-numbers
-       :desc "Smooth scrolling"    "S" #'good-scroll-mode
+       :desc "Smooth scrolling"    "S" #'pixel-scroll-precision-mode
        :desc "Trash deleted files" "T" #'dtm/toggle-trash-delete)
 
       ;; Window management
