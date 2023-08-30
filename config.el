@@ -893,10 +893,6 @@ Also used by `org-modern-mode' to calculate heights.")
         :localleader "TAB"      #'vterm-other-window))
 
 (after! ess
-  ;; REVIEW remove when package is on github
-  (add-to-list 'load-path (expand-file-name "~/Sync/Emacs/ESS-plot"))
-  (require 'ess-plot)
-
   ;; Use current dir for session
   (setq ess-ask-for-ess-directory nil
         ess-startup-directory-function #'dtm-ess-startup-dir
@@ -987,6 +983,8 @@ Also used by `org-modern-mode' to calculate heights.")
   ;; Imenu search entries, best invoked with `consult-imenu' (SPC s i)
   (add-to-list 'ess-imenu-S-generic-expression
                '("Section" "^\\(#+ .+\\) [-=#]\\{4,\\}" 1)))
+
+(use-package! ess-plot :defer t)
 
 (after! python
   ;; Add generic imenu expression and ensure python doesn't ignore them
