@@ -695,9 +695,9 @@ Also used by `org-modern-mode' to calculate heights.")
   (add-transient-hook! 'citar-has-notes (require 'citar-org-roam))
 
   ;; Dedicated workspaces
-  (advice-add 'citar-open-files :before #'dtm-citar-goto-workspace)
-  (advice-add 'citar--open-entry :before #'dtm-citar-goto-workspace)
-  (advice-add 'citar-open-notes :before #'dtm-org-roam-goto-workspace))
+  (advice-add 'citar-file-open :before #'dtm-citar-goto-workspace)
+  (advice-add 'citar-create-note :before #'dtm-org-roam-goto-workspace)
+  (advice-add 'citar-open-note :before #'dtm-org-roam-goto-workspace))
 
 ;; Org-noter settings
 (after! org-noter
