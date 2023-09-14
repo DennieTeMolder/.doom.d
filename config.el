@@ -152,31 +152,36 @@
 
 ;; Customise dashboard menu options to include org roam
 (setq +doom-dashboard-menu-sections
-      '(("Restore previous session" :icon
-         (all-the-icons-octicon "history" :face 'doom-dashboard-menu-title)
-         :when (file-exists-p (doom-session-file))
-         :face (:inherit (doom-dashboard-menu-title bold))
-         :action dtm/load-session)
-        ("Recently opened files" :icon
-         (all-the-icons-octicon "file-text" :face 'doom-dashboard-menu-title)
-         :action recentf-open-files)
-        ("Open roam index" :icon
-         (all-the-icons-octicon "database" :face 'doom-dashboard-menu-title)
-         :action dtm/org-roam-open-index)
-        ("Open roam today" :icon
-         (all-the-icons-octicon "calendar" :face 'doom-dashboard-menu-title)
-         :action org-roam-dailies-goto-today)
-        ("Open project" :icon
-         (all-the-icons-octicon "briefcase" :face 'doom-dashboard-menu-title)
-         :action projectile-switch-project)
-        ("Open private configuration" :icon
-         (all-the-icons-octicon "tools" :face 'doom-dashboard-menu-title)
-         :when
-         (file-directory-p doom-private-dir)
-         :action doom/open-private-config)
-        ("Open documentation" :icon
-         (all-the-icons-octicon "book" :face 'doom-dashboard-menu-title)
-         :action doom/help)))
+  '(("Reload last session"
+     :icon (nerd-icons-faicon "nf-fa-history" :face 'doom-dashboard-menu-title)
+     :face (:inherit (doom-dashboard-menu-title bold))
+     :when (cond ((modulep! :ui workspaces)
+                  (file-exists-p (expand-file-name persp-auto-save-fname persp-save-dir)))
+                 ((require 'desktop nil t)
+                  (file-exists-p (desktop-full-file-name))))
+     :action dtm/load-session)
+    ("Recently opened files"
+     :icon (nerd-icons-octicon "nf-oct-file" :face 'doom-dashboard-menu-title)
+     :action recentf-open-files)
+    ("Open roam index"
+     :icon (nerd-icons-octicon "nf-oct-database" :face 'doom-dashboard-menu-title)
+     :action dtm/org-roam-open-index)
+    ("Open roam today"
+     :icon (nerd-icons-octicon "nf-oct-calendar" :face 'doom-dashboard-menu-title)
+     :action org-roam-dailies-goto-today)
+    ("Open project"
+     :icon (nerd-icons-octicon "nf-oct-briefcase" :face 'doom-dashboard-menu-title)
+     :action projectile-switch-project)
+    ("Jump to bookmark"
+     :icon (nerd-icons-octicon "nf-oct-bookmark" :face 'doom-dashboard-menu-title)
+     :action bookmark-jump)
+    ("Open private configuration"
+     :icon (nerd-icons-octicon "nf-oct-tools" :face 'doom-dashboard-menu-title)
+     :when (file-directory-p doom-user-dir)
+     :action doom/open-private-config)
+    ("Open documentation"
+     :icon (nerd-icons-octicon "nf-oct-book" :face 'doom-dashboard-menu-title)
+     :action doom/help)))
 
 ;;* General Doom Settings
 (setq doom-scratch-initial-major-mode t)
