@@ -434,10 +434,13 @@
 
 (use-package! pixel-scroll
   :if EMACS29+
-  :hook (doom-first-buffer . pixel-scroll-precision-mode)
+  :defer t
   :config
   (setq pixel-scroll-precision-interpolation-total-time 0.15
         pixel-scroll-precision-interpolate-page t)
+
+  (unless dtm-maximize-performance
+    (add-hook 'doom-first-buffer-hook #'pixel-scroll-precision-mode))
 
   (global-set-key [remap evil-scroll-up] #'dtm-precision-scroll-up-half)
   (global-set-key [remap evil-scroll-down] #'dtm-precision-scroll-down-half))
