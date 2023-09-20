@@ -81,11 +81,12 @@
 
       ;; Window management
       (:prefix "w"
-       :desc "window-as-frame" "F" #'tear-off-window
-                               "e" #'evil-window-prev
-                               "s" #'dtm/split-window-optimally
-                               "S" #'evil-window-split
-                               "T" #'transpose-frame)
+       :desc "Kill window and buffer" "D"   #'kill-buffer-and-window
+       :desc "window-as-frame"        "F" #'tear-off-window
+                                      "e" #'evil-window-prev
+                                      "s" #'dtm/split-window-optimally
+                                      "S" #'evil-window-split
+                                      "T" #'transpose-frame)
 
       ;; Popups
       "/" nil ; Unbind `+default/search-project' (also bound to "SPC s p")
