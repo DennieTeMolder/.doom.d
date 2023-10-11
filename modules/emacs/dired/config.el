@@ -1,5 +1,8 @@
 ;;; emacs/dired/config.el -*- lexical-binding: t; -*-
 
+(defvar +dired-dirvish-icon-provider 'nerd-icons
+  "Icon provider to use for dirvish when the module is enabled.")
+
 (use-package! dired
   :commands dired-jump
   :init
@@ -106,7 +109,7 @@
 (use-package! dirvish
   :defer t
   :general (dired-mode-map "C-c C-r" #'dirvish-rsync)
-  :init (after! dired (dirvish-override-dired-mode))
+  :after-call dired-noselect dired dired-jump
   :config
   (dirvish-override-dired-mode)
   (setq dirvish-cache-dir (concat doom-cache-dir "dirvish/"))
@@ -142,4 +145,4 @@
   (when (modulep! :ui vc-gutter)
     (push 'vc-state dirvish-attributes))
   (when (modulep! +icons)
-    (appendq! dirvish-attributes '(all-the-icons subtree-state))))
+    (appendq! dirvish-attributes (list +dired-dirvish-icon-provider 'subtree-state))))
