@@ -1003,6 +1003,12 @@ The DATE is derived from the #+title which must match the Org date format."
           (- (* 2 scale) 0.1))
     (pdf-view-redisplay t)))
 
+(defun dtm-evil-no-visual-mode-on-mark-activate ()
+  (remove-hook 'activate-mark-hook #'evil-visual-activate-hook 'local))
+
+(defun dtm-pdf-view-evil-fix-visual-state-h ()
+  (add-hook! 'evil-evilified-state-entry-hook :local #'dtm-evil-no-visual-mode-on-mark-activate))
+
 ;;* ESS
 (defun dtm-ess-insert-string (mystr)
   "Insert string, undo if the same input event is issued twice"

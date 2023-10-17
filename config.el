@@ -728,6 +728,12 @@ Also used by `org-modern-mode' to calculate heights.")
     (auto-fill-mode -1)
     (+word-wrap-mode +1))
 
+  ;; Fix unreliable text selection (Ref: https://github.com/syl20bnr/spacemacs/pull/15740)
+  (add-hook 'pdf-view-mode-hook #'dtm-pdf-view-evil-fix-visual-state-h)
+
+  ;; Display C-c C-q (also bound to `pdf-annot-edit-contents-abort') in the tooltip
+  (keymap-unset pdf-annot-edit-contents-minor-mode-map "C-c C-k")
+
   (map! (:map pdf-view-mode-map
          :n "C-e" #'pdf-view-scroll-down-or-previous-page
          :n "C-s" #'isearch-forward-word
