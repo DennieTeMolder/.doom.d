@@ -1003,11 +1003,16 @@ The DATE is derived from the #+title which must match the Org date format."
           (- (* 2 scale) 0.1))
     (pdf-view-redisplay t)))
 
-(defun dtm-evil-no-visual-mode-on-mark-activate ()
-  (remove-hook 'activate-mark-hook #'evil-visual-activate-hook 'local))
-
 (defun dtm-pdf-view-evil-fix-visual-state-h ()
-  (add-hook! 'evil-evilified-state-entry-hook :local #'dtm-evil-no-visual-mode-on-mark-activate))
+  "Fix jumping/unresponsive input in `pdf-view-mode' after entering visual state.
+Intended for `pdf-view-mode-hook'.
+Ref: https://github.com/syl20bnr/spacemacs/pull/15740"
+  (add-hook 'evil-evilified-state-entry-hook
+            #'dtm-evil-no-visual-mode-on-mark-activate nil 'local))
+
+(defun dtm-evil-no-visual-mode-on-mark-activate ()
+  "Removes activation of visual mode from `activate-mark-hook' locally."
+  (remove-hook 'activate-mark-hook #'evil-visual-activate-hook 'local))
 
 ;;* ESS
 (defun dtm-ess-insert-string (mystr)
