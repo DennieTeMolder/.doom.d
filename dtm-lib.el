@@ -1009,6 +1009,14 @@ Use as :before-until advice for `evil-visual-activate-hook'.
 Alternative solution: https://github.com/syl20bnr/spacemacs/pull/15740"
   (eq major-mode 'pdf-view-mode))
 
+(defun dtm-pdf-annot-edit-contents-setup-h ()
+  "Apply personal customisations.
+Intended for `pdf-annot-edit-contents-minor-mode-hook'"
+  (auto-fill-mode -1)
+  (+word-wrap-mode +1)
+  (goto-char (point-max))
+  (evil-insert-state))
+
 ;;* ESS
 (defun dtm-ess-insert-string (mystr)
   "Insert string, undo if the same input event is issued twice"

@@ -722,14 +722,13 @@ Also used by `org-modern-mode' to calculate heights.")
   ;; Distinguish current match
   (custom-set-faces! '(pdf-isearch-match :inherit highlight))
 
-  (add-to-list 'evil-snipe-disabled-modes 'pdf-view-mode)
   ;; REVIEW this fixes: https://github.com/doomemacs/doomemacs/issues/6286
   (advice-add 'evil-visual-activate-hook :before-until #'dtm-pdf-view-evil-inhibit-visual-state-a)
 
+  (add-hook 'pdf-annot-edit-contents-minor-mode-hook #'dtm-pdf-annot-edit-contents-setup-h)
 
-  (add-hook! 'pdf-annot-edit-contents-minor-mode-hook
-    (auto-fill-mode -1)
-    (+word-wrap-mode +1))
+  ;; Free up the s key
+  (add-to-list 'evil-snipe-disabled-modes 'pdf-view-mode)
 
   ;; Display C-c C-q (also bound to `pdf-annot-edit-contents-abort') in the tooltip
   (keymap-unset pdf-annot-edit-contents-minor-mode-map "C-c C-k")
