@@ -723,8 +723,10 @@ Also used by `org-modern-mode' to calculate heights.")
   (custom-set-faces! '(pdf-isearch-match :inherit highlight))
 
   (add-to-list 'evil-snipe-disabled-modes 'pdf-view-mode)
+  ;; REVIEW this fixes: https://github.com/doomemacs/doomemacs/issues/6286
+  (advice-add 'evil-visual-activate-hook :before-until #'dtm-pdf-view-evil-inhibit-visual-state-a)
 
-  (add-hook 'pdf-view-mode-hook #'dtm-pdf-view-evil-fix-visual-state-h)
+
   (add-hook! 'pdf-annot-edit-contents-minor-mode-hook
     (auto-fill-mode -1)
     (+word-wrap-mode +1))
