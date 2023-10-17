@@ -747,11 +747,8 @@ Intended for `markdown-mode-hook'."
     (setq-local line-spacing dtm-org-line-spacing)
     (+org-pretty-mode +1)
     (auto-fill-mode +1)
-    (when (bound-and-true-p pdf-annot-edit-contents-minor-mode)
-      (+word-wrap-mode +1))
     (+zen-light-toggle +1)
-    (add-hook! 'evil-insert-state-exit-hook
-               :local #'dtm-insert-exit-fill-paragraph)))
+    (add-hook! 'evil-insert-state-exit-hook :local #'dtm-insert-exit-fill-paragraph)))
 
 (defun dtm-org-get-title-value ()
   "Returns the value of #+TITLE for the current document"

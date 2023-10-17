@@ -724,6 +724,10 @@ Also used by `org-modern-mode' to calculate heights.")
 
   (add-to-list 'evil-snipe-disabled-modes 'pdf-view-mode)
 
+  (add-hook! 'pdf-annot-edit-contents-minor-mode-hook
+    (auto-fill-mode -1)
+    (+word-wrap-mode +1))
+
   (map! (:map pdf-view-mode-map
          :n "C-e" #'pdf-view-scroll-down-or-previous-page
          :n "C-s" #'isearch-forward-word
