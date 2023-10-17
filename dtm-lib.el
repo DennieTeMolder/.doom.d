@@ -1007,8 +1007,8 @@ The DATE is derived from the #+title which must match the Org date format."
   "Fix jumping/unresponsive input in `pdf-view-mode' after entering visual state.
 Intended for `pdf-view-mode-hook'.
 Ref: https://github.com/syl20bnr/spacemacs/pull/15740"
-  (add-hook 'evil-evilified-state-entry-hook
-            #'dtm-evil-no-visual-mode-on-mark-activate nil 'local))
+  (add-hook 'evil-visual-state-exit-hook #'dtm-evil-no-visual-mode-on-mark-activate
+            nil 'local))
 
 (defun dtm-evil-no-visual-mode-on-mark-activate ()
   "Removes activation of visual mode from `activate-mark-hook' locally."

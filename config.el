@@ -737,9 +737,6 @@ Also used by `org-modern-mode' to calculate heights.")
          :n "C-s" #'isearch-forward-word
          :n "S"   #'dtm/pdf-view-fit-half-height
          :n "i"   #'org-noter-insert-note
-         :v "h"   #'pdf-annot-add-highlight-markup-annotation
-         :v "s"   #'pdf-annot-add-strikeout-markup-annotation
-         :v "u"   #'pdf-annot-add-underline-markup-annotation
          :n "z t" #'pdf-view-themed-minor-mode
          (:prefix "s"
           :desc "Rotate page"        :n "r" #'pdf-view-rotate
@@ -747,8 +744,11 @@ Also used by `org-modern-mode' to calculate heights.")
           :desc "Slice bounding box" :n "b" #'pdf-view-set-slice-from-bounding-box
           :desc "Slice using mouse"  :n "m" #'pdf-view-set-slice-using-mouse)
          (:prefix "C-c"
-          :desc "Add Note"          "a" #'pdf-annot-add-text-annotation
-          :desc "Delete Annotation" "d" #'pdf-annot-delete))
+          :desc "Add Note"            "a" #'pdf-annot-add-text-annotation
+          :desc "Delete Annotation"   "d" #'pdf-annot-delete
+          :desc "Strikeout selection" "s" #'pdf-annot-add-strikeout-markup-annotation
+          :desc "Highlight selection" "f" #'pdf-annot-add-highlight-markup-annotation
+          :desc "Underline selection" "g" #'pdf-annot-add-underline-markup-annotation))
 
         (:map pdf-history-minor-mode-map
          :n "<tab>"     #'pdf-history-backward
