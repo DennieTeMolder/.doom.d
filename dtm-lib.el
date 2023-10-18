@@ -606,6 +606,8 @@ mismatch with `ispell-personal-dictionary'.
 Ref: `ispell-change-dictionary', `spell-fu-dictionary-add'"
   (interactive)
   (require 'consult)
+  (require 'ispell)
+  (require 'spell-fu)
   (if dict
       (unless (member dict (ispell-valid-dictionary-list))
         (error "Specified dictionary '%s' is invalid!" dict))
