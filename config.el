@@ -737,7 +737,13 @@ Also used by `org-modern-mode' to calculate heights.")
          :n "C-e" #'pdf-view-scroll-down-or-previous-page
          :n "C-s" #'isearch-forward-word
          :n "S"   #'dtm/pdf-view-fit-half-height
+         :n "a"   #'pdf-annot-add-markup-annotation
+         :n "c"   #'pdf-annot-add-squiggly-markup-annotation
          :n "i"   #'org-noter-insert-note
+         :n "v"   #'pdf-annot-add-highlight-markup-annotation
+         :n "V"   #'pdf-annot-add-underline-markup-annotation
+         :n "C-v" #'pdf-annot-add-underline-markup-annotation
+         :n "x"   #'pdf-annot-add-strikeout-markup-annotation
          :n "z t" #'pdf-view-themed-minor-mode
          (:prefix "s"
           :desc "Rotate page"        :n "r" #'pdf-view-rotate
@@ -746,10 +752,7 @@ Also used by `org-modern-mode' to calculate heights.")
           :desc "Slice using mouse"  :n "m" #'pdf-view-set-slice-using-mouse)
          (:prefix "C-c"
           :desc "Add Note"            "a" #'pdf-annot-add-text-annotation
-          :desc "Delete Annotation"   "d" #'pdf-annot-delete
-          :desc "Strikeout selection" "s" #'pdf-annot-add-strikeout-markup-annotation
-          :desc "Highlight selection" "f" #'pdf-annot-add-highlight-markup-annotation
-          :desc "Underline selection" "g" #'pdf-annot-add-underline-markup-annotation))
+          :desc "Delete Annotation"   "d" #'pdf-annot-delete))
 
         (:map pdf-history-minor-mode-map
          :n "<tab>"     #'pdf-history-backward
