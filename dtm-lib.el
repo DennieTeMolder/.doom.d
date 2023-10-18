@@ -597,20 +597,23 @@ Intended as before advice for `vterm-send-key'"
               'tree-sitter-hl-face:string
               'tree-sitter-hl-face:doc)))
 
-(defun dtm/ispell-fu-change-dictionary ()
-  "Interactively set `ispell-local-dictionary' & `ispell-local-pdict'.
-These values are used to override `spell-fu-dictionaries'. Sets
-`ispell-local-pdict' to \"default\" if language of selected dictionary does
-not match with `ispell-dictionary', preventing \"expected language x\" errors
-caused by a language mismatch with `ispell-personal-dictionary'.
+(defun dtm/ispell-fu-change-dictionary (&optional dict)
+  "Set `ispell-local-dictionary' & `spell-fu-dictionaries' to DICT and reload.
+Also sets `ispell-local-pdict' to \"default\" if language of
+selected dictionary does not match with `ispell-dictionary',
+preventing \"expected language x\" errors caused by a language
+mismatch with `ispell-personal-dictionary'.
 Ref: `ispell-change-dictionary', `spell-fu-dictionary-add'"
   (interactive)
   (require 'consult)
-  (setq ispell-local-dictionary
-        (consult--read (mapcar #'list (ispell-valid-dictionary-list))
-                       :prompt "Change buffer-local dictionary: "
-                       :default (or ispell-local-dictionary ispell-dictionary)
-                       :require-match t)
+  (if dict
+      (unless (member dict (ispell-valid-dictionary-list))
+        (error "Specified dictionary '%s' is invalid!" dict))
+    (setq dict (consult--read (mapcar #'list (ispell-valid-dictionary-list))
+                              :prompt "Change buffer-local dictionary: "
+                              :default (or ispell-local-dictionary ispell-dictionary)
+                              :require-match t)))
+  (setq ispell-local-dictionary dict
         ispell-local-dictionary-overridden t
         ispell-buffer-session-localwords nil)
   (if (string= (spell-fu--aspell-lang-from-dict ispell-local-dictionary)
@@ -1013,6 +1016,11 @@ Ref: https://github.com/syl20bnr/spacemacs/pull/15740"
 (defun dtm-pdf-annot-edit-contents-setup-h ()
   "Apply personal customisations.
 Intended for `pdf-annot-edit-contents-minor-mode-hook'"
+  ;; Inherit `ispell-local-dictionary' from pdf buffer
+  (when-let ((dict (buffer-local-value 'ispell-local-dictionary
+                                       (pdf-annot-get-buffer
+                                        pdf-annot-edit-contents--annotation))))
+    (dtm/ispell-fu-change-dictionary dict))
   (auto-fill-mode -1)
   (+word-wrap-mode +1)
   (goto-char (point-max))
