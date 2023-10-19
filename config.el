@@ -730,9 +730,6 @@ Also used by `org-modern-mode' to calculate heights.")
   ;; Free up the s key
   (add-to-list 'evil-snipe-disabled-modes 'pdf-view-mode)
 
-  ;; Display C-c C-q (also bound to `pdf-annot-edit-contents-abort') in the tooltip
-  (keymap-unset pdf-annot-edit-contents-minor-mode-map "C-c C-k")
-
   (map! (:map pdf-view-mode-map
          :n "C-e" #'pdf-view-scroll-down-or-previous-page
          :n "C-s" #'isearch-forward-word
@@ -759,6 +756,10 @@ Also used by `org-modern-mode' to calculate heights.")
          :n "<backtab>" #'pdf-history-forward
          :n [mouse-8]   #'pdf-history-backward
          :n [mouse-9]   #'pdf-history-forward)))
+
+(after! pdf-annot
+  ;; Display C-c C-q (also bound to `pdf-annot-edit-contents-abort') in the tooltip
+  (keymap-unset pdf-annot-edit-contents-minor-mode-map "C-c C-k"))
 
 ;; LaTeX settings
 (after! tex-mode
