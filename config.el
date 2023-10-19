@@ -572,7 +572,7 @@ Also used by `org-modern-mode' to calculate heights.")
   (map! :map org-mode-map
         :n "C-j"   #'+org/return
         :i "C-c ]" #'org-cite-insert
-        :g "C-c [" nil
+        :g "C-c [" #'org-roam-node-insert
         (:localleader
          :desc "Toggle pretty visuals" "v" #'+org-pretty-mode)))
 
