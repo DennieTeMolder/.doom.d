@@ -717,9 +717,32 @@ Based on `spell-fu--word-at-point'."
     (dtm/spell-correct)
     (evil-goggles--vanish)))
 
+;;* Company
+(defun dtm/company-files-continue ()
+  "Call `company-files' and prompt to continue completion using \"/\".
+For use when `company-idle-delay' is nil."
+  (interactive)
+  (call-interactively #'company-files)
+  (add-hook 'company-after-completion-hook #'dtm-company-files-continue-h))
+
+(defun dtm-company-files-continue-h (candidate)
+  "Prompt user to call `dtm/company-files-continue' if CANDIDATE is a directory.
+Intended as a transient for `company-after-completion-hook'."
+  (remove-hook 'company-after-completion-hook #'dtm-company-files-continue-h)
+  (when (and (stringp candidate)
+             (directory-name-p candidate))
+    (when company-files-chop-trailing-slash
+      (insert (substring candidate -1)))
+    (set-transient-map
+     (let ((map (make-sparse-keymap)))
+       (define-key map (kbd "/") #'dtm/company-files-continue)
+       map))
+    (message "%s" (concat "Press " (propertize "/" 'face 'help-key-binding)
+                          " to continue completion."))))
+
 ;;* Markdown
 (defun dtm-flycheck-disable-proselint-rmd-h ()
-  "Disable the 'proselint' flycheck checker when in R markdown.
+  "Disable the \"proselint\" flycheck checker when in R markdown.
 Intended for `markdown-mode-hook'."
   (when-let ((fname (buffer-file-name)))
     (when (string-match-p "\\.Rmd$" fname)
