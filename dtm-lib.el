@@ -1498,6 +1498,7 @@ Relative lines are more performant, but fail with folded/wrapped lines"
 (defun dtm/move-splitter-left (arg)
   "Move window splitter left. Ref: hydra-examples"
   (interactive "p")
+  (require 'windmove)
   (if (let ((windmove-wrap-around))
         (windmove-find-other-window 'right))
       (shrink-window-horizontally arg)
@@ -1506,6 +1507,7 @@ Relative lines are more performant, but fail with folded/wrapped lines"
 (defun dtm/move-splitter-right (arg)
   "Move window splitter right. Ref: hydra-examples"
   (interactive "p")
+  (require 'windmove)
   (if (let ((windmove-wrap-around))
         (windmove-find-other-window 'right))
       (enlarge-window-horizontally arg)
@@ -1514,6 +1516,7 @@ Relative lines are more performant, but fail with folded/wrapped lines"
 (defun dtm/move-splitter-up (arg)
   "Move window splitter up. Ref: hydra-examples"
   (interactive "p")
+  (require 'windmove)
   (if (let ((windmove-wrap-around))
         (windmove-find-other-window 'up))
       (enlarge-window arg)
@@ -1522,6 +1525,7 @@ Relative lines are more performant, but fail with folded/wrapped lines"
 (defun dtm/move-splitter-down (arg)
   "Move window splitter down. Ref: hydra-examples"
   (interactive "p")
+  (require 'windmove)
   (if (let ((windmove-wrap-around))
         (windmove-find-other-window 'up))
       (shrink-window arg)
