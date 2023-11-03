@@ -74,6 +74,7 @@ ess-r-mode
 (h2 "## " (r nil) " " (i div) q :post (forward-char 1))
 (fun p " <- function(" p ") {" n> q n "}")
 (timer "system.time({" n r> "})" n)
+(opt "options(plot.width = " (p "7") ", plot.height = " (p "5") ")" q)
 
 python-mode
 
