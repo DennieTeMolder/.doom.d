@@ -233,7 +233,9 @@
 
 (after! evil-snipe
   ;; Make snipe commands (bound to f,F,t,T,s,S) go beyond the current line
-  (setq evil-snipe-scope 'visible))
+  (setq evil-snipe-scope 'visible)
+
+  (add-to-list 'evil-snipe-disabled-modes 'pdf-view-mode))
 
 (after! company
   ;; Disable company auto pop-up as it can be expensive, use C-SPC to trigger
@@ -727,15 +729,15 @@ Also used by `org-modern-mode' to calculate heights.")
 
   (add-hook 'pdf-annot-edit-contents-minor-mode-hook #'dtm-pdf-annot-edit-contents-setup-h)
 
-  ;; Free up the s key
-  (add-to-list 'evil-snipe-disabled-modes 'pdf-view-mode)
-
   (map! (:map pdf-view-mode-map
-         :n "C-e" #'pdf-view-scroll-down-or-previous-page
          :n "C-s" #'isearch-forward-word
-         :n "S"   #'dtm/pdf-view-fit-half-height
          :n "a"   #'pdf-annot-add-markup-annotation
          :n "c"   #'pdf-annot-add-squiggly-markup-annotation
+         :n "d"   #'pdf-view-scroll-up-or-next-page
+         :n "M-d" #'pdf-view-next-page-command
+         :n "e"   #'pdf-view-scroll-down-or-previous-page
+         :n "M-e" #'pdf-view-previous-page-command
+         :n "S"   #'dtm/pdf-view-fit-half-height
          :n "i"   #'org-noter-insert-note
          :n "v"   #'pdf-annot-add-highlight-markup-annotation
          :n "V"   #'pdf-annot-add-underline-markup-annotation
