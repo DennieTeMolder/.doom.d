@@ -731,20 +731,21 @@ Also used by `org-modern-mode' to calculate heights.")
   (add-hook 'pdf-annot-edit-contents-minor-mode-hook #'dtm-pdf-annot-edit-contents-setup-h)
 
   (map! (:map pdf-view-mode-map
-         :n "C-s" #'isearch-forward-word
-         :n "a"   #'pdf-annot-add-markup-annotation
-         :n "c"   #'pdf-annot-add-squiggly-markup-annotation
-         :n "d"   #'pdf-view-scroll-up-or-next-page
-         :n "M-d" #'pdf-view-next-page-command
-         :n "e"   #'pdf-view-scroll-down-or-previous-page
-         :n "M-e" #'pdf-view-previous-page-command
-         :n "S"   #'dtm/pdf-view-fit-half-height
-         :n "i"   #'org-noter-insert-note
-         :n "v"   #'pdf-annot-add-highlight-markup-annotation
-         :n "V"   #'pdf-annot-add-underline-markup-annotation
-         :n "C-v" #'pdf-annot-add-underline-markup-annotation
-         :n "x"   #'pdf-annot-add-strikeout-markup-annotation
-         :n "z t" #'pdf-view-themed-minor-mode
+         :n  "C-s" #'isearch-forward-word
+         :n  "a"   #'pdf-annot-add-markup-annotation
+         :n  "c"   #'pdf-annot-add-squiggly-markup-annotation
+         :n  "d"   #'pdf-view-scroll-up-or-next-page
+         :n  "M-d" #'pdf-view-next-page-command
+         :n  "e"   #'pdf-view-scroll-down-or-previous-page
+         :n  "M-e" #'pdf-view-previous-page-command
+         :n  "S"   #'dtm/pdf-view-fit-half-height
+         :n  "i"   #'org-noter-insert-note
+         :n  "v"   #'pdf-annot-add-highlight-markup-annotation
+         :n  "V"   #'pdf-annot-add-underline-markup-annotation
+         :n  "C-v" #'pdf-annot-add-underline-markup-annotation
+         :n  "x"   #'pdf-annot-add-strikeout-markup-annotation
+         :nv "y"   #'pdf-view-kill-ring-save
+         :n  "z t" #'pdf-view-themed-minor-mode
          (:prefix "s"
           :desc "Rotate page"        :n "r" #'pdf-view-rotate
           :desc "Slice original"     :n "o" #'pdf-view-reset-slice
