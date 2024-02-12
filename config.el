@@ -136,7 +136,7 @@
 
 (after! doom-modeline
   (setq doom-modeline-buffer-file-name-style 'truncate-except-project
-        dirvish-mode-line-height doom-modeline-height)
+        mode-line-right-align-edge 'right-fringe)
 
   ;; Only display encoding in modeline when it's not UTF-8
   (add-hook 'after-change-major-mode-hook #'dtm-doom-modeline-conditional-encoding-h))
@@ -340,6 +340,7 @@
 
 (after! dirvish
   (setq dirvish-reuse-session nil
+        dirvish-mode-line-height doom-modeline-height
         dirvish-quick-access-entries
         `(("D" "~/Downloads/" "Downloads")
           ("dc" ,doom-core-dir "Doom Core")

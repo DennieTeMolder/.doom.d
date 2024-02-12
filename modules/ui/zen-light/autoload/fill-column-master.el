@@ -6,7 +6,7 @@
   :init-value nil :lighter nil :global nil
   :after-hook (fill-column-master-adjust)
   (when (not fill-column-visual-mode)
-    (fill-column-master-manage-hooks fill-column-center-mode)))
+    (fill-column-master--manage-state fill-column-center-mode)))
 
 ;;;###autoload
 (define-minor-mode fill-column-visual-mode
@@ -14,14 +14,19 @@
   :init-value nil :lighter nil :global nil
   :after-hook (fill-column-master-adjust)
   (when (not fill-column-center-mode)
-    (fill-column-master-manage-hooks fill-column-visual-mode)))
+    (fill-column-master--manage-state fill-column-visual-mode)))
 
-(defun fill-column-master-manage-hooks (enable)
+(defun fill-column-master--manage-state (enable)
+  "Setup/teardown necessary hooks & variables depending on ENABLE.
+Ref: https://github.com/seagle0128/doom-modeline/issues/672"
   (if enable
       (progn
+        (when (eq mode-line-right-align-edge 'window)
+          (setq-local mode-line-right-align-edge 'right-margin))
         (add-hook 'window-configuration-change-hook #'fill-column-master-adjust 'append 'local)
         (add-hook 'display-line-numbers-mode-hook #'fill-column-master-adjust 'append 'local)
         (add-hook 'text-scale-mode-hook #'fill-column-master-adjust 'append 'local))
+    (kill-local-variable 'mode-line-right-align-edge)
     (remove-hook 'window-configuration-change-hook #'fill-column-master-adjust 'local)
     (remove-hook 'display-line-numbers-mode-hook #'fill-column-master-adjust 'local)
     (remove-hook 'text-scale-mode-hook #'fill-column-master-adjust 'local)))
