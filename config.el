@@ -907,6 +907,12 @@ Also used by `org-modern-mode' to calculate heights.")
   (set-popup-rule! "^\\*vterm" :ignore t)
   (+popup-cleanup-rules-h)
 
+  ;; REVIEW this should be adapted once vterm-color-bright-* is introduced at
+  ;; which point this can be aligned with `[ansi/term]-color(-bright)-black'
+  (custom-set-faces! '(vterm-color-black :inherit icon-button
+                                         :background nil
+                                         :foreground nil))
+
   (remove-hook! 'vterm-mode-hook #'hide-mode-line-mode)
 
   ;; Fix evil cursor getting out of sync
