@@ -356,6 +356,10 @@
   (delq 'collapse dirvish-attributes)
   (pushnew! dirvish-preview-disabled-exts "bgz")
 
+  ;; Less buggy pdf-preview but without scrolling
+  (setq dirvish-preview-dispatchers
+        (cl-substitute 'pdf-preface 'pdf dirvish-preview-dispatchers))
+
   ;; REVIEW manually disable diff-hl hook until dirvish module is merged upstream
   (remove-hook 'dired-mode-hook #'diff-hl-dired-mode)
 
