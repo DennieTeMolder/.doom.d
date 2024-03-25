@@ -851,8 +851,8 @@ Returns the created file or nil on failure."
 
 (defun dtm-org-link-as-png (tag)
   "Convert TAG to .png using `dtm-org-link-as-png-maybe', always returns a string.
-The TAG can include an additional nested \"linkkey\", in which case the result
-will be placed in ./img/$NESTED_LINKKEY/$NESTED_TAG (as defined by \"#+LINK:\").
+If TAG starts with an org link abbreviation (as defined by \"#+LINK:\") it is
+expanded and the result is placed in ./Media/$LINKWORD/$TAG.
 
 Intended for use in `org-link-abbrev-alist'."
   (or (dtm-org-link-as-png-maybe
