@@ -308,8 +308,11 @@ Based on `+popup/diagnose'."
   "Original indexing function before calling `dtm-imenu-merge-index-h'")
 
 (defun dtm-imenu-merge-index-h ()
-  "Append results from `imenu-generic-expression' to the current imenu (add to major-mode hook).
-This is useful when the index function does not utilise the generic expression such as in python-mode."
+  "Append results from `imenu-generic-expression' to the current imenu.
+This is useful when the `imenu-create-index-function' does not
+utilise the generic expression such as in `python-mode'.
+
+Intended for appending to major-mode hooks."
   (setq-local dtm-imenu-orginal-index-function imenu-create-index-function
               imenu-create-index-function 'dtm-imenu-merge-index))
 
@@ -342,7 +345,7 @@ Ref: `ibuffer-mode' section on 'Filter Groups'"
 
 (defun dtm-ibuffer-group-by-persp-h ()
   "Set the current filter groups to filter by perspective.
-Based on `ibuffer-projectile-set-filter-groups' from the ibuffer-projectile package:
+Based on `ibuffer-projectile-set-filter-groups' from ibuffer-projectile:
 https://github.com/purcell/ibuffer-projectile"
   (interactive)
   (setq ibuffer-filter-groups (dtm-ibuffer-persp-filter-groups))
@@ -1101,7 +1104,7 @@ Ref: `ess--tb-start', https://github.com/seagle0128/doom-modeline/issues/410"
 
 (defun dtm/ess-debug-command-step ()
   "Step into in debug mode.
-Equivalent to 's' at the R prompt."
+Equivalent to typing \"s\" into the R prompt."
   (interactive)
   (ess-force-buffer-current)
   (unless (ess--dbg-is-active-p)
@@ -1285,7 +1288,7 @@ Auto-expand on exact match."
 
 (defvar +file-templates-inhibit nil
   "If non-nil, inhibit file template expansion.
-Copied from the 'file-templates' doom module.")
+Copied from the `file-templates' doom module.")
 
 (defun dtm-tempel-autoinsert-template ()
   "Get the autoinsert/empty file template for current-buffer."
@@ -1307,19 +1310,19 @@ be an entry for __ in `tempel-path' for the current mode."
          (tempel-insert template))))
 
 (defun dtm-tempel-double-quote (elt)
-  "Insert a single double quote using the 'd' as template ELT.
+  "Insert a single double quote using the \"d\" as template ELT.
 For use in `tempel-user-elements'."
   (when (eq elt 'd) "\""))
 
 (defun dtm-tempel-whitespace (elt)
-  "Insert a space using '_' or N spaces using '(_ N)' as template ELT.
+  "Insert a space using \"_\" or N spaces using \"(_ N)\" as template ELT.
 For use in `tempel-user-elements'."
   (when-let ((n (cond ((eq elt '_) 1)
                       ((eq (car-safe elt) '_) (cadr elt)))))
     (make-string n 32)))
 
 (defun dtm-tempel-include (elt)
-  "Insert template with NAME using '(i NAME)' as template ELT.
+  "Insert template with NAME using \"(i NAME)\" as template ELT.
 Ref: https://github.com/minad/tempel"
   (when (eq (car-safe elt) 'i)
     (if-let (template (alist-get (cadr elt) (tempel--templates)))

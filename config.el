@@ -43,7 +43,7 @@
 (setq doom-font (font-spec :family "Iosevka Term SS05" :width 'expanded
                            :size dtm-default-font-size)
       doom-variable-pitch-font (font-spec :family "Iosevka Aile")
-      doom-unicode-font (font-spec :family (font-get doom-font :family)))
+      doom-symbol-font (font-spec :family (font-get doom-font :family)))
 
 (dtm-doom-check-fonts)
 
