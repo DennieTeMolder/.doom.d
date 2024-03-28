@@ -811,6 +811,7 @@ Returns the created file or nil on failure."
   (catch 'result
     ;; Short-circuit if outfile does not need to or can not be generated
     (unless (and dtm-org-link-convert-p
+                 (not non-essential)
                  (file-readable-p infile)
                  (or (not (file-readable-p outfile))
                      (file-newer-than-file-p infile outfile)))
