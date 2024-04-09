@@ -1,4 +1,4 @@
-;;; graveyard.el -*- lexical-binding: t; -*-
+;;; legacy.el -*- lexical-binding: t; -*-
 ;; This file contains unused functions I could not bear to delete
 
 ;;* Python
