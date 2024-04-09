@@ -779,18 +779,18 @@ Intended for `markdown-mode-hook'."
     (+org-pretty-mode +1)
     (auto-fill-mode +1)
     (+zen-light-toggle +1)
-    (add-hook! 'evil-insert-state-exit-hook :local #'dtm-insert-exit-fill-paragraph)))
+    (add-hook! 'evil-insert-state-exit-hook :local #'dtm-org-fill-paragraph)))
 
 (defun dtm-org-get-title-value ()
   "Returns the value of #+TITLE for the current document"
   (cadar (org-collect-keywords '("TITLE"))))
 
-(defun dtm-insert-exit-fill-paragraph ()
-  "Perform `org-fill-paragraph' unless el at point is a src block"
+(defun dtm-org-fill-paragraph ()
+  "Perform `org-fill-paragraph' unless el at point is a comment or source block."
   ;; Check if `auto-fill-mode' is active
   (when auto-fill-function
     (unless (memq (org-element-type (org-element-at-point-no-context))
-                  '(src-block comment-block))
+                  '(src-block comment))
       (org-fill-paragraph))))
 
 ;;** Org-link
