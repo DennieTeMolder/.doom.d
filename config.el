@@ -948,7 +948,7 @@ Also used by `org-modern-mode' to calculate heights.")
   (setq-hook! 'ess-mode-hook tab-width ess-indent-offset)
   (setq-hook! 'inferior-ess-mode-hook font-lock-string-face nil)
   (add-hook 'inferior-ess-mode-hook #'dtm-ess-modeline-show-busy)
-  (add-hook 'inferior-ess-mode-hook #'dtm-recenter-smart-on-window-change)
+  (add-hook 'inferior-ess-mode-hook #'dtm-hide-eob-on-window-change)
 
   ;; Recenter buffer in window after sending region (SPC m ,)
   (advice-add 'ess-eval-region-or-function-or-paragraph-and-step :after (cmd! (recenter)))

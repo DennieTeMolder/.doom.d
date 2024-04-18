@@ -86,10 +86,6 @@ If NAME is not provided `buffer-file-name' is used."
     (exchange-point-and-mark))
   (deactivate-mark))
 
-(defun dtm-point-max-visible-p ()
-  "Returns non-nil if the end of buffer is visible"
-  (= 0 (count-lines (window-end) (point-max))))
-
 (defun dtm-straight-prioritize (dir)
   "Move straight package DIR to the front of `load-path'."
   (let ((lib-dir (file-name-concat straight-base-dir "straight"
@@ -124,19 +120,25 @@ When W/H is lower then W/H-RATIO split below, else split right."
       (save-selected-window (dtm/split-window-optimally)))
     (aw-select " Ace - Move Buffer" #'aw-move-window)))
 
-(defun dtm-recenter-smart (&optional window)
-  "If end of buffer is visible in WINDOW recenter it to bottom, else `recenter'."
+(defun dtm-scroll-hide-eob (&optional window)
+  "If lines past `point-max' are visible `recenter' to hide them."
   (with-selected-window (or window (selected-window))
-    (unless (bound-and-true-p follow-mode)
-      (if (dtm-point-max-visible-p)
-          (save-excursion
-            (goto-char (point-max))
-            (recenter (- -1 scroll-margin)))
-        (recenter)))))
+    ;; If the first line is visible we cannot scroll any further
+    (when (and (not (pos-visible-in-window-p 1))
+               (pos-visible-in-window-p t))
+      (save-excursion
+        (goto-char (point-max))
+        (recenter (- -1 scroll-margin))))))
 
-(defun dtm-recenter-smart-on-window-change ()
-  "Call `dtm-window-smart-adjust' if the windows size of `current-buffer' changes."
-  (add-hook 'window-size-change-functions #'dtm-window-smart-adjust 'append 'local))
+(defun dtm-hide-eob-on-window-change ()
+  "Call `dtm-scroll-hide-eob' if the windows size of `current-buffer' changes."
+  (add-hook 'window-size-change-functions #'dtm-scroll-hide-eob 'append 'local))
+
+(defun dtm/recenter-till-eob ()
+  "Recenter point to middle of screen but do not scroll past EOB"
+  (interactive)
+  (recenter)
+  (dtm-scroll-hide-eob))
 
 ;;* Theme recommendations
 (defun dtm-theme-which-inactive (theme1 theme2)
