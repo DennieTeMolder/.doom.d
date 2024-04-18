@@ -86,6 +86,10 @@ If NAME is not provided `buffer-file-name' is used."
     (exchange-point-and-mark))
   (deactivate-mark))
 
+(defun dtm-point-max-visible-p ()
+  "Returns non-nil if the end of buffer is visible"
+  (= 0 (count-lines (window-end) (point-max))))
+
 (defun dtm-straight-prioritize (dir)
   "Move straight package DIR to the front of `load-path'."
   (let ((lib-dir (file-name-concat straight-base-dir "straight"
@@ -119,6 +123,20 @@ When W/H is lower then W/H-RATIO split below, else split right."
     (when (eq 1 (length (aw-window-list)))
       (save-selected-window (dtm/split-window-optimally)))
     (aw-select " Ace - Move Buffer" #'aw-move-window)))
+
+(defun dtm-recenter-smart (&optional window)
+  "If end of buffer is visible in WINDOW recenter it to bottom, else `recenter'."
+  (with-selected-window (or window (selected-window))
+    (unless (bound-and-true-p follow-mode)
+      (if (dtm-point-max-visible-p)
+          (save-excursion
+            (goto-char (point-max))
+            (recenter (- -1 scroll-margin)))
+        (recenter)))))
+
+(defun dtm-recenter-smart-on-window-change ()
+  "Call `dtm-window-smart-adjust' if the windows size of `current-buffer' changes."
+  (add-hook 'window-size-change-functions #'dtm-window-smart-adjust 'append 'local))
 
 ;;* Theme recommendations
 (defun dtm-theme-which-inactive (theme1 theme2)
@@ -1130,6 +1148,20 @@ Bypasses `ess-completing-read', indicates if process is busy."
   "Return non-nil if FILE is an ESS plot."
   (when (fboundp 'ess-plot-file-p)
     (ess-plot-file-p file)))
+
+(defun ess-plot-recenter-proc-buffer (&optional name)
+  "Recenter the buffer of console process NAME if visible.
+Defaults to `ess-local-process-name'."
+  (interactive)
+  (or name (setq name ess-local-process-name))
+  (when-let* ((proc (and name (get-process name)))
+              (buf (process-buffer proc))
+              (win (get-buffer-window buf)))
+    (save-selected-window
+      (select-window win)
+      (move-to-window-line (- (1+ scroll-margin)))
+      (goto-char (eol))
+      (recenter -1))))
 
 ;;** dtm-with-lagging-point
 (defvar dtm-lagging-point-actual nil
