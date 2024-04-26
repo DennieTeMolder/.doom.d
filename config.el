@@ -807,6 +807,10 @@ Also used by `org-modern-mode' to calculate heights.")
     '(tree-sitter-hl-face:number :inherit highlight-numbers-number)
     '(tree-sitter-hl-face:type.builtin :inherit font-lock-warning-face :weight bold)))
 
+;; Disable undo history in terminal & REPL buffers to improve responsiveness
+(add-hook 'term-mode-hook #'dtm-disable-undo-history)
+(add-hook 'comint-mode-hook #'dtm-disable-undo-history)
+
 (after! comint
   (setq ansi-color-for-comint-mode 'filter
         comint-scroll-to-bottom-on-input t

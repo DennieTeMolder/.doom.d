@@ -86,6 +86,10 @@ If NAME is not provided `buffer-file-name' is used."
     (exchange-point-and-mark))
   (deactivate-mark))
 
+(defun dtm-disable-undo-history ()
+  "Disable the undo history for the current buffer."
+  (setq-local buffer-undo-list t))
+
 (defun dtm-straight-prioritize (dir)
   "Move straight package DIR to the front of `load-path'."
   (let ((lib-dir (file-name-concat straight-base-dir "straight"
