@@ -794,9 +794,14 @@ Also used by `org-modern-mode' to calculate heights.")
 
 ;;* Programming Languages
 ;; General interactive programming buffer settings
-(after! compile
-  (add-hook 'compilation-mode-hook #'dtm/word-wrap-mode-no-fill)
-  (add-hook 'compilation-mode-hook #'dtm-conda-env-guess-maybe))
+(add-hook 'compilation-mode-hook #'dtm/word-wrap-mode-no-fill)
+(add-hook 'comint-mode-hook #'dtm/word-wrap-mode-no-fill)
+(add-hook 'term-mode-hook #'dtm/word-wrap-mode-no-fill)
+
+;; Disable undo history in compilation/terminal/REPL buffers to improve responsiveness
+(add-hook 'compilation-mode-hook #'dtm-disable-undo-history)
+(add-hook 'comint-mode-hook #'dtm-disable-undo-history)
+(add-hook 'term-mode-hook #'dtm-disable-undo-history)
 
 (after! tree-sitter
   ;; Spell-fu compatibility
@@ -807,16 +812,12 @@ Also used by `org-modern-mode' to calculate heights.")
     '(tree-sitter-hl-face:number :inherit highlight-numbers-number)
     '(tree-sitter-hl-face:type.builtin :inherit font-lock-warning-face :weight bold)))
 
-;; Disable undo history in terminal & REPL buffers to improve responsiveness
-(add-hook 'term-mode-hook #'dtm-disable-undo-history)
-(add-hook 'comint-mode-hook #'dtm-disable-undo-history)
-
 (after! comint
   (setq ansi-color-for-comint-mode 'filter
         comint-scroll-to-bottom-on-input t
         comint-scroll-to-bottom-on-output t)
 
-  (setq-hook! 'comint-mode-hook +word-wrap-fill-style nil)
+  (add-hook 'comint-mode-hook #'dtm/word-wrap-mode-no-fill)
 
   ;; Shell style clear REPL binding
   (general-evil-define-key '(n i) 'comint-mode-map
@@ -1056,6 +1057,9 @@ Also used by `org-modern-mode' to calculate heights.")
 
 ;; Snakefiles in python mode
 (push '("\\(Snakefile\\|\\.smk\\)\\'" . python-mode) auto-mode-alist)
+
+;; Enable conda before compiling (useful for Snakemake)
+(add-hook 'compilation-mode-hook #'dtm-conda-env-guess-maybe)
 
 (use-package! elpy-shell
   :defer t
