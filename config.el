@@ -794,17 +794,6 @@ Also used by `org-modern-mode' to calculate heights.")
 
 ;;* Programming Languages
 ;; General interactive programming buffer settings
-(after! comint
-  (setq ansi-color-for-comint-mode 'filter
-        comint-scroll-to-bottom-on-input t
-        comint-scroll-to-bottom-on-output t)
-
-  (setq-hook! 'comint-mode-hook +word-wrap-fill-style nil)
-
-  ;; Shell style clear REPL binding
-  (general-evil-define-key '(n i) 'comint-mode-map
-    "C-l" #'comint-clear-buffer))
-
 (after! compile
   (add-hook 'compilation-mode-hook #'dtm/word-wrap-mode-no-fill)
   (add-hook 'compilation-mode-hook #'dtm-conda-env-guess-maybe))
@@ -817,6 +806,47 @@ Also used by `org-modern-mode' to calculate heights.")
   (custom-set-faces!
     '(tree-sitter-hl-face:number :inherit highlight-numbers-number)
     '(tree-sitter-hl-face:type.builtin :inherit font-lock-warning-face :weight bold)))
+
+(after! comint
+  (setq ansi-color-for-comint-mode 'filter
+        comint-scroll-to-bottom-on-input t
+        comint-scroll-to-bottom-on-output t)
+
+  (setq-hook! 'comint-mode-hook +word-wrap-fill-style nil)
+
+  ;; Shell style clear REPL binding
+  (general-evil-define-key '(n i) 'comint-mode-map
+    "C-l" #'comint-clear-buffer))
+
+(after! eshell
+  ;; Fuzzy match parent directories (a.k.a. "bd")
+  ;; The "z" command does the same but for dir history
+  (add-to-list '+eshell-aliases '("up" "eshell-up $1")))
+
+(after! vterm
+  ;; Actually clear buffer upon C-l
+  (setq vterm-clear-scrollback-when-clearing t)
+
+  ;; Don't consider vterm buffer as popup (only doom:vterm)
+  (set-popup-rule! "^\\*vterm" :ignore t)
+  (+popup-cleanup-rules-h)
+
+  ;; REVIEW this should be adapted once vterm-color-bright-* is introduced at
+  ;; which point this can be aligned with `[ansi/term]-color(-bright)-black'
+  (custom-set-faces! '(vterm-color-black :inherit icon-button
+                                         :background nil
+                                         :foreground nil))
+
+  (remove-hook! 'vterm-mode-hook #'hide-mode-line-mode)
+
+  ;; Fix evil cursor getting out of sync
+  (advice-add 'vterm-send-key :before #'dtm-vterm-sync-cursor-a)
+  (advice-add 'vterm--redraw :around #'dtm-vterm-redraw-cursor-a))
+
+(after! sh-script
+  (map! :map sh-mode-map
+        :nv          [C-return] #'dtm/vterm-execute-current-line
+        :localleader "TAB"      #'vterm-other-window))
 
 (when (modulep! :lang emacs-lisp)
   (setq lispy-outline "^[ \t]*;;[;*]+[^#]"
@@ -897,36 +927,6 @@ Also used by `org-modern-mode' to calculate heights.")
 (after! eros
   ;; Large results can freeze emacs, this limits the inconvenience
   (setq eros-eval-result-duration 2))
-
-(after! eshell
-  ;; Fuzzy match parent directories (a.k.a. "bd")
-  ;; The "z" command does the same but for dir history
-  (add-to-list '+eshell-aliases '("up" "eshell-up $1")))
-
-(after! vterm
-  ;; Actually clear buffer upon C-l
-  (setq vterm-clear-scrollback-when-clearing t)
-
-  ;; Don't consider vterm buffer as popup (only doom:vterm)
-  (set-popup-rule! "^\\*vterm" :ignore t)
-  (+popup-cleanup-rules-h)
-
-  ;; REVIEW this should be adapted once vterm-color-bright-* is introduced at
-  ;; which point this can be aligned with `[ansi/term]-color(-bright)-black'
-  (custom-set-faces! '(vterm-color-black :inherit icon-button
-                                         :background nil
-                                         :foreground nil))
-
-  (remove-hook! 'vterm-mode-hook #'hide-mode-line-mode)
-
-  ;; Fix evil cursor getting out of sync
-  (advice-add 'vterm-send-key :before #'dtm-vterm-sync-cursor-a)
-  (advice-add 'vterm--redraw :around #'dtm-vterm-redraw-cursor-a))
-
-(after! sh-script
-  (map! :map sh-mode-map
-        :nv          [C-return] #'dtm/vterm-execute-current-line
-        :localleader "TAB"      #'vterm-other-window))
 
 (after! ess
   ;; Use current dir for session
