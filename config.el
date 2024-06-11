@@ -424,7 +424,9 @@
   (setq vundo-glyph-alist vundo-ascii-symbols))
 
 (after! image-mode
-  (advice-add 'image-fit-to-window :after #'dtm/image-center))
+  (advice-add 'image-fit-to-window :after #'dtm/image-center)
+
+  (map! :map image-mode-map :n "C-l" #'dtm/image-center))
 
 ;;;###package highlight-indent-guides
 (remove-hook 'text-mode-hook #'highlight-indent-guides-mode)
