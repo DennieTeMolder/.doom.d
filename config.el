@@ -443,7 +443,7 @@
   (custom-set-faces! '(aw-leading-char-face :inherit highlight :foreground nil)))
 
 (use-package! pixel-scroll
-  :if EMACS29+
+  :if (>= emacs-major-version 29)
   :defer t
   :init
   (unless dtm-maximize-performance
