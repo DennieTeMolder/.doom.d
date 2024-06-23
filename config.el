@@ -327,20 +327,32 @@
   (advice-remove 'balance-windows #'+popup-save-a))
 
 (after! dired
-  (setq dired-dwim-target nil)
+  (setq dired-clean-confirm-killing-deleted-buffers nil
+        dired-dwim-target nil
+        dired-listing-switches
+        "-lv --almost-all --human-readable --group-directories-first --no-group")
 
   ;; Custom overrides
   (map! :map dired-mode-map
+        "C-c C-r" #'dirvish-rsync
         [remap dired-do-delete] #'dtm/dired-delete-marked
         [remap dired-diff]      #'dtm/dired-ediff))
 
 (after! dired-x
-  (setq dired-omit-files
-        "^\\..*$\\|\\`#\\|\\.\\(?:class\\|elc\\|meta\\|pyo\\|swp\\)\\'"))
+  (setq dired-omit-files (concat dired-omit-files "\\|^\\..*$")))
+
+(after! diredfl
+  (add-hook 'dirvish-directory-view-mode-hook #'diredfl-mode)
+  (set-face-attribute 'diredfl-dir-name nil :bold t))
 
 (after! dirvish
   (setq dirvish-reuse-session nil
+        dirvish-hide-details t
         dirvish-mode-line-height doom-modeline-height
+        dirvish-attributes
+        `(file-size ,+dired-dirvish-icon-provider subtree-state)
+        dirvish-mode-line-format
+        '(:left (sort file-time symlink) :right (omit yank index))
         dirvish-quick-access-entries
         `(("D" "~/Downloads/" "Downloads")
           ("dc" ,doom-core-dir "Doom Core")
@@ -353,15 +365,11 @@
           ("p" "~/Sync/PhD/Projects/" "Projects")
           ("r" "/" "Root")
           ("s" "~/Sync/" "Sync")))
-  (delq 'collapse dirvish-attributes)
   (pushnew! dirvish-preview-disabled-exts "bgz")
 
   ;; Less buggy pdf-preview but without scrolling
   (setq dirvish-preview-dispatchers
         (cl-substitute 'pdf-preface 'pdf dirvish-preview-dispatchers))
-
-  ;; REVIEW manually disable diff-hl hook until dirvish module is merged upstream
-  (remove-hook 'dired-mode-hook #'diff-hl-dired-mode)
 
   ;; Make dirvish recognise custom project types
   (advice-add 'dirvish--get-project-root :override #'projectile-project-root)
@@ -371,17 +379,24 @@
         :n "C-r" #'revert-buffer
         :n "C-o" #'dirvish-history-jump
         :n "C-s" #'dtm/dirvish-search-cwd
+        :n "M-t" #'dirvish-layout-toggle
+        :n "a"   #'dirvish-quick-access
+        :n "s"   #'dirvish-quicksort
         :n "c"   #'dired-create-empty-file
         :n "h"   #'dired-up-directory
         :n "H"   #'dirvish-history-go-backward
+        :n "f"   #'dirvish-file-info-menu
         :n "F"   #'dirvish-layout-toggle
         :n "l"   #'dired-find-file
         :n "L"   #'dirvish-history-go-forward
         :n "M"   #'dirvish-chxxx-menu
         :n "o"   #'dirvish-quick-access
+        :n "y"   #'dirvish-yank-menu
         :n "Y"   #'dtm/dirvish-copy-file-name
+        :n "TAB" #'dirvish-subtree-toggle
         :n "/"   #'dtm/dirvish-narrow
-        :n "."   #'dtm/dirvish-find-entry)
+        :n "."   #'dtm/dirvish-find-entry
+        :n "?"   #'dirvish-dispatch)
   ;; Descriptions only work when bound to `major-mode' map
   (map! :map dired-mode-map
         :localleader
@@ -393,6 +408,7 @@
         :desc "Hide/omit files" "h" #'dired-omit-mode
         :desc "Ls menu"         "l" #'dirvish-ls-switches-menu
         :desc "Mark menu"       "m" #'dirvish-mark-menu
+        :desc "Narrow buffer"   "n" #'dirivsh-narrow
         :desc "Subtree menu"    "s" #'dirvish-subtree-menu))
 
 ;; (after! dirvish-side

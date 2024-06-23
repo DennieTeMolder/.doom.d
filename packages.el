@@ -76,6 +76,11 @@
 ;; Only used by `lispy-occur', use `consult-line' instead
 (package! swiper :ignore t)
 
+;; Use dirvish instead
+(package! dired-git-info :ignore t)
+(package! dired-rsync :ignore t)
+(package! fd-dired :ignore t)
+
 ;; Improved Org ODT export
 (package! ox-odt
   :recipe (:host github :repo "kjambunathan/org-mode-ox-odt"
