@@ -1104,6 +1104,7 @@ Also used by `org-modern-mode' to calculate heights.")
 ;;* Misc Packages
 ;; NOTE to configure add the line below to ~/.authinfo.gpg
 ;; machine openai.com login apikey password <your-key>
+;; REVIEW this package is disabled, should it be removed?
 (use-package! gptel
   :defer t
   :init
