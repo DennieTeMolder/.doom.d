@@ -203,6 +203,17 @@ Use for `after-change-major-mode-hook'."
                "\n"))
      'face 'doom-dashboard-banner)))
 
+(defun dtm-y-or-n-p-trash-a (orig-fun &rest args)
+  "Replace delete by trashed in `y-or-n-p' prompts within ORIG-FUN.
+Respects `delete-by-moving-to-trash'. Intended as :around advice."
+  (cl-letf* ((this-fn (symbol-function 'y-or-n-p))
+             ((symbol-function 'y-or-n-p)
+              (lambda (prompt)
+                (when delete-by-moving-to-trash
+                  (setq prompt (string-replace "delete" "trash" prompt)))
+                (funcall this-fn prompt))))
+    (apply orig-fun args)))
+
 ;;* Workspaces/perspectives
 (defun dtm-workspace-switch-maybe (name)
   "Switch to workspace NAME if not already current"

@@ -183,6 +183,9 @@
      :icon (nerd-icons-octicon "nf-oct-book" :face 'doom-dashboard-menu-title)
      :action doom/help)))
 
+;; Reflect `delete-by-moving-to-trash' state in y-or-n-p prompts
+(advice-add 'doom/delete-this-file :around #'dtm-y-or-n-p-trash-a)
+
 ;;* General Doom Settings
 (setq doom-scratch-initial-major-mode t)
 
