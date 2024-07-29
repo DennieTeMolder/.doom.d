@@ -637,7 +637,7 @@ Also used by `org-modern-mode' to calculate heights.")
   :config
   (setq org-modern-label-border dtm-org-line-spacing
         org-modern-hide-stars (org-add-props " " nil 'face 'org-indent)
-        org-modern-statistics nil
+        org-modern-progress nil
         org-modern-star ["●" "◉" "○" "◉" "○" "◉" "○" "◉"]
         org-modern-list '((?+ . "›")
                           (?- . "‒")
