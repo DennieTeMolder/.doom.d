@@ -668,54 +668,12 @@ Ref: `ispell-change-dictionary', `spell-fu-dictionary-add'"
     (spell-fu--refresh-cache-table-list)
     (spell-fu--refresh)))
 
-(defun dtm-ispell-fu-ensure-dicts ()
-  "Sorts `spell-fu-dictionaries' and returns the corresponding files.
-Ensures compatibility with `ispell-complete-word-dict' (and linux look)."
+(defun dtm-spell-fu-dict-word-files ()
+  "Update and return the word files corresponding to `spell-fu-dictionaries'."
+  (require 'spell-fu)
   (unless spell-fu-mode
     (mapc #'spell-fu--dictionary-ensure-update spell-fu-dictionaries))
-  (mapcar (lambda (dict)
-            (let ((file (spell-fu--words-file dict))
-                  (cache (spell-fu--cache-file dict))
-                  timestamp status)
-              (setq timestamp
-                    (file-name-concat
-                     (file-name-directory file)
-                     (concat "." (file-name-nondirectory file) ".last_sorted")))
-              (unless (and (file-exists-p timestamp)
-                           (file-newer-than-file-p timestamp file))
-                ;; Sort only on [[:alnum:] ] -> required for look's binary search
-                (setq status
-                      (call-process "sort" nil nil nil
-                                    "-f" "-d" file "-o" file))
-                (unless (and (numberp status) (= 0 status))
-                  (warn "Ispell-fu: 'sort' process for '%s' returned %s" file status))
-                (call-process "touch" nil nil nil cache)
-                ;; Update timestamp
-                (write-region "" nil timestamp))
-              file))
-          spell-fu-dictionaries))
-
-(defun dtm-ispell-fu-lookup-words (word &rest _)
-  "Lookup word in `spell-fu-dictionaries' if `company-ispell-dictionary' is unset.
-Can be used to replace `company-ispell--lookup-words' (i.e. via `defalias')."
-  (require 'spell-fu)
-  (apply #'nconc (mapcar (lambda (dict) (when dict (ispell-lookup-words word dict)))
-                         (or (and company-ispell-dictionary
-                                  (list company-ispell-dictionary))
-                             (and spell-fu-dictionaries
-                                  (dtm-ispell-fu-ensure-dicts))
-                             (list (or ispell-complete-word-dict
-                                       ispell-alternate-dictionary))))))
-
-(defun dtm/company-manual-dict-ispell ()
-  "Call `company-dict' and `company-ispell', based on `spell-fu-faces-include'."
-  (interactive)
-  (require 'spell-fu)
-  (let ((company-backends (list (if (spell-fu--check-faces-at-point (point))
-                                    '(company-ispell company-dict)
-                                  '(company-dict :separate company-ispell)))))
-    (unless (company-manual-begin)
-      (message "No completions found in %s" company-backends))))
+  (mapcar #'spell-fu--words-file spell-fu-dictionaries))
 
 (defun dtm-spell-fu-bounds-word-at-point ()
   "Return the bounds of word at the current point or nil.
@@ -755,28 +713,21 @@ Based on `spell-fu--word-at-point'."
     (dtm/spell-correct)
     (evil-goggles--vanish)))
 
-;;* Company
-(defun dtm/company-files-continue ()
-  "Call `company-files' and prompt to continue completion using \"/\".
-For use when `company-idle-delay' is nil."
+;;* Corfu/Cape
+(defun dtm/corfu-complete-always ()
   (interactive)
-  (call-interactively #'company-files)
-  (add-hook 'company-after-completion-hook #'dtm-company-files-continue-h))
+  (when (< corfu--index 0)
+    (corfu-next))
+  (corfu-complete))
 
-(defun dtm-company-files-continue-h (candidate)
-  "Prompt user to call `dtm/company-files-continue' if CANDIDATE is a directory.
-Intended as a transient for `company-after-completion-hook'."
-  (remove-hook 'company-after-completion-hook #'dtm-company-files-continue-h)
-  (when (and (stringp candidate)
-             (directory-name-p candidate))
-    (when company-files-chop-trailing-slash
-      (insert (substring candidate -1)))
-    (set-transient-map
-     (let ((map (make-sparse-keymap)))
-       (define-key map (kbd "/") #'dtm/company-files-continue)
-       map))
-    (message "%s" (concat "Press " (propertize "/" 'face 'help-key-binding)
-                          " to continue completion."))))
+(defun dtm-cape-keyword-dict ()
+  "Return results from `cape-keyword' and `cape-dict' combined."
+  (cape-wrap-super #'cape-keyword #'cape-dict))
+
+(defun dtm/cape-keyword-dict ()
+  "Interactive version of `dtm-cape-dict-keyword'."
+  (interactive)
+  (cape-interactive #'dtm-cape-keyword-dict))
 
 ;;* Markdown
 (defun dtm-flycheck-disable-proselint-rmd-h ()
@@ -1302,17 +1253,6 @@ This enables the each word of the query to be on a consecutive non-blank line."
   (string-join (mapcar #'regexp-quote (ctrlf-split-fuzzy input))  ".*?\\(?:\n.*?\\)??"))
 
 ;;* Tempel
-(defun dtm/tempel-complete-always ()
-  "Trigger `tempel-complete' regardless if `tempel-trigger-prefix' is provided.
-Auto-expand on exact match."
-  (interactive)
-  (require 'tempel)
-  (let ((tempel-trigger-prefix (when (tempel--prefix-bounds) tempel-trigger-prefix)))
-    (call-interactively #'tempel-complete)
-    (when (and (not tempel--active)
-               (tempel-expand))
-      (call-interactively #'tempel-expand))))
-
 (defun dtm/tempel-open-template-file ()
   "Open the last file in `tempel-path' in the other window."
   (interactive)
@@ -1386,7 +1326,8 @@ Ref: https://github.com/minad/tempel"
 Caution: make sure `tempel-trigger-prefix' is not nil.
 Meant for hooking onto `prog-mode-hook' and `text-mode-hook'."
   (setq-local completion-at-point-functions
-              (cons #'tempel-complete completion-at-point-functions)))
+                (cons #'tempel-expand
+                      completion-at-point-functions)))
 
 ;;* Pixel-scroll-precision-mode
 (defun dtm-window-usable-height ()

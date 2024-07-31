@@ -70,8 +70,6 @@
 ;; Custom template expansion, fully disable yasnippet
 ;; See: (doom-package-depending-on 'yasnippet)
 (package! tempel)
-(package! yasnippet :ignore t)
-(package! company-auctex :disable t)
 
 ;; Only used by `lispy-occur', use `consult-line' instead
 (package! swiper :ignore t)

@@ -240,22 +240,6 @@
 
   (add-to-list 'evil-snipe-disabled-modes 'pdf-view-mode))
 
-(after! company
-  ;; Disable company auto pop-up as it can be expensive, use C-SPC to trigger
-  (setq company-idle-delay nil
-        company-selection-wrap-around t
-        company-dabbrev-ignore-case 'keep-prefix
-        company-dabbrev-code-everywhere t)
-
-  ;; Enable auto pop-up in elisp mode as it is less expensive
-  (setq-hook! 'emacs-lisp-mode-hook company-idle-delay 0.2)
-
-  ;; Make dabbrev (C-x C-n) case sensitive in programming modes
-  (setq-hook! 'prog-mode-hook company-dabbrev-ignore-case nil))
-
-(after! dabbrev
-  (setq company-dabbrev-char-regexp "[[:alnum:]-_:]"))
-
 (after! projectile
   ;; Projectle sorting by recently opened
   (setq projectile-sort-order 'recently-active
@@ -287,6 +271,23 @@
   ;; Exclude autosave file/folder and root from recent files
   (add-to-list 'recentf-exclude "/autosave/?\\'")
   (add-to-list 'recentf-exclude "\\`/\\'"))
+
+(after! corfu
+  (setq +corfu-want-tab-prefer-navigating-org-tables t
+        +corfu-want-minibuffer-completion t
+        corfu-preselect 'prompt)
+
+  ;; Keep the corfu minibuffer alive when using this command
+  (add-to-list 'corfu-continue-commands #'dtm/corfu-complete-always)
+
+  ;; Bind `corfu-complete', which allows `cape-file' to continue expansion
+  (map! :map corfu-map "C-l" #'dtm/corfu-complete-always))
+
+(after! cape
+  (setq cape-dict-file #'dtm-spell-fu-dict-word-files)
+
+  ;; Enable cape-file in more modes then prog-mode
+  (add-hook! '(conf-mode-hook text-mode-hook) #'+corfu-add-cape-file-h))
 
 (after! persp-mode
   ;; Open private config files in a dedicated workspace
@@ -495,8 +496,7 @@
   (setq tempel-path (file-name-concat doom-user-dir "snippets.eld")
         tempel-user-elements '(dtm-tempel-whitespace
                                dtm-tempel-double-quote
-                               dtm-tempel-include)
-        tempel-trigger-prefix ">")
+                               dtm-tempel-include))
 
   (map! :map tempel-map
         "<tab>"     #'tempel-next
@@ -544,10 +544,6 @@
   ;; Remove org-block from excluded-faces to enable spell checking in #+CAPTION blocks
   (when-let ((cell (assq 'org-mode +spell-excluded-faces-alist)))
     (setcdr cell (cl-remove 'org-block (cdr cell)))))
-
-(after! company-ispell
-  ;; Use `spell-fu-dictionaries' for word completion
-  (defalias 'company-ispell--lookup-words 'dtm-ispell-fu-lookup-words))
 
 (after! flycheck
   ;; Select flycheck window when opened
@@ -680,7 +676,7 @@ Also used by `org-modern-mode' to calculate heights.")
   (defvar dtm-org-roam-index-file "pages/contents.org"))
 
 (after! org-roam
-  ;; Disable completion everywhere as it overrides company completion
+  ;; Disable roam completion outside of links as it blocks the more useful dabbrev capf
   (setq org-roam-completion-everywhere nil)
 
   ;; Custom org-roam buffer preview function
@@ -922,8 +918,8 @@ Also used by `org-modern-mode' to calculate heights.")
 
   ;; Add/move around some of the keys to be more Evil
   (map! :map lispy-mode-map
-        "TAB" #'special-lispy-tab
         "C-l" #'lispy-view
+        "="   #'special-lispy-tab
         "A"   #'special-lispy-ace-subword
         "E"   #'special-lispy-eval-other-window
         "J"   #'special-lispy-move-down
@@ -956,6 +952,7 @@ Also used by `org-modern-mode' to calculate heights.")
   ;; Large results can freeze emacs, this limits the inconvenience
   (setq eros-eval-result-duration 2))
 
+;; REVIEW do we need additional corfu integration for R?
 (after! ess
   ;; Use current dir for session
   (setq ess-ask-for-ess-directory nil
@@ -991,11 +988,7 @@ Also used by `org-modern-mode' to calculate heights.")
   (set-lookup-handlers! '(ess-r-mode inferior-ess-r-mode ess-julia-mode)
     :documentation #'dtm/ess-lookup-documentation)
 
-  ;; Add company-R-library backend
-  ;; REVIEW https://github.com/doomemacs/doomemacs/pull/6455
-  (set-company-backend! '(ess-r-mode inferior-ess-r-mode)
-    '(company-R-args company-R-objects company-R-library company-dabbrev-code :separate))
-
+  ;; Enable tree sitter and customise patterns
   (add-hook 'ess-r-mode-local-vars-hook #'tree-sitter! 'append)
 
   ;; Recognise F/T as boolean values

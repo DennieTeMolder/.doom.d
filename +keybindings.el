@@ -8,10 +8,8 @@
       :g "C-s"       #'ctrlf-forward-default
       :n "C-l"       #'+nav-flash/blink-cursor
 
-      :i "C-x C-f" #'dtm/company-files-continue
-      :i "C-x C-s" #'dtm/tempel-complete-always
-      :v "C-x C-s" #'tempel-insert
-      :i "C-x C-k" #'dtm/company-manual-dict-ispell
+      :i "C-x C-k" #'dtm/cape-keyword-dict
+      :i "C-x C-s" #'tempel-complete
       :i "C-x s"   #'dtm/spell-correct-previous
 
       ;; Create parity with spell-fu highlighting

@@ -165,3 +165,75 @@ Use for `visual-line-mode-hook'."
       (setq-local display-line-numbers correct-type))
     (when (eq display-line-numbers-type wrong-type)
       (setq-local display-line-numbers-type correct-type))))
+
+;;* Company
+(defun dtm/company-files-continue ()
+  "Call `company-files' and prompt to continue completion using \"/\".
+For use when `company-idle-delay' is nil."
+  (interactive)
+  (call-interactively #'company-files)
+  (add-hook 'company-after-completion-hook #'dtm-company-files-continue-h))
+
+(defun dtm-company-files-continue-h (candidate)
+  "Prompt user to call `dtm/company-files-continue' if CANDIDATE is a directory.
+Intended as a transient for `company-after-completion-hook'."
+  (remove-hook 'company-after-completion-hook #'dtm-company-files-continue-h)
+  (when (and (stringp candidate)
+             (directory-name-p candidate))
+    (when company-files-chop-trailing-slash
+      (insert (substring candidate -1)))
+    (set-transient-map
+     (let ((map (make-sparse-keymap)))
+       (define-key map (kbd "/") #'dtm/company-files-continue)
+       map))
+    (message "%s" (concat "Press " (propertize "/" 'face 'help-key-binding)
+                          " to continue completion."))))
+
+(defun dtm-ispell-fu-ensure-dicts ()
+  "Sorts `spell-fu-dictionaries' and returns the corresponding files.
+Ensures compatibility with `ispell-complete-word-dict' (and linux look)."
+  (unless spell-fu-mode
+    (mapc #'spell-fu--dictionary-ensure-update spell-fu-dictionaries))
+  (mapcar (lambda (dict)
+            (let ((file (spell-fu--words-file dict))
+                  (cache (spell-fu--cache-file dict))
+                  timestamp status)
+              (setq timestamp
+                    (file-name-concat
+                     (file-name-directory file)
+                     (concat "." (file-name-nondirectory file) ".last_sorted")))
+              (unless (and (file-exists-p timestamp)
+                           (file-newer-than-file-p timestamp file))
+                ;; Sort only on [[:alnum:] ] -> required for look's binary search
+                (setq status
+                      (call-process "sort" nil nil nil
+                                    "-f" "-d" file "-o" file))
+                (unless (and (numberp status) (= 0 status))
+                  (warn "Ispell-fu: 'sort' process for '%s' returned %s" file status))
+                (call-process "touch" nil nil nil cache)
+                ;; Update timestamp
+                (write-region "" nil timestamp))
+              file))
+          spell-fu-dictionaries))
+
+(defun dtm-ispell-fu-lookup-words (word &rest _)
+  "Lookup word in `spell-fu-dictionaries' if `company-ispell-dictionary' is unset.
+Can be used to replace `company-ispell--lookup-words' (i.e. via `defalias')."
+  (require 'spell-fu)
+  (apply #'nconc (mapcar (lambda (dict) (when dict (ispell-lookup-words word dict)))
+                         (or (and company-ispell-dictionary
+                                  (list company-ispell-dictionary))
+                             (and spell-fu-dictionaries
+                                  (dtm-ispell-fu-ensure-dicts))
+                             (list (or ispell-complete-word-dict
+                                       ispell-alternate-dictionary))))))
+
+(defun dtm/company-manual-dict-ispell ()
+  "Call `company-dict' and `company-ispell', based on `spell-fu-faces-include'."
+  (interactive)
+  (require 'spell-fu)
+  (let ((company-backends (list (if (spell-fu--check-faces-at-point (point))
+                                    '(company-ispell company-dict)
+                                  '(company-dict :separate company-ispell)))))
+    (unless (company-manual-begin)
+      (message "No completions found in %s" company-backends))))
