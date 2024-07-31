@@ -878,6 +878,8 @@ Also used by `org-modern-mode' to calculate heights.")
   (setq lispy-outline "^[ \t]*;;[;*]+[^#]"
         +emacs-lisp-outline-regexp lispy-outline)
 
+  (defalias 'elisp-mode #'emacs-lisp-mode)
+
   (defadvice! dtm-elisp-extend-imenu-a ()
     :after #'+emacs-lisp-extend-imenu-h
     (cl-replace imenu-generic-expression
