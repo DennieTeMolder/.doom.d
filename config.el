@@ -601,6 +601,14 @@ Also used by `org-modern-mode' to calculate heights.")
         (:localleader
          :desc "Toggle pretty visuals" "v" #'+org-pretty-mode)))
 
+(after! evil-org
+  ;; Disable Doom's table navigation bindings (use TAB instead)
+  (map! :map evil-org-mode-map
+        :i "C-h" nil
+        :i "C-j" nil
+        :i "C-k" nil
+        :i "C-l" nil))
+
 ;; Org-cite settings
 (after! oc
   ;; according to the `oc-biblatex.el' you should use bibstyle/citestyle
