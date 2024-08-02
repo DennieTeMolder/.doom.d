@@ -845,7 +845,7 @@ Also used by `org-modern-mode' to calculate heights.")
   (add-hook 'comint-mode-hook #'dtm/word-wrap-mode-no-fill)
 
   ;; Shell style clear REPL binding
-  (general-evil-define-key '(n i) 'comint-mode-map
+  (general-evil-define-key '(n) 'comint-mode-map
     "C-l" #'comint-clear-buffer))
 
 (after! eshell
