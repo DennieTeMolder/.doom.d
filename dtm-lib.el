@@ -158,17 +158,6 @@ When W/H is lower then W/H-RATIO split below, else split right."
          (dtm-theme-which-inactive dtm-light-theme dtm-alternative-light-theme)
        (dtm-theme-which-inactive dtm-dark-theme dtm-alternative-dark-theme)))))
 
-(defun dtm/consult-theme ()
-  "Call `consult-theme' interactively with `dtm-recommend-theme' as default.
-This is achieved by locally redefining `consult--read'.
-Ref: https://nullprogram.com/blog/2017/10/27/"
-  (interactive)
-  (require 'consult)
-  (letf! ((defun consult--read (candidates &rest options)
-            (apply consult--read candidates
-                   (plist-put options :default (symbol-name (dtm-recommend-theme))))))
-    (call-interactively #'consult-theme)))
-
 ;;* UI
 (defun dtm-doom-check-fonts ()
   "Check if doom fonts are installed, otherwise prevent a blank display."
@@ -205,13 +194,12 @@ Use for `after-change-major-mode-hook'."
 
 (defun dtm-y-or-n-p-trash-a (orig-fun &rest args)
   "Replace delete by trashed in `y-or-n-p' prompts within ORIG-FUN.
-Respects `delete-by-moving-to-trash'. Intended as :around advice."
-  (cl-letf* ((this-fn (symbol-function 'y-or-n-p))
-             ((symbol-function 'y-or-n-p)
-              (lambda (prompt)
-                (when delete-by-moving-to-trash
-                  (setq prompt (string-replace "delete" "trash" prompt)))
-                (funcall this-fn prompt))))
+Respects `delete-by-moving-to-trash'. Intended as :around advice.
+Ref: https://nullprogram.com/blog/2017/10/27/"
+  (letf! ((defun y-or-n-p (prompt)
+            (when delete-by-moving-to-trash
+              (setq prompt (string-replace "delete" "trash" prompt)))
+            (funcall y-or-n-p prompt)))
     (apply orig-fun args)))
 
 ;;* Workspaces/perspectives

@@ -289,6 +289,11 @@
   ;; Enable cape-file in more modes then prog-mode
   (add-hook! '(conf-mode-hook text-mode-hook) #'+corfu-add-cape-file-h))
 
+(after! consult
+  (consult-customize
+   ;; Set default selection for `consult-theme' based on `dtm-recommend-theme'
+   consult-theme :default (symbol-name (dtm-recommend-theme))))
+
 (after! persp-mode
   ;; Open private config files in a dedicated workspace
   (dolist (symbol '(doom/open-private-config

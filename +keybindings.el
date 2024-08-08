@@ -49,9 +49,6 @@
        :desc "Undo history"             "u"   #'vundo
        :desc "Save buffer as root"      "U"   #'doom/sudo-save-buffer)
 
-      ;; Help
-      "h t" #'dtm/consult-theme
-
       ;; Insert
       :desc "snippet" "i s" #'tempel-insert
 
