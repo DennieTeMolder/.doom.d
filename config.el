@@ -275,9 +275,11 @@
 (after! corfu
   (setq +corfu-want-tab-prefer-navigating-org-tables t
         +corfu-want-minibuffer-completion t
-        corfu-preselect 'prompt)
+        corfu-preselect 'prompt
+        corfu-auto-delay 0.25
+        corfu-auto-prefix 3)
 
-  ;; Keep the corfu minibuffer alive when using this command
+  ;; Keep the corfu childframe alive when using this command
   (add-to-list 'corfu-continue-commands #'dtm/corfu-complete-always)
 
   ;; Bind `corfu-complete', which allows `cape-file' to continue expansion
@@ -987,6 +989,9 @@ Also used by `org-modern-mode' to calculate heights.")
   (setq-hook! 'inferior-ess-mode-hook font-lock-string-face nil)
   (add-hook 'inferior-ess-mode-hook #'dtm-ess-modeline-show-busy)
   (add-hook 'inferior-ess-mode-hook #'dtm-hide-eob-on-window-change)
+
+  ;; Disable corf-auto as it can be a bit buggy
+  ;; (setq-hook! '(ess-mode-hook inferior-ess-mode-hook) corfu-auto nil)
 
   ;; Recenter buffer in window after sending region (SPC m ,)
   (advice-add 'ess-eval-region-or-function-or-paragraph-and-step :after (cmd! (recenter)))
