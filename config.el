@@ -990,7 +990,7 @@ Also used by `org-modern-mode' to calculate heights.")
   (add-hook 'inferior-ess-mode-hook #'dtm-ess-modeline-show-busy)
   (add-hook 'inferior-ess-mode-hook #'dtm-hide-eob-on-window-change)
 
-  ;; Disable corf-auto as it can be a bit buggy
+  ;; Disable `corfu-auto' as it can be a bit buggy in ESS-R mode
   ;; (setq-hook! '(ess-mode-hook inferior-ess-mode-hook) corfu-auto nil)
 
   ;; Recenter buffer in window after sending region (SPC m ,)
@@ -1006,10 +1006,10 @@ Also used by `org-modern-mode' to calculate heights.")
   (set-lookup-handlers! '(ess-r-mode inferior-ess-r-mode ess-julia-mode)
     :documentation #'dtm/ess-lookup-documentation)
 
-  ;; Enable tree sitter and customise patterns
+  ;; Enable tree sitter
   (add-hook 'ess-r-mode-local-vars-hook #'tree-sitter! 'append)
 
-  ;; Recognise F/T as boolean values
+  ;; Expand recognised keywords
   (tree-sitter-hl-add-patterns 'r
     [((identifier) @boolean
       (.eq? @boolean "T"))
@@ -1029,8 +1029,8 @@ Also used by `org-modern-mode' to calculate heights.")
          :desc "Eval reg|func|para"         "e" #'ess-eval-region-or-function-or-paragraph
          :desc "Environment list R objects" "E" #'ess-rdired
          :desc "Source current file"        "s" #'ess-load-file
-                                            "S" #'ess-switch-process
-         :desc "Eval symbol at point"       "." #'dtm/ess-eval-symbol-at-point)
+         :desc "Change selected process"    "S" #'ess-switch-process
+         :desc "Eval object at point"       "." #'dtm/ess-eval-object-at-point)
 
         (:map (ess-r-mode-map inferior-ess-r-mode-map)
          :i "M-o" #'ess-r-insert-obj-col-name
@@ -1048,7 +1048,7 @@ Also used by `org-modern-mode' to calculate heights.")
 
         (:map ess-debug-minor-mode-map
          "M-S" #'dtm/ess-debug-command-step
-         "M-E" #'dtm/ess-eval-symbol-at-point
+         "M-E" #'dtm/ess-eval-object-at-point
          "M-A" #'dtm/lagging-point-goto-actual)
 
         ;; REVIEW https://github.com/doomemacs/doomemacs/pull/6455

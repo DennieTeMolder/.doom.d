@@ -1069,12 +1069,14 @@ Ref: `ess--tb-start', https://github.com/seagle0128/doom-modeline/issues/410"
                                   (:eval (nth ess--busy-count ess-busy-strings))
                                   " ")))
 
-(defun dtm/ess-eval-symbol-at-point ()
-  "Send the symbol under the cursor to the current ESS process"
+(defun dtm/ess-eval-object-at-point ()
+  "Send the object under the cursor to the current ESS process"
   (interactive)
   (ess-send-string
    (get-process ess-current-process-name)
-   (symbol-name (ess-symbol-at-point))
+   (or (dtm-region-as-string)
+       (ess-read-object-name-default)
+       (user-error "No object at point!"))
    t))
 
 (defun dtm/ess-debug-command-step ()

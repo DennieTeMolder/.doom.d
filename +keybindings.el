@@ -32,7 +32,7 @@
 ;;* <leader>
 (map! :leader
       ;; Spacemacs style M-x
-      ;; Old SPC SPC binding (projectile find file) is available under "SPC p f"
+      ;; Old SPC SPC binding (`projectile-find-file') is available under "SPC p f"
       ;; This frees up the "SPC :" to be a fallback for evil-ex
       :desc "M-x"             "SPC" #'execute-extended-command
       :desc "Evil ex command" ":"   #'evil-ex
@@ -61,8 +61,8 @@
       ;; Open
       (:prefix "o"
        :desc "Current dir"             "-" #'dirvish-dwim
-       :desc "ChatGPT"                 "c" #'gptel
-       :desc "ChatGPT dedicated"       "C" #'dtm/gptel-new-chat
+       ;; :desc "ChatGPT"                 "c" #'gptel
+       ;; :desc "ChatGPT dedicated"       "C" #'dtm/gptel-new-chat
        :desc "Current dir (maximised)" "d" #'dirvish
        :desc "Start debugger"          "D" #'+debugger/start
        :desc "Folder sidebar"          "s" #'dtm/dirvish-side
@@ -77,7 +77,7 @@
 
       ;; Window management
       (:prefix "w"
-       :desc "Kill window and buffer" "D"   #'kill-buffer-and-window
+       :desc "Kill window and buffer" "D" #'kill-buffer-and-window
        :desc "window-as-frame"        "F" #'tear-off-window
                                       "e" #'evil-window-prev
                                       "s" #'dtm/split-window-optimally
