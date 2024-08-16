@@ -422,14 +422,24 @@ https://github.com/purcell/ibuffer-projectile"
                    (confirm-nonexistent-file-or-buffer))))
 
 (defun dtm/dirvish-search-cwd ()
-  "Text search files from current working directory, kill dirvish on confirm."
+  "Grep files from current dirvish directory, kill dirvish on confirm."
+  ;; When LAYOUT is non-nil dirivish will mess with the Consult preview,
+  ;; we therefore kill the session and restore it the selection was aborted
   (interactive)
-  (require 'consult)
-  (let ((consult--buffer-display #'identity)
-        (dv (dirvish-curr)))
-    (+default/search-cwd)
-    (let ((buf (current-buffer)))
-      (dirvish-kill dv)
+  (let* ((dv (or (dirvish-curr) (user-error "Not a dirvish buffer")))
+         (layout (car (dv-layout dv)))
+         (path default-directory)
+         (inhibit-quit t)
+         buf)
+    (when layout
+      (dirvish-kill dv))
+    (with-local-quit
+      (+default/search-cwd)
+      (setq buf (current-buffer)))
+    (if (not buf)
+        (when layout (dirvish path))
+      (unless layout
+        (dirvish-kill dv))
       (switch-to-buffer buf))))
 
 (defun dtm/dirvish-narrow ()
