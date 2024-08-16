@@ -423,11 +423,11 @@ https://github.com/purcell/ibuffer-projectile"
 
 (defun dtm/dirvish-search-cwd ()
   "Grep files from current dirvish directory, kill dirvish on confirm."
-  ;; When LAYOUT is non-nil dirivish will mess with the Consult preview,
+  ;; When dirivish is in fullscreen mode it messes with the Consult preview,
   ;; we therefore kill the session and restore it the selection was aborted
   (interactive)
   (let* ((dv (or (dirvish-curr) (user-error "Not a dirvish buffer")))
-         (layout (car (dv-layout dv)))
+         (layout (car (dv-layout dv)))  ; Non-nil in fullscreen mode
          (path default-directory)
          (inhibit-quit t)
          buf)
