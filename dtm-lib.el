@@ -1121,6 +1121,10 @@ Defaults to `ess-local-process-name'."
       (goto-char (eol))
       (recenter -1))))
 
+(defun dtm-ess-remove-filename-completion-capf ()
+  "Remove `ess-filename-completion' from `completion-at-point-functions' locally."
+  (remove-hook 'completion-at-point-functions #'ess-filename-completion 'local))
+
 ;;** dtm-with-lagging-point
 (defvar dtm-lagging-point-actual nil
   "Position of cursor when `dtm-with-lagging-point-a' would not have been active.")

@@ -990,8 +990,8 @@ Also used by `org-modern-mode' to calculate heights.")
   (add-hook 'inferior-ess-mode-hook #'dtm-ess-modeline-show-busy)
   (add-hook 'inferior-ess-mode-hook #'dtm-hide-eob-on-window-change)
 
-  ;; Disable `corfu-auto' as it can be a bit buggy in ESS-R mode
-  ;; (setq-hook! '(ess-mode-hook inferior-ess-mode-hook) corfu-auto nil)
+  ;; Deactivate the `ess-filename-completion' capf in favour of `cape-file'
+  (add-hook! '(ess-mode-hook inferior-ess-mode-hook) #'dtm-ess-remove-filename-completion-capf)
 
   ;; Recenter buffer in window after sending region (SPC m ,)
   (advice-add 'ess-eval-region-or-function-or-paragraph-and-step :after (cmd! (recenter)))
