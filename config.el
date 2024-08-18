@@ -357,13 +357,7 @@
   (set-face-attribute 'diredfl-dir-name nil :bold t))
 
 (after! dirvish
-  (setq dirvish-reuse-session nil
-        dirvish-hide-details t
-        dirvish-mode-line-height doom-modeline-height
-        dirvish-attributes
-        `(file-size ,+dired-dirvish-icon-provider subtree-state)
-        dirvish-mode-line-format
-        '(:left (sort file-time symlink) :right (omit yank index))
+  (setq dirvish-hide-details t          ; Can also be a number
         dirvish-quick-access-entries
         `(("D" "~/Downloads/" "Downloads")
           ("dc" ,doom-core-dir "Doom Core")
@@ -424,11 +418,6 @@
 
 ;; (after! dirvish-side
 ;;   (dirvish-side-follow-mode +1))
-
-(after! all-the-icons
-  ;; A lower scaling factor works better with the Iosevka font
-  ;; Ref: https://github.com/doomemacs/doomemacs/issues/2967
-  (setq all-the-icons-scale-factor 1.1))
 
 (after! avy
   ;; Make "g s s" search al windows (C-u to limit to current)
