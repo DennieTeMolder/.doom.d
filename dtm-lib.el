@@ -398,6 +398,16 @@ https://github.com/purcell/ibuffer-projectile"
                                  default nil t)))
     (ediff (expand-file-name file dir) target)))
 
+(defun dtm-dirvish-preview-window-p (&optional window)
+  "Returns t if WINDOW is a dirvish preview window, defaults to `selected-window'."
+  (when (fboundp 'dirvish-curr)
+    (or window (setq window (selected-window)))
+    (cl-some (lambda (win)
+               (when-let (dv (with-current-buffer (window-buffer win)
+                               (dirvish-curr)))
+                 (eq start-win (dv-preview-window dv))))
+             (window-list))))
+
 (defun dtm/dirvish-side ()
   "Wrapper for `dirvish-side' that always closes the window if visible."
   (interactive)
@@ -793,18 +803,20 @@ Controlled by `dtm-org-link-convert-p'. Only runs if INFILE newer then OUTFILE.
 Returns the created file or nil on failure."
   (setq outfile (concat (file-name-sans-extension outfile) ".png"))
   (catch 'result
-    ;; Short-circuit if outfile does not need to or can not be generated
-    (unless (and dtm-org-link-convert-p
-                 (not non-essential)
-                 (file-readable-p infile)
-                 (or (not (file-readable-p outfile))
-                     (file-newer-than-file-p infile outfile)))
+    ;; Short-circuit if conversion is not needed/desired/possible
+    (when (or (not dtm-org-link-convert-p)
+              (not (file-readable-p infile))
+              (file-newer-than-file-p outfile infile)
+              (dtm-dirvish-preview-window-p))
       (throw 'result outfile))
     ;; Set user variables if they contain special placeholder values
     (when (eq 'ask dtm-org-link-convert-p)
-      (or (setq-local dtm-org-link-convert-p
-                      (y-or-n-p "Outdated/missing PNG conversions detected, Update?"))
-          (throw 'result outfile)))
+      (thread-last
+        (and (not non-essential)
+             (y-or-n-p "Outdated/missing PNG conversions detected, Update?"))
+        (setq-local dtm-org-link-convert-p))
+      (unless dtm-org-link-convert-p
+        (throw 'result outfile)))
     (when (eq 'executable-find dtm-org-link-convert-executable)
       (setq dtm-org-link-convert-executable (executable-find "convert")))
     ;; Check if executable is valid
@@ -830,11 +842,12 @@ Returns the created file or nil on failure."
                           dtm-org-link-convert-executable status))
           (warn (buffer-string)))))
     ;; No result catched
-    ;; TODO add to list of ignored input files
-    (setq-local
-     dtm-org-link-convert-p
-     (not (y-or-n-p (concat "Conversion to PNG failed, disable all PNG "
-                            "conversions for this buffer?"))))
+    ;; TODO use list of ignored input files instead of blocking all conversions
+    (thread-last
+      "Conversion to PNG failed, disable all PNG conversions for this buffer?"
+      (y-or-n-p)
+      (not)
+      (setq-local dtm-org-link-convert-p))
     nil))
 
 (defun dtm-org-link-as-png (tag)
