@@ -97,6 +97,13 @@ If NAME is not provided `buffer-file-name' is used."
     (when (file-exists-p lib-dir)
       (setq load-path (cons lib-dir (delete lib-dir load-path))))))
 
+(defun dtm-ignore-user-error-a (orig-fun &rest args)
+  "Calls ORIG-FUN with ARGS, return nil when an `user-error' is raised.
+Intended as :around advice (e.g. for capf functions)."
+  (condition-case err
+      (apply orig-fun args)
+    (user-error nil)))
+
 ;;* Buffer functions
 (defun dtm-buffer-remote-p (&optional buf)
   "Returns t if BUF belongs to a remote directory."

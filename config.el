@@ -982,6 +982,10 @@ Also used by `org-modern-mode' to calculate heights.")
   ;; Deactivate the `ess-filename-completion' capf in favour of `cape-file'
   (add-hook! '(ess-mode-hook inferior-ess-mode-hook) #'dtm-ess-remove-filename-completion-capf)
 
+  ;; Prevent ESS-R capfs from blocking further completion when process is busy
+  (advice-add 'ess-r-package-completion :around #'dtm-ignore-user-error-a)
+  (advice-add 'ess-r-object-completion :around #'dtm-ignore-user-error-a)
+
   ;; Recenter buffer in window after sending region (SPC m ,)
   (advice-add 'ess-eval-region-or-function-or-paragraph-and-step :after (cmd! (recenter)))
 
