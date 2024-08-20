@@ -412,7 +412,7 @@ https://github.com/purcell/ibuffer-projectile"
     (cl-some (lambda (win)
                (when-let (dv (with-current-buffer (window-buffer win)
                                (dirvish-curr)))
-                 (eq start-win (dv-preview-window dv))))
+                 (eq window (dv-preview-window dv))))
              (window-list))))
 
 (defun dtm/dirvish-side ()
