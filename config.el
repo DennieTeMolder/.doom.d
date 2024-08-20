@@ -956,28 +956,30 @@ Also used by `org-modern-mode' to calculate heights.")
   ;; Large results can freeze emacs, this limits the inconvenience
   (setq eros-eval-result-duration 2))
 
-;; REVIEW do we need additional corfu integration for R?
 (after! ess
   ;; Use current dir for session
-  (setq ess-ask-for-ess-directory nil
-        ess-startup-directory-function #'dtm-ess-startup-dir
+  (setq ess-startup-directory-function #'dtm-ess-startup-dir
+        ess-ask-for-ess-directory nil
         ess-r-prettify-symbols nil
-        ess-use-ido nil
         ess-auto-width 'window
+        ess-use-ido nil
         ess-style 'RStudio)
-
-  ;; BUG highlight single warning messages + more visible font
-  (pushnew! ess-R-message-prefixes "Warning message")
-  (setq ess-R-error-face 'show-paren-mismatch
-        ess-R-fl-keyword:messages
-        (cons (regexp-opt ess-R-message-prefixes 'enc-paren)
-              'ess-R-error-face))
 
   ;; Setting `tab-with' also affects `evil-shift-width' (doom specific)
   (setq-hook! 'ess-mode-hook tab-width ess-indent-offset)
+
+  ;; Font locking of strings in the repl buffer fails too often to be useful
   (setq-hook! 'inferior-ess-mode-hook font-lock-string-face nil)
+
+  ;; Indicate if process is busy in the modeline
   (add-hook 'inferior-ess-mode-hook #'dtm-ess-modeline-show-busy)
+
+  ;; attempt to hide eob when evaling commands
   (add-hook 'inferior-ess-mode-hook #'dtm-hide-eob-on-window-change)
+
+  ;; Improve lookup experience
+  (set-lookup-handlers! '(ess-r-mode inferior-ess-r-mode ess-julia-mode)
+    :documentation #'dtm/ess-lookup-documentation)
 
   ;; Deactivate the `ess-filename-completion' capf in favour of `cape-file'
   (add-hook! '(ess-mode-hook inferior-ess-mode-hook) #'dtm-ess-remove-filename-completion-capf)
@@ -986,18 +988,12 @@ Also used by `org-modern-mode' to calculate heights.")
   (advice-add 'ess-r-package-completion :around #'dtm-ignore-user-error-a)
   (advice-add 'ess-r-object-completion :around #'dtm-ignore-user-error-a)
 
-  ;; Recenter buffer in window after sending region (SPC m ,)
-  (advice-add 'ess-eval-region-or-function-or-paragraph-and-step :after (cmd! (recenter)))
-
-  ;; Lag the cursor in debug mode, this leaves the point at a variable after its assigned
-  (advice-add 'ess-debug-command-next :around #'dtm-with-lagging-point-a)
-  (dolist (symbol '(dtm/ess-debug-command-step
-                    ess-debug-command-up
-                    ess-debug-command-quit))
-    (advice-add symbol :after #'dtm-lagging-point-reset))
-
-  (set-lookup-handlers! '(ess-r-mode inferior-ess-r-mode ess-julia-mode)
-    :documentation #'dtm/ess-lookup-documentation)
+  ;; BUG highlight single warning messages + more visible font
+  (pushnew! ess-R-message-prefixes "Warning message")
+  (setq ess-R-error-face 'show-paren-mismatch
+        ess-R-fl-keyword:messages
+        (cons (regexp-opt ess-R-message-prefixes 'enc-paren)
+              'ess-R-error-face))
 
   ;; Enable tree sitter
   (add-hook 'ess-r-mode-local-vars-hook #'tree-sitter! 'append)
@@ -1014,6 +1010,16 @@ Also used by `org-modern-mode' to calculate heights.")
       (.eq? @keyword "warning"))
      ((call function: (identifier) @keyword)
       (.eq? @keyword "return"))])
+
+  ;; Recenter buffer in window after sending region (SPC m ,)
+  (advice-add 'ess-eval-region-or-function-or-paragraph-and-step :after (cmd! (recenter)))
+
+  ;; Lag the cursor in debug mode, this leaves the point at a variable after its assigned
+  (advice-add 'ess-debug-command-next :around #'dtm-with-lagging-point-a)
+  (dolist (symbol '(dtm/ess-debug-command-step
+                    ess-debug-command-up
+                    ess-debug-command-quit))
+    (advice-add symbol :after #'dtm-lagging-point-reset))
 
   ;; ESS R keybindings, make < add a <-, type twice to undo (same goes for >)
   (map! (:map ess-r-mode-map
@@ -1040,9 +1046,9 @@ Also used by `org-modern-mode' to calculate heights.")
          "h h" #'ess-display-help-on-object)
 
         (:map ess-debug-minor-mode-map
-         "M-S" #'dtm/ess-debug-command-step
-         "M-E" #'dtm/ess-eval-object-at-point
-         "M-A" #'dtm/lagging-point-goto-actual)
+              "M-S" #'dtm/ess-debug-command-step
+              "M-E" #'dtm/ess-eval-object-at-point
+              "M-A" #'dtm/lagging-point-goto-actual)
 
         ;; REVIEW https://github.com/doomemacs/doomemacs/pull/6455
         (:map ess-roxy-mode-map

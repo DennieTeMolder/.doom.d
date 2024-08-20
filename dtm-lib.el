@@ -1122,15 +1122,14 @@ Equivalent to typing \"s\" into the R prompt."
 
 (defun dtm/ess-lookup-documentation ()
   "Wrapper for `ess-display-help-on-object' to improve `+lookup/documentation'.
-Bypasses `ess-completing-read', indicates if process is busy."
+Bypasses `ess-completing-read', defers further lookup if process is busy."
   (interactive)
   (ess-make-buffer-current)
-  (let ((obj (ess-helpobjs-at-point--read-obj)))
-    (condition-case err
-        (ess-display-help-on-object obj)
-      (user-error (progn
-                    (message "%s" (error-message-string err))
-                    'deferred)))))
+  (condition-case err
+      (ess-display-help-on-object (ess-helpobjs-at-point--read-obj))
+    (user-error
+     (message "%s" (error-message-string err))
+     'deferred)))
 
 (defun dtm-ess-plot-file-p (file)
   "Return non-nil if FILE is an ESS plot."
