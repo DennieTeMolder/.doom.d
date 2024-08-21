@@ -771,7 +771,8 @@ Intended for `markdown-mode-hook'."
 (defun dtm-org-limit-styling-p ()
   "Return non-nil if limited styling should be applied."
   (or (doom-temp-buffer-p (current-buffer))
-      (dtm-doom-docs-p)))
+      (dtm-doom-docs-p)
+      (dtm-dirvish-preview-window-p)))
 
 (defun dtm-org-mode-setup-h ()
   "Personal org-mode customisation's after mode startup"
