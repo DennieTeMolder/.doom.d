@@ -579,8 +579,9 @@ Also used by `org-modern-mode' to calculate heights.")
     '(org-ellipsis :inherit default :box nil :weight regular)
     '(org-headline-done :strike-through t))
 
-  ;; Custom link type [[as_png:<file_name>]] with builtin conversion to .png
+  ;; Custom link type [[as_png:<file_name>]], trigger conversion to .png on export
   (push '("as_png" . dtm-org-link-as-png) org-link-abbrev-alist)
+  (add-hook 'org-export-before-parsing-functions #'dtm/org-link-as-png-convert)
 
   ;; Mark tab-navigation through tables as non-repeatable
   (evil-declare-not-repeat 'org-cycle)
