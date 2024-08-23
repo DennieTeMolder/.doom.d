@@ -1206,7 +1206,8 @@ Bypasses `ess-completing-read', defers further lookup if process is busy."
   (when (fboundp 'ess-plot-file-p)
     (ess-plot-file-p file)))
 
-(defun ess-plot-recenter-proc-buffer (&optional name)
+;; REVIEW unused
+(defun dtm-ess-recenter-proc-buffer (&optional name)
   "Recenter the buffer of console process NAME if visible.
 Defaults to `ess-local-process-name'."
   (interactive)
@@ -1220,9 +1221,25 @@ Defaults to `ess-local-process-name'."
       (goto-char (eol))
       (recenter -1))))
 
-(defun dtm-ess-remove-filename-completion-capf ()
-  "Remove `ess-filename-completion' from `completion-at-point-functions' locally."
-  (remove-hook 'completion-at-point-functions #'ess-filename-completion 'local))
+(defun dtm-cape-ess-keep-cache-p (old new)
+  "Return non-nil if cache based on OLD remains valid for NEW."
+  (or (< (length new) corfu-auto-prefix)
+      (and (> (length new) (length old))
+           (not (string-suffix-p "$" new)))))
+
+(defun dtm-cape-ess-r-object-completion ()
+  "Wrapper for `ess-r-object-completion' with correct caching."
+  (cape-wrap-buster #'ess-r-object-completion #'dtm-cape-ess-keep-cache-p))
+
+(defun dtm-corfu-ess-r-setup-capf ()
+  "Setup `completion-at-point-functions' for `ess-r-mode'.
+Removes `ess-filename-completion' and replaces `ess-r-object-completion' in
+favour of `cape-file' and `dtm-cape-ess-r-object-completion'."
+  (remove-hook 'completion-at-point-functions #'ess-filename-completion 'local)
+  (setq-local completion-at-point-functions
+              (cl-substitute #'dtm-cape-ess-r-object-completion
+                             #'ess-r-object-completion
+                             completion-at-point-functions)))
 
 ;;** dtm-with-lagging-point
 (defvar dtm-lagging-point-actual nil

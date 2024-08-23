@@ -983,7 +983,7 @@ Also used by `org-modern-mode' to calculate heights.")
     :documentation #'dtm/ess-lookup-documentation)
 
   ;; Deactivate the `ess-filename-completion' capf in favour of `cape-file'
-  (add-hook! '(ess-mode-hook inferior-ess-mode-hook) #'dtm-ess-remove-filename-completion-capf)
+  (add-hook! '(ess-mode-hook inferior-ess-mode-hook) #'dtm-corfu-ess-r-setup-capf)
 
   ;; Prevent ESS-R capfs from blocking further completion when process is busy
   (advice-add 'ess-r-package-completion :around #'dtm-ignore-user-error-a)
