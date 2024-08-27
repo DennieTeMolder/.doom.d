@@ -229,6 +229,11 @@
   (evil-declare-not-repeat #'+workspace/switch-left)
   (evil-declare-not-repeat #'+workspace/switch-right)
 
+  ;; Don't add "{/}" and "(/)" commands to jump list (C-o)
+  (dolist (cmd #'(evil-forward-paragraph evil-backward-paragraph
+                  evil-forward-sentence-begin evil-backward-sentence-begin))
+    (evil-add-command-properties cmd :jump nil))
+
   ;; Enable granular undo (remembers delete actions during insert state)
   (setq evil-want-fine-undo t
         evil-vsplit-window-right t
