@@ -912,8 +912,14 @@ Also used by `org-modern-mode' to calculate heights.")
   ;; Prettier function evaluation
   (setq lispy-eval-display-style 'overlay)
 
-  (advice-add 'lispy-goto-symbol :before (cmd! (evil-set-jump)))
-  (advice-add 'lispy-goto-symbol :after #'evil-insert-state)
+  ;; Make `lispy-goto-symbol' (M-.) behave better with evil
+  (evil-add-command-properties #'lispy-goto-symbol :jump t)
+  (advice-add 'lispy-goto-symbol :after (lambda (&rest _) (evil-insert-state)))
+
+  ;; Add lispy-view to "z z" to recenter on sexp
+  (defhydra+ lh-knight ()
+    ("z" lispy-view :exit t)
+    ("q" nil))
 
   ;; Overwrite `lispy-occur' kbind (we drop the swiper package anyway)
   (lispy-define-key lispy-mode-map "y" #'dtm/lispy-yank-list)
@@ -928,19 +934,18 @@ Also used by `org-modern-mode' to calculate heights.")
 
   ;; Add/move around some of the keys to be more Evil
   (map! :map lispy-mode-map
-        "C-l" #'lispy-view
-        "="   #'special-lispy-tab
-        "A"   #'special-lispy-ace-subword
-        "E"   #'special-lispy-eval-other-window
-        "J"   #'special-lispy-move-down
-        "K"   #'special-lispy-move-up
-        "Y"   #'special-lispy-clone
-        "g"   #'special-lispy-other-mode
-        "G"   #'special-lispy-beginning-of-defun
-        "o"   #'special-lispy-different
-        "p"   #'special-lispy-paste
-        "s"   #'special-lispy-outline-next
-        "w"   #'special-lispy-outline-prev))
+        "=" #'special-lispy-tab
+        "A" #'special-lispy-ace-subword
+        "E" #'special-lispy-eval-other-window
+        "J" #'special-lispy-move-down
+        "K" #'special-lispy-move-up
+        "Y" #'special-lispy-clone
+        "g" #'special-lispy-other-mode
+        "G" #'special-lispy-beginning-of-defun
+        "o" #'special-lispy-different
+        "p" #'special-lispy-paste
+        "s" #'special-lispy-outline-next
+        "w" #'special-lispy-outline-prev))
 
 (after! lispyville
   ;; Custom (atom-movement t) key-theme
@@ -949,7 +954,7 @@ Also used by `org-modern-mode' to calculate heights.")
   (dtm-lispyville-smart-remap evil-backward-WORD-begin #'lispyville-backward-atom-begin)
   (dtm-lispyville-smart-remap evil-backward-WORD-end #'lispyville-backward-atom-end)
 
-  ;; mark-toggle key-theme tweaks
+  ;; Tweak mark-toggle key-theme (allows switching between lispy & evil selection)
   (lispy-define-key lispy-mode-map "v" #'lispyville-toggle-mark-type)
   (advice-add 'lispyville-toggle-mark-type :around #'dtm-lispyville-toggle-mark-type-a))
 
