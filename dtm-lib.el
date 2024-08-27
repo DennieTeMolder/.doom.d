@@ -52,29 +52,6 @@ If NAME is not provided `buffer-file-name' is used."
   (let ((name (file-name-base (or fname buffer-file-name))))
     (capitalize (replace-regexp-in-string "[^A-Za-z0-9]+" " " name))))
 
-(defun dtm-region-as-string ()
-  "Return the marked region as string."
-  (when (use-region-p)
-    (buffer-substring-no-properties (mark) (point))))
-
-(defun dtm-current-line-as-string ()
-  "Return the current line as string."
-  (buffer-substring-no-properties (line-beginning-position)
-                                  (line-end-position)))
-
-(defun dtm-line-empty-p ()
-  "Returns t if line contains only whitespace"
-  (save-excursion
-    (beginning-of-line)
-    (looking-at-p "[[:space:]]*$")))
-
-(defun dtm-forward-line-non-empty ()
-  "Move cursor to the start of the next non-empty line."
-  (forward-line)
-  (while (and (dtm-line-empty-p)
-              (not (eobp)))
-    (forward-line)))
-
 (defun dtm-point-mark-same-line-p ()
   "Returns t if point and mark are on the same line"
   (<= (line-beginning-position) (mark) (line-end-position)))
@@ -85,6 +62,29 @@ If NAME is not provided `buffer-file-name' is used."
              (< (mark) (point)))
     (exchange-point-and-mark))
   (deactivate-mark))
+
+(defun dtm-region-as-string (&optional deactivate)
+  "Return the marked region as a string. If DEACTIVATE unmark the region."
+  (when (use-region-p)
+    (prog1 (buffer-substring-no-properties (mark) (point))
+      (when deactivate (dtm-deactivate-mark)))))
+
+(defun dtm-current-line-as-string ()
+  "Return the current line as string."
+  (buffer-substring-no-properties (line-beginning-position) (line-end-position)))
+
+(defun dtm-line-empty-p ()
+  "Returns non-nil if the current line contains only whitespace."
+  (save-excursion
+    (beginning-of-line)
+    (looking-at-p "[[:space:]]*$")))
+
+(defun dtm-forward-line-non-empty ()
+  "Move cursor to the start of the next non-empty line."
+  (forward-line)
+  (while (and (dtm-line-empty-p)
+              (not (eobp)))
+    (forward-line)))
 
 (defun dtm-disable-undo-history ()
   "Disable the undo history for the current buffer."
@@ -1174,7 +1174,7 @@ Ref: `ess--tb-start', https://github.com/seagle0128/doom-modeline/issues/410"
   (interactive)
   (ess-send-string
    (get-process ess-current-process-name)
-   (or (dtm-region-as-string)
+   (or (dtm-region-as-string 'deactivate)
        (ess-read-object-name-default)
        (user-error "No object at point!"))
    t))
@@ -1293,8 +1293,7 @@ STR is first stripped and indented according to mode."
   (interactive)
   (unless (use-region-p)
     (user-error "No valid active region!"))
-  (dtm-elpy-shell-send-string (dtm-region-as-string))
-  (dtm-deactivate-mark))
+  (dtm-elpy-shell-send-string (dtm-region-as-string 'deactivate)))
 
 (defun dtm/elpy-send-statement-or-line ()
   (interactive)
@@ -1319,12 +1318,10 @@ STR is first stripped and indented according to mode."
 (defun dtm/elpy-print-symbol-or-region ()
   "Print the symbol at point or active region in the Python shell."
   (interactive)
-  (let* ((reg (or (dtm-region-as-string)
+  (let* ((reg (or (dtm-region-as-string 'deactivate)
                   (python-info-current-symbol)))
          (cmd (concat "print(" reg ")")))
-    (dtm-elpy-shell-send-string cmd))
-  (when (use-region-p)
-    (dtm-deactivate-mark)))
+    (dtm-elpy-shell-send-string cmd)))
 
 ;;* Conda
 (defun dtm-conda-env-infer-name ()
