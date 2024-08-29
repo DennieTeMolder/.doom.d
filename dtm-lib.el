@@ -796,6 +796,15 @@ Intended for `markdown-mode-hook'."
                   '(src-block comment))
       (org-fill-paragraph))))
 
+(defun dtm-org-export-to-buffer-a (orig-fn &rest args)
+  "Fix stringp error thrown by `reftex-TeX-master-file'.
+Intended as :around advice for `org-export-to-buffer'."
+  (require 'tex-mode)
+  (let* ((TeX-master (buffer-file-name))
+         (TeX-default-extension (file-name-extension TeX-master)))
+    (setq TeX-master (file-name-sans-extension TeX-master))
+    (apply orig-fn args)))
+
 ;;** Org-link
 (defvar dtm-org-link-convert-executable
   ;; Avoid using the MS Windows command convert.exe .

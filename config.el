@@ -618,6 +618,10 @@ Also used by `org-modern-mode' to calculate heights.")
         org-cite-export-processors '((latex biblatex "ieee/numeric-comp")
                                      (t csl "ieee.csl"))))
 
+(after! ox
+  ;; Fix stringp error when exporting to TeX buffer (missing `buffer-file-name')
+  (advice-add 'org-export-to-buffer :around #'dtm-org-export-to-buffer-a))
+
 ;;;###package org-mode-ox-odt
 (after! doom-packages
   ;; Ensure `org-mode-ox-odt' takes precedence over org's ox-odt.el.
