@@ -542,6 +542,10 @@
   (map! :map text-mode-map :i "M-o" #'dtm/spell-correct-previous))
 
 (after! spell-fu
+  ;; Face customisation's
+  (add-hook 'tree-sitter-mode-hook #'dtm-spell-fu-set-treesit-faces-h)
+  (add-hook 'conf-mode-hook #'dtm-spell-fu-set-conf-faces-h)
+
   ;; Remove org-block from excluded-faces to enable spell checking in #+CAPTION blocks
   (when-let ((cell (assq 'org-mode +spell-excluded-faces-alist)))
     (setcdr cell (cl-remove 'org-block (cdr cell)))))
@@ -835,9 +839,6 @@ Also used by `org-modern-mode' to calculate heights.")
 (add-hook 'term-mode-hook #'dtm-disable-undo-history)
 
 (after! tree-sitter
-  ;; Spell-fu compatibility
-  (add-hook 'spell-fu-mode-hook #'dtm-spell-fu-tree-sitter-h)
-
   ;; Modify existing faces (see +faces.el for new faces)
   (custom-set-faces!
     '(tree-sitter-hl-face:number :inherit highlight-numbers-number)

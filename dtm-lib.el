@@ -640,15 +640,19 @@ Intended as before advice for `vterm-send-key'"
   (dtm-forward-line-non-empty))
 
 ;;* Ispell-fu
-(defun dtm-spell-fu-tree-sitter-h ()
+(defun dtm-spell-fu-set-treesit-faces-h ()
   "Add tree-sitter font's to `spell-fu-faces-include'."
-  (when (and spell-fu-mode (derived-mode-p 'prog-mode))
-    (setq spell-fu-faces-exclude
-          (delq 'font-lock-constant-face spell-fu-faces-exclude))
-    (pushnew! spell-fu-faces-include
-              'tree-sitter-hl-face:comment
-              'tree-sitter-hl-face:string
-              'tree-sitter-hl-face:doc)))
+  (setq spell-fu-faces-include
+        '(tree-sitter-hl-face:comment
+          tree-sitter-hl-face:string
+          tree-sitter-hl-face:doc)))
+
+(defun dtm-spell-fu-set-conf-faces-h ()
+  "Add conf-mode font's to `spell-fu-faces-include'."
+  (setq spell-fu-faces-include
+        '(font-lock-comment-face
+          font-lock-string-face
+          font-lock-doc-face)))
 
 (defun dtm/ispell-fu-change-dictionary (&optional dict)
   "Set `ispell-local-dictionary' & `spell-fu-dictionaries' to DICT and reload.
