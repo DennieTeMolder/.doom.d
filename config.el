@@ -450,8 +450,8 @@
 
   (map! :map image-mode-map :n "C-l" #'dtm/image-center))
 
-;;;###package highlight-indent-guides
-(remove-hook 'text-mode-hook #'highlight-indent-guides-mode)
+(when (modulep! :ui indent-guides)
+  (push #'dtm-indent-guide-inhibit-p +indent-guides-inhibit-functions))
 
 (when (modulep! :editor word-wrap)
   (setq +word-wrap-fill-style 'auto))
