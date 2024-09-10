@@ -305,6 +305,11 @@
    ;; Set default selection for `consult-theme' based on `dtm-recommend-theme'
    consult-theme :default (symbol-name (dtm-recommend-theme))))
 
+(after! embark
+  ;; Open package source from `doom/help-packages' (SPC h p)
+  (map! :map +vertico/embark-doom-package-map
+        :desc "Package definition" "d" #'find-library))
+
 (after! persp-mode
   ;; Open private config files in a dedicated workspace
   (dolist (symbol '(doom/open-private-config
