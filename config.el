@@ -245,6 +245,10 @@
 
   (add-to-list 'evil-snipe-disabled-modes 'pdf-view-mode))
 
+(after! evil-collection
+  ;; BUG: inhibit-insert-state inhibits all replace bindings but `evil-enter-replace-state'
+  (advice-add 'evil-collection-inhibit-insert-state :after #'dtm-evil-collection-inhibit-insert-state-a))
+
 (after! projectile
   ;; Projectle sorting by recently opened
   (setq projectile-sort-order 'recently-active

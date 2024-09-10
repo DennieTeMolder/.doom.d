@@ -1528,6 +1528,13 @@ Ref: `good-scroll--window-usable-height'."
   "Returns non-nil if `indent-bars-mode' should be disabled by default."
   (derived-mode-p 'text-mode))
 
+;;* Evil-collection
+  (defun dtm-evil-collection-inhibit-insert-state-a (map-sym)
+    "Advice that additionally ignores `evil-enter-replace-state' (R) in MAP-SYM.
+Intended as :after advice for `evil-collection-inhibit-insert-state'."
+    (evil-collection-define-key 'normal map-sym
+      [remap evil-enter-replace-state] #'ignore))
+
 ;;* Commands
 (defun dtm/load-session (file)
   "Stripped down `doom/load-session' with proper default value.
