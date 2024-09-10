@@ -762,6 +762,13 @@ Also used by `org-modern-mode' to calculate heights.")
   (map! :map (org-noter-notes-mode-map org-noter-doc-mode-map)
         "C-c q" #'org-noter-kill-session))
 
+;; BUG: should be part of doom's :init form not :config
+(when (modulep! :tools pdf)
+  (defadvice! +pdf-suppress-large-file-prompts-a (fn size op-type filename &optional offer-raw)
+    :around #'abort-if-file-too-large
+    (unless (string-match-p "\\.pdf\\'" filename)
+      (funcall fn size op-type filename offer-raw))))
+
 (after! pdf-tools
   (setq pdf-view-resize-factor 1.1)
 
