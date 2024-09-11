@@ -1,12 +1,12 @@
 ;;; $DOOMDIR/+keybindings.el -*- lexical-binding: t; -*-
 
 ;;* Global
-(map! :n "C-<right>" #'dtm/move-splitter-right
-      :n "C-<left>"  #'dtm/move-splitter-left
-      :n "C-<down>"  #'dtm/move-splitter-down
-      :n "C-<up>"    #'dtm/move-splitter-up
-      :g "C-s"       #'ctrlf-forward-default
-      :n "C-l"       #'+nav-flash/blink-cursor
+(map! :n  "C-<right>" #'dtm/move-splitter-right
+      :n  "C-<left>"  #'dtm/move-splitter-left
+      :n  "C-<down>"  #'dtm/move-splitter-down
+      :n  "C-<up>"    #'dtm/move-splitter-up
+      :g  "C-s"       #'ctrlf-forward-default
+      :gn "C-l"       #'+nav-flash/blink-cursor
 
       :i "C-x C-k" #'dtm/cape-keyword-dict
       :i "C-x C-s" #'tempel-complete
@@ -60,25 +60,23 @@
 
       ;; Open
       (:prefix "o"
-       :desc "Current dir"             "-" #'dirvish-dwim
        ;; :desc "ChatGPT"                 "c" #'gptel
        ;; :desc "ChatGPT dedicated"       "C" #'dtm/gptel-new-chat
-       :desc "Current dir (maximised)" "d" #'dirvish
-       :desc "Start debugger"          "D" #'+debugger/start
        :desc "Folder sidebar"          "s" #'dtm/dirvish-side
+       :desc "Find file in sidebar"    "S" #'+dired/dirvish-side-and-follow
        :desc "Vterm here"              "T" #'vterm)
 
       ;; Toggles
       (:prefix "t"
-       :desc "Auto line-breaks"    "a" #'auto-fill-mode
-       :desc "Line numbers"        "l" #'dtm/toggle-line-numbers
-       :desc "Smooth scrolling"    "S" #'pixel-scroll-precision-mode
-       :desc "Trash deleted files" "T" #'dtm/toggle-trash-delete)
+       :desc "Auto line-breaks"   "a" #'auto-fill-mode
+       :desc "Line numbers"       "l" #'dtm/toggle-line-numbers
+       :desc "Smooth scrolling"   "S" #'pixel-scroll-precision-mode
+       :desc "Trash/delete files" "T" #'dtm/toggle-trash-delete)
 
       ;; Window management
       (:prefix "w"
        :desc "Kill window and buffer" "D" #'kill-buffer-and-window
-       :desc "window-as-frame"        "F" #'tear-off-window
+       :desc "Window as frame"        "F" #'tear-off-window
                                       "e" #'evil-window-prev
                                       "s" #'dtm/split-window-optimally
                                       "S" #'evil-window-split

@@ -1124,7 +1124,8 @@ Also used by `org-modern-mode' to calculate heights.")
 (push '("\\(Snakefile\\|\\.smk\\)\\'" . python-mode) auto-mode-alist)
 
 ;; Enable conda before compiling (useful for Snakemake)
-(add-hook 'compilation-mode-hook #'dtm-conda-env-guess-maybe)
+(when (modulep! :lang python +conda)
+  (add-hook 'compilation-mode-hook #'dtm-conda-env-guess-maybe))
 
 (use-package! elpy-shell
   :defer t
