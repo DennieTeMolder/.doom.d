@@ -49,6 +49,10 @@
        :desc "Undo history"             "u"   #'vundo
        :desc "Save buffer as root"      "U"   #'doom/sudo-save-buffer)
 
+      ;; Code
+      (:prefix "c"
+       :desc "Describe error checker" "X" #'dtm/diagnostics-describe)
+
       ;; Insert
       :desc "snippet" "i s" #'tempel-insert
 
@@ -83,7 +87,7 @@
                                       "T" #'transpose-frame)
 
       ;; Popups
-      "/" nil ; Unbind `+default/search-project' (also bound to "SPC s p")
+      "/" nil       ; Unbind `+default/search-project' (also bound to "SPC s p")
       (:prefix ("/" . "popup")
        :desc "Show/hide popup" "/" #'+popup/toggle
        :desc "Switch popup"    "." #'dtm/switch-popup-buffer

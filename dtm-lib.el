@@ -1620,6 +1620,20 @@ Relative lines are more performant, but fail with folded/wrapped lines"
       (dolist (file files) (insert "\n" file)))
     (goto-char (point-min))))
 
+(defun dtm/diagnostics-describe ()
+  "Describe the syntax checker/linter that provides current diagnostics."
+  (interactive)
+  (cond ((bound-and-true-p lsp-mode)
+         (lsp-describe-session))
+        ((bound-and-true-p flycheck-mode)
+         (flycheck-verify-setup))
+        ((bound-and-true-p flymake-mode)
+         ;; Flymake doesn't seem to have a dedicated equivalent function
+         (message "Flymake running: %s; disabled: %s"
+                  (flymake-running-backends) (flymake-disabled-backends)))
+        (t
+         (user-error "No diagnostics backend detected. See `+default/diagnostics'."))))
+
 ;;** Move-splitter
 (defun dtm/move-splitter-left (arg)
   "Move window splitter left. Ref: hydra-examples"

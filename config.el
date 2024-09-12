@@ -560,9 +560,11 @@
     (setcdr cell (cl-remove 'org-block (cdr cell)))))
 
 (after! flycheck
-  ;; Select flycheck window when opened
-  (set-popup-rule! "^\\*Flycheck errors\\*" :size 0.25 :select t :ttl 0)
-  (+popup-cleanup-rules-h))
+  (setq flycheck-lintr-linters
+        "linters_with_defaults(line_length_linter(120), T_and_F_symbol_linter = NULL)")
+
+  ;; Validate setup (SPC c X) in popup. Use SPC c x  to list errors
+  (set-popup-rule! "^\\*Flycheck checkers\\*" :size 0.4 :select t :ttl 0))
 
 ;; Org-mode settings
 (defvar dtm-org-line-spacing 0.1
@@ -918,7 +920,7 @@ Also used by `org-modern-mode' to calculate heights.")
   (map! :map edebug-mode-map :n "R" #'edebug-remove-instrumentation))
 
 (after! elisp-refs
-  ;; Include buffers in `helpful-max-buffers' & `helpful-kill-buffers'
+  ;; HACK Include buffers in `helpful-max-buffers' & `helpful-kill-buffers'
   (setq-hook! 'elisp-refs-mode-hook major-mode 'helpful-mode)
   (add-hook 'elisp-refs-mode-hook #'hide-mode-line-mode)
 
