@@ -51,7 +51,8 @@ emacs-lisp-mode
 
 sh-mode
 
-(__ "#!/usr/bin/env bash" n)
+;; Using '/usr/bin/env bash' is not recognised by sh-mode
+(__ "#!/bin/bash" n)
 (for "for " p " in " p "; do" n> r> n "done")
 (if "if [ " p " ]; then" n> r> n "fi")
 
