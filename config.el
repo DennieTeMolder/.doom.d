@@ -617,6 +617,10 @@ Also used by `org-modern-mode' to calculate heights.")
   ;; Mark tab-navigation through tables as non-repeatable
   (evil-declare-not-repeat 'org-cycle)
 
+  ;; BUG: org-read-date doesn't use org-mode so it won't trigger evil-org's to load
+  (advice-add #'org-read-date :before (lambda (&rest _) (require 'evil-org))
+              '((name . "require evil-org")))
+
   ;; Prettify, enable hard wrapping and automate paragraph filling
   (add-hook 'org-mode-hook #'dtm-org-mode-setup-h))
 
@@ -739,9 +743,6 @@ Also used by `org-modern-mode' to calculate heights.")
 
   ;; Sync org-agenda with org-roam dailies
   (advice-add 'org-agenda :before #'dtm-org-roam-dailies-sync-agenda)
-
-  ;; Ensure keybindings are loaded for dailies-calendar
-  (advice-add 'org-roam-dailies-goto-date :before #'dtm-org-roam-dailies-goto-date-a)
 
   ;; Roam templates
   (setq org-roam-capture-templates

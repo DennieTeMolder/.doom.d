@@ -1,5 +1,4 @@
-;;; dtm-lib.el -*- lexical-binding: t; -*-
-;; Library of personal functions
+;;; dtm-lib.el --- Library of personal functions -*- lexical-binding: t; -*-
 
 ;;* Utility
 (defun dtm-doctor-running-p ()
@@ -1054,13 +1053,6 @@ Ref: https://github.com/hlissner/.doom.d"
      ?\n)))
 
 ;;* Org-roam-dailies
-(defun dtm-org-roam-dailies-goto-date-a ()
-  "Ensure function is executed from a roam buffer to activate keybindings.
-Intended as :before advice for `org-roam-dailies-goto-date'"
-  (dtm-org-roam-goto-workspace)
-  (unless (org-roam-buffer-p)
-    (dtm/org-roam-open-index)))
-
 (defun dtm-org-roam-dailies-file-to-absolute (file)
   "Convert file name (with gregorian date format) to absolute time"
   (calendar-absolute-from-gregorian (org-roam-dailies-calendar--file-to-date file)))
