@@ -450,7 +450,8 @@ https://github.com/purcell/ibuffer-projectile"
     (when layout
       (dirvish-kill dv))
     (with-local-quit
-      (+default/search-cwd)
+      (let ((default-directory path))
+        (+default/search-cwd))
       (setq buf (current-buffer)))
     (if (not buf)
         (when layout (dirvish path))
