@@ -782,7 +782,7 @@ Intended for `markdown-mode-hook'."
   (unless (dtm-org-limit-styling-p)
     (setq-local line-spacing dtm-org-line-spacing)
     (+org-pretty-mode +1)
-    (auto-fill-mode +1)
+    (+word-wrap-mode +1)
     (+zen-light-toggle +1)
     (add-hook! 'evil-insert-state-exit-hook :local #'dtm-org-fill-paragraph)
     (dtm-org-link-as-png-check)))

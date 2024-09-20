@@ -463,7 +463,8 @@
   (push #'dtm-indent-guide-inhibit-p +indent-guides-inhibit-functions))
 
 (when (modulep! :editor word-wrap)
-  (setq +word-wrap-fill-style 'auto))
+  ;; Word wrapping (visual-line-mode) at fill-column in text mode buffers
+  (setq-hook! 'text-mode-hook +word-wrap-fill-style 'auto))
 
 (after! helpful
   (setq helpful-max-buffers 10))
