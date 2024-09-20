@@ -566,6 +566,17 @@
   ;; Validate setup (SPC c X) in popup. Use SPC c x  to list errors
   (set-popup-rule! "^\\*Flycheck checkers\\*" :size 0.4 :select t :ttl 0))
 
+(after! calendar
+  ;; Show week numbers in calendar
+  (setq calendar-week-start-day 1
+        calendar-intermonth-text
+        '(propertize
+          (format "%2d"
+                  (car
+                   (calendar-iso-from-absolute
+                    (calendar-absolute-from-gregorian (list month day year)))))
+          'font-lock-face 'font-lock-comment-face)))
+
 ;; Org-mode settings
 (defvar dtm-org-line-spacing 0.1
   "`line-spacing' used in `org-mode'.
