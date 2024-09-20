@@ -634,7 +634,7 @@ Also used by `org-modern-mode' to calculate heights.")
                                      (t csl "ieee.csl"))))
 
 (after! ox
-  ;; Fix stringp error when exporting to TeX buffer (missing `buffer-file-name')
+  ;; BUG: Fix stringp error when exporting to TeX buffer (missing `buffer-file-name')
   (advice-add 'org-export-to-buffer :around #'dtm-org-export-to-buffer-a))
 
 ;;;###package org-mode-ox-odt
@@ -647,7 +647,7 @@ Also used by `org-modern-mode' to calculate heights.")
   :defer t
   :after org
   :init
-  (advice-add 'org-toggle-pretty-entities :after #'dtm-org-pretty-use-appear-a)
+  (advice-add 'org-toggle-pretty-entities :after #'dtm-org-appear-when-pretty-a)
   :config
   (setq org-appear-autosubmarkers t
         org-appear-autoemphasis t
@@ -1008,7 +1008,7 @@ Also used by `org-modern-mode' to calculate heights.")
   ;; Indicate if process is busy in the modeline
   (add-hook 'inferior-ess-mode-hook #'dtm-ess-modeline-show-busy)
 
-  ;; attempt to hide eob when evaling commands
+  ;; Attempt to hide eob when evaling commands
   (add-hook 'inferior-ess-mode-hook #'dtm-hide-eob-on-window-change)
 
   ;; Improve lookup experience

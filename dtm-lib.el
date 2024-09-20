@@ -962,7 +962,7 @@ The additional markup used in doom-style org documents causes rendering issues."
   (unless (dtm-org-limit-styling-p) (org-modern-mode +1)))
 
 ;;* Org-appear
-(defun dtm-org-pretty-use-appear-a ()
+(defun dtm-org-appear-when-pretty-a ()
   "Activate `org-appear-mode' based on `org-pretty-entities'.
 Intended as after advice for `org-toggle-pretty-entities'."
   (org-appear-mode (if org-pretty-entities +1 -1)))
