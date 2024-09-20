@@ -1079,7 +1079,7 @@ The DATE is derived from the #+title which must match the Org date format."
   (interactive)
   (unless (org-roam-dailies--daily-note-p)
     (user-error "Not in a daily-note"))
-  (let ((date (dtm-org-get-title-value))
+  (let ((date (file-name-base (buffer-file-name)))
         (time (read-string "Schedule headline at (HH:MM): ")))
     (org-schedule nil (concat date " " time (when (length< time 3) ":00")))))
 

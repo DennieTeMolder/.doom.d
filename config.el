@@ -745,17 +745,18 @@ Also used by `org-modern-mode' to calculate heights.")
   (advice-add 'org-agenda :before #'dtm-org-roam-dailies-sync-agenda)
 
   ;; Roam templates
-  (setq org-roam-capture-templates
-        '(("d" "default" plain "%?"
-           :target (file+head "pages/%<%Y%m%d%H%M%S>-${slug}.org"
-                              "#+title: ${title}\n")
-           :unnarrowed t
-           :empty-lines 1)))
-  (setq org-roam-dailies-capture-templates
-        '(("d" "default" entry "* %?"
-           :target (file+head "%<%Y-%m-%d>.org"
-                              "#+title: %<%b %d %Y>\n#+date: %<%A %B %d, Week %W %Y>\n \n* Agenda\n")
-           :empty-lines 1))))
+  (setq
+   org-roam-capture-templates
+   '(("d" "default" plain "%?"
+      :target (file+head "pages/%<%Y%m%d%H%M%S>-${slug}.org"
+                         "#+title: ${title}\n")
+      :unnarrowed t
+      :empty-lines 1))
+   org-roam-dailies-capture-templates
+   '(("d" "default" entry "* %?"
+      :target (file+head "%<%Y-%m-%d>.org"
+                         "#+title: %<%a %b %d %Y>\n#+date: %<%A %B %d, Week %W %Y>\n \n* Agenda\n")
+      :empty-lines 1))))
 
 (when (modulep! :tools biblio)
   (setq! citar-bibliography '("~/Sync/Zotero/master.bib")
