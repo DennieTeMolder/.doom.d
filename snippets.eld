@@ -98,7 +98,7 @@ org-mode
 
 (__ "#+title: " (dtm-file-name-as-title) n)
 (title "#+title: " p n "#+author: " p n "#+language: en_GB" n n)
-(cap "#+label: " p n "#+caption: " r)
+(cap "#+name: " p n "#+caption: " r)
 (begin "#+begin_" (s name) n> r> n> "#+end_" (s name))
 (center "#+begin_center" n> r> n> "#+end_center")
 (comment "#+begin_comment" n> r> n> "#+end_comment")
