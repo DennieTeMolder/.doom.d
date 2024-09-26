@@ -622,6 +622,10 @@ Also used by `org-modern-mode' to calculate heights.")
   (advice-add #'org-read-date :before (lambda (&rest _) (require 'evil-org))
               '((name . "require evil-org")))
 
+  ;; Sync org-agenda with org-roam dailies
+  (when (modulep! :lang org +roam2)
+    (advice-add 'org-agenda :before #'dtm-org-roam-dailies-sync-agenda))
+
   ;; Prettify, enable hard wrapping and automate paragraph filling
   (add-hook 'org-mode-hook #'dtm-org-mode-setup-h))
 
@@ -741,9 +745,6 @@ Also used by `org-modern-mode' to calculate heights.")
                     org-roam-buffer-display-dedicated
                     org-roam-buffer-toggle))
     (advice-add symbol :before #'dtm-org-roam-goto-workspace))
-
-  ;; Sync org-agenda with org-roam dailies
-  (advice-add 'org-agenda :before #'dtm-org-roam-dailies-sync-agenda)
 
   ;; Roam templates
   (setq

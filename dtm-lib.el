@@ -1368,7 +1368,7 @@ Alternative `conda-env-activate-for-buffer' that prompts before activation"
   "Build a fuzzy-matching regexp from literal INPUT.
 See `ctrlf-split-fuzzy' for how INPUT is split into subinputs.
 Each subinput is quoted and the results are joined with a non-greedy \".*\n?.*\".
-This enables the each word of the query to be on a consecutive non-blank line."
+This enables each word of the query to be on consecutive non-blank lines."
   (string-join (mapcar #'regexp-quote (ctrlf-split-fuzzy input))  ".*?\\(?:\n.*?\\)??"))
 
 ;;* Tempel
@@ -1536,7 +1536,7 @@ Intended as :after advice for `evil-collection-inhibit-insert-state'."
 
 ;;* Commands
 (defun dtm/load-session (file)
-  "Stripped down `doom/load-session' with proper default value.
+  "Stripped down `doom/load-session' with a proper default value.
 Also checks if FILE exists."
   (interactive
    (let ((session-file (doom-session-file)))
@@ -1554,9 +1554,8 @@ Also checks if FILE exists."
       (progn
         (setq delete-by-moving-to-trash nil)
         (message "Now deleting files PERMANTLY"))
-    (progn
-      (setq delete-by-moving-to-trash t)
-      (message "Now moving deleted files to trash"))))
+    (setq delete-by-moving-to-trash t)
+    (message "Now moving deleted files to trash")))
 
 (defun dtm-advice-list (symbol)
   "Return the list of functions advising SYMBOL."
