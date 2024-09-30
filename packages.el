@@ -49,6 +49,7 @@
 ;; ...Or *all* packages (NOT RECOMMENDED; will likely break things)
 ;(unpin! t)
 
+;; Unpin to obtain: fix(base): make ANSI bright-black readable as foreground
 (unpin! doom-themes)
 
 ;;* Doom modifications
