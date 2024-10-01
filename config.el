@@ -298,7 +298,8 @@
   (setq cape-dict-file #'dtm-spell-fu-dict-word-files)
 
   ;; Enable cape-file in more modes then prog-mode
-  (add-hook! '(conf-mode-hook text-mode-hook) #'+corfu-add-cape-file-h))
+  (add-hook! '(conf-mode-hook text-mode-hook eshell-mode-hook)
+             #'+corfu-add-cape-file-h))
 
 (after! consult
   (consult-customize
