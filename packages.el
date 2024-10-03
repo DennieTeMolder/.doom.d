@@ -49,9 +49,6 @@
 ;; ...Or *all* packages (NOT RECOMMENDED; will likely break things)
 ;(unpin! t)
 
-;; Unpin to obtain: fix(base): make ANSI bright-black readable as foreground
-(unpin! doom-themes)
-
 ;;* Doom modifications
 ;; Evil-escape will exit insert state after a key sequence ("jk")
 ;; Disable it as I am not using it and might create typing delay
