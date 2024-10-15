@@ -461,7 +461,10 @@
   (map! :map image-mode-map :n "C-l" #'dtm/image-center))
 
 (when (modulep! :ui indent-guides)
-  (push #'dtm-indent-guide-inhibit-p +indent-guides-inhibit-functions))
+  (remove-hook 'text-mode-hook #'+indent-guides-init-maybe-h))
+
+(after! indent-bars
+  (setq indent-bars-display-on-blank-lines nil))
 
 (when (modulep! :editor word-wrap)
   ;; Word wrapping (visual-line-mode) at fill-column in text mode buffers

@@ -1522,11 +1522,6 @@ Ref: `good-scroll--window-usable-height'."
       (+zen-light-toggle 1)
       (+word-wrap-mode 1))))
 
-;;* Indent-guides
-(defun dtm-indent-guide-inhibit-p ()
-  "Returns non-nil if `indent-bars-mode' should be disabled by default."
-  (derived-mode-p 'text-mode))
-
 ;;* Evil-collection
   (defun dtm-evil-collection-inhibit-insert-state-a (map-sym)
     "Advice that additionally ignores `evil-enter-replace-state' (R) in MAP-SYM.
