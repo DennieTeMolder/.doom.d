@@ -881,6 +881,19 @@ Also used by `org-modern-mode' to calculate heights.")
     '(tree-sitter-hl-face:number :inherit highlight-numbers-number)
     '(tree-sitter-hl-face:type.builtin :inherit font-lock-warning-face :weight bold)))
 
+;; BUG fix missing indent guides in tree-sitter-mode. Should be fixed when treesit is adopted.
+(use-package! highlight-indent-guides
+  :after (tree-sitter indent-bars)
+  :defer t
+  :init
+  (add-hook! 'tree-sitter-mode-hook :append
+    (defun dtm-tree-sitter-highlight-indent-guides ()
+      "Fix `+indent-guides--toggle-on-tree-sitter-h' not enabling guides."
+      (when (bound-and-true-p +indent-guides-p)
+        (highlight-indent-guides-mode +1))))
+  :config
+  (setq highlight-indent-guides-method 'bitmap))
+
 (after! comint
   (setq ansi-color-for-comint-mode 'filter
         comint-scroll-to-bottom-on-input t

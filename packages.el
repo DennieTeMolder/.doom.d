@@ -96,6 +96,7 @@
 (package! ctrlf)
 (package! org-modern)
 (package! org-appear)
+(package! highlight-indent-guides)
 ;; (package! gptel)
 (package! elpy-shell
   :recipe (:host github :repo "DennieTeMolder/elpy-shell"))
