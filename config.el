@@ -688,7 +688,6 @@ Also used by `org-modern-mode' to calculate heights.")
         org-modern-hide-stars (org-add-props " " nil 'face 'org-indent)
         org-modern-progress nil
         org-modern-star ["●" "◉" "○" "◉" "○" "◉" "○" "◉"]
-        org-modern-timestamp '(" %d %b %Y %a " . " %H:%M ")
         org-modern-list '((?+ . "›")
                           (?- . "‒")
                           (?* . "•"))))
