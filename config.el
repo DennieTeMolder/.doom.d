@@ -896,6 +896,7 @@ Also used by `org-modern-mode' to calculate heights.")
 
 (after! comint
   (setq ansi-color-for-comint-mode 'filter
+        comint-input-ignoredups t
         comint-scroll-to-bottom-on-input t
         comint-scroll-to-bottom-on-output t)
 
