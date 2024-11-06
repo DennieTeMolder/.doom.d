@@ -2,6 +2,9 @@
 ;; NOTE custom functions/variables/macros are prefixed with 'dtm'
 (load! "dtm-lib")
 
+;; BUG: `doom/goto-private-config-file' doesn't autoload 'doom-module-config-file'
+(doom-require 'doom-lib 'modules)
+
 ;; Place your private configuration here! Remember, you do not need to run 'doom
 ;; sync' after modifying this file!
 
