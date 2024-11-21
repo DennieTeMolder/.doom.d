@@ -466,6 +466,19 @@
 (after! indent-bars
   (setq indent-bars-display-on-blank-lines nil))
 
+;; BUG fix missing indent guides in tree-sitter-mode. Should be fixed when treesit is adopted.
+(use-package! highlight-indent-guides
+  :after (tree-sitter indent-bars)
+  :defer t
+  :init
+  (add-hook! 'tree-sitter-mode-hook :append
+    (defun dtm-tree-sitter-highlight-indent-guides ()
+      "Fix `+indent-guides--toggle-on-tree-sitter-h' not enabling guides."
+      (when (bound-and-true-p +indent-guides-p)
+        (highlight-indent-guides-mode +1))))
+  :config
+  (setq highlight-indent-guides-method 'bitmap))
+
 (when (modulep! :editor word-wrap)
   ;; Word wrapping (visual-line-mode) at fill-column in text mode buffers
   (setq-hook! 'text-mode-hook +word-wrap-fill-style 'auto))
@@ -640,7 +653,11 @@ Also used by `org-modern-mode' to calculate heights.")
         :i "C-c ]" #'org-cite-insert
         :g "C-c [" #'org-roam-node-insert
         (:localleader
-         :desc "Toggle pretty visuals" "v" #'+org-pretty-mode)))
+         :desc "Toggle pretty visuals" "v" #'+org-pretty-mode)
+
+        :map org-agenda-mode-map
+        (:localleader
+         :desc "Log clocked time" "l" #'org-agenda-log-mode)))
 
 (after! evil-org
   ;; Disable Doom's table navigation bindings (use TAB instead)
@@ -880,19 +897,6 @@ Also used by `org-modern-mode' to calculate heights.")
   (custom-set-faces!
     '(tree-sitter-hl-face:number :inherit highlight-numbers-number)
     '(tree-sitter-hl-face:type.builtin :inherit font-lock-warning-face :weight bold)))
-
-;; BUG fix missing indent guides in tree-sitter-mode. Should be fixed when treesit is adopted.
-(use-package! highlight-indent-guides
-  :after (tree-sitter indent-bars)
-  :defer t
-  :init
-  (add-hook! 'tree-sitter-mode-hook :append
-    (defun dtm-tree-sitter-highlight-indent-guides ()
-      "Fix `+indent-guides--toggle-on-tree-sitter-h' not enabling guides."
-      (when (bound-and-true-p +indent-guides-p)
-        (highlight-indent-guides-mode +1))))
-  :config
-  (setq highlight-indent-guides-method 'bitmap))
 
 (after! comint
   (setq ansi-color-for-comint-mode 'filter
