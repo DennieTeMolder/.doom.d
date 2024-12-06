@@ -212,7 +212,7 @@
 
        :config
        ;;literate
-       (default +bindings +smartparens))
+       (default +bindings +smartparens +gnupg))
 
 ;;; Early settings
 ;; Make j/k move visual lines (gj/gk)
