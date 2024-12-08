@@ -33,6 +33,14 @@ ITEM is matched by comparing to KEY using TEST, see `dtm-member-previous'."
        (setcdr prev (cddr prev)))
      ,lst))
 
+(defun dtm-buffer-list-unsaved (&optional buffers)
+  "Return all modified BUFFERS with an associated file. Defaults to `buffer-list'."
+  (thread-last
+    (or buffers (buffer-list))
+    (cl-remove-if-not #'buffer-modified-p)
+    (mapcar #'buffer-file-name)
+    (remq nil)))
+
 (defun dtm-file-local-readable-p (file)
   "Return non-nil if FILE is local and readable."
   (unless (file-remote-p file)
