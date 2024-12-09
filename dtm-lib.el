@@ -817,6 +817,19 @@ Intended as :around advice for `org-export-to-buffer'."
     (setq TeX-master (file-name-sans-extension TeX-master))
     (apply orig-fn args)))
 
+(defun dtm/org-clock-in-after (&optional select)
+  "Similar to C-u C-u `org-clock-in-last', but with ability to SELECT last clock."
+  (interactive "@P")
+  (org-clock-in
+   nil
+   (save-excursion
+     (if select
+         (let ((m (org-clock-select-task "Clock in after:")))
+           (pop-to-buffer-same-window (marker-buffer m))
+           (goto-char m))
+       (org-clock-goto))
+     (org-clock-get-last-clock-out-time))))
+
 ;;** Org-link
 (defvar dtm-org-link-convert-executable
   ;; Avoid using the MS Windows command convert.exe .

@@ -653,7 +653,8 @@ Also used by `org-modern-mode' to calculate heights.")
         :i "C-c ]" #'org-cite-insert
         :g "C-c [" #'org-roam-node-insert
         (:localleader
-         :desc "Toggle pretty visuals" "v" #'+org-pretty-mode)
+         :desc "Clock-in after last"   "c a" #'dtm/org-clock-in-after
+         :desc "Toggle pretty visuals" "v"   #'+org-pretty-mode)
 
         :map org-agenda-mode-map
         (:localleader
