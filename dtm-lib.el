@@ -1041,8 +1041,8 @@ Use as advice :before `org-tree-slide--setup'."
   (interactive)
   (dtm-org-roam-goto-workspace)
   (find-file (expand-file-name dtm-org-roam-index-file org-roam-directory))
-  (unless (org-at-heading-p t)
-    (org-backward-heading-same-level 1))
+  (while-let ((lvl (org-up-heading-safe))
+              ((not (eq 1 lvl)))))
   (org-overview)
   (recenter))
 
