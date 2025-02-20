@@ -1125,7 +1125,10 @@ Also used by `org-modern-mode' to calculate heights.")
   (add-to-list 'ess-imenu-S-generic-expression
                '("Section" "^\\(#+ .+\\) [-=#]\\{4,\\}" 1)))
 
-(use-package! ess-plot :defer t)
+(use-package! ess-plot
+  :defer t
+  :config
+  (setq ess-plot-window-show-on-startup nil))
 
 (after! python
   ;; Add generic imenu expression and ensure python doesn't ignore them
