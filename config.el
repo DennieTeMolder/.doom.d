@@ -116,7 +116,8 @@
 (setq save-interprogram-paste-before-kill t)
 
 ;; Increase horizontal scroll (shift + mwheel) sensitivity
-(setq mouse-wheel-scroll-amount-horizontal 12)
+(setq mouse-wheel-scroll-amount-horizontal 12
+      scroll-margin 5)
 
 ;;* UI Settings
 ;; Maximise emacs if specified in shell ENV
