@@ -650,9 +650,10 @@ Also used by `org-modern-mode' to calculate heights.")
 ;; Keys bound in after! org seem to get overwritten, this works
 (after! org-keys
   (map! :map org-mode-map
-        :n "C-j"   #'+org/return
-        :i "C-c ]" #'org-cite-insert
-        :g "C-c [" #'org-roam-node-insert
+        :ie [tab]   #'org-cycle
+        :n  "C-j"   #'+org/return
+        :i  "C-c ]" #'org-cite-insert
+        :g  "C-c [" #'org-roam-node-insert
         (:localleader
          :desc "Clock-in after last"   "c a" #'dtm/org-clock-in-after
          :desc "Toggle pretty visuals" "v"   #'+org-pretty-mode)
