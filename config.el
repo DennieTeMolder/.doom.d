@@ -136,8 +136,7 @@
        (if (buffer-modified-p) " +" ""))))
 
 (after! doom-modeline
-  (setq doom-modeline-buffer-file-name-style 'truncate-except-project
-        mode-line-right-align-edge 'right-fringe)
+  (setq doom-modeline-buffer-file-name-style 'truncate-except-project)
 
   ;; Only display encoding in modeline when it's not UTF-8
   (add-hook 'after-change-major-mode-hook #'dtm-doom-modeline-conditional-encoding-h))
