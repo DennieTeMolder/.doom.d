@@ -116,8 +116,7 @@
 (setq save-interprogram-paste-before-kill t)
 
 ;; Increase horizontal scroll (shift + mwheel) sensitivity
-(setq mouse-wheel-scroll-amount-horizontal 12
-      scroll-margin 5)
+(setq mouse-wheel-scroll-amount-horizontal 12)
 
 ;;* UI Settings
 ;; Maximise emacs if specified in shell ENV
@@ -499,10 +498,19 @@
     (add-hook 'doom-first-buffer-hook #'pixel-scroll-precision-mode))
   :config
   (setq pixel-scroll-precision-interpolation-total-time 0.15
-        pixel-scroll-precision-interpolate-page t)
+        pixel-scroll-precision-large-scroll-height 40
+        pixel-scroll-precision-interpolate-page t
+        make-cursor-line-fully-visible nil
+        scroll-conservatively 101
+        scroll-margin 0)
 
-  (global-set-key [remap evil-scroll-up] #'dtm-precision-scroll-up-half)
-  (global-set-key [remap evil-scroll-down] #'dtm-precision-scroll-down-half))
+  (define-key pixel-scroll-precision-mode-map [prior] #'dtm-precision-scroll-page-up)
+  (define-key pixel-scroll-precision-mode-map [next] #'dtm-precision-scroll-page-down)
+
+  (global-set-key [remap evil-scroll-up] #'dtm-precision-scroll-up)
+  (global-set-key [remap evil-scroll-down] #'dtm-precision-scroll-down)
+  (global-set-key [remap evil-scroll-page-up] #'dtm-precision-scroll-page-up)
+  (global-set-key [remap evil-scroll-page-down] #'dtm-precision-scroll-page-down))
 
 ;;* Core functionality extensions
 ;; Add colours to info pages to make them more readable

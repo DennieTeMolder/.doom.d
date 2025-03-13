@@ -1483,25 +1483,47 @@ Ref: `good-scroll--window-usable-height'."
           (w-bottom (+ (nth 3 w-edges) tl-height)))
       (- w-bottom w-top (+ hl-height tl-height)))))
 
+(defvar dtm-precision-scroll-time-factor 5
+  "Factor to increase scrolling time with when scroll the full display height.
+Higher values give slower scrolling.")
+
 (defun dtm-precision-scroll-window-fraction (fraction)
   "Scroll window by FRACTION of total height."
-  (let ((delta (* fraction (dtm-window-usable-height)))
-        (pixel-scroll-precision-interpolation-total-time 0.25))
+  (let* ((delta (* fraction (dtm-window-usable-height)))
+         (pixel-scroll-precision-interpolation-total-time
+          (max pixel-scroll-precision-interpolation-total-time
+               (* pixel-scroll-precision-interpolation-total-time
+                  (/ (abs delta) (display-pixel-height))
+                  dtm-precision-scroll-time-factor))))
     (pixel-scroll-precision-interpolate delta nil 1)))
 
-(defun dtm-precision-scroll-up-half ()
+(defun dtm-precision-scroll-up ()
   "Scroll up half a window, obeying `pixel-scroll-precision-mode'."
   (interactive)
   (if pixel-scroll-precision-mode
       (dtm-precision-scroll-window-fraction 0.49)
     (call-interactively #'evil-scroll-up)))
 
-(defun dtm-precision-scroll-down-half ()
+(defun dtm-precision-scroll-down ()
   "Scroll down half a window, obeying `pixel-scroll-precision-mode'."
   (interactive)
   (if pixel-scroll-precision-mode
       (dtm-precision-scroll-window-fraction -0.49)
     (call-interactively #'evil-scroll-down)))
+
+(defun dtm-precision-scroll-page-up ()
+  "Scroll up a full page, obeying `pixel-scroll-precision-mode'."
+  (interactive)
+  (if pixel-scroll-precision-mode
+      (dtm-precision-scroll-window-fraction 0.99)
+    (call-interactively #'evil-scroll-page-up)))
+
+(defun dtm-precision-scroll-page-down ()
+  "Scroll down a full page, obeying `pixel-scroll-precision-mode'."
+  (interactive)
+  (if pixel-scroll-precision-mode
+      (dtm-precision-scroll-window-fraction -0.99)
+    (call-interactively #'evil-scroll-page-down)))
 
 ;;* GPTEL
 (defvar dtm-gptel-dir nil
