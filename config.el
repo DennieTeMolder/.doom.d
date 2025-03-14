@@ -478,6 +478,9 @@
   :config
   (setq highlight-indent-guides-method 'bitmap))
 
+(after! word-wrap-mode
+  (pushnew! word-wrap-whitespace-characters ?- 59 ?– ?—))
+
 (when (modulep! :editor word-wrap)
   ;; Word wrapping (visual-line-mode) at fill-column in text mode buffers
   (setq-hook! 'text-mode-hook +word-wrap-fill-style 'auto))
@@ -500,7 +503,6 @@
   (setq pixel-scroll-precision-interpolation-total-time 0.15
         pixel-scroll-precision-large-scroll-height 40
         pixel-scroll-precision-interpolate-page t
-        make-cursor-line-fully-visible nil
         scroll-conservatively 101
         scroll-margin 0)
 
