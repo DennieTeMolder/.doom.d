@@ -280,6 +280,12 @@
   (add-to-list 'recentf-exclude "/autosave/?\\'")
   (add-to-list 'recentf-exclude "\\`/\\'"))
 
+(after! vertico
+  ;; Preserve original sorting for dirivsh history
+  (add-to-list
+   'vertico-multiform-commands
+   '(dirvish-history-jump (vertico-sort-function . dtm-dirvish-sort-history))))
+
 (after! corfu
   (setq +corfu-want-tab-prefer-navigating-org-tables t
         +corfu-want-minibuffer-completion t

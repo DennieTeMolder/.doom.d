@@ -474,6 +474,14 @@ https://github.com/purcell/ibuffer-projectile"
   (message "Run `revert-buffer' (%s) to un-narrow"
            (substitute-command-keys "\\[revert-buffer]")))
 
+(defun dtm-dirvish-sort-history (hist)
+  "Preserve sorting of HIST removing duplicates and the first (current) entry.
+Intended for use as `vertico-sort-function' via `vertico-multiform-commands'."
+  (let ((res))
+    (dolist (x hist)
+      (cl-pushnew x res :test #'string=))
+    (cdr (reverse res))))
+
 ;;* CSV/TSV-mode
 (defvar dtm-csv-mode-max-length 300
   "Maximum characters per line for csv/tsv-mode to be enabled.")
