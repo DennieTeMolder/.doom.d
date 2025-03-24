@@ -475,12 +475,13 @@ https://github.com/purcell/ibuffer-projectile"
            (substitute-command-keys "\\[revert-buffer]")))
 
 (defun dtm-dirvish-sort-history (hist)
-  "Preserve sorting of HIST removing duplicates and the first (current) entry.
+  "Preserve sorting of HIST removing duplicates and the `default-directory'.
 Intended for use as `vertico-sort-function' via `vertico-multiform-commands'."
   (let ((res))
     (dolist (x hist)
-      (cl-pushnew x res :test #'string=))
-    (cdr (reverse res))))
+      (unless (string= x default-directory)
+          (cl-pushnew x res :test #'string=)))
+    (reverse res)))
 
 ;;* CSV/TSV-mode
 (defvar dtm-csv-mode-max-length 300
