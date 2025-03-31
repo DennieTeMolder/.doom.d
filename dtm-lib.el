@@ -438,10 +438,11 @@ https://github.com/purcell/ibuffer-projectile"
        #'dirvish-copy-file-path
      #'dirvish-copy-file-name)))
 
-(defun dtm/dirvish-find-entry ()
+(defun dtm/dirvish-find-file ()
   "Like `find-file' but for use in `dirvish' buffers."
   (interactive)
-  (dirvish-find-entry-a
+  (dirvish--find-entry
+   'find-file
    (read-file-name "Open: " nil default-directory
                    (confirm-nonexistent-file-or-buffer))))
 

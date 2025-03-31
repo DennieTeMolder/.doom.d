@@ -420,7 +420,7 @@
         :n "Y"   #'dtm/dirvish-copy-file-name
         :n "TAB" #'dirvish-subtree-toggle
         :n "/"   #'dtm/dirvish-narrow
-        :n "."   #'dtm/dirvish-find-entry
+        :n "."   #'dtm/dirvish-find-file
         :n "?"   #'dirvish-dispatch)
   ;; Descriptions only work when bound to `major-mode' map
   (map! :map dired-mode-map
