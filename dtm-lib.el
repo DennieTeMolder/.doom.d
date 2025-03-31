@@ -367,6 +367,12 @@ Intended for appending to major-mode hooks."
         (ibuffer-hook nil))
     (ibuffer)))
 
+(defun dtm-ibuffer-popup-p (&optional buf)
+  "Run `dtm-popup-buffer-p' but always return nil for `messages-buffer-name'."
+  (or buf (setq buf (current-buffer)))
+  (unless (string= (buffer-name buf) messages-buffer-name)
+    (dtm-popup-buffer-p buf)))
+
 (defun dtm-ibuffer-persp-filter-groups ()
   "Generate value for `ibuffer-filter-groups' based on perspectives.
 Requires \"persp\" to be defined via `define-ibuffer-filter'.
@@ -377,7 +383,7 @@ Ref: `ibuffer-mode' section on 'Filter Groups'"
                                    :test 'string=))))
     `(("proc" (process))
       ,@persps
-      ("popups" (predicate dtm-popup-buffer-p))
+      ("popups" (predicate dtm-ibuffer-popup-p))
       (,persp-nil-name (persp . ,persp-nil-name)))))
 
 (defun dtm-ibuffer-group-by-persp-h ()
