@@ -314,7 +314,9 @@
 (after! embark
   ;; Open package source from `doom/help-packages' (SPC h p)
   (map! :map +vertico/embark-doom-package-map
-        :desc "Package definition" "d" #'find-library))
+        :desc "Package definition" "d" #'find-library
+        :map embark-symbol-map
+        :desc "Show help" "h" #'helpful-symbol))
 
 (after! persp-mode
   ;; Open private config files in a dedicated workspace
