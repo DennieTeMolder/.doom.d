@@ -394,10 +394,6 @@
           ("s" "~/Sync/" "Sync")))
   (pushnew! dirvish-preview-disabled-exts "bgz")
 
-  ;; Less buggy pdf-preview but without scrolling
-  (setq dirvish-preview-dispatchers
-        (cl-substitute 'pdf-preface 'pdf dirvish-preview-dispatchers))
-
   ;; Make dirvish recognise custom project types
   (advice-add 'dirvish--get-project-root :override #'projectile-project-root)
 
