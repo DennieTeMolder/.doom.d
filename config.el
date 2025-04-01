@@ -919,10 +919,9 @@ Also used by `org-modern-mode' to calculate heights.")
     '(tree-sitter-hl-face:type.builtin :inherit font-lock-warning-face :weight bold)))
 
 (after! comint
-  (setq ansi-color-for-comint-mode 'filter
-        comint-input-ignoredups t
-        comint-scroll-to-bottom-on-input t
-        comint-scroll-to-bottom-on-output t)
+  (setq comint-input-ignoredups t
+        comint-scroll-to-bottom-on-input 'this
+        comint-scroll-to-bottom-on-output 'others)
 
   (add-hook 'comint-mode-hook #'dtm/word-wrap-mode-no-fill)
 
@@ -1050,7 +1049,7 @@ Also used by `org-modern-mode' to calculate heights.")
         ess-use-ido nil
         ess-style 'RStudio)
 
-  ;; Setting `tab-with' also affects `evil-shift-width' (doom specific)
+  ;; Setting `tab-width' also affects `evil-shift-width' (doom specific)
   (setq-hook! 'ess-mode-hook tab-width ess-indent-offset)
 
   ;; Font locking of strings in the repl buffer fails too often to be useful
