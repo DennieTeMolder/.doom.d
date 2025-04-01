@@ -946,7 +946,10 @@ Also used by `org-modern-mode' to calculate heights.")
 
   ;; Fix evil cursor getting out of sync
   (advice-add 'vterm-send-key :before #'dtm-vterm-sync-cursor-a)
-  (advice-add 'vterm--redraw :around #'dtm-vterm-redraw-cursor-a))
+  (advice-add 'vterm--redraw :around #'dtm-vterm-redraw-cursor-a)
+
+  (map! :map vterm-mode-map
+        :i "C-x C-n" #'dtm/vterm-cape-dabbrev))
 
 (after! sh-script
   (map! :map sh-mode-map

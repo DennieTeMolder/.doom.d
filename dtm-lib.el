@@ -663,6 +663,19 @@ Intended as before advice for `vterm-send-key'"
       (vterm-send-return)))
   (dtm-forward-line-non-empty))
 
+(defun dtm/vterm-cape-dabbrev ()
+  "Vterm compatible `cape-dabbrev' completion using `completing-read'.
+`completion-at-point' fails for read-only buffers because preview is blocked.
+Ref: https://github.com/akermu/emacs-libvterm/pull/401"
+  (interactive)
+  (let ((completion (dtm-cape-collect (cape-dabbrev))))
+    (unless completion
+      (user-error "cape-dabbrev: No completions"))
+    (setq completion (completing-read "Dabbrev:" completion))
+    (when (thing-at-point 'symbol)
+      (vterm-send-C-w))
+    (vterm-send-string completion t)))
+
 ;;* Ispell-fu
 (defun dtm-spell-fu-set-treesit-faces-h ()
   "Add tree-sitter font's to `spell-fu-faces-include'."
@@ -771,6 +784,10 @@ Based on `spell-fu--word-at-point'."
   "Interactive version of `dtm-cape-dict-keyword'."
   (interactive)
   (cape-interactive #'dtm-cape-keyword-dict))
+
+(defun dtm-cape-collect (capf-table)
+  "Collect all completions from the output of a capf as a list of strings."
+  (all-completions "" (nth 2 capf-table)))
 
 ;;* Markdown
 (defun dtm-flycheck-disable-proselint-rmd-h ()
