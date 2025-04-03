@@ -490,6 +490,46 @@ Intended for use as `vertico-sort-function' via `vertico-multiform-commands'."
           (cl-pushnew x res :test #'string=)))
     (reverse res)))
 
+;;* Vundo
+(defun dtm-vundo-diff-window ()
+  "Return the diff window belonging to the current Vundo buffer."
+  (get-buffer-window
+   (concat "*vundo-diff-" (buffer-name vundo--orig-buffer) "*")))
+
+(defun dtm-vundo-diff-window-resize (&optional window)
+  "Resize the diff window to only show the relevant information."
+  (unless (or window (setq window (dtm-vundo-diff-window)))
+    (error "No vundo-diff window visible"))
+  (let ((max-size 0.4))
+   (with-selected-window window
+     (unless (eq major-mode 'vundo-diff-mode)
+       (error "Not a vundo-diff window: %s" window))
+     (switch-to-buffer (window-buffer window))
+     (goto-char (point-min))
+     (forward-line 4)
+     (recenter 0)
+     (let ((delta (- (count-lines (point) (point-max)) 2 (window-height)))
+           (delta-max (- (floor (* max-size (frame-height))) (window-height))))
+       (window-resize window (min delta delta-max))))))
+
+(defun dtm-vundo-live-diff-post-command ()
+  "Post command hook function for live diffing."
+  (unless (memq this-command '(vundo-quit vundo-confirm))
+    (vundo-diff-mark (vundo-m-parent (vundo--current-node vundo--prev-mod-list)))
+    (vundo-diff)
+    (dtm-vundo-diff-window-resize)))
+
+(define-minor-mode dtm-vundo-live-diff-mode
+  "Live diff when moving in vundo buffer.
+Ref: https://github.com/casouri/vundo/issues/112"
+  :lighter ""
+  (require 'vundo-diff)
+  (if dtm-vundo-live-diff-mode
+      (add-hook 'post-command-hook #'dtm-vundo-live-diff-post-command 0 'local)
+    (remove-hook 'post-command-hook #'dtm-vundo-live-diff-post-command 'local)
+    (with-current-buffer vundo--orig-buffer
+      (vundo-diff--quit))))
+
 ;;* CSV/TSV-mode
 (defvar dtm-csv-mode-max-length 300
   "Maximum characters per line for csv/tsv-mode to be enabled.")

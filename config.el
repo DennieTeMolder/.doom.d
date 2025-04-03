@@ -471,8 +471,13 @@
   (setq magit-todos-max-items 20))
 
 (after! vundo
-  (setq vundo-glyph-alist vundo-ascii-symbols)
-  (set-popup-rule! "^\\*vundo-diff-" :size 0.4 :ttl 0 :select t))
+  (setq vundo-glyph-alist vundo-ascii-symbols
+        vundo-diff-quit 'kill)
+
+  (set-popup-rule! "^\\*vundo-diff-" :ttl nil :size nil)
+
+  (map! :map vundo-mode-map
+        :n "D" #'dtm-vundo-live-diff-mode))
 
 (after! image-mode
   (advice-add 'image-fit-to-window :after #'dtm/image-center)
