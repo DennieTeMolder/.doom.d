@@ -311,6 +311,22 @@
    ;; Set default selection for `consult-theme' based on `dtm-recommend-theme'
    consult-theme :default (symbol-name (dtm-recommend-theme))))
 
+(after! consult-imenu
+  ;; Should match entries from `+emacs-lisp-extend-imenu-h'
+  (setq consult-imenu-config
+  '((emacs-lisp-mode :toplevel "Functions"
+     :types ((?s "Section"          font-lock-warning-face)
+             (?f "Functions"        font-lock-function-name-face)
+             (?F "Inline functions" font-lock-function-name-face)
+             (?m "Macros"           font-lock-function-name-face)
+             (?M "Module"           font-lock-string-face)
+             (?p "Package"          font-lock-string-face)
+             (?t "Types"            font-lock-type-face)
+             (?v "Variables"        font-lock-variable-name-face)
+             (?a "Advice"           font-lock-keyword-face)
+             (?j "Major modes"      font-lock-builtin-face)
+             (?i "Minor modes"      font-lock-builtin-face))))))
+
 (after! embark
   ;; Open package source from `doom/help-packages' (SPC h p)
   (map! :map +vertico/embark-doom-package-map
