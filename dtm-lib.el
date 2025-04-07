@@ -208,8 +208,7 @@ Use for `after-change-major-mode-hook'."
 
 (defun dtm-y-or-n-p-trash-a (orig-fun &rest args)
   "Replace delete by trashed in `y-or-n-p' prompts within ORIG-FUN.
-Respects `delete-by-moving-to-trash'. Intended as :around advice.
-Ref: https://nullprogram.com/blog/2017/10/27/"
+Respects `delete-by-moving-to-trash'. Intended as :around advice."
   (letf! ((defun y-or-n-p (prompt)
             (when delete-by-moving-to-trash
               (setq prompt (string-replace "delete" "trash" prompt)))
@@ -325,8 +324,8 @@ Based on `+popup/diagnose'."
 
 (defun dtm-popup-buffer-p (&optional buf)
   "Returns t if BUF has a non-nil `set-popup-rule!' in `display-buffer-alist'."
-  (when-let* ((buf (or buf (current-buffer)))
-              (rule (dtm-popup-get-rule buf)))
+  (or buf (setq buf (current-buffer)))
+  (when-let ((rule (dtm-popup-get-rule buf)))
     (eq '+popup-buffer (caadr rule))))
 
 (defun dtm/switch-popup-buffer (buf)
