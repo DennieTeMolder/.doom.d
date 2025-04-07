@@ -336,9 +336,13 @@ Based on `+popup/diagnose'."
 
 ;;* Imenu
 (defun dtm-elisp-extend-imenu-h ()
-  "Add `modulep!' support to `imenu' as the 2nd element."
-  (push '("Module" "^\\s-*(when (modulep! +\\([^)]+\\))" 1)
-        (cdr imenu-generic-expression)))
+  "Add `modulep!' and `+emacs-lisp-outline-regexp' support to `imenu'."
+  (unless (cl-find "Module" imenu-generic-expression :test #'string= :key #'car)
+    (push '("Module" "^\\s-*(when (modulep! +\\([^)]+\\))" 1)
+          imenu-generic-expression))
+  (setq imenu-generic-expression
+        (append (cl-remove "Section" imenu-generic-expression :test #'string= :key #'car)
+                `(("Section" ,(concat +emacs-lisp-outline-regexp "[ \t]*\\([^\n]+\\)") 1)))))
 
 (defvar dtm-imenu-orginal-index-function nil
   "Original indexing function before calling `dtm-imenu-merge-index-h'")

@@ -994,14 +994,9 @@ Also used by `org-modern-mode' to calculate heights.")
   (setq lispy-outline "^[ \t]*;;[;*]+[^#]"
         +emacs-lisp-outline-regexp lispy-outline)
 
-  (defalias 'elisp-mode #'emacs-lisp-mode)
+  (add-hook 'emacs-lisp-mode-hook #'dtm-elisp-extend-imenu-h 'append)
 
-  (defadvice! dtm-elisp-extend-imenu-a ()
-    :after #'+emacs-lisp-extend-imenu-h
-    (cl-replace imenu-generic-expression
-                `(("Section" ,(concat lispy-outline "[ \t]*\\([^\n]+\\)") 1))))
-
-  (add-hook 'emacs-lisp-mode-hook #'dtm-elisp-extend-imenu-h 'append))
+  (defalias 'elisp-mode #'emacs-lisp-mode))
 
 (after! edebug
   (map! :map edebug-mode-map :n "R" #'edebug-remove-instrumentation))
