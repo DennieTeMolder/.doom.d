@@ -911,14 +911,7 @@ Intended as :around advice for `org-export-to-buffer'."
   ;; Avoid using the MS Windows command convert.exe .
   (unless (memq system-type '(ms-dos windows-nt))
     'executable-find)
-  "Absolute path to the ImageMagick/convert program.")
-
-(defun dtm-org-link-string (link)
-  "Return the raw string for org-element LINK without the description."
-  (replace-regexp-in-string (rx (or "[[" (seq "]" (* nonl)))) ""
-                            (buffer-substring-no-properties
-                             (org-element-property :begin link)
-                             (org-element-property :end link))))
+  "Absolute path to the ImageMagick/convert program or `executable-find'.")
 
 (defvar-local dtm-org-link-as-png-disable nil
   "Non-nil if org-link \"as_png:\" conversion should be disabled.
@@ -950,6 +943,13 @@ Intended for use in `org-link-abbrev-alist'."
          tag)
        (file-name-sans-extension)
        (concat ".png")))))
+
+(defun dtm-org-link-string (link)
+  "Return the raw string for org-element LINK without the description."
+  (replace-regexp-in-string (rx (or "[[" (seq "]" (* nonl)))) ""
+                            (buffer-substring-no-properties
+                             (org-element-property :begin link)
+                             (org-element-property :end link))))
 
 (defun dtm-org-link-as-png-parse (link)
   "If LINK as an \"as_png:\" link, return file conversion alist (infile . outfile).
@@ -1034,7 +1034,7 @@ CONVERSIONS should have the structure of `dtm-org-link-as-png-parse-all'."
     (setq dtm-org-link-convert-executable (executable-find "convert")))
   (if (not (and dtm-org-link-convert-executable
                 (file-executable-p dtm-org-link-convert-executable)))
-      (prog1 (warn "Org[as_png]: `dtm-org-link-convert-executable' unset or non-executable!") nil)
+      (progn (warn "Org[as_png]: `dtm-org-link-convert-executable' unset or non-executable!") nil)
     (let (warn-msg)
       (dolist (conv conversions)
         (let* ((infile (car conv))
