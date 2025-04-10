@@ -392,7 +392,6 @@
 
   ;; Custom overrides
   (map! :map dired-mode-map
-        "C-c C-r" #'dirvish-rsync
         [remap dired-do-delete] #'dtm/dired-delete-marked
         [remap dired-diff]      #'dtm/dired-ediff))
 
@@ -404,7 +403,8 @@
   (set-face-attribute 'diredfl-dir-name nil :bold t))
 
 (after! dirvish
-  (setq dirvish-hide-details t          ; Can also be a number
+  (setq dirvish-hide-details t
+        dirvish-reuse-session nil
         dirvish-quick-access-entries
         `(("D" "~/Downloads/" "Downloads")
           ("dc" ,doom-core-dir "Doom Core")
