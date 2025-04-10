@@ -457,25 +457,22 @@ https://github.com/purcell/ibuffer-projectile"
 
 (defun dtm/dirvish-search-cwd ()
   "Grep files from current dirvish directory, kill dirvish on confirm."
-  ;; When dirivish is in fullscreen mode it messes with the Consult preview,
-  ;; we therefore kill the session and restore it the selection was aborted
   (interactive)
-  (let* ((dv (or (dirvish-curr) (user-error "Not a dirvish buffer")))
-         (layout (car (dv-layout dv)))  ; Non-nil in fullscreen mode
-         (path default-directory)
-         (inhibit-quit t)
-         buf)
-    (when layout
-      (dirvish-kill dv))
+  (let ((dv (or (dirvish-curr) (user-error "Not a dirvish buffer")))
+        (path default-directory)
+        (inhibit-quit t)
+        buf)
+    (let ((dirvish-reuse-session 'resume))
+      (dirvish-quit))
     (with-local-quit
       (let ((default-directory path))
         (+default/search-cwd))
       (setq buf (current-buffer)))
     (if (not buf)
-        (when layout (dirvish path))
-      (unless layout
-        (dirvish-kill dv))
-      (switch-to-buffer buf))))
+        (dirvish)
+      (unless (eq 'resume dirvish-reuse-session)
+        (dirvish--clear-session dv))
+      (pop-to-buffer buf))))
 
 (defun dtm/dirvish-narrow ()
   "Run `dirvish-narrow' and provide revert instruction after finish."
