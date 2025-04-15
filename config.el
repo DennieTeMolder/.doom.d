@@ -680,6 +680,9 @@ Also used by `org-modern-mode' to calculate heights.")
     '(org-ellipsis :inherit default :box nil :weight regular)
     '(org-headline-done :strike-through t))
 
+  ;; REVIEW this might have unintended side effects
+  (add-hook 'org-mode-hook #'dtm-org-fold-font-lock-remove)
+
   ;; Custom link type [[as_png:<file_name>]], trigger conversion to .png on export
   (push '("as_png" . dtm-org-link-as-png) org-link-abbrev-alist)
   (add-hook 'org-export-before-parsing-functions #'dtm/org-link-as-png-convert)

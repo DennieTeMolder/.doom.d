@@ -865,6 +865,11 @@ Intended for `markdown-mode-hook'."
       (dtm-doom-docs-p)
       (dtm-dirvish-preview-window-p)))
 
+(defun dtm-org-fold-font-lock-remove ()
+  "Remove `org-activate-folds' `font-lock-keyword-face' on line ends.
+Intended for `org-font-lock-hook'."
+  (font-lock-remove-keywords nil '(org-activate-folds)))
+
 (defun dtm-org-mode-setup-h ()
   "Personal org-mode customisation's after mode startup"
   (unless (dtm-org-limit-styling-p)
