@@ -118,14 +118,20 @@ Intended as :around advice (e.g. for capf functions)."
   (ignore-errors (file-remote-p (buffer-local-value 'default-directory buf))))
 
 ;;* Window functions
-(defun dtm/split-window-optimally (&optional w/h-ratio)
-  "Split window based on width to height ratio (including margins/fringes/bars).
-When W/H is lower then W/H-RATIO split below, else split right."
+(defun dtm/split-window-optimally (&optional window min-width)
+  "Split WINDOW based on width of the new window after `balance-windows'.
+Split right if width stays above MIN-WIDTH, else split below.
+See also: `split-window-sensibly'"
   (interactive)
-  (or w/h-ratio (setq w/h-ratio 1.5))
-  (let ((type (if (< (window-pixel-width) (* w/h-ratio (window-pixel-height)))
-                  'below 'right)))
-    (select-window (split-window (selected-window) nil type))))
+  (or min-width (setq min-width (+ (/ split-width-threshold 2) 10)))
+  (let ((parent-tree (car (window--subtree (or (window-parent) (selected-window)))))
+        width n-window side)
+    (if (windowp parent-tree)
+        (setq width (/ (window-width) 2))
+      (setq n-window (1+ (if (car parent-tree) 1 (length (cddr parent-tree))))
+            width (/ (- (nth 2 (cadr parent-tree)) (nth 0 (cadr parent-tree))) n-window)))
+    (prog1 (if (< width min-width) (split-window-below) (split-window-right))
+      (balance-windows (window-parent)))))
 
 (defun dtm/buffer-move-to-window ()
   "Move the current buffer to the window of `aw-select'."
