@@ -130,8 +130,9 @@ See also: `split-window-sensibly'"
         (setq width (/ (window-width) 2))
       (setq n-window (1+ (if (car parent-tree) 1 (length (cddr parent-tree))))
             width (/ (- (nth 2 (cadr parent-tree)) (nth 0 (cadr parent-tree))) n-window)))
-    (prog1 (if (< width min-width) (split-window-below) (split-window-right))
-      (balance-windows (window-parent)))))
+    (select-window
+     (prog1 (if (< width min-width) (split-window-below) (split-window-right))
+       (balance-windows (window-parent))))))
 
 (defun dtm/buffer-move-to-window ()
   "Move the current buffer to the window of `aw-select'."
