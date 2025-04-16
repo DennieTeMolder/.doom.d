@@ -949,6 +949,9 @@ Also used by `org-modern-mode' to calculate heights.")
 (add-hook 'comint-mode-hook #'dtm-disable-undo-history)
 (add-hook 'term-mode-hook #'dtm-disable-undo-history)
 
+;; Don't replace case when programming
+(setq-hook! 'prog-mode-hook dabbrev-case-replace nil)
+
 (after! tree-sitter
   ;; Modify existing faces (see +faces.el for new faces)
   (custom-set-faces!
