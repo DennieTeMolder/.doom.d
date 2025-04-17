@@ -1096,11 +1096,11 @@ Also used by `org-modern-mode' to calculate heights.")
   ;; Indicate if process is busy in the modeline
   (add-hook 'inferior-ess-mode-hook #'dtm-ess-modeline-show-busy)
 
-  ;; Attempt to hide eob when evaling commands
+  ;; Attempt to hide eob when opening plot windows
   (add-hook 'inferior-ess-mode-hook #'dtm-hide-eob-on-window-change)
 
   ;; Improve lookup experience
-  (set-lookup-handlers! '(ess-r-mode inferior-ess-r-mode ess-julia-mode)
+  (set-lookup-handlers! '(ess-r-mode ess-julia-mode)
     :documentation #'dtm/ess-lookup-documentation)
 
   ;; Deactivate the `ess-filename-completion' capf in favour of `cape-file'
@@ -1117,9 +1117,6 @@ Also used by `org-modern-mode' to calculate heights.")
         (cons (regexp-opt ess-R-message-prefixes 'enc-paren)
               'ess-R-error-face))
 
-  ;; Enable tree sitter
-  (add-hook 'ess-r-mode-local-vars-hook #'tree-sitter! 'append)
-
   ;; Expand recognised keywords
   (tree-sitter-hl-add-patterns 'r
     [((identifier) @boolean
@@ -1133,24 +1130,16 @@ Also used by `org-modern-mode' to calculate heights.")
      ((call function: (identifier) @keyword)
       (.eq? @keyword "return"))])
 
-  ;; Recenter buffer in window after sending region (SPC m ,)
-  (advice-add 'ess-eval-region-or-function-or-paragraph-and-step :after (cmd! (recenter)))
-
-  ;; Lag the cursor in debug mode, this leaves the point at a variable after its assigned
-  (advice-add 'ess-debug-command-next :around #'dtm-with-lagging-point-a)
-  (dolist (symbol '(dtm/ess-debug-command-step
-                    ess-debug-command-up
-                    ess-debug-command-quit))
-    (advice-add symbol :after #'dtm-lagging-point-reset))
-
   ;; ESS R keybindings, make < add a <-, type twice to undo (same goes for >)
   (map! (:map ess-r-mode-map
          :nv [C-return] #'ess-eval-region-or-line-and-step
          :localleader
          :desc "Eval reg|func|para"         "e" #'ess-eval-region-or-function-or-paragraph
          :desc "Environment list R objects" "E" #'ess-rdired
+         :desc "Print last value"           "k" #'dtm/ess-print-last-value
          :desc "Source current file"        "s" #'ess-load-file
          :desc "Change selected process"    "S" #'ess-switch-process
+         :desc "Eval reg|func|para step"    "," #'dtm/ess-eval-rfp-and-step-recenter
          :desc "Eval object at point"       "." #'dtm/ess-eval-object-at-point)
 
         (:map (ess-r-mode-map inferior-ess-r-mode-map)
@@ -1168,12 +1157,7 @@ Also used by `org-modern-mode' to calculate heights.")
 
         (:map ess-debug-minor-mode-map
               "M-S" #'dtm/ess-debug-command-step
-              "M-E" #'dtm/ess-eval-object-at-point
-              "M-A" #'dtm/lagging-point-goto-actual)
-
-        ;; REVIEW https://github.com/doomemacs/doomemacs/pull/6455
-        (:map ess-roxy-mode-map
-         :i "RET" #'ess-indent-new-comment-line)))
+              "M-E" #'dtm/ess-print-last-value)))
 
 (after! ess-s-lang
   ;; Imenu search entries, best invoked with `consult-imenu' (SPC s i)

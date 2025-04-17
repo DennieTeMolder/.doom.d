@@ -61,23 +61,12 @@
 ;; REVIEW https://github.com/vedang/pdf-tools/issues/89
 (package! tablist :recipe (:build (:not compile)))
 
-;; Replace the stale ess-R-data-view with the newer ess-view-data
-;; REVIEW https://github.com/doomemacs/doomemacs/pull/6455
-(package! ess-R-data-view :disable t)
-(package! ess-view-data)
-(package! ess-r-insert-obj)
-
 ;; Custom template expansion, fully disable yasnippet
 ;; See: (doom-package-depending-on 'yasnippet)
 (package! tempel)
 
 ;; Only used by `lispy-occur', use `consult-line' instead
 (package! swiper :ignore t)
-
-;; Use dirvish instead
-(package! dired-git-info :ignore t)
-(package! dired-rsync :ignore t)
-(package! fd-dired :ignore t)
 
 ;; Improved Org ODT export
 (package! ox-odt
@@ -89,6 +78,7 @@
                    "contrib/odt/LibreOffice")))
 
 ;;* Custom packages
+(package! ess-r-insert-obj)
 (package! trashed)
 (package! xr)
 (package! info-colors)

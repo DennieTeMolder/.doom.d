@@ -153,7 +153,7 @@ See also: `split-window-sensibly'"
                (pos-visible-in-window-p t))
       (save-excursion
         (goto-char (point-max))
-        (recenter (- -1 scroll-margin))))))
+        (recenter (- (1+ scroll-margin)))))))
 
 (defun dtm-hide-eob-on-window-change ()
   "Call `dtm-scroll-hide-eob' if the windows size of `current-buffer' changes."
@@ -1291,7 +1291,7 @@ Ref: `ess--tb-start', https://github.com/seagle0128/doom-modeline/issues/410"
   "Send the object under the cursor to the current ESS process"
   (interactive)
   (ess-send-string
-   (get-process ess-current-process-name)
+   (ess-get-current-process)
    (or (dtm-region-as-string 'deactivate)
        (ess-read-object-name-default)
        (user-error "No object at point!"))
@@ -1319,6 +1319,18 @@ Bypasses `ess-completing-read', defers further lookup if process is busy."
      (message "%s" (error-message-string err))
      'deferred)))
 
+(defun dtm/ess-eval-rfp-and-step-recenter ()
+  "Call `ess-eval-region-or-function-or-paragraph-and-step' and recenter."
+  (interactive)
+  (prog1
+      (call-interactively #'ess-eval-region-or-function-or-paragraph-and-step)
+    (recenter)))
+
+(defun dtm/ess-print-last-value ()
+  "Print .Last.value in 'ess-local-process-name'."
+  (interactive)
+  (ess-send-string (ess-get-current-process) ".Last.value" t))
+
 (defun dtm-ess-plot-file-p (file)
   "Return non-nil if FILE is an ESS plot."
   (when (fboundp 'ess-plot-file-p)
@@ -1330,13 +1342,10 @@ Bypasses `ess-completing-read', defers further lookup if process is busy."
 Defaults to `ess-local-process-name'."
   (interactive)
   (or name (setq name ess-local-process-name))
-  (when-let* ((proc (and name (get-process name)))
-              (buf (process-buffer proc))
+  (when-let* ((buf (ess-get-current-process-buffer))
               (win (get-buffer-window buf)))
-    (save-selected-window
-      (select-window win)
+    (with-selected-window win
       (move-to-window-line (- (1+ scroll-margin)))
-      (goto-char (eol))
       (recenter -1))))
 
 (defun dtm-cape-ess-keep-cache-p (old new)
@@ -1358,30 +1367,6 @@ favour of `cape-file' and `dtm-cape-ess-r-object-completion'."
               (cl-substitute #'dtm-cape-ess-r-object-completion
                              #'ess-r-object-completion
                              completion-at-point-functions)))
-
-;;** dtm-with-lagging-point
-(defvar dtm-lagging-point-actual nil
-  "Position of cursor when `dtm-with-lagging-point-a' would not have been active.")
-
-(defun dtm-with-lagging-point-a (orig-fn)
-  "Keep/lag the cursor position one command execution behind.
-Indented to advise functions that move the point."
-  (dtm/lagging-point-goto-actual)
-  (save-excursion
-    (funcall orig-fn)
-    (sleep-for .05)
-    (setq-local dtm-lagging-point-actual (point))))
-
-(defun dtm/lagging-point-goto-actual ()
-  "Restore cursor to the unlagged position."
-  (interactive)
-  (when dtm-lagging-point-actual
-    (goto-char dtm-lagging-point-actual)
-    (recenter nil)))
-
-(defun dtm-lagging-point-reset ()
-  "Reset `dtm-lagging-point-actual'."
-  (setq-local dtm-lagging-point-actual nil))
 
 ;;* Python/Elpy-shell
 (defun dtm-elpy-shell-get-doom-process-a (&optional sit)
