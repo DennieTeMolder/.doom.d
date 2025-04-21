@@ -1297,17 +1297,6 @@ Ref: `ess--tb-start', https://github.com/seagle0128/doom-modeline/issues/410"
        (user-error "No object at point!"))
    t))
 
-(defun dtm/ess-debug-command-step ()
-  "Step into in debug mode.
-Equivalent to typing \"s\" into the R prompt."
-  (interactive)
-  (ess-force-buffer-current)
-  (unless (ess--dbg-is-active-p)
-    (error "Debugger is not active"))
-  (if (ess--dbg-is-recover-p)
-      (ess-send-string (ess-get-process) "0")
-    (ess-send-string (ess-get-process) "s")))
-
 (defun dtm/ess-lookup-documentation ()
   "Wrapper for `ess-display-help-on-object' to improve `+lookup/documentation'.
 Bypasses `ess-completing-read', defers further lookup if process is busy."

@@ -1156,7 +1156,6 @@ Also used by `org-modern-mode' to calculate heights.")
          "h h" #'ess-display-help-on-object)
 
         (:map ess-debug-minor-mode-map
-              "M-S" #'dtm/ess-debug-command-step
               "M-E" #'dtm/ess-print-last-value)))
 
 (after! ess-s-lang
