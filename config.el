@@ -1127,9 +1127,7 @@ Also used by `org-modern-mode' to calculate heights.")
      ((call function: (identifier) @keyword)
       (.eq? @keyword "stop"))
      ((call function: (identifier) @keyword)
-      (.eq? @keyword "warning"))
-     ((call function: (identifier) @keyword)
-      (.eq? @keyword "return"))])
+      (.eq? @keyword "warning"))])
 
   ;; ESS R keybindings, make < add a <-, type twice to undo (same goes for >)
   (map! (:map ess-r-mode-map
