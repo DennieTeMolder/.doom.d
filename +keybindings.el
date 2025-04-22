@@ -12,22 +12,13 @@
       :i "C-x C-s" #'tempel-complete
       :i "C-x s"   #'dtm/spell-correct-previous
 
-      ;; Create parity with spell-fu highlighting
-      [remap ispell-word] #'dtm/spell-correct
-
       ;; Make "Z" bindings only kill buffers not the session
       :n "ZQ" #'kill-buffer-and-window
       :n "ZZ" #'doom/save-and-kill-buffer
-      (:map with-editor-mode-map
-       :n "ZQ" #'with-editor-cancel
-       :n "ZZ" #'with-editor-finish)
 
-      ;; Use mouse buttons to go forward/backward trough window configs
+      ;; Use mouse buttons to go forward/backward through window configs
       :n [mouse-8] #'winner-undo
-      :n [mouse-9] #'winner-redo
-      (:map Info-mode-map
-       :n [mouse-8] #'Info-history-back
-       :n [mouse-9] #'Info-history-forward))
+      :n [mouse-9] #'winner-redo)
 
 ;;* <leader>
 (map! :leader

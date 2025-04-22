@@ -615,10 +615,7 @@
   (when (string= ispell-program-name "aspell")
     (delete "--run-together" ispell-extra-args)
     (delete "--sug-mode=ultra" ispell-extra-args) ; More but slower suggestions
-    (remove-hook 'text-mode-hook #'+spell-remove-run-together-switch-for-aspell-h))
-
-  ;; Correct word BEFORE point (also bound to 'C-x s'), 'C-x C-k' completes word AT point
-  (map! :map text-mode-map :i "M-o" #'dtm/spell-correct-previous))
+    (remove-hook 'text-mode-hook #'+spell-remove-run-together-switch-for-aspell-h)))
 
 (after! spell-fu
   ;; Face customisation's
@@ -627,7 +624,10 @@
 
   ;; Remove org-block from excluded-faces to enable spell checking in #+CAPTION blocks
   (when-let ((cell (assq 'org-mode +spell-excluded-faces-alist)))
-    (setcdr cell (cl-remove 'org-block (cdr cell)))))
+    (setcdr cell (cl-remove 'org-block (cdr cell))))
+
+  ;; Create parity between correctable words and spell-fu highlighting
+  (global-set-key [remap ispell-word] #'dtm/spell-correct))
 
 (after! flycheck
   (setq flycheck-lintr-linters
@@ -687,9 +687,6 @@ Also used by `org-modern-mode' to calculate heights.")
   (push '("as_png" . dtm-org-link-as-png) org-link-abbrev-alist)
   (add-hook 'org-export-before-parsing-functions #'dtm/org-link-as-png-convert)
 
-  ;; Mark tab-navigation through tables as non-repeatable
-  (evil-declare-not-repeat 'org-cycle)
-
   ;; BUG: org-read-date doesn't use org-mode so it won't trigger evil-org's to load
   (advice-add #'org-read-date :before (lambda (&rest _) (require 'evil-org))
               '((name . "require evil-org")))
@@ -717,6 +714,10 @@ Also used by `org-modern-mode' to calculate heights.")
          :desc "Log clocked time" "l" #'org-agenda-log-mode)))
 
 (after! evil-org
+  ;; Mark tab-navigation through tables as non-repeatable
+  (evil-declare-not-repeat #'org-cycle)
+  (evil-declare-not-repeat #'org-shifttab)
+
   ;; Disable Doom's table navigation bindings (use TAB instead)
   (map! :map evil-org-mode-map
         :i "C-h" nil
@@ -1143,9 +1144,9 @@ Also used by `org-modern-mode' to calculate heights.")
          :desc "Eval object at point"       "." #'dtm/ess-eval-object-at-point)
 
         (:map (ess-r-mode-map inferior-ess-r-mode-map)
-         :i "M-o" #'ess-r-insert-obj-col-name
-         :i "<"   #'dtm/ess-r-insert-assign
-         :i ">"   #'dtm/ess-r-insert-pipe
+         :i "C-x C-a" #'ess-r-insert-obj-col-name
+         :i "<"       #'dtm/ess-r-insert-assign
+         :i ">"       #'dtm/ess-r-insert-pipe
          (:localleader
           :desc "View R object" "o" #'ess-view-data-print))
 

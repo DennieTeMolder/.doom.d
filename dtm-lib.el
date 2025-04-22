@@ -828,7 +828,7 @@ Based on `spell-fu--word-at-point'."
   (cape-wrap-super #'cape-keyword #'cape-dict))
 
 (defun dtm/cape-keyword-dict ()
-  "Interactive version of `dtm-cape-dict-keyword'."
+  "Interactive version of `dtm-cape-keyword-dict'."
   (interactive)
   (cape-interactive #'dtm-cape-keyword-dict))
 
