@@ -334,7 +334,10 @@
                    (?g "Generics" font-lock-function-name-face)
                    (?m "Methods" font-lock-function-name-face)
                    (?p "Package" font-lock-string-face)
-                   (?d "Data" font-lock-variable-name-face))))))
+                   (?d "Data" font-lock-variable-name-face)))
+          (python-mode :toplevel "Functions"
+           :types ((?f "Functions" font-lock-function-name-face)
+                   (?r "Rule" font-lock-string-face))))))
 
 (after! embark
   ;; Open package source from `doom/help-packages' (SPC h p)
