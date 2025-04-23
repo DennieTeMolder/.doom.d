@@ -119,7 +119,7 @@
 (setq mouse-wheel-scroll-amount-horizontal 12)
 
 ;;* UI Settings
-;; Maximise emacs if specified in shell ENV
+;; Maximise emacs if desired
 (when dtm-maximize-on-startup
   (add-to-list 'default-frame-alist '(fullscreen . maximized)))
 
@@ -345,12 +345,8 @@
 
 (after! persp-mode
   ;; Open private config files in a dedicated workspace
-  (dolist (symbol '(doom/open-private-config
-                    doom/find-file-in-private-config
-                    doom/goto-private-init-file
-                    doom/goto-private-config-file
-                    doom/goto-private-packages-file))
-    (advice-add symbol :before #'dtm-doom-private-goto-workspace))
+  (advice-add 'doom/open-private-config :before #'dtm-doom-private-goto-workspace)
+  (advice-add 'doom/find-file-in-private-config :before #'dtm-doom-private-goto-workspace)
 
   ;; Fix default input value for `doom/load-session'
   (global-set-key [remap doom/load-session] #'dtm/load-session))
@@ -677,7 +673,7 @@ Also used by `org-modern-mode' to calculate heights.")
 
   ;; Give ellipsis same colour as text
   (custom-set-faces!
-    '(org-ellipsis :inherit default :box nil :weight regular)
+    '(org-ellipsis :inherit default :box unspecified :weight regular)
     '(org-headline-done :strike-through t))
 
   ;; REVIEW this might have unintended side effects
@@ -743,8 +739,8 @@ Also used by `org-modern-mode' to calculate heights.")
   (dtm-straight-prioritize "ox-odt"))
 
 (use-package! org-appear
-  :defer t
   :after org
+  :defer t
   :init
   (advice-add 'org-toggle-pretty-entities :after #'dtm-org-appear-when-pretty-a)
   :config
@@ -753,8 +749,8 @@ Also used by `org-modern-mode' to calculate heights.")
         org-appear-autoentities t))
 
 (use-package! org-modern
-  :defer t
   :after org
+  :defer t
   :init
   (add-hook 'org-agenda-finalize-hook #'org-modern-agenda)
   (add-hook 'org-mode-hook #'dtm-org-modern-mode-maybe-h)
