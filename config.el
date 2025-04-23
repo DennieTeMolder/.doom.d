@@ -960,6 +960,7 @@ Also used by `org-modern-mode' to calculate heights.")
   ;; Modify existing faces (see +faces.el for new faces)
   (custom-set-faces!
     '(tree-sitter-hl-face:number :inherit highlight-numbers-number)
+    '(tree-sitter-hl-face:boolean :inherit tree-sitter-hl-face:type.builtin)
     '(tree-sitter-hl-face:type.builtin :inherit font-lock-warning-face :weight bold)))
 
 (after! comint

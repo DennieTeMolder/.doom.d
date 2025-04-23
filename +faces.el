@@ -6,21 +6,6 @@
   "Face for floating point numbers."
   :group 'tree-sitter-hl-faces)
 
-(defface tree-sitter-hl-face:boolean
-  '((t :inherit tree-sitter-hl-face:type.builtin))
-  "Face for booleans."
-  :group 'tree-sitter-hl-faces)
-
-(defface tree-sitter-hl-face:conditional
-  '((t :inherit font-lock-keyword-face))
-  "Face for conditionals (if, else, switch)."
-  :group 'tree-sitter-hl-faces)
-
-(defface tree-sitter-hl-face:repeat
-  '((t :inherit font-lock-keyword-face))
-  "Face for repeats (for, while)."
-  :group 'tree-sitter-hl-faces)
-
 (defface tree-sitter-hl-face:keyword.function
   '((t :inherit font-lock-keyword-face))
   "Face for function arguments."
