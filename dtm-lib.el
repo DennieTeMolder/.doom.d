@@ -273,7 +273,7 @@ Respects `delete-by-moving-to-trash'. Intended as :around advice."
   "Prompt user to select buffer matching `dtm-buffer-orphan-p'."
   (interactive
    (list (read-buffer "Select orphan-buffer: " nil t #'dtm-buffer-orphan-p)))
-  (display-buffer buf))
+  (pop-to-buffer-same-window buf))
 
 ;;* Projectile
 (defun dtm-project-ignored-p (project-root)
@@ -285,9 +285,9 @@ Respects `delete-by-moving-to-trash'. Intended as :around advice."
 ;;* Doom Popup
 (defun dtm-popup-ensure ()
   "Ensure a popup is selected."
-  (unless (+popup-window-p)
-    (unless (+popup/other)
-      (user-error "No popups are open")))
+  (or (+popup-window-p)
+      (+popup/other)
+      (user-error "No popups are open"))
   (current-buffer))
 
 (defun dtm/popup-raise ()
