@@ -1091,6 +1091,12 @@ Also used by `org-modern-mode' to calculate heights.")
         ess-use-ido nil
         ess-style 'RStudio)
 
+  ;; We have better comint defaults than the ESS module's defaults
+  (remove-hook! 'inferior-ess-mode-hook
+    #'doom--setq-comint-move-point-for-output-for-inferior-ess-mode-h
+    #'doom--setq-comint-scroll-to-bottom-on-output-for-inferior-ess-mode-h
+    #'doom--setq-comint-scroll-to-bottom-on-input-for-inferior-ess-mode-h)
+
   ;; Setting `tab-width' also affects `evil-shift-width' (doom specific)
   (setq-hook! 'ess-mode-hook tab-width ess-indent-offset)
 
