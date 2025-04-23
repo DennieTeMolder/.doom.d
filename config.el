@@ -474,10 +474,6 @@
           :internal-border-width 1
           :internal-border-color "#51afef")))
 
-(after! magit-todos
-  ;; Show more todo items (SPC p t)
-  (setq magit-todos-max-items 20))
-
 (after! vundo
   (setq vundo-glyph-alist vundo-ascii-symbols
         vundo-diff-quit 'kill)
@@ -564,6 +560,14 @@
 (use-package! vertico-mouse
   :after vertico
   :config (vertico-mouse-mode +1))
+
+(use-package! magit-todos
+  :defer t
+  :config
+  ;; Make colon suffix optional
+  (setq magit-todos-keyword-suffix "\\(?:([^)]+)\\)?:?"
+        magit-todos-max-items 20)
+  (define-key magit-todos-section-map "j" nil))
 
 ;; Template/snippet system
 (use-package! tempel

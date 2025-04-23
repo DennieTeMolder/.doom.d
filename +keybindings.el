@@ -61,6 +61,9 @@
        :desc "Find file in sidebar"    "S" #'+dired/dirvish-side-and-follow
        :desc "Vterm here"              "T" #'vterm)
 
+      ;; Project
+      :desc "List project todos" "p t" #'magit-todos-list
+
       ;; Toggles
       (:prefix "t"
        :desc "Auto line-breaks"   "a" #'auto-fill-mode
