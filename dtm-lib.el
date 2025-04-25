@@ -893,15 +893,6 @@ Intended for `org-font-lock-hook'."
                   '(src-block comment))
       (org-fill-paragraph))))
 
-(defun dtm-org-export-to-buffer-a (orig-fn &rest args)
-  "Fix stringp error thrown by `reftex-TeX-master-file'.
-Intended as :around advice for `org-export-to-buffer'."
-  (require 'tex-mode)
-  (let* ((TeX-master (buffer-file-name))
-         (TeX-default-extension (file-name-extension TeX-master)))
-    (setq TeX-master (file-name-sans-extension TeX-master))
-    (apply orig-fn args)))
-
 (defun dtm/org-clock-in-after (&optional select)
   "Similar to C-u C-u `org-clock-in-last', but with ability to SELECT last clock."
   (interactive "@P")
@@ -914,6 +905,24 @@ Intended as :around advice for `org-export-to-buffer'."
            (goto-char m))
        (org-clock-goto))
      (org-clock-get-last-clock-out-time))))
+
+;;** Org-export (ox)
+(defvar dtm-org-export-source-file nil
+  "Current source file. Set by `org-export-before-processing-functions'.
+Not guaranteed to be correct during async export with multiple processes.")
+
+(defun dtm-org-export-remember-source-file-h (backend)
+  "Set `dtm-org-export-source-file' to `buffer-file-name'.
+Intended for `org-export-before-processing-functions'."
+  (ignore-errors backend)
+  (setq dtm-org-export-source-file (buffer-file-name)))
+
+(defun dtm-reftex-TeX-master-file-a (orig-fun &rest args)
+  "Let bind `dtm-org-export-source-file' to `buffer-file-name' if nil.
+RefTeX assumes `buffer-file-name' to be non-nil, which not always true.
+Intended as :around advice for `reftex-TeX-master-file'."
+  (let ((buffer-file-name (or buffer-file-name dtm-org-export-source-file)))
+    (apply orig-fun args)))
 
 ;;** Org-link
 (defvar dtm-org-link-convert-executable

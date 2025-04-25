@@ -736,8 +736,8 @@ Also used by `org-modern-mode' to calculate heights.")
                                      (t csl "ieee.csl"))))
 
 (after! ox
-  ;; BUG: Fix stringp error when exporting to TeX buffer (missing `buffer-file-name')
-  (advice-add 'org-export-to-buffer :around #'dtm-org-export-to-buffer-a))
+  ;; Used by `dtm-reftex-TeX-master-file-a'
+  (add-hook 'org-export-before-processing-functions #'dtm-org-export-remember-source-file-h))
 
 ;;;###package org-mode-ox-odt
 (after! doom-packages
@@ -923,6 +923,9 @@ Also used by `org-modern-mode' to calculate heights.")
 (when (modulep! :lang latex)
   (setq +latex-viewers '(pdf-tools)))
 
+(after! reftex
+  ;; BUG: Fix stringp error when exporting to latex buffer from Org
+  (advice-add 'reftex-TeX-master-file :around #'dtm-reftex-TeX-master-file-a))
 
 (after! markdown-mode
   ;; Disable proselint in Rmarkdown files
