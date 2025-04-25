@@ -753,6 +753,7 @@ Also used by `org-modern-mode' to calculate heights.")
   :config
   (setq org-appear-autosubmarkers t
         org-appear-autoemphasis t
+        org-appear-autokeywords t
         org-appear-autoentities t))
 
 (use-package! org-modern
@@ -919,14 +920,9 @@ Also used by `org-modern-mode' to calculate heights.")
   ;; Display C-c C-q (also bound to `pdf-annot-edit-contents-abort') in the tooltip
   (keymap-unset pdf-annot-edit-contents-minor-mode-map "C-c C-k"))
 
-;; LaTeX settings
-(after! tex-mode
-  (setq TeX-PDF-mode t
-        TeX-source-correlate-start-server t
-        +latex-viewers '(pdf-tools))
+(when (modulep! :lang latex)
+  (setq +latex-viewers '(pdf-tools)))
 
-  ;; Compatibility with multi-file documents
-  (setq-default TeX-master nil))
 
 (after! markdown-mode
   ;; Disable proselint in Rmarkdown files
