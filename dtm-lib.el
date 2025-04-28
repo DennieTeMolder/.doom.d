@@ -1236,13 +1236,6 @@ The DATE is derived from the #+title which must match the Org date format."
           (- (* 2 scale) 0.1))
     (pdf-view-redisplay t)))
 
-(defun dtm-pdf-view-mark-without-visual-state-a (&rest _)
-  "Fix jumping/unresponsive input in `pdf-view-mode' caused by visual state.
-Use as `evil-local-mode' :after advice (the dedicated hook triggers too early).
-Ref: https://github.com/syl20bnr/spacemacs/pull/15740"
-  (when (eq major-mode 'pdf-view-mode)
-    (remove-hook 'activate-mark-hook #'evil-visual-activate-hook 'local)))
-
 (defun dtm-pdf-annot-edit-contents-setup-h ()
   "Apply personal customisations.
 Intended for `pdf-annot-edit-contents-minor-mode-hook'"

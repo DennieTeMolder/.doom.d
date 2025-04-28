@@ -880,9 +880,6 @@ Also used by `org-modern-mode' to calculate heights.")
   ;; Distinguish current match
   (custom-set-faces! '(pdf-isearch-match :inherit highlight))
 
-  ;; REVIEW this fixes: https://github.com/doomemacs/doomemacs/issues/6286
-  (advice-add 'evil-local-mode :after #'dtm-pdf-view-mark-without-visual-state-a)
-
   (add-hook 'pdf-annot-edit-contents-minor-mode-hook #'dtm-pdf-annot-edit-contents-setup-h)
 
   (map! (:map pdf-view-mode-map
