@@ -687,7 +687,7 @@ Ref: https://github.com/noctuid/lispyville/issues/284"
 
 ;;* Vterm
 (defun dtm-vterm-redraw-cursor-a (orig-fn &rest args)
-  "Prevent vterm from modifying `cursor-type'..
+  "Prevent vterm from modifying `cursor-type'.
 Intended as around advice for `vterm--redraw'
 Ref: https://github.com/akermu/emacs-libvterm/issues/313#issuecomment-1191400836"
   (let ((cursor-type cursor-type)) (apply orig-fn args)))
@@ -697,18 +697,21 @@ Ref: https://github.com/akermu/emacs-libvterm/issues/313#issuecomment-1191400836
 Intended as before advice for `vterm-send-key'"
   (vterm-goto-char (point)))
 
-(defun dtm/vterm-execute-current-line ()
-  "Execute the current line in the vterm buffer."
-  (interactive)
-  (when (dtm-line-empty-p) (dtm-forward-line-non-empty))
-  (+nav-flash-blink-cursor)
-  (let ((command (dtm-current-line-as-string)))
+(defun dtm/vterm-send-current-region-or-line (&optional no-step)
+  "Execute the current line in the vterm buffer.
+Moves the point to the next non-empty line unless NO-STEP is non-nil."
+  (interactive "P")
+  (let ((command (dtm-region-as-string 'deactivate)))
+    (unless command
+      (when (dtm-line-empty-p) (dtm-forward-line-non-empty))
+      (setq command (dtm-current-line-as-string))
+      (+nav-flash-blink-cursor)
+      (unless no-step (dtm-forward-line-non-empty)))
     (save-selected-window
       (vterm-other-window)
       (vterm--goto-line -1)
       (vterm-send-string command)
-      (vterm-send-return)))
-  (dtm-forward-line-non-empty))
+      (vterm-send-return))))
 
 (defun dtm/vterm-cape-dabbrev ()
   "Vterm compatible `cape-dabbrev' completion using `completing-read'.

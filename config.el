@@ -994,8 +994,8 @@ Also used by `org-modern-mode' to calculate heights.")
 
 (after! sh-script
   (map! :map sh-mode-map
-        :nv          [C-return] #'dtm/vterm-execute-current-line
-        :localleader "TAB"      #'vterm-other-window))
+        :nv [C-return] #'dtm/vterm-send-current-region-or-line
+        :localleader "TAB" #'vterm-other-window))
 
 (when (modulep! :lang emacs-lisp)
   (setq lispy-outline "^[ \t]*;;[;*]+[^#]"
