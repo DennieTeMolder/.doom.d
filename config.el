@@ -1162,8 +1162,15 @@ Also used by `org-modern-mode' to calculate heights.")
          "x r" #'inferior-ess-reload
          "h h" #'ess-display-help-on-object)
 
+        (:map ess-dev-map
+              "g" #'dtm/ess-debug-goto-previous)
+
         (:map ess-debug-minor-mode-map
-              "M-E" #'dtm/ess-print-last-value)))
+              "M-K" #'dtm/ess-print-last-value)))
+
+(after! ess-tracebug
+  ;; Track previous debug position for `dtm/ess-debug-goto-previous'
+  (advice-add 'ess--dbg-activate-overlays :before #'dtm-ess-debug-track-previous))
 
 (after! ess-s-lang
   ;; Imenu search entries, best invoked with `consult-imenu' (SPC s i)

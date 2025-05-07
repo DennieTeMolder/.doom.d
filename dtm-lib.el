@@ -1288,16 +1288,6 @@ Ref: `ess--tb-start', https://github.com/seagle0128/doom-modeline/issues/410"
                                   (:eval (nth ess--busy-count ess-busy-strings))
                                   " ")))
 
-(defun dtm/ess-eval-object-at-point ()
-  "Send the object under the cursor to the current ESS process"
-  (interactive)
-  (ess-send-string
-   (ess-get-current-process)
-   (or (dtm-region-as-string 'deactivate)
-       (ess-read-object-name-default)
-       (user-error "No object at point!"))
-   t))
-
 (defun dtm/ess-lookup-documentation ()
   "Wrapper for `ess-display-help-on-object' to improve `+lookup/documentation'.
 Bypasses `ess-completing-read', defers further lookup if process is busy."
@@ -1309,6 +1299,29 @@ Bypasses `ess-completing-read', defers further lookup if process is busy."
      (message "%s" (error-message-string err))
      'deferred)))
 
+(defvar dtm-ess-debug-previous-position nil
+  "Previous value of `ess--dbg-current-debug-position'.")
+
+(defun dtm-ess-debug-track-previous ()
+  "Update `dtm-ess-debug-previous-position'.
+Intended as :before `ess--dbg-activate-overlays' advice."
+  (setq dtm-ess-debug-previous-position
+        (copy-marker ess--dbg-current-debug-position)))
+
+(defun dtm/ess-debug-goto-previous (&optional no-history)
+  "Goto to `dtm-ess-debug-previous-position' returning the buffer if successful.
+Unless NO-HISTORY is non-nil `better-jumper-set-jump' is called before jumping."
+  (interactive)
+  (when (and (markerp dtm-ess-debug-previous-position)
+             (buffer-live-p (marker-buffer dtm-ess-debug-previous-position)))
+    (and (not no-history)
+         (bound-and-true-p better-jumper-mode)
+         (better-jumper-set-jump))
+    (pop-to-buffer-same-window (marker-buffer dtm-ess-debug-previous-position))
+    (goto-char (marker-position dtm-ess-debug-previous-position))
+    (back-to-indentation)
+    (current-buffer)))
+
 (defun dtm/ess-eval-rfp-and-step-recenter ()
   "Call `ess-eval-region-or-function-or-paragraph-and-step' and recenter."
   (interactive)
@@ -1316,10 +1329,26 @@ Bypasses `ess-completing-read', defers further lookup if process is busy."
       (call-interactively #'ess-eval-region-or-function-or-paragraph-and-step)
     (recenter)))
 
-(defun dtm/ess-print-last-value ()
-  "Print .Last.value in 'ess-local-process-name'."
+(defun dtm/ess-eval-object-at-point ()
+  "Send the object under the cursor or region to the current ESS process."
   (interactive)
-  (ess-send-string (ess-get-current-process) ".Last.value" t))
+  (ess-send-string
+   (ess-get-current-process)
+   (or (dtm-region-as-string 'deactivate)
+       (when-let ((bounds (ess-bounds-of-symbol)))
+         (buffer-substring-no-properties (car bounds) (cdr bounds)))
+       (user-error "No object at point!"))
+   t))
+
+(defun dtm/ess-print-last-value ()
+  "Print .Last.value in `ess-local-process-name'.
+If `ess--dbg-is-active-p' eval the object at `dtm-ess-debug-previous-position'."
+  (interactive)
+  (save-window-excursion
+    (if (and (ess--dbg-is-active-p)
+             (dtm/ess-debug-goto-previous 'no-history))
+        (dtm/ess-eval-object-at-point)
+      (ess-send-string (ess-get-current-process) ".Last.value" t))))
 
 (defun dtm-ess-plot-file-p (file)
   "Return non-nil if FILE is an ESS plot."
