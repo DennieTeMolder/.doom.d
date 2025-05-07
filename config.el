@@ -945,9 +945,9 @@ Also used by `org-modern-mode' to calculate heights.")
 (add-hook 'term-mode-hook #'dtm/word-wrap-mode-no-fill)
 
 ;; Disable undo history in compilation/terminal/REPL buffers to improve responsiveness
-(add-hook 'compilation-mode-hook #'dtm-disable-undo-history)
-(add-hook 'comint-mode-hook #'dtm-disable-undo-history)
-(add-hook 'term-mode-hook #'dtm-disable-undo-history)
+(add-hook 'compilation-mode-hook #'buffer-disable-undo)
+(add-hook 'comint-mode-hook #'buffer-disable-undo)
+(add-hook 'term-mode-hook #'buffer-disable-undo)
 
 ;; Don't replace case when programming
 (setq-hook! 'prog-mode-hook dabbrev-case-replace nil)
