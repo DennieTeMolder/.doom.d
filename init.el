@@ -112,6 +112,7 @@
        (lookup             ; navigate your code and its documentation
         ;;+docsets
         +dictionary)
+       ;;llm               ; when I said you needed friends, I didn't mean...
        ;;lsp               ; M-x vscode
        magit               ; a git porcelain for Emacs
        ;;make              ; run make tasks from Emacs

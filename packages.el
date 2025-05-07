@@ -88,7 +88,6 @@
 (package! org-appear)
 (package! highlight-indent-guides)
 (package! magit-todos)
-;; (package! gptel)
 (package! elpy-shell
   :recipe (:host github :repo "DennieTeMolder/elpy-shell"))
 (package! ess-plot

@@ -1614,46 +1614,6 @@ Higher values give slower scrolling.")
       (dtm-precision-scroll-window-fraction -0.99)
     (call-interactively #'evil-scroll-page-down)))
 
-;;* GPTEL
-(defvar dtm-gptel-dir nil
-  "Directory for storing chats.")
-
-(defun dtm-gptel-setup-h ()
-  "Personal gptel-mode customisation's. Intended for `gptel-mode-hook'."
-  (general-evil-define-key '(n i) 'local
-    [C-return] #'dtm/gptel-send-buffer)
-  (setq default-directory (or dtm-gptel-dir default-directory))
-  (visual-line-mode 1)
-  (flycheck-mode 0)
-  (evil-insert-state))
-
-(defun dtm/gptel-send-buffer ()
-  "Scroll to the end and call `gptel-send' to ensure the full buffer is send."
-  (interactive)
-  (goto-char (line-beginning-position))
-  (recenter 0)
-  (goto-char (point-max))
-  (call-interactively #'gptel-send))
-
-(defun dtm-gptel-goto-workspace (&rest _)
-  "Open/create workspace for ChatGPT conversations."
-  (dtm-workspace-switch-maybe "*gpt*"))
-
-(defun dtm/gptel-new-chat ()
-  "Open a new chat in the dedicated workspace."
-  (interactive)
-  (require 'gptel)
-  (ignore-errors (gptel--api-key))
-  (dtm-gptel-goto-workspace)
-  (let ((gptel-default-session (generate-new-buffer-name "ChatGPT")))
-    (call-interactively #'gptel)
-    (persp-add-buffer gptel-default-session (get-current-persp) nil nil)
-    (when (length= (+workspace-buffer-list) 1)
-      (delete-other-windows))
-    (with-current-buffer gptel-default-session
-      (+zen-light-toggle 1)
-      (+word-wrap-mode 1))))
-
 ;;* Evil-collection
   (defun dtm-evil-collection-inhibit-insert-state-a (map-sym)
     "Advice that additionally ignores `evil-enter-replace-state' (R) in MAP-SYM.

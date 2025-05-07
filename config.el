@@ -1235,22 +1235,5 @@ Also used by `org-modern-mode' to calculate heights.")
 ;; Enable csv/tsv mode on files with short lines
 (add-hook 'so-long-mode-hook #'dtm-csv-mode-maybe-h)
 
-;;* Misc Packages
-;; NOTE to configure add the line below to ~/.authinfo.gpg
-;; machine openai.com login apikey password <your-key>
-;; REVIEW this package is disabled, should it be removed?
-(use-package! gptel
-  :defer t
-  :init
-  (setq-default gptel--system-message "You are a large language model living inside the Doom Emacs framework. Help the user and be concise.")
-  :config
-  (setq gptel-default-mode 'markdown-mode
-        dtm-gptel-dir "~/Sync/Emacs/Chats/")
-
-  (add-hook 'gptel-mode-hook #'dtm-gptel-setup-h)
-  (add-hook! 'gptel-post-response-hook (goto-char (point-max)))
-
-  (set-popup-rule! "^\\*ChatGPT" :size 0.35 :select t :ttl nil))
-
 (load! "+keybindings")
 (load! "+faces")
