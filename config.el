@@ -486,7 +486,9 @@
 (after! image-mode
   (advice-add 'image-fit-to-window :after #'dtm/image-center)
 
-  (map! :map image-mode-map :n "C-l" #'dtm/image-center))
+  (map! :map image-mode-map
+        :n "C-l" #'dtm/image-center
+           "W"   nil))
 
 (when (modulep! :ui indent-guides)
   (remove-hook 'text-mode-hook #'+indent-guides-init-maybe-h))
