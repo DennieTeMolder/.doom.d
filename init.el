@@ -82,6 +82,7 @@
         +dirvish
         +icons)
        electric            ; smarter, keyword-based electric-indent
+       ;;eww               ; the internet is gross
        (ibuffer +icons)    ; interactive buffer management
        undo                ; persistent, smarter undo for your inevitable mistakes
        vc                  ; version-control and Emacs, sitting in a tree
@@ -118,7 +119,6 @@
        ;;make              ; run make tasks from Emacs
        ;;pass              ; password manager for nerds
        pdf                 ; pdf enhancements
-       ;;prodigy           ; FIXME managing external services & code builders
        ;;terraform         ; infrastructure as code
        ;;tmux              ; an API for interacting with tmux
        tree-sitter         ; syntax and parsing, sitting in a tree...
@@ -158,6 +158,7 @@
        ;;idris             ; a language you can depend on
        ;;(json             ; At least it ain't XML
        ;; +tree-sitter)
+       ;;janet             ; Fun fact: Janet is me!
        ;;(java +meghanada) ; the poster child for carpal tunnel syndrome
        ;;javascript        ; all(hope(abandon(ye(who(enter(here))))))
        (julia +tree-sitter); Python, R, and MATLAB in a blender
