@@ -117,18 +117,23 @@ Intended as :around advice (e.g. for capf functions)."
 (defun dtm/split-window-optimally (&optional window min-width)
   "Split WINDOW based on width of the new window after `balance-windows'.
 Split right if width stays above MIN-WIDTH, else split below.
+Defaults to `selected-window' and half of `split-width-threshold' + 10.
 See also: `split-window-sensibly'"
   (interactive)
   (or min-width (setq min-width (+ (/ split-width-threshold 2) 10)))
-  (let ((parent-tree (car (window--subtree (or (window-parent) (selected-window)))))
-        width n-window side)
-    (if (windowp parent-tree)
-        (setq width (/ (window-width) 2))
-      (setq n-window (1+ (if (car parent-tree) 1 (length (cddr parent-tree))))
-            width (/ (- (nth 2 (cadr parent-tree)) (nth 0 (cadr parent-tree))) n-window)))
-    (select-window
-     (prog1 (if (< width min-width) (split-window-below) (split-window-right))
-       (balance-windows (window-parent))))))
+  (with-selected-window (or window (selected-window))
+    (let ((parent-tree (car (window--subtree (or (window-parent) (selected-window)))))
+          width n-window)
+      (if (windowp parent-tree)
+          (setq n-window 2
+                width (window-total-width))
+        (setq n-window (1+ (if (car parent-tree) 1 (length (cddr parent-tree))))
+              width (- (nth 2 (cadr parent-tree)) (nth 0 (cadr parent-tree)))))
+      (setq window (if (< (/ width n-window) min-width)
+                       (split-window-below)
+                     (split-window-right)))
+      (balance-windows (window-parent))))
+  (if (called-interactively-p 'any) (select-window window) window))
 
 (defun dtm/buffer-move-to-window ()
   "Move the current buffer to the window of `aw-select'."
