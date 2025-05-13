@@ -29,6 +29,7 @@
       :desc "Evil ex command" ":"   #'evil-ex
 
       ;; General
+      :desc "Act all"             "A" #'embark-act-all
       :desc "Repeat last command" "r" #'repeat
 
       ;; Buffers
