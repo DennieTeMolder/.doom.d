@@ -519,7 +519,6 @@ Intended for use as `vertico-sort-function' via `vertico-multiform-commands'."
 (defun dtm-vundo-live-diff-post-command ()
   "Post command hook function for live diffing."
   (unless (memq this-command '(vundo-quit vundo-confirm))
-    (vundo-diff-mark (vundo-m-parent (vundo--current-node vundo--prev-mod-list)))
     (vundo-diff)
     (dtm-vundo-diff-window-resize)))
 
