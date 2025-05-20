@@ -545,6 +545,7 @@
   (setq pixel-scroll-precision-interpolation-total-time 0.15
         pixel-scroll-precision-large-scroll-height 40
         pixel-scroll-precision-interpolate-page t
+        make-cursor-line-fully-visible t
         scroll-conservatively 101
         scroll-margin 0)
 
