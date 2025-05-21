@@ -545,9 +545,11 @@
   (setq pixel-scroll-precision-interpolation-total-time 0.15
         pixel-scroll-precision-large-scroll-height 40
         pixel-scroll-precision-interpolate-page t
-        make-cursor-line-fully-visible t
         scroll-conservatively 101
         scroll-margin 0)
+
+  (setq-default make-cursor-line-fully-visible t)
+  (add-hook 'pixel-scroll-precision-mode-hook #'dtm-pixel-scroll-precision-mode-h)
 
   (define-key pixel-scroll-precision-mode-map [prior] #'dtm-precision-scroll-page-up)
   (define-key pixel-scroll-precision-mode-map [next] #'dtm-precision-scroll-page-down)
