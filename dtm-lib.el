@@ -495,6 +495,14 @@ Intended for use as `vertico-sort-function' via `vertico-multiform-commands'."
     (reverse res)))
 
 ;;* Vundo
+(defun dtm-vundo-pre-enter-h ()
+  "Ensure cursor remains visible in the edited buffer."
+  (setq-local cursor-in-non-selected-windows t))
+
+(defun dtm-vundo-post-exit-h ()
+  "Revert `dtm-vundo-pre-enter-h'."
+  (kill-local-variable 'cursor-in-non-selected-windows))
+
 (defun dtm-vundo-diff-window ()
   "Return the diff window belonging to the current Vundo buffer."
   (get-buffer-window

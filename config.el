@@ -483,6 +483,10 @@
 
   (set-popup-rule! "^\\*vundo-diff-" :ttl nil :size nil)
 
+  ;; Ensure cursor remains visible in the original buffer
+  (add-hook 'vundo-pre-enter-hook #'dtm-vundo-pre-enter-h)
+  (add-hook 'vundo-post-exit-hook #'dtm-vundo-post-exit-h)
+
   (map! :map vundo-mode-map
         :n "D" #'dtm-vundo-live-diff-mode))
 
