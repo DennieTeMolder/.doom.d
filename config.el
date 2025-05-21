@@ -1106,9 +1106,7 @@ Also used by `org-modern-mode' to calculate heights.")
   (setq-hook! 'ess-mode-hook tab-width ess-indent-offset)
 
   ;; Font locking of strings in the repl buffer fails too often to be useful
-  (setq-hook! 'inferior-ess-mode-hook
-    font-lock-string-face nil
-    font-lock-comment-face nil)
+  (setq-hook! 'inferior-ess-mode-hook font-lock-string-face nil)
 
   ;; Indicate if process is busy in the modeline
   (add-hook 'inferior-ess-mode-hook #'dtm-ess-modeline-show-busy)
