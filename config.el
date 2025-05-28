@@ -367,7 +367,9 @@
       (cl-find buf (safe-persp-buffers (persp-get-by-name qualifier))))
 
     ;; Group buffers based on perspective/workspace
-    (add-hook 'ibuffer-hook #'dtm-ibuffer-group-by-persp-h)))
+    (add-hook 'ibuffer-hook #'dtm-ibuffer-group-by-persp-h))
+
+  (map! :map ibuffer-mode-map :n "g r" #'ibuffer-update))
 
 (when (modulep! :ui popup)
   (set-popup-rules!
