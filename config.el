@@ -424,9 +424,7 @@
   ;; Make dirvish recognise custom project types
   (advice-add 'dirvish--get-project-root :override #'projectile-project-root)
 
-  ;; Bind `revert-buffer' for reloading directory contents
   (map! :map dirvish-mode-map
-        :n "C-r" #'revert-buffer
         :n "C-o" #'dirvish-history-jump
         :n "C-s" #'dtm/dirvish-search-cwd
         :n "M-t" #'dirvish-layout-toggle
