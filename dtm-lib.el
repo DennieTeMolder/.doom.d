@@ -932,6 +932,9 @@ Intended as :around advice for `reftex-TeX-master-file'."
     (apply orig-fun args)))
 
 ;;** Org-link
+(defvar dtm-org-link-as-png-dir "Media/"
+  "Directory for storing converted png files.")
+
 (defvar dtm-org-link-convert-executable
   ;; Avoid using the MS Windows command convert.exe .
   (unless (memq system-type '(ms-dos windows-nt))
@@ -960,7 +963,8 @@ Intended for use in `org-link-abbrev-alist'."
   (if (dtm-org-link-as-png-disabled-p)
       (org-link-expand-abbrev tag)
     (file-name-concat
-     "." "Media"
+     (unless (string-match-p "^[~/.]" dtm-org-link-as-png-dir) ".")
+     dtm-org-link-as-png-dir
      (thread-first
        (if-let ((split-at (string-search ":" tag)))
            (file-name-concat (substring tag nil split-at)
