@@ -802,7 +802,7 @@ Also used by `org-modern-mode' to calculate heights.")
         org-download-abbreviate-filename-function #'file-relative-name
         org-download-file-format-function #'dtm-org-download-file-format
         org-download-method #'directory
-        org-download-image-dir "Images/"
+        org-download-image-dir "Media/"
         org-download-timestamp "__%Y%m%d%H%M%S"
         org-download-heading-lvl nil))
 
