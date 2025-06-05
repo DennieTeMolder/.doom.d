@@ -1101,11 +1101,9 @@ Intended as after advice for `org-toggle-pretty-entities'."
 
 ;;* Org-download
 (defun dtm-org-download-file-format (filename)
-  "Prefix FILENAME with `buffer-file-name' and `org-download-timestamp'."
-  (unless (buffer-file-name)
-    (user-error "No file on disk, save the current buffer first"))
+  "Prefix FILENAME with `buffer-name' and `org-download-timestamp'."
   (format "%s%s--%s"
-          (file-name-base (buffer-file-name))
+          (file-name-base (buffer-name))
           (format-time-string org-download-timestamp)
           filename))
 
