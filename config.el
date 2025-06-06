@@ -299,8 +299,22 @@
   ;; Keep the corfu childframe alive when using this command
   (add-to-list 'corfu-continue-commands #'dtm/corfu-complete-always)
 
-  ;; Bind `corfu-complete', which allows `cape-file' to continue expansion
-  (map! :map corfu-map "C-l" #'dtm/corfu-complete-always))
+  (map! (:map corfu-map
+         ;; Bind `corfu-complete', which allows `cape-file' to continue expansion
+            "C-l"   #'dtm/corfu-complete-always
+         ;; Remap doom+evil bindings to free C-u/C-d
+         :i "C-d"   nil
+            "C-S-j" (cmd! (let (corfu-cycle)
+                            (funcall-interactively #'corfu-next corfu-count)))
+         :i "C-u"   nil
+            "C-S-k" (cmd! (let (corfu-cycle)
+                            (funcall-interactively #'corfu-next (- corfu-count)))))
+        (:after corfu-popupinfo
+         :map corfu-popupinfo-map
+         "C-S-k" nil
+         "C-M-k" #'corfu-popupinfo-scroll-down
+         "C-S-j" nil
+         "C-M-j" #'corfu-popupinfo-scroll-up)))
 
 (after! cape
   (setq cape-dict-file #'dtm-spell-fu-dict-word-files)
