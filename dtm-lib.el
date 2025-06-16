@@ -873,25 +873,6 @@ Intended for `markdown-mode-hook'."
       (dtm-doom-docs-p)
       (dtm-dirvish-preview-window-p)))
 
-(defun dtm-org-fold-font-lock-remove ()
-  "Remove `org-activate-folds' `font-lock-keyword-face' on line ends.
-Intended for `org-font-lock-hook'."
-  (font-lock-remove-keywords nil '(org-activate-folds)))
-
-(defun dtm-org-mode-setup-h ()
-  "Personal org-mode customisation's after mode startup"
-  (unless (dtm-org-limit-styling-p)
-    (setq-local line-spacing dtm-org-line-spacing)
-    (+org-pretty-mode +1)
-    (+word-wrap-mode +1)
-    (+zen-light-toggle +1)
-    (add-hook! 'evil-insert-state-exit-hook :local #'dtm-org-fill-paragraph)
-    (dtm-org-link-as-png-check)))
-
-(defun dtm-org-get-title-value ()
-  "Returns the value of #+TITLE for the current document"
-  (cadar (org-collect-keywords '("TITLE"))))
-
 (defun dtm-org-fill-paragraph ()
   "Perform `org-fill-paragraph' unless el at point is a comment or source block."
   ;; Check if `auto-fill-mode' is active
@@ -899,6 +880,38 @@ Intended for `org-font-lock-hook'."
     (unless (memq (org-element-type (org-element-at-point-no-context))
                   '(src-block comment))
       (org-fill-paragraph))))
+
+(defun dtm-org-mode-setup-h ()
+  "Personal org-mode customisation's after mode startup"
+  (unless (dtm-org-limit-styling-p)
+    (setq-local line-spacing dtm-org-line-spacing)
+    ;; NOTE org-hide-emphasis-markers used by +org-pretty-mode is very expensive
+    (setq-local org-pretty-entities t)
+    (+word-wrap-mode +1)
+    (+zen-light-toggle +1)
+    (add-hook! 'evil-insert-state-exit-hook :local #'dtm-org-fill-paragraph)
+    (dtm-org-link-as-png-check)))
+
+(defun dtm-org-fold-font-lock-remove ()
+  "Remove `org-activate-folds' `font-lock-keyword-face' on line ends.
+Intended for `org-font-lock-hook'."
+  (font-lock-remove-keywords nil '(org-activate-folds)))
+
+(defun dtm-org-get-title-value ()
+  "Returns the value of #+TITLE for the current document"
+  (cadar (org-collect-keywords '("TITLE"))))
+
+(defun dtm/org-pretty-mode-toggle ()
+  "Toggle `+org-pretty-mode' keeping `org-pretty-entities' in-sync.
+Also syncs `org-appear-mode' and `org-pretty-entities-include-sub-superscripts'."
+  (interactive)
+  (make-local-variable 'org-hide-emphasis-markers)
+  (let ((enable (not +org-pretty-mode)))
+    (when (and org-pretty-entities enable)
+      (setq-local org-pretty-entities nil))
+    (setq-local org-pretty-entities-include-sub-superscripts enable)
+    (+org-pretty-mode 'toggle)
+    (org-appear-mode enable)))
 
 (defun dtm/org-clock-in-after (&optional select)
   "Similar to C-u C-u `org-clock-in-last', but with ability to SELECT last clock."
@@ -1092,12 +1105,6 @@ CONVERSIONS should have the structure of `dtm-org-link-as-png-parse-all'."
   "Activate `org-modern-mode' unless in `doom-emacs-dir'.
 The additional markup used in doom-style org documents causes rendering issues."
   (unless (dtm-org-limit-styling-p) (org-modern-mode +1)))
-
-;;* Org-appear
-(defun dtm-org-appear-when-pretty-a ()
-  "Activate `org-appear-mode' based on `org-pretty-entities'.
-Intended as after advice for `org-toggle-pretty-entities'."
-  (org-appear-mode (if org-pretty-entities +1 -1)))
 
 ;;* Org-download
 (defun dtm-org-download-file-format (filename)

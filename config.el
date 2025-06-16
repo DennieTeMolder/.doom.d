@@ -684,6 +684,7 @@ Also used by `org-modern-mode' to calculate heights.")
 (after! org
   (setq org-ellipsis " ▾"
         org-indent-indentation-per-level 1
+        org-pretty-entities-include-sub-superscripts nil
         org-list-demote-modify-bullet '(("+" . "-") ("-" . "+") ("*" . "+"))
         org-use-property-inheritance t  ; can cause slowdown when searching
         org-image-actual-width '(640)   ; default if no ATTR_ is provided
@@ -717,7 +718,7 @@ Also used by `org-modern-mode' to calculate heights.")
   (add-hook 'org-export-before-parsing-functions #'dtm/org-link-as-png-convert)
 
   ;; BUG: org-read-date doesn't use org-mode so it won't trigger evil-org's to load
-  (advice-add #'org-read-date :before (lambda (&rest _) (require 'evil-org))
+  (advice-add 'org-read-date :before (lambda (&rest _) (require 'evil-org))
               '((name . "require evil-org")))
 
   ;; Sync org-agenda with org-roam dailies
@@ -736,7 +737,7 @@ Also used by `org-modern-mode' to calculate heights.")
         :g  "C-c [" #'org-roam-node-insert
         (:localleader
          :desc "Clock-in after last"   "c a" #'dtm/org-clock-in-after
-         :desc "Toggle pretty visuals" "v"   #'+org-pretty-mode)
+         :desc "Toggle pretty visuals" "v"   #'dtm/org-pretty-mode-toggle)
 
         :map org-agenda-mode-map
         (:localleader
@@ -772,18 +773,13 @@ Also used by `org-modern-mode' to calculate heights.")
   (dtm-straight-prioritize "ox-odt"))
 
 (use-package! org-appear
-  :after org
   :defer t
-  :init
-  (advice-add 'org-toggle-pretty-entities :after #'dtm-org-appear-when-pretty-a)
   :config
-  (setq org-appear-autosubmarkers t
+  (setq org-appear-autoentities t
         org-appear-autoemphasis t
-        org-appear-autokeywords t
-        org-appear-autoentities t))
+        org-appear-inside-latex t))
 
 (use-package! org-modern
-  :after org
   :defer t
   :init
   (add-hook 'org-agenda-finalize-hook #'org-modern-agenda)
