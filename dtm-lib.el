@@ -1294,7 +1294,11 @@ Intended for `pdf-annot-edit-contents-minor-mode-hook'"
   "Returns `default-directory' unless in `ess-r-package-mode'."
   (unless ess-r-package-mode default-directory))
 
-(defun dtm-ess-modeline-show-busy ()
+(defun dtm-ess-mode-line-compact-process ()
+  "Set `mode-line-process' to a compacted version of the `ess-mode' default."
+  (setcar mode-line-process "["))
+
+(defun dtm-ess-mode-line-show-busy ()
   "Display spinner if ESS process is busy.
 Ref: `ess--tb-start', https://github.com/seagle0128/doom-modeline/issues/410"
   (setq-local ess-busy-strings (cons "%s" (cdr ess-busy-strings))

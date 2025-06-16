@@ -1123,7 +1123,8 @@ Also used by `org-modern-mode' to calculate heights.")
   (setq-hook! 'inferior-ess-mode-hook font-lock-string-face nil)
 
   ;; Indicate if process is busy in the modeline
-  (add-hook 'inferior-ess-mode-hook #'dtm-ess-modeline-show-busy)
+  (add-hook 'inferior-ess-mode-hook #'dtm-ess-mode-line-show-busy)
+  (add-hook 'ess-mode-hook #'dtm-ess-mode-line-compact-process)
 
   ;; Attempt to hide eob when opening plot windows
   (add-hook 'inferior-ess-mode-hook #'dtm-hide-eob-on-window-change)
