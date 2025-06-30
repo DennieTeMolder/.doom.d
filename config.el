@@ -293,7 +293,7 @@
   (setq +corfu-want-tab-prefer-navigating-org-tables t
         +corfu-want-minibuffer-completion t
         corfu-preselect 'prompt
-        corfu-auto-delay 0.25
+        corfu-auto-delay 0.4
         corfu-auto-prefix 3)
 
   ;; Keep the corfu childframe alive when using this command
@@ -977,7 +977,7 @@ Also used by `org-modern-mode' to calculate heights.")
 (after! tree-sitter
   ;; Modify existing faces (see +faces.el for new faces)
   (custom-set-faces!
-    '(tree-sitter-hl-face:number :inherit highlight-numbers-number)
+    '(tree-sitter-hl-face:number :inherit font-lock-number-face)
     '(tree-sitter-hl-face:boolean :inherit tree-sitter-hl-face:type.builtin)
     '(tree-sitter-hl-face:type.builtin :inherit font-lock-warning-face :weight bold)))
 
