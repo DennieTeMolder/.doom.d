@@ -414,7 +414,8 @@
         [remap dired-diff]      #'dtm/dired-ediff))
 
 (after! dired-x
-  (setq dired-omit-files (concat dired-omit-files "\\|^\\..*$")))
+  ;; Hide all files starting with a dot or pound sign by default
+  (setq dired-omit-files (rx (seq bos (or "." "#")))))
 
 (after! diredfl
   (add-hook 'dirvish-directory-view-mode-hook #'diredfl-mode)
@@ -443,7 +444,6 @@
   (map! :map dirvish-mode-map
         :n "C-o" #'dirvish-history-jump
         :n "C-s" #'dtm/dirvish-search-cwd
-        :n "M-t" #'dirvish-layout-toggle
         :n "a"   #'dirvish-quick-access
         :n "s"   #'dirvish-quicksort
         :n "c"   #'dired-create-empty-file
@@ -458,7 +458,6 @@
         :n "y"   #'dirvish-yank-menu
         :n "Y"   #'dtm/dirvish-copy-file-name
         :n "TAB" #'dirvish-subtree-toggle
-        :n "/"   #'dtm/dirvish-narrow
         :n "."   #'dtm/dirvish-find-file
         :n "?"   #'dirvish-dispatch)
   ;; Descriptions only work when bound to `major-mode' map
@@ -472,7 +471,7 @@
         :desc "Hide/omit files" "h" #'dired-omit-mode
         :desc "Ls menu"         "l" #'dirvish-ls-switches-menu
         :desc "Mark menu"       "m" #'dirvish-mark-menu
-        :desc "Narrow buffer"   "n" #'dirivsh-narrow
+        :desc "Narrow to regex" "n" #'dtm/dirvish-narrow
         :desc "Subtree menu"    "s" #'dirvish-subtree-menu))
 
 ;; (after! dirvish-side
