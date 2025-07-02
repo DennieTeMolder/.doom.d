@@ -706,7 +706,8 @@ Intended as before advice for `vterm-send-key'"
 Moves the point to the next non-empty line unless NO-STEP is non-nil."
   (interactive "P")
   (let ((command (dtm-region-as-string 'deactivate)))
-    (unless command
+    (if command
+        (setq command (string-trim-right command))
       (when (dtm-line-empty-p) (dtm-forward-line-non-empty))
       (setq command (dtm-current-line-as-string))
       (+nav-flash-blink-cursor)
