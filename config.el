@@ -477,6 +477,12 @@
 ;; (after! dirvish-side
 ;;   (dirvish-side-follow-mode +1))
 
+(after! tramp
+  (setq remote-file-name-inhibit-locks t
+        tramp-use-scp-direct-remote-copying t
+        tramp-copy-size-limit (* 1024 1024)
+        tramp-verbose 2))
+
 (after! avy
   ;; Make "g s s" search al windows (C-u to limit to current)
   (setq avy-all-windows t
