@@ -971,11 +971,6 @@ Also used by `org-modern-mode' to calculate heights.")
 (add-hook 'comint-mode-hook #'dtm/word-wrap-mode-no-fill)
 (add-hook 'term-mode-hook #'dtm/word-wrap-mode-no-fill)
 
-;; Disable undo history in compilation/terminal/REPL buffers to improve responsiveness
-(add-hook 'compilation-mode-hook #'buffer-disable-undo)
-(add-hook 'comint-mode-hook #'buffer-disable-undo)
-(add-hook 'term-mode-hook #'buffer-disable-undo)
-
 ;; Don't replace case when programming
 (setq-hook! 'prog-mode-hook dabbrev-case-replace nil)
 
@@ -1008,6 +1003,7 @@ Also used by `org-modern-mode' to calculate heights.")
 
   ;; Don't consider vterm buffer as popup (only doom:vterm)
   (set-popup-rule! "^\\*vterm" :ignore t)
+  (set-popup-rule! "^ \\*Install vterm" :ttl 0)
   (+popup-cleanup-rules-h)
 
   (remove-hook! 'vterm-mode-hook #'hide-mode-line-mode)

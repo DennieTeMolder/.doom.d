@@ -56,11 +56,9 @@
 
       ;; Open
       (:prefix "o"
-       ;; :desc "ChatGPT"                 "c" #'gptel
-       ;; :desc "ChatGPT dedicated"       "C" #'dtm/gptel-new-chat
-       :desc "Folder sidebar"          "s" #'dtm/dirvish-side
-       :desc "Find file in sidebar"    "S" #'+dired/dirvish-side-and-follow
-       :desc "Vterm here"              "T" #'vterm)
+       :desc "Folder sidebar"       "s" #'dtm/dirvish-side
+       :desc "Find file in sidebar" "S" #'+dired/dirvish-side-and-follow
+       :desc "Vterm here"           "T" #'vterm)
 
       ;; Project
       :desc "List project todos" "p t" #'magit-todos-list
