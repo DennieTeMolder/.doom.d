@@ -1322,6 +1322,7 @@ Bypasses `ess-completing-read', defers further lookup if process is busy."
      'deferred)))
 
 (defun dtm/ess-quit-and-kill-no-save ()
+  "Call `ess-quit' and prompt to kill the inferior process buffer and window."
   (interactive)
   (when (ess-process-live-p)
     (let ((buf (ess-get-process-buffer)))
