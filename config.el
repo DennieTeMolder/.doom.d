@@ -1176,7 +1176,8 @@ Also used by `org-modern-mode' to calculate heights.")
          :i "<"       #'dtm/ess-r-insert-assign
          :i ">"       #'dtm/ess-r-insert-pipe
          (:localleader
-          :desc "View R object" "o" #'ess-view-data-print))
+          :desc "View R object" "o" #'ess-view-data-print
+          :desc "Quit Process"  "q" #'dtm/ess-quit-and-kill-no-save))
 
         (:map inferior-ess-mode-map
          :localleader

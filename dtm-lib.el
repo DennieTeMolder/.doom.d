@@ -1321,6 +1321,36 @@ Bypasses `ess-completing-read', defers further lookup if process is busy."
      (message "%s" (error-message-string err))
      'deferred)))
 
+(defun dtm/ess-quit-and-kill-no-save ()
+  (interactive)
+  (when (ess-process-live-p)
+    (let ((buf (ess-get-process-buffer)))
+      (ess-quit 'no-save)
+      (when (y-or-n-p "Kill ESS process window?")
+        (when-let ((win (get-buffer-window buf)))
+          (delete-window win))
+        (kill-buffer buf)
+        (when (functionp 'ess-plot-hide)
+          (ess-plot-hide))))))
+
+(defun dtm/ess-eval-rfp-and-step-recenter ()
+  "Call `ess-eval-region-or-function-or-paragraph-and-step' and recenter."
+  (interactive)
+  (prog1
+      (call-interactively #'ess-eval-region-or-function-or-paragraph-and-step)
+    (recenter)))
+
+(defun dtm/ess-eval-object-at-point ()
+  "Send the object under the cursor or region to the current ESS process."
+  (interactive)
+  (ess-send-string
+   (ess-get-current-process)
+   (or (dtm-region-as-string 'deactivate)
+       (when-let ((bounds (ess-bounds-of-symbol)))
+         (buffer-substring-no-properties (car bounds) (cdr bounds)))
+       (user-error "No object at point!"))
+   t))
+
 (defvar dtm-ess-debug-previous-position nil
   "Previous value of `ess--dbg-current-debug-position'.")
 
@@ -1342,25 +1372,7 @@ Unless NO-HISTORY is non-nil `better-jumper-set-jump' is called before jumping."
     (pop-to-buffer-same-window (marker-buffer dtm-ess-debug-previous-position))
     (goto-char (marker-position dtm-ess-debug-previous-position))
     (back-to-indentation)
-    (current-buffer)))
-
-(defun dtm/ess-eval-rfp-and-step-recenter ()
-  "Call `ess-eval-region-or-function-or-paragraph-and-step' and recenter."
-  (interactive)
-  (prog1
-      (call-interactively #'ess-eval-region-or-function-or-paragraph-and-step)
-    (recenter)))
-
-(defun dtm/ess-eval-object-at-point ()
-  "Send the object under the cursor or region to the current ESS process."
-  (interactive)
-  (ess-send-string
-   (ess-get-current-process)
-   (or (dtm-region-as-string 'deactivate)
-       (when-let ((bounds (ess-bounds-of-symbol)))
-         (buffer-substring-no-properties (car bounds) (cdr bounds)))
-       (user-error "No object at point!"))
-   t))
+    dtm-ess-debug-previous-position))
 
 (defun dtm/ess-print-last-value ()
   "Print .Last.value in `ess-local-process-name'.
