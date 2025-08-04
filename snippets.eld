@@ -135,7 +135,6 @@ markdown-mode
 
 ;; Local Variables:
 ;; mode: emacs-lisp
-;; imenu-generic-expression: ((nil "^\\([A-za-z+][A-za-z +-]+\\)" 1))
+;; imenu-generic-expression: (("Section" "^\\([A-za-z+][A-za-z +-]+\\)" 1))
 ;; flycheck-checkers: nil
-;; company-idle-delay: nil
 ;; End:
