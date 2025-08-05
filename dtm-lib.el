@@ -1310,6 +1310,16 @@ Ref: `ess--tb-start', https://github.com/seagle0128/doom-modeline/issues/410"
                                   (:eval (nth ess--busy-count ess-busy-strings))
                                   " ")))
 
+(defun dtm-ess-calculate-width-a (orig-fn &rest args)
+  "Fix for `ess-calculate-width' that has a lower limit of 10 to prevent errors.
+Intended as :around `ess-calculate-width' advice."
+  (let (nchars)
+    (let ((ess-execute-screen-options-command
+           (when ess-execute-screen-options-command "%d")))
+      (ignore ess-execute-screen-options-command)
+      (setq nchars (string-to-number (apply orig-fn args))))
+    (format ess-execute-screen-options-command (max nchars 10))))
+
 (defun dtm/ess-lookup-documentation ()
   "Wrapper for `ess-display-help-on-object' to improve `+lookup/documentation'.
 Bypasses `ess-completing-read', defers further lookup if process is busy."

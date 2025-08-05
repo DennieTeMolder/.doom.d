@@ -1141,6 +1141,9 @@ Also used by `org-modern-mode' to calculate heights.")
   (advice-add 'ess-r-package-completion :around #'dtm-ignore-user-error-a)
   (advice-add 'ess-r-object-completion :around #'dtm-ignore-user-error-a)
 
+  ;; BUG prevent `ess-set-width' from setting invalid window sizes
+  (advice-add 'ess-calculate-width :around #'dtm-ess-calculate-width-a)
+
   ;; BUG highlight single warning messages + more visible font
   (pushnew! ess-R-message-prefixes "Warning message")
   (setq ess-R-error-face 'show-paren-mismatch
