@@ -549,14 +549,14 @@
   (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)
         aw-minibuffer-flag t)
 
+  ;; Make q quit the ace window overlay
+  (add-to-list 'aw-dispatch-alist '(?q keyboard-quit))
+
   (custom-set-faces!
     '(aw-leading-char-face
-      :weight bold :height 2.5 :foreground nil :inherit highlight))
+      :weight bold :height 2.5 :foreground unspecified :inherit highlight))
 
-  (ace-window-posframe-mode +1)
-
-  ;; Make q quit the ace window overlay
-  (add-to-list 'aw-dispatch-alist '(?q keyboard-quit)))
+  (unless noninteractive (ace-window-posframe-mode +1)))
 
 (use-package! pixel-scroll
   :if (>= emacs-major-version 29)
