@@ -1060,8 +1060,8 @@ The result is printed to the echo-area."
                      (- n-total n-broken) n-broken)
           (setq response
                 (thread-first
-                  "Org[as_png]: %s missing, %d outdated (%d total); Update [a]ll/[m]issing/[n]one? "
-                  (format-prompt nil (length missing) (length outdated) n-total)
+                  "Org[as_png]: %s missing; %d outdated (%d broken); Update [a]ll/[m]issing/[n]one? "
+                  (format-prompt nil (length missing) (length outdated) n-broken)
                   (read-char-choice '(?a ?m ?n))))
           (if (not (memq response '(?a ?m)))
               (progn (message "Org[as_png]: Conversion cancelled by user") nil)
