@@ -494,6 +494,13 @@ Intended for use as `vertico-sort-function' via `vertico-multiform-commands'."
           (cl-pushnew x res :test #'string=)))
     (reverse res)))
 
+(defun dtm/dirvish-fd (dir pattern)
+  "Like `dirvish-fd' but always prompts for PATTERN when interactive."
+  (interactive (list (and current-prefix-arg
+                          (read-directory-name "Fd target directory: " nil "" t))
+                     (completing-read-multiple "Pattern: " nil)))
+  (dirvish-fd dir pattern))
+
 ;;* Vundo
 (defun dtm-vundo-pre-enter-h ()
   "Ensure cursor remains visible in the edited buffer."

@@ -418,7 +418,6 @@
   (setq dired-omit-files (rx (seq bos (or "." "#")))))
 
 (after! diredfl
-  (add-hook 'dirvish-directory-view-mode-hook #'diredfl-mode)
   (set-face-attribute 'diredfl-dir-name nil :bold t))
 
 (after! dirvish
@@ -465,7 +464,7 @@
         :localleader
         :desc "Configure UI"    "c" #'dirvish-setup-menu
         :desc "Emerge/group"    "e" #'dirvish-emerge-menu
-        :desc "Fd"              "f" #'dirvish-fd
+        :desc "Fd"              "f" #'dtm/dirvish-fd
         :desc "Fd menu"         "F" #'dirvish-fd-switches-menu
         :desc "Git menu"        "g" #'dirvish-vc-menu
         :desc "Hide/omit files" "h" #'dired-omit-mode
