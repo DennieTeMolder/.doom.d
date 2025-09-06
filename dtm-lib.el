@@ -739,15 +739,8 @@ Ref: https://github.com/akermu/emacs-libvterm/pull/401"
     (vterm-send-string completion t)))
 
 ;;* Ispell-fu
-(defun dtm-spell-fu-set-treesit-faces-h ()
-  "Add tree-sitter font's to `spell-fu-faces-include'."
-  (setq spell-fu-faces-include
-        '(tree-sitter-hl-face:comment
-          tree-sitter-hl-face:string
-          tree-sitter-hl-face:doc)))
-
-(defun dtm-spell-fu-set-conf-faces-h ()
-  "Add conf-mode font's to `spell-fu-faces-include'."
+(defun dtm-spell-fu-prog-style-checking-h ()
+  "Instruct `spell-fu-faces-include' to only check comments and strings."
   (setq spell-fu-faces-include
         '(font-lock-comment-face
           font-lock-string-face

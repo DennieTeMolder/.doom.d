@@ -521,19 +521,6 @@
 (after! indent-bars
   (setq indent-bars-display-on-blank-lines nil))
 
-;; BUG fix missing indent guides in tree-sitter-mode. Should be fixed when treesit is adopted.
-(use-package! highlight-indent-guides
-  :after (tree-sitter indent-bars)
-  :defer t
-  :init
-  (add-hook! 'tree-sitter-mode-hook :append
-    (defun dtm-tree-sitter-highlight-indent-guides ()
-      "Fix `+indent-guides--toggle-on-tree-sitter-h' not enabling guides."
-      (when (bound-and-true-p +indent-guides-p)
-        (highlight-indent-guides-mode +1))))
-  :config
-  (setq highlight-indent-guides-method 'bitmap))
-
 (after! word-wrap-mode
   (pushnew! word-wrap-whitespace-characters ?- 59 ?– ?—))
 
@@ -651,9 +638,9 @@
     (remove-hook 'text-mode-hook #'+spell-remove-run-together-switch-for-aspell-h)))
 
 (after! spell-fu
-  ;; Face customisation's
-  (add-hook 'tree-sitter-mode-hook #'dtm-spell-fu-set-treesit-faces-h)
-  (add-hook 'conf-mode-hook #'dtm-spell-fu-set-conf-faces-h)
+  ;; Limit checking in prog-like modes
+  (add-hook 'conf-mode-hook #'dtm-spell-fu-prog-style-checking-h)
+  (add-hook 'yaml-mode-hook #'dtm-spell-fu-prog-style-checking-h)
 
   ;; Remove org-block from excluded-faces to enable spell checking in #+CAPTION blocks
   (when-let ((cell (assq 'org-mode +spell-excluded-faces-alist)))
@@ -974,13 +961,6 @@ Also used by `org-modern-mode' to calculate heights.")
 ;; Don't replace case when programming
 (setq-hook! 'prog-mode-hook dabbrev-case-replace nil)
 
-(after! tree-sitter
-  ;; Modify existing faces (see +faces.el for new faces)
-  (custom-set-faces!
-    '(tree-sitter-hl-face:number :inherit font-lock-number-face)
-    '(tree-sitter-hl-face:boolean :inherit tree-sitter-hl-face:type.builtin)
-    '(tree-sitter-hl-face:type.builtin :inherit font-lock-warning-face :weight bold)))
-
 (after! comint
   (setq comint-input-ignoredups t
         comint-scroll-to-bottom-on-input 'this
@@ -1123,6 +1103,10 @@ Also used by `org-modern-mode' to calculate heights.")
   ;; Font locking of strings in the repl buffer fails too often to be useful
   (setq-hook! 'inferior-ess-mode-hook font-lock-string-face nil)
 
+  ;; Enable additional font locking
+  (dolist (keyword '(ess-fl-keyword:fun-calls ess-fl-keyword:numbers ess-R-fl-keyword:F&T))
+    (setf (alist-get keyword ess-R-font-lock-keywords) t))
+
   ;; Indicate if process is busy in the modeline
   (add-hook 'inferior-ess-mode-hook #'dtm-ess-mode-line-show-busy)
   (add-hook 'ess-mode-hook #'dtm-ess-mode-line-compact-process)
@@ -1150,17 +1134,6 @@ Also used by `org-modern-mode' to calculate heights.")
         ess-R-fl-keyword:messages
         (cons (regexp-opt ess-R-message-prefixes 'enc-paren)
               'ess-R-error-face))
-
-  ;; Expand recognised keywords
-  (tree-sitter-hl-add-patterns 'r
-    [((identifier) @boolean
-      (.eq? @boolean "T"))
-     ((identifier) @boolean
-      (.eq? @boolean "F"))
-     ((call function: (identifier) @keyword)
-      (.eq? @keyword "stop"))
-     ((call function: (identifier) @keyword)
-      (.eq? @keyword "warning"))])
 
   ;; ESS R keybindings, make < add a <-, type twice to undo (same goes for >)
   (map! (:map ess-r-mode-map
@@ -1262,4 +1235,3 @@ Also used by `org-modern-mode' to calculate heights.")
 (add-hook 'so-long-mode-hook #'dtm-csv-mode-maybe-h)
 
 (load! "+keybindings")
-(load! "+faces")
