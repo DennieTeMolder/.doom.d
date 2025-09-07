@@ -1426,12 +1426,6 @@ Defaults to `ess-local-process-name'."
   "Setup `completion-at-point-functions' for `ess-r-mode'.
 Removes `ess-filename-completion' and replaces `ess-r-object-completion' in
 favour of `cape-file' and `dtm-cape-ess-r-object-completion'."
-  ;; REVIEW corfu + smartparens causes problems when typing underscores
-  (add-hook! 'after-change-major-mode-hook :append :local
-    (defun dtm-corfu-disable-smartparens ()
-      (when (and corfu-mode smartparens-mode)
-        (smartparens-mode -1)
-        (electric-pair-mode +1))))
   (remove-hook 'completion-at-point-functions #'ess-filename-completion 'local)
   (setq-local completion-at-point-functions
               (cl-substitute #'dtm-cape-ess-r-object-completion
