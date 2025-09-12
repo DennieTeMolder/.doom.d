@@ -224,6 +224,11 @@
 
 ;;* Core functionality modifications
 (after! evil
+  ;; Enable granular undo (remembers delete actions during insert state)
+  (setq evil-want-fine-undo t
+        evil-vsplit-window-right t
+        evil-split-window-below t)
+
   ;; Indicate `evil-repeat' to ignore certain commands because they freeze emacs
   (evil-declare-not-repeat #'+workspace/switch-left)
   (evil-declare-not-repeat #'+workspace/switch-right)
@@ -233,10 +238,9 @@
                   evil-forward-sentence-begin evil-backward-sentence-begin))
     (evil-add-command-properties cmd :jump nil))
 
-  ;; Enable granular undo (remembers delete actions during insert state)
-  (setq evil-want-fine-undo t
-        evil-vsplit-window-right t
-        evil-split-window-below t))
+  (map! :map evil-motion-state-map
+        "'" #'evil-goto-mark            ; swap these two commands
+        "`" #'evil-goto-mark-line))
 
 (after! evil-snipe
   ;; Make snipe commands (bound to f,F,t,T,s,S) go beyond the current line
