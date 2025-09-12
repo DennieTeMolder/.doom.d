@@ -1111,6 +1111,8 @@ Also used by `org-modern-mode' to calculate heights.")
   (dolist (keyword '(ess-fl-keyword:fun-calls ess-fl-keyword:numbers ess-R-fl-keyword:F&T))
     (setf (alist-get keyword ess-R-font-lock-keywords) t))
 
+  (custom-set-faces! '(ess-numbers-face :inherit font-lock-number-face))
+
   ;; Indicate if process is busy in the modeline
   (add-hook 'inferior-ess-mode-hook #'dtm-ess-mode-line-show-busy)
   (add-hook 'ess-mode-hook #'dtm-ess-mode-line-compact-process)
