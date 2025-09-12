@@ -677,7 +677,7 @@
 Also used by `org-modern-mode' to calculate heights.")
 
 (after! org
-  (setq org-ellipsis " ▾"
+  (setq org-ellipsis " …"
         org-indent-indentation-per-level 1
         org-pretty-entities-include-sub-superscripts nil
         org-list-demote-modify-bullet '(("+" . "-") ("-" . "+") ("*" . "+"))
@@ -698,15 +698,8 @@ Also used by `org-modern-mode' to calculate heights.")
     '(org-document-title :height 1.3)
     '(outline-1 :height 1.2)
     '(outline-2 :height 1.1)
-    '(outline-3 :height 1.05))
-
-  ;; Give ellipsis same colour as text
-  (custom-set-faces!
-    '(org-ellipsis :inherit default :box unspecified :weight regular)
+    '(outline-3 :height 1.05)
     '(org-headline-done :strike-through t))
-
-  ;; REVIEW this might have unintended side effects
-  (add-hook 'org-mode-hook #'dtm-org-fold-font-lock-remove)
 
   ;; Custom link type [[as_png:<file_name>]], trigger conversion to .png on export
   (push '("as_png" . dtm-org-link-as-png) org-link-abbrev-alist)
@@ -784,10 +777,13 @@ Also used by `org-modern-mode' to calculate heights.")
         org-modern-hide-stars (org-add-props " " nil 'face 'org-indent)
         org-modern-progress nil
         org-modern-table nil
-        org-modern-star ["●" "◉" "○" "◉" "○" "◉" "○" "◉"]
         org-modern-list '((?+ . "›")
                           (?- . "‒")
-                          (?* . "•"))))
+                          (?* . "•")))
+
+  ;; Prevent line-ends from inheriting `font-lock-keyword-face'
+  ;; REVIEW this might have unintended side effects
+  (add-hook 'org-modern-mode-hook #'dtm-org-fold-font-lock-remove))
 
 (after! org-tree-slide
   ;; Make presentations even prettier

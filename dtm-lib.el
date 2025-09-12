@@ -894,7 +894,8 @@ Intended for `markdown-mode-hook'."
     (dtm-org-link-as-png-check)))
 
 (defun dtm-org-fold-font-lock-remove ()
-  "Remove `org-activate-folds' `font-lock-keyword-face' on line ends.
+  "Remove `org-activate-folds' from `font-lock-keywords'.
+Prevents `font-lock-keyword-face' from propagating to line ends.
 Intended for `org-font-lock-hook'."
   (font-lock-remove-keywords nil '(org-activate-folds)))
 
