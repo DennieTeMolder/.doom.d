@@ -1428,6 +1428,7 @@ Defaults to `ess-local-process-name'."
 Removes `ess-filename-completion' and replaces `ess-r-object-completion' in
 favour of `cape-file' and `dtm-cape-ess-r-object-completion'."
   (remove-hook 'completion-at-point-functions #'ess-filename-completion 'local)
+  (add-hook 'completion-at-point-functions #'cape-file nil 'local)
   (setq-local completion-at-point-functions
               (cl-substitute #'dtm-cape-ess-r-object-completion
                              #'ess-r-object-completion
