@@ -548,6 +548,9 @@
 
   (unless noninteractive (ace-window-posframe-mode +1)))
 
+(after! re-builder
+  (setq reb-re-syntax 'rx))
+
 (use-package! pixel-scroll
   :if (>= emacs-major-version 29)
   :defer t
