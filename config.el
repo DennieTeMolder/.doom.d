@@ -551,6 +551,9 @@
 (after! re-builder
   (setq reb-re-syntax 'rx))
 
+(after! calc
+  (map! :map calc-mode-map "C-c ." #'dtm-calc-read-date))
+
 (use-package! pixel-scroll
   :if (>= emacs-major-version 29)
   :defer t

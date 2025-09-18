@@ -583,6 +583,11 @@ Ref: `pdf-view-display-image'"
                                                           img-width)
                                                        2))))))))
 
+(defun dtm/image-clear-cache ()
+  "Run `clear-image-cache' on all frames."
+  (interactive)
+  (clear-image-cache t))
+
 ;;* Elisp-refs
 (defun dtm-elisp-refs--find-file-a (button)
   "Open the file referenced by BUTTON in the other window.
@@ -933,10 +938,9 @@ Also syncs `org-appear-mode' and `org-pretty-entities-include-sub-superscripts'.
   "Current source file. Set by `org-export-before-processing-functions'.
 Not guaranteed to be correct during async export with multiple processes.")
 
-(defun dtm-org-export-remember-source-file-h (backend)
+(defun dtm-org-export-remember-source-file-h (&rest _)
   "Set `dtm-org-export-source-file' to `buffer-file-name'.
 Intended for `org-export-before-processing-functions'."
-  (ignore-errors backend)
   (setq dtm-org-export-source-file (buffer-file-name)))
 
 (defun dtm-reftex-TeX-master-file-a (orig-fun &rest args)
@@ -1672,6 +1676,15 @@ Higher values give slower scrolling.")
 Intended as :after advice for `evil-collection-inhibit-insert-state'."
     (evil-collection-define-key 'normal map-sym
       [remap evil-enter-replace-state] #'ignore))
+
+;;* Calc
+(defun dtm-calc-read-date ()
+  "Use `org-read-date' to read a date form and push it onto the Calc stack.
+Ref: https://mbork.pl/2025-09-15_Entering_dates_in_Emacs_Calc"
+  (interactive)
+  (let ((org-read-date-prefer-future nil))
+    (ignore org-read-date-prefer-future)
+    (calc-eval (format "<%s>" (org-read-date)) 'push)))
 
 ;;* Commands
 (defun dtm/load-session (file)
