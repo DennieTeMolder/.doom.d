@@ -686,6 +686,7 @@ Also used by `org-modern-mode' to calculate heights.")
         org-list-demote-modify-bullet '(("+" . "-") ("-" . "+") ("*" . "+"))
         org-use-property-inheritance t  ; can cause slowdown when searching
         org-image-actual-width '(640)   ; default if no ATTR_ is provided
+        org-startup-shrink-all-tables t
         org-agenda-start-day nil
         org-agenda-span 14
         org-agenda-time-grid '((daily today require-timed)
