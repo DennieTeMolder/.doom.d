@@ -717,7 +717,7 @@ Also used by `org-modern-mode' to calculate heights.")
               '((name . "require evil-org")))
 
   ;; Sync org-agenda with org-roam dailies
-  (when (modulep! :lang org +roam2)
+  (when (modulep! :lang org +roam)
     (advice-add 'org-agenda :before #'dtm-org-roam-dailies-sync-agenda))
 
   ;; Prettify, enable hard wrapping and automate paragraph filling
@@ -821,7 +821,7 @@ Also used by `org-modern-mode' to calculate heights.")
         org-pomodoro-keep-killed-pomodoro-time t))
 
 ;; Org-roam init settings
-(when (modulep! :lang org +roam2)
+(when (modulep! :lang org +roam)
   (setq org-roam-directory "~/Sync/PKM/"
         org-roam-dailies-directory "journals/"
         org-roam-file-exclude-regexp "Rubbish/")
