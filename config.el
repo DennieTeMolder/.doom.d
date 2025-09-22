@@ -240,7 +240,10 @@
 
   (map! :map evil-motion-state-map
         "'" #'evil-goto-mark            ; swap these two commands
-        "`" #'evil-goto-mark-line))
+        "`" #'evil-goto-mark-line
+        :map evil-window-map
+        "o" #'ace-window
+        "O" #'doom/window-enlargen))
 
 (after! evil-snipe
   ;; Make snipe commands (bound to f,F,t,T,s,S) go beyond the current line
