@@ -240,10 +240,7 @@
 
   (map! :map evil-motion-state-map
         "'" #'evil-goto-mark            ; swap these two commands
-        "`" #'evil-goto-mark-line
-        :map evil-window-map
-        "o" #'ace-window
-        "O" #'doom/window-enlargen))
+        "`" #'evil-goto-mark-line))
 
 (after! evil-snipe
   ;; Make snipe commands (bound to f,F,t,T,s,S) go beyond the current line
@@ -644,11 +641,13 @@
   (setq ispell-dictionary "en_GB"
         ispell-personal-dictionary "~/Sync/Emacs/Dict/default.aspel.en.pws")
 
-  ;; BUG Aspell --run-together marks misspelled words like "wether" as correct
   (when (string= ispell-program-name "aspell")
-    (delete "--run-together" ispell-extra-args)
-    (delete "--sug-mode=ultra" ispell-extra-args) ; More but slower suggestions
-    (remove-hook 'text-mode-hook #'+spell-remove-run-together-switch-for-aspell-h)))
+    ;; BUG Aspell --run-together marks misspelled words like "wether" as correct
+    (cl-callf2 delete "--run-together" ispell-extra-args)
+    (remove-hook 'text-mode-hook #'+spell-remove-run-together-switch-for-aspell-h)
+
+    ;; Ultra prioritises speed over completeness, removing it gives more suggestions
+    (cl-callf2 delete "--sug-mode=ultra" ispell-extra-args)))
 
 (after! spell-fu
   ;; Limit checking in prog-like modes
@@ -656,8 +655,7 @@
   (add-hook 'yaml-mode-hook #'dtm-spell-fu-prog-style-checking-h)
 
   ;; Remove org-block from excluded-faces to enable spell checking in #+CAPTION blocks
-  (when-let ((cell (assq 'org-mode +spell-excluded-faces-alist)))
-    (setcdr cell (cl-remove 'org-block (cdr cell))))
+  (cl-callf2 delq 'org-block (alist-get 'org-mode +spell-excluded-faces-alist))
 
   ;; Create parity between correctable words and spell-fu highlighting
   (global-set-key [remap ispell-word] #'dtm/spell-correct))

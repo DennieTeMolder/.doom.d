@@ -73,8 +73,10 @@
       ;; Window management
       (:prefix "w"
        :desc "Kill window and buffer" "D" #'kill-buffer-and-window
-       :desc "Window as frame"        "F" #'tear-off-window
                                       "e" #'evil-window-prev
+       :desc "Window as frame"        "F" #'tear-off-window
+       :desc "Other window"           "o" #'ace-window
+                                      "O" #'doom/window-enlargen
                                       "s" #'dtm/split-window-optimally
                                       "S" #'evil-window-split
                                       "T" #'transpose-frame)

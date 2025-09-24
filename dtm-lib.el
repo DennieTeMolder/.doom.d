@@ -387,7 +387,7 @@ Intended for appending to major-mode hooks."
 (defun dtm-ibuffer-persp-filter-groups ()
   "Generate value for `ibuffer-filter-groups' based on perspectives.
 Requires \"persp\" to be defined via `define-ibuffer-filter'.
-Ref: `ibuffer-mode' section on 'Filter Groups'"
+Ref: `ibuffer-mode' section on \"Filter Groups\""
   (let ((persps (mapcar #'(lambda (pn) (list pn (cons 'persp pn)))
                         (cl-delete persp-nil-name
                                    (persp-names-current-frame-fast-ordered)
