@@ -58,7 +58,3 @@
                   (setq left (max 0 (- left adjust))))))
             (set-window-parameter window 'min-margins '(0 . 0))
             (set-window-margins window left right)))))))
-
-;; HACK replace visual-fill-column mode
-(unless (boundp 'visual-fill-column-mode)
-  (defvaralias 'visual-fill-column-mode 'fill-column-visual-mode))

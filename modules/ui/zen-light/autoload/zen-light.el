@@ -1,7 +1,7 @@
 ;;; zen-light.el -*- lexical-binding: t; -*-
 
 ;;;###autoload
-(defun +zen-light-toggle (&optional arg)
+(defun +zen-light/toggle (&optional arg)
   "Toggle zen/focus mode. Uses `+zenl-reading-modes' & `+zenl-reading-scale'."
   (interactive
    (list (when current-prefix-arg (prefix-numeric-value current-prefix-arg))))

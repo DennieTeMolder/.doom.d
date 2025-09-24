@@ -894,7 +894,7 @@ Intended for `markdown-mode-hook'."
     ;; NOTE org-hide-emphasis-markers used by +org-pretty-mode is very expensive
     (setq-local org-pretty-entities t)
     (+word-wrap-mode +1)
-    (+zen-light-toggle +1)
+    (+zen-light/toggle +1)
     (add-hook! 'evil-insert-state-exit-hook :local #'dtm-org-fill-paragraph)
     (dtm-org-link-as-png-check)))
 
