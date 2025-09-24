@@ -88,6 +88,8 @@
 (package! org-appear)
 (package! highlight-indent-guides)
 (package! magit-todos)
+(package! org-clock-reminder
+  :recipe (:host github :repo "inickey/org-clock-reminder"))
 (package! elpy-shell
   :recipe (:host github :repo "DennieTeMolder/elpy-shell"))
 (package! ess-plot

@@ -1112,6 +1112,24 @@ CONVERSIONS should have the structure of `dtm-org-link-as-png-parse-all'."
 The additional markup used in doom-style org documents causes rendering issues."
   (unless (dtm-org-limit-styling-p) (org-modern-mode +1)))
 
+;;* Org-clock-reminder
+(defvar dtm-org-clock-reminder-mode-inhibit nil
+  "Controls `dtm-org-clock-reminder-mode-enable-maybe'.")
+
+(defun dtm-org-clock-reminder-mode-enable-maybe ()
+  "Conditionally enables `org-clock-reminder-mode'.
+Inhibited by `dtm-org-clock-reminder-mode-enable-maybe'.
+Intended for `org-clock-in-prepare-hook'."
+  (unless dtm-org-clock-reminder-mode-inhibit
+    (org-clock-reminder-mode +1)))
+
+(defun dtm-org-clock-reminder-detect-cancel ()
+  "Ensure `org-clock-reminder-state' is updated by `org-clock-cancel'.
+Intended for `org-clock-reminder-mode-hook'."
+  (if org-clock-reminder-mode
+      (add-hook 'org-clock-cancel-hook #'org-clock-reminder-on-clock-out)
+    (remove-hook 'org-clock-cancel-hook #'org-clock-reminder-on-clock-out)))
+
 ;;* Org-download
 (defun dtm-org-download-file-format (filename)
   "Prefix FILENAME with `buffer-name' and `org-download-timestamp'."

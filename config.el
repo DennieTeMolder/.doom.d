@@ -691,6 +691,8 @@ Also used by `org-modern-mode' to calculate heights.")
         org-use-property-inheritance t  ; can cause slowdown when searching
         org-image-actual-width '(640)   ; default if no ATTR_ is provided
         org-startup-shrink-all-tables t
+        org-clock-mode-line-total 'current
+        org-clock-idle-time 15
         org-agenda-start-day nil
         org-agenda-span 14
         org-agenda-time-grid '((daily today require-timed)
@@ -792,6 +794,13 @@ Also used by `org-modern-mode' to calculate heights.")
   ;; Prevent line-ends from inheriting `font-lock-keyword-face'
   ;; REVIEW this might have unintended side effects
   (add-hook 'org-modern-mode-hook #'dtm-org-fold-font-lock-remove))
+
+(use-package! org-clock-reminder
+  :commands org-clock-reminder-mode
+  :hook (org-clock-in-prepare . dtm-org-clock-reminder-mode-enable-maybe)
+  :config
+  ;; BUG `org-clock-reminder-state' isn't modified by `org-clock-cancel'
+  (add-hook! 'org-clock-reminder-mode-hook #'dtm-org-clock-reminder-detect-cancel))
 
 (after! org-tree-slide
   ;; Make presentations even prettier
