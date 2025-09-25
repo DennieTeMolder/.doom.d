@@ -800,6 +800,16 @@ Also used by `org-modern-mode' to calculate heights.")
   :commands org-clock-reminder-mode
   :hook (org-clock-in-prepare . dtm-org-clock-reminder-mode-enable-maybe)
   :config
+  (setq org-clock-reminder-active-text "Worked for %c on \"%h\""
+        org-clock-reminder-inactive-text "No task is being clocked"
+        org-clock-reminder-inactive-notifications-p t)
+
+  ;; BUG correctly set `org-clock-reminder-icons'
+  (let ((dir (concat dtm-doom-build-dir "org-clock-reminder")))
+    (setq org-clock-reminder-icons
+          (cons (file-name-concat dir "clocking.png")
+                (file-name-concat dir "inactivity.png"))))
+
   ;; BUG `org-clock-reminder-state' isn't modified by `org-clock-cancel'
   (add-hook! 'org-clock-reminder-mode-hook #'dtm-org-clock-reminder-detect-cancel))
 
