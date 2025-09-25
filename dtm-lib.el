@@ -93,12 +93,20 @@ If NAME is not provided `buffer-file-name' is used."
               (not (eobp)))
     (forward-line)))
 
-(defun dtm-straight-prioritize (dir)
-  "Move straight package DIR to the front of `load-path'."
-  (let ((lib-dir (file-name-concat straight-base-dir "straight"
-                                   straight-build-dir dir)))
-    (when (file-exists-p lib-dir)
-      (setq load-path (cons lib-dir (delete lib-dir load-path))))))
+(defvar dtm-doom-build-dir
+  (file-name-as-directory
+   (file-name-concat (file-truename doom-local-dir)
+                     "straight"
+                     (format "build-%s" emacs-version)))
+  "Directory used by Doom for storing build packages.
+Ref: lisp/doom-straight.el")
+
+(defun dtm-straight-prioritize (pkg-dir)
+  "Move/add package with base PKG-DIR to the front of `load-path'."
+  (let ((pkg-path (concat dtm-doom-build-dir pkg-dir)))
+    (if (file-exists-p pkg-path)
+        (setq load-path (cons pkg-path (delete pkg-path load-path)))
+      (warn "Could not find: %s" pkg-path))))
 
 (defun dtm-ignore-user-error-a (orig-fun &rest args)
   "Calls ORIG-FUN with ARGS, return nil when an `user-error' is raised.

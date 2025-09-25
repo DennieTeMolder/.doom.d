@@ -764,11 +764,12 @@ Also used by `org-modern-mode' to calculate heights.")
   ;; Used by `dtm-reftex-TeX-master-file-a'
   (add-hook 'org-export-before-processing-functions #'dtm-org-export-remember-source-file-h))
 
-;;;###package org-mode-ox-odt
-(after! doom-packages
-  ;; Ensure `org-mode-ox-odt' takes precedence over org's ox-odt.el.
-  ;; Ref: https://github.com/kjambunathan/org-mode-ox-odt/discussions/133
-  (dtm-straight-prioritize "ox-odt"))
+(after! ox-odt
+  (setq org-odt-preferred-output-format "docx"))
+
+;; Ensure `org-mode-ox-odt' takes precedence over org's ox-odt.el.
+;; Ref: https://github.com/kjambunathan/org-mode-ox-odt/discussions/133
+(dtm-straight-prioritize "ox-odt")
 
 (use-package! org-appear
   :defer t
