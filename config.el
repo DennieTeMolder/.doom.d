@@ -680,8 +680,8 @@
 
 ;; Org-mode settings
 (defvar dtm-org-line-spacing 0.1
-  "`line-spacing' used in `org-mode'.
-Also used by `org-modern-mode' to calculate heights.")
+  "`line-spacing' used by `dtm-org-mode-setup-h'.
+`org-modern-mode' recommends a value between 0.1-0.4.")
 
 (after! org
   (setq org-ellipsis " …"
@@ -715,7 +715,7 @@ Also used by `org-modern-mode' to calculate heights.")
   (push '("as_png" . dtm-org-link-as-png) org-link-abbrev-alist)
   (add-hook 'org-export-before-parsing-functions #'dtm/org-link-as-png-convert)
 
-  ;; BUG: org-read-date doesn't use org-mode so it won't trigger evil-org's to load
+  ;; BUG: org-read-date doesn't use org-mode so it won't trigger evil-org to load
   (advice-add 'org-read-date :before (lambda (&rest _) (require 'evil-org))
               '((name . "require evil-org")))
 
@@ -761,7 +761,7 @@ Also used by `org-modern-mode' to calculate heights.")
                                      (t csl "ieee.csl"))))
 
 (after! ox
-  ;; Used by `dtm-reftex-TeX-master-file-a'
+  ;; BUG used by `dtm-reftex-TeX-master-file-a' to fix errors when exporting to buffer
   (add-hook 'org-export-before-processing-functions #'dtm-org-export-remember-source-file-h))
 
 (after! ox-odt
@@ -784,9 +784,7 @@ Also used by `org-modern-mode' to calculate heights.")
   (add-hook 'org-agenda-finalize-hook #'org-modern-agenda)
   (add-hook 'org-mode-hook #'dtm-org-modern-mode-maybe-h)
   :config
-  (setq org-modern-label-border dtm-org-line-spacing
-        org-modern-hide-stars (org-add-props " " nil 'face 'org-indent)
-        org-modern-progress nil
+  (setq org-modern-progress nil
         org-modern-table nil
         org-modern-list '((?+ . "›")
                           (?- . "‒")
