@@ -303,7 +303,9 @@ Respects `delete-by-moving-to-trash'. Intended as :around advice."
   "Wrapper for `+popup/raise' that will ensure a popup is selected."
   (interactive)
   (dtm-popup-ensure)
-  (call-interactively #'+popup/raise))
+  (call-interactively #'+popup/raise)
+  (when (bound-and-true-p hide-mode-line-mode)
+    (hide-mode-line-mode -1)))
 
 (defun dtm/popup-kill ()
   "Kill the currently open popup."
