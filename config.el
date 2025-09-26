@@ -796,7 +796,7 @@
 
 (use-package! org-clock-reminder
   :commands org-clock-reminder-mode
-  :hook (org-clock-in-prepare . dtm-org-clock-reminder-mode-enable-maybe)
+  :hook (org-clock-in . dtm-org-clock-reminder-mode-auto-h)
   :config
   (setq org-clock-reminder-active-text "Worked for %c on \"%h\""
         org-clock-reminder-inactive-text "No task is being clocked"
@@ -808,8 +808,8 @@
           (cons (file-name-concat dir "clocking.png")
                 (file-name-concat dir "inactivity.png"))))
 
-  ;; BUG `org-clock-reminder-state' isn't modified by `org-clock-cancel'
-  (add-hook! 'org-clock-reminder-mode-hook #'dtm-org-clock-reminder-detect-cancel))
+  ;; BUG `org-clock-reminder-state' can get out of sync
+  (add-hook! 'org-clock-reminder-mode-hook #'dtm-org-clock-reminder-fix))
 
 (after! org-tree-slide
   ;; Make presentations even prettier

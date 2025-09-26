@@ -1123,22 +1123,38 @@ The additional markup used in doom-style org documents causes rendering issues."
   (unless (dtm-org-limit-styling-p) (org-modern-mode +1)))
 
 ;;* Org-clock-reminder
-(defvar dtm-org-clock-reminder-mode-inhibit nil
-  "Controls `dtm-org-clock-reminder-mode-enable-maybe'.")
+(defvar dtm-org-clock-reminder-mode-auto t
+  "Controls `dtm-org-clock-reminder-mode-auto-h'.
+Toggle with `dtm-org-clock-reminder-mode-auto-toggle'.")
 
-(defun dtm-org-clock-reminder-mode-enable-maybe ()
+(defun dtm-org-clock-reminder-mode-auto-toggle ()
+  "Toggles `dtm-org-clock-reminder-mode-auto'."
+  (interactive)
+  (setq dtm-org-clock-reminder-mode-auto (not dtm-org-clock-reminder-mode-auto))
+  (message "`org-clock-reminder-mode' will %s be automatically enabled when clocking in"
+           (if dtm-org-clock-reminder-mode-auto "now" "no longer")))
+
+(defun dtm-org-clock-reminder-mode-auto-h ()
   "Conditionally enables `org-clock-reminder-mode'.
-Inhibited by `dtm-org-clock-reminder-mode-enable-maybe'.
+Controlled by `dtm-org-clock-reminder-mode-auto'.
 Intended for `org-clock-in-prepare-hook'."
-  (unless dtm-org-clock-reminder-mode-inhibit
+  (when dtm-org-clock-reminder-mode-auto
     (org-clock-reminder-mode +1)))
 
-(defun dtm-org-clock-reminder-detect-cancel ()
-  "Ensure `org-clock-reminder-state' is updated by `org-clock-cancel'.
+(defun dtm-org-clock-reminder-on-cancel ()
+  "Change `org-clock-reminder-state' on clock cancel."
+  (setf org-clock-reminder-state :clocked-out)
+  (org-clock-reminder-reset-timer))
+
+(defun dtm-org-clock-reminder-fix ()
+  "Ensure `org-clock-reminder-state' stays updated.
 Intended for `org-clock-reminder-mode-hook'."
   (if org-clock-reminder-mode
-      (add-hook 'org-clock-cancel-hook #'org-clock-reminder-on-clock-out)
-    (remove-hook 'org-clock-cancel-hook #'org-clock-reminder-on-clock-out)))
+      (progn
+        ;; Org-clock-reminder-mode doesn't check if we are already clocked in
+        (when (org-clocking-p) (org-clock-reminder-on-clock-in))
+        (add-hook 'org-clock-cancel-hook #'dtm-org-clock-reminder-on-cancel))
+    (remove-hook 'org-clock-cancel-hook #'dtm-org-clock-reminder-on-cancel)))
 
 ;;* Org-download
 (defun dtm-org-download-file-format (filename)
