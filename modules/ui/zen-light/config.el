@@ -16,7 +16,6 @@ Most importantly this controls usage of `mixed-pitch-mode'.")
 (use-package! mixed-pitch
   :defer t
   :config
-  (cl-callf2 delq 'org-block mixed-pitch-fixed-pitch-faces)
   (pushnew! mixed-pitch-fixed-pitch-faces
             'solaire-line-number-face
             'org-date
@@ -31,6 +30,7 @@ Most importantly this controls usage of `mixed-pitch-mode'.")
             'org-todo-keyword-outd
             'org-todo
             'org-done
+            'org-table-row
             'org-modern-tag
             'org-modern-done
             'org-modern-todo
