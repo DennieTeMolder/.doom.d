@@ -1057,9 +1057,11 @@
   (evil-add-command-properties #'lispy-goto-symbol :jump t)
   (advice-add 'lispy-goto-symbol :after (lambda (&rest _) (evil-insert-state)))
 
-  ;; Add lispy-view to "z z" to recenter on sexp
+  ;; Add Evil recentring commands to knight hydra (bound to "z")
   (defhydra+ lh-knight ()
-    ("z" lispy-view :exit t)
+    ("t" evil-scroll-line-to-top :exit t)
+    ("z" evil-scroll-line-to-center :exit t)
+    ("b" evil-scroll-line-to-bottom :exit t)
     ("q" nil))
 
   ;; Overwrite `lispy-occur' kbind (we drop the swiper package anyway)
