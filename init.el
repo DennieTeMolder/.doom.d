@@ -99,7 +99,8 @@
        (syntax             ; tasing you for every semicolon you forget
         +icons
         +childframe)
-       (spell +everywhere) ; tasing you for misspelling mispelling
+       ;;(spell            ; tasing you for misspelling mispelling
+       ;; +everywhere)
        ;;grammar           ; tasing grammar mistake every you make
 
        :tools

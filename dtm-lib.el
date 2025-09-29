@@ -756,96 +756,10 @@ Ref: https://github.com/akermu/emacs-libvterm/pull/401"
       (vterm-send-C-w))
     (vterm-send-string completion t)))
 
-;;* Ispell-fu
-(defun dtm-spell-fu-prog-style-checking-h ()
-  "Instruct `spell-fu-faces-include' to only check comments and strings."
-  (setq spell-fu-faces-include
-        '(font-lock-comment-face
-          font-lock-string-face
-          font-lock-doc-face)))
-
-(defun dtm/ispell-fu-change-dictionary (&optional dict)
-  "Set `ispell-local-dictionary' & `spell-fu-dictionaries' to DICT and reload.
-Also sets `ispell-local-pdict' to \"default\" if language of
-selected dictionary does not match with `ispell-dictionary',
-preventing \"expected language x\" errors caused by a language
-mismatch with `ispell-personal-dictionary'.
-Ref: `ispell-change-dictionary', `spell-fu-dictionary-add'"
-  (interactive)
-  (require 'consult)
-  (require 'ispell)
-  (require 'spell-fu)
-  (if dict
-      (unless (member dict (ispell-valid-dictionary-list))
-        (error "Specified dictionary '%s' is invalid!" dict))
-    (setq dict (consult--read (mapcar #'list (ispell-valid-dictionary-list))
-                              :prompt "Change buffer-local dictionary: "
-                              :default (or ispell-local-dictionary ispell-dictionary)
-                              :require-match t)))
-  (setq ispell-local-dictionary dict
-        ispell-local-dictionary-overridden t
-        ispell-buffer-session-localwords nil)
-  (if (string= (spell-fu--aspell-lang-from-dict ispell-local-dictionary)
-               (spell-fu--aspell-lang-from-dict ispell-dictionary))
-      (kill-local-variable 'ispell-local-pdict)
-    (setq ispell-local-pdict "default"))
-  (ispell-internal-change-dictionary)
-  (run-hooks 'ispell-change-dictionary-hook)
-  (setq spell-fu-dictionaries (spell-fu--default-dictionaries))
-  (when spell-fu-mode
-    (mapc #'spell-fu--dictionary-ensure-update spell-fu-dictionaries)
-    (spell-fu--refresh-cache-table-list)
-    (spell-fu--refresh)))
-
-(defun dtm-spell-fu-dict-word-files ()
-  "Update and return the word files corresponding to `spell-fu-dictionaries'."
-  (require 'spell-fu)
-  (unless spell-fu-mode
-    (mapc #'spell-fu--dictionary-ensure-update spell-fu-dictionaries))
-  (mapcar #'spell-fu--words-file spell-fu-dictionaries))
-
-(defun dtm-spell-fu-bounds-word-at-point ()
-  "Return the bounds of word at the current point or nil.
-Based on `spell-fu--word-at-point'."
-  (let ((point-init (point))
-        (pos-beg (pos-bol))
-        (pos-end (pos-eol)))
-    (save-excursion
-      (goto-char pos-beg)
-      (catch 'result
-        (with-syntax-table spell-fu-syntax-table
-          (save-match-data
-            (while (re-search-forward spell-fu-word-regexp pos-end t)
-              (when (and (<= (match-beginning 0) point-init) (<= point-init (match-end 0)))
-                (throw 'result (cons (match-beginning 0) (match-end 0)))))))
-        (throw 'result nil)))))
-
-(defun dtm/spell-correct ()
-  "Wrap `+spell/correct' to use `dtm-spell-fu-bounds-word-at-point'."
-  (interactive)
-  (letf! ((defun bounds-of-thing-at-point (&rest _)
-            (dtm-spell-fu-bounds-word-at-point))
-          (defun thing-at-point (&rest _)
-            (when-let ((bounds (dtm-spell-fu-bounds-word-at-point)))
-              (buffer-substring-no-properties (car bounds) (cdr bounds)))))
-    ;; Set `this-command' for `vertico-multiform-commands'
-    (let ((this-command '+spell/correct))
-      (+spell/correct))))
-
-(defun dtm/spell-correct-previous ()
-  "Correct the first spelling error before word at point."
-  (interactive)
-  (save-excursion
-    (+spell/previous-error)
-    (let ((bounds (dtm-spell-fu-bounds-word-at-point))
-          (evil-goggles--commands `((,this-command :face isearch-fail)))
-          (evil-goggles-async-duration 10.0))
-      (evil-goggles--show-async-hint (car bounds) (cdr bounds)))
-    (dtm/spell-correct)
-    (evil-goggles--vanish)))
-
 ;;* Corfu/Cape
 (defun dtm/corfu-complete-always ()
+  "Wrapper for `corfu-complete' that accepts the first selection when none
+is selected."
   (interactive)
   (when (< corfu--index 0)
     (corfu-next))
@@ -1194,7 +1108,7 @@ Intended for `org-clock-reminder-mode-hook'."
 Use as advice :before `org-tree-slide--setup'."
   (outline-show-all)
   (flycheck-mode -1)
-  (spell-fu-mode -1))
+  (jinx-mode -1))
 
 ;;* Org-roam
 (defun dtm-org-roam-goto-workspace (&rest _)
@@ -1308,13 +1222,13 @@ The DATE is derived from the #+title which must match the Org date format."
     (pdf-view-redisplay t)))
 
 (defun dtm-pdf-annot-edit-contents-setup-h ()
-  "Apply personal customisations.
+  "Apply personal customizations.
 Intended for `pdf-annot-edit-contents-minor-mode-hook'"
-  ;; Inherit `ispell-local-dictionary' from pdf buffer
-  (when-let ((dict (buffer-local-value 'ispell-local-dictionary
-                                       (pdf-annot-get-buffer
-                                        pdf-annot-edit-contents--annotation))))
-    (dtm/ispell-fu-change-dictionary dict))
+  ;; Inherit `jinx-languages' from pdf buffer
+  (when-let ((langs (buffer-local-value 'jinx-languages
+                                        (pdf-annot-get-buffer
+                                         pdf-annot-edit-contents--annotation))))
+    (jinx-languages langs))
   (auto-fill-mode -1)
   (+word-wrap-mode +1)
   (goto-char (point-max))

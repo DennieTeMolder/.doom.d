@@ -10,11 +10,15 @@
 
       :i "C-x C-k" #'dtm/cape-keyword-dict
       :i "C-x C-s" #'tempel-complete
-      :i "C-x s"   #'dtm/spell-correct-previous
+      :i "C-x s"   #'jinx-correct
 
       ;; Make "Z" bindings only kill buffers not the session
       :n "ZQ" #'kill-buffer-and-window
       :n "ZZ" #'doom/save-and-kill-buffer
+
+      ;; Custom spell correction using jinx
+      :m  "[s"   #'jinx-previous
+      :m  "]s"   #'jinx-next
 
       ;; Use mouse buttons to go forward/backward through window configs
       :n [mouse-8] #'winner-undo
@@ -67,6 +71,7 @@
       (:prefix "t"
        :desc "Auto line-breaks"   "a" #'auto-fill-mode
        :desc "Line numbers"       "l" #'dtm/toggle-line-numbers
+       :desc "Spell checking"     "s" #'jinx-mode
        :desc "Smooth scrolling"   "S" #'pixel-scroll-precision-mode
        :desc "Trash/delete files" "T" #'dtm/toggle-trash-delete)
 

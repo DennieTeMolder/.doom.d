@@ -290,8 +290,7 @@
 (after! vertico-multiform
   ;; Preserve original candidate order for specific functions
   (pushnew! vertico-multiform-commands
-            '(dirvish-history-jump (vertico-sort-function . dtm-dirvish-sort-history))
-            '(+spell/correct (vertico-sort-function . identity))))
+            '(dirvish-history-jump (vertico-sort-function . dtm-dirvish-sort-history))))
 
 (after! corfu
   (setq +corfu-want-tab-prefer-navigating-org-tables t
@@ -321,8 +320,6 @@
          "C-M-j" #'corfu-popupinfo-scroll-up)))
 
 (after! cape
-  (setq cape-dict-file #'dtm-spell-fu-dict-word-files)
-
   ;; Enable cape-file in more modes then prog-mode
   (add-hook! '(conf-mode-hook text-mode-hook eshell-mode-hook)
              #'+corfu-add-cape-file-h))
@@ -589,6 +586,10 @@
   :after vertico
   :config (vertico-mouse-mode +1))
 
+(use-package! jinx
+  :hook (doom-first-buffer . global-jinx-mode)
+  :general ([remap ispell-word] #'jinx-correct))
+
 (use-package! magit-todos
   :defer t
   :config
@@ -638,29 +639,6 @@
 
 ;;* Writing/Organisation Tools
 ;; Spell checking
-(after! ispell
-  (setq ispell-dictionary "en_GB"
-        ispell-personal-dictionary "~/Sync/Emacs/Dict/default.aspel.en.pws")
-
-  (when (string= ispell-program-name "aspell")
-    ;; BUG Aspell --run-together marks misspelled words like "wether" as correct
-    (cl-callf2 delete "--run-together" ispell-extra-args)
-    (remove-hook 'text-mode-hook #'+spell-remove-run-together-switch-for-aspell-h)
-
-    ;; Ultra prioritises speed over completeness, removing it gives more suggestions
-    (cl-callf2 delete "--sug-mode=ultra" ispell-extra-args)))
-
-(after! spell-fu
-  ;; Limit checking in prog-like modes
-  (add-hook 'conf-mode-hook #'dtm-spell-fu-prog-style-checking-h)
-  (add-hook 'yaml-mode-hook #'dtm-spell-fu-prog-style-checking-h)
-
-  ;; Remove org-block from excluded-faces to enable spell checking in #+CAPTION blocks
-  (cl-callf2 delq 'org-block (alist-get 'org-mode +spell-excluded-faces-alist))
-
-  ;; Create parity between correctable words and spell-fu highlighting
-  (global-set-key [remap ispell-word] #'dtm/spell-correct))
-
 (after! flycheck
   (setq flycheck-lintr-linters
         "linters_with_defaults(line_length_linter(120), T_and_F_symbol_linter = NULL)")
@@ -816,7 +794,7 @@
   ;; Make presentations even prettier
   (add-hook 'org-tree-slide-mode-hook #'dtm-org-tree-slide-setup-h 'append)
 
-  ;; Disable `flycheck-mode' and `spell-fu-mode' when presenting
+  ;; Disable spell checking and linting during presentations
   (advice-add 'org-tree-slide--setup :before #'dtm-org-tree-slide-no-squiggles-a)
 
   (map! :map org-tree-slide-mode-map

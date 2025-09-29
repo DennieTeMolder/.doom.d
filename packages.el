@@ -83,6 +83,7 @@
 (package! info-colors)
 (package! trashed)
 (package! ctrlf)
+(package! jinx)
 (package! xr)
 (package! magit-todos)
 (package! org-modern)
