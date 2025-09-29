@@ -572,26 +572,29 @@ Ref: https://github.com/casouri/vundo/issues/112"
 
 ;;* Image-mode
 (defun dtm-image-overlay ()
-  "Return current image overlay, create if not exists."
-  (or (image-mode-window-get 'overlay)
-      (alist-get 'overlay (image-mode-window-put
-                           'overlay (make-overlay (point-min) (point-max))))))
+  "Return current image overlay, create one if it not exists."
+  (when (listp image-mode-winprops-alist)
+    (or (image-mode-window-get 'overlay)
+        (alist-get 'overlay (image-mode-window-put
+                             'overlay (make-overlay (point-min) (point-max)))))))
 
-(defun dtm/image-center (&optional window)
-  "Centre the current image in the window.
-Can also be used as :after advice for `image-fit-to-window'.
-Ref: `pdf-view-display-image'"
+(defun dtm/image-center ()
+  "Center the current image in the window. Ref: `pdf-view-display-image'"
   (interactive)
-  (with-selected-window (or window (selected-window))
-    (unless (derived-mode-p 'image-mode 'pdf-view-mode)
-      (error "Not in 'image-mode'!"))
-    (let ((img-width (floor (car (image-size (image-get-display-property))))))
-      (overlay-put (dtm-image-overlay) 'before-string
-                   (when (> (window-width) img-width)
-                     (propertize " " 'display
-                                 `(space :align-to ,(/ (- (window-width)
-                                                          img-width)
-                                                       2))))))))
+  (when-let* ((overlay (dtm-image-overlay))
+              (img-width (floor (car (image-size (image-get-display-property))))))
+    (overlay-put overlay 'before-string
+                 (when (> (window-width) img-width)
+                   (propertize " " 'display
+                               `(space :align-to ,(/ (- (window-width)
+                                                        img-width)
+                                                     2)))))))
+
+(defun dtm-image-center-maybe ()
+  "Call `dtm/image-center' if in `image-mode'.
+Intended as :after `image-toggle-display-image' advice."
+  (when (eq major-mode 'image-mode)
+    (dtm/image-center)))
 
 (defun dtm/image-clear-cache ()
   "Run `clear-image-cache' on all frames."

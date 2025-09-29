@@ -513,9 +513,10 @@
         :n "D" #'dtm-vundo-live-diff-mode))
 
 (after! image-mode
-  (advice-add 'image-fit-to-window :after #'dtm/image-center)
+  (advice-add 'image-toggle-display-image :after #'dtm-image-center-maybe)
 
   (map! :map image-mode-map
+        :n "C-e" #'image-scroll-down
         :n "C-l" #'dtm/image-center
            "W"   nil))
 
