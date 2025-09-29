@@ -1475,14 +1475,16 @@ Defaults to `ess-local-process-name'."
 
 (defun dtm-corfu-ess-r-setup-capf ()
   "Setup `completion-at-point-functions' for `ess-r-mode'.
-Removes `ess-filename-completion' and replaces `ess-r-object-completion' in
-favour of `cape-file' and `dtm-cape-ess-r-object-completion'."
-  (remove-hook 'completion-at-point-functions #'ess-filename-completion 'local)
-  (add-hook 'completion-at-point-functions #'cape-file nil 'local)
-  (setq-local completion-at-point-functions
-              (cl-substitute #'dtm-cape-ess-r-object-completion
-                             #'ess-r-object-completion
-                             completion-at-point-functions)))
+Replaces `ess-filename-completion' with `cape-file' and `ess-r-object-completion'
+with `dtm-cape-ess-r-object-completion'."
+  (thread-last
+    completion-at-point-functions
+    (remove #'cape-file)
+    (cl-substitute #'dtm-cape-ess-r-object-completion
+                   #'ess-r-object-completion)
+    (cl-substitute #'cape-file
+                   #'ess-filename-completion)
+    (setq-local completion-at-point-functions)))
 
 ;;* Python/Elpy-shell
 (defun dtm-elpy-shell-get-doom-process-a (&optional sit)
