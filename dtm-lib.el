@@ -1025,7 +1025,7 @@ The elements of the list take the shape (infile . outfile)."
   (cl-remove-duplicates
    (remq nil (org-element-map (org-element-parse-buffer) 'link
                #'dtm-org-link-as-png-parse))
-   :test #'string= :key #'car))
+   :test #'string= :key #'cdr))
 
 (defun dtm-org-link-as-png-conversions ()
   "Returns a categorised list of all \"as_png:\" conversion in the current org buf.
