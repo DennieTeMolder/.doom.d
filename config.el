@@ -288,10 +288,10 @@
   (setq vertico-resize 'grow-only))
 
 (after! vertico-multiform
-  ;; Preserve original sorting for dirivsh history
-  (add-to-list
-   'vertico-multiform-commands
-   '(dirvish-history-jump (vertico-sort-function . dtm-dirvish-sort-history))))
+  ;; Preserve original candidate order for specific functions
+  (pushnew! vertico-multiform-commands
+            '(dirvish-history-jump (vertico-sort-function . dtm-dirvish-sort-history))
+            '(+spell/correct (vertico-sort-function . identity))))
 
 (after! corfu
   (setq +corfu-want-tab-prefer-navigating-org-tables t

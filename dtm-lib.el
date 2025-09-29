@@ -825,7 +825,9 @@ Based on `spell-fu--word-at-point'."
           (defun thing-at-point (&rest _)
             (when-let ((bounds (dtm-spell-fu-bounds-word-at-point)))
               (buffer-substring-no-properties (car bounds) (cdr bounds)))))
-    (+spell/correct)))
+    ;; Set `this-command' for `vertico-multiform-commands'
+    (let ((this-command '+spell/correct))
+      (+spell/correct))))
 
 (defun dtm/spell-correct-previous ()
   "Correct the first spelling error before word at point."
