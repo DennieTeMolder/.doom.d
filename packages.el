@@ -79,15 +79,14 @@
 
 ;;* Custom packages
 (package! ess-r-insert-obj)
-(package! trashed)
-(package! xr)
-(package! info-colors)
 (package! transpose-frame)
+(package! info-colors)
+(package! trashed)
 (package! ctrlf)
+(package! xr)
+(package! magit-todos)
 (package! org-modern)
 (package! org-appear)
-(package! highlight-indent-guides)
-(package! magit-todos)
 (package! org-clock-reminder
   :recipe (:host github :repo "inickey/org-clock-reminder"))
 (package! elpy-shell
