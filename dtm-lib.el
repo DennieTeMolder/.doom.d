@@ -1463,14 +1463,13 @@ STR is first stripped and indented according to mode."
 
 ;;* Conda
 (defun dtm-conda-env-infer-name ()
-  "Alternative `conda--infer-env-from-buffer' that ignores auto_activate_base
-from `conda--get-config'. Still respects `conda-activate-base-by-default'."
+  "Alternative `conda--infer-env-from-buffer' that ignores `conda--get-config'.
+Respects `conda-project-env-path' and `conda-activate-base-by-default'."
   (or (and (bound-and-true-p conda-project-env-path)
            (conda-env-dir-to-name conda-project-env-path))
-      (let* ((filename (buffer-file-name))
-             (dir (if filename (f-dirname filename) default-directory)))
-        (when dir
-          (conda--get-name-from-env-yml (conda--find-env-yml dir))))
+      (conda--get-name-from-env-yaml
+       (conda--find-env-yaml
+        (and (buffer-file-name) (f-dirname (buffer-file-name)))))
       (and conda-activate-base-by-default "base")))
 
 (defun dtm/conda-env-guess ()
