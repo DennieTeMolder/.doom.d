@@ -366,8 +366,8 @@
 
 (after! embark
   ;; Open package source from `doom/help-packages' (SPC h p)
-  (map! :map +vertico/embark-doom-package-map
-        :desc "Package definition" "d" #'find-library
+  (map! :map (+vertico/embark-doom-package-map embark-library-map)
+        :desc "Find definition" "d" #'find-library
         :map embark-symbol-map
         :desc "Show help" "h" #'helpful-symbol))
 
