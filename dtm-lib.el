@@ -765,6 +765,10 @@ is selected."
     (corfu-next))
   (corfu-complete))
 
+(defun dtm-cape-collect (capf-table)
+  "Collect all completions from the output of a capf as a list of strings."
+  (all-completions "" (nth 2 capf-table)))
+
 (defun dtm-cape-keyword-dict ()
   "Return results from `cape-keyword' and `cape-dict' combined."
   (cape-wrap-super #'cape-keyword #'cape-dict))
@@ -774,9 +778,29 @@ is selected."
   (interactive)
   (cape-interactive #'dtm-cape-keyword-dict))
 
-(defun dtm-cape-collect (capf-table)
-  "Collect all completions from the output of a capf as a list of strings."
-  (all-completions "" (nth 2 capf-table)))
+(defvar dtm-cape-dict-dir (expand-file-name "~/Sync/Emacs/Wordlists/")
+  "Directory with `cape-dict' word dictionaries.")
+
+(defvar dtm-cape-dict-personal-dir (expand-file-name "~/.config/enchant/")
+  "Directory with personal `cape-dict' word dictionaries.")
+
+(defun dtm/cape-dict-change-dictionary ()
+  "Prompt user to change `cape-dict-file'.
+Searches `dtm-cape-dict-dir' and `dtm-cape-dict-personal-dir'."
+  (interactive)
+  (let ((dict (mapcar
+               (lambda (elt) (and elt (concat dtm-cape-dict-dir elt)))
+               (completing-read-multiple
+                "Select dictionary for cape-dict:"
+                (directory-files dtm-cape-dict-dir)
+                (lambda (elt) (not (string-match-p "\\." elt))))))
+        (pdict (mapcar
+                (lambda (elt) (and elt (concat dtm-cape-dict-personal-dir elt)))
+                (completing-read-multiple
+                 "Select personal dictionary for cape-dict:"
+                 (directory-files dtm-cape-dict-personal-dir)
+                 (lambda (elt) (string= "dic" (file-name-extension elt)))))))
+    (setq-local cape-dict-file (nconc pdict dict))))
 
 ;;* Markdown
 (defun dtm-flycheck-disable-proselint-rmd-h ()
