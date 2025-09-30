@@ -333,7 +333,10 @@
 
   ;; Enable cape-file in more modes then prog-mode
   (add-hook! '(conf-mode-hook text-mode-hook eshell-mode-hook)
-             #'+corfu-add-cape-file-h))
+             #'+corfu-add-cape-file-h)
+
+  ;; Improve `cape-dict' candidate sorting
+  (advice-add 'cape--dict-list :override #'dtm-cape--dict-list-a))
 
 (after! consult
   (consult-customize

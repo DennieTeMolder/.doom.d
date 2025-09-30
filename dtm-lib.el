@@ -769,6 +769,37 @@ is selected."
   "Collect all completions from the output of a capf as a list of strings."
   (all-completions "" (nth 2 capf-table)))
 
+(defun dtm-cape--dict-list-a (input)
+  "Override advice for `cape--dict-list'.
+Uses prefix matching and sorts the output."
+  (let* ((inhibit-message t)
+         (message-log-max nil)
+         (default-directory
+          (if (and (not (file-remote-p default-directory))
+                   (file-directory-p default-directory))
+              default-directory
+            user-emacs-directory))
+         (files (mapcar #'expand-file-name
+                        (ensure-list
+                         (if (functionp cape-dict-file)
+                             (funcall cape-dict-file)
+                           cape-dict-file))))
+         (words
+          (corfu-sort-length-alpha
+           (apply #'process-lines-ignore-status
+                  "grep"
+                  (concat "-Eh"
+                          (and (cape--case-fold-p cape-dict-case-fold) "i")
+                          (and cape-dict-limit (format "m%d" cape-dict-limit)))
+                  (concat "^" (regexp-quote input))
+                  files))))
+    (cons
+     (apply-partially
+      (if (and cape-dict-limit (length= words cape-dict-limit))
+          #'equal #'string-search)
+      input)
+     (cape--case-replace-list cape-dict-case-replace input words))))
+
 (defun dtm-cape-keyword-dict ()
   "Return results from `cape-keyword' and `cape-dict' combined."
   (cape-wrap-super #'cape-keyword #'cape-dict))
