@@ -200,6 +200,9 @@
 ;; Disable global hl-line-mode
 (remove-hook! 'doom-first-buffer-hook #'global-hl-line-mode)
 
+;; Make current line more visible
+(custom-set-faces! '(line-number-current-line :weight bold))
+
 ;; Do not scroll horizontally if auto-fill-mode is active
 (setq-hook! 'auto-fill-mode-hook auto-hscroll-mode (not auto-fill-function))
 
