@@ -602,7 +602,13 @@
 
 (use-package! jinx
   :hook (doom-first-buffer . global-jinx-mode)
-  :general ([remap ispell-word] #'jinx-correct))
+  :general ([remap ispell-word] #'jinx-correct)
+  :config
+  ;; Also use a red underline for dark themes (default is yellow)
+  (custom-set-faces!
+    '(jinx-misspelled (((class color) (min-colors 88) (background dark)
+                        (supports :underline (:style wave)))
+                       :underline (:style wave :color "#ff665c")))))
 
 (use-package! magit-todos
   :defer t
