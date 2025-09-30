@@ -293,7 +293,11 @@
 (after! vertico-multiform
   ;; Preserve original candidate order for specific functions
   (pushnew! vertico-multiform-commands
-            '(dirvish-history-jump (vertico-sort-function . dtm-dirvish-sort-history))))
+            '(dirvish-history-jump (vertico-sort-function . dtm-dirvish-sort-history)))
+
+  ;; Display Jinx results in a grid
+  (pushnew! vertico-multiform-categories
+            '(jinx grid (vertico-grid-annotate . 20) (vertico-count . 9))))
 
 (after! corfu
   (setq +corfu-want-tab-prefer-navigating-org-tables t
