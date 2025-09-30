@@ -769,9 +769,9 @@
                           (?- . "‒")
                           (?* . "•")))
 
-  ;; Prevent line-ends from inheriting `font-lock-keyword-face'
-  ;; REVIEW this might have unintended side effects
-  (add-hook 'org-modern-mode-hook #'dtm-org-fold-font-lock-remove))
+  ;; Introduce `org-caption' face to enable spell checking
+  (advice-add 'org-modern--make-font-lock-keywords :filter-return
+              #'dtm-org-modern--make-font-lock-keywords-a))
 
 (use-package! org-clock-reminder
   :commands org-clock-reminder-mode

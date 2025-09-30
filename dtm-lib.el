@@ -1041,6 +1041,21 @@ CONVERSIONS should have the structure of `dtm-org-link-as-png-parse-all'."
 The additional markup used in doom-style org documents causes rendering issues."
   (unless (dtm-org-limit-styling-p) (org-modern-mode +1)))
 
+;; REVIEW This patch might be merged into org-mode in the future.
+;; See: https://list.orgmode.org/87le6q5ip9.fsf@cassou.me/T/#u
+(defface org-caption '((t (:inherit org-block)))
+  "Face used for #+caption content.")
+
+(defun dtm-org-modern--make-font-lock-keywords-a (ret-val)
+  "Remove `org-activate-folds' and add #+caption rule to RET-VAL.
+Intended as :filter-return `org-modern--make-font-lock-keywords' advice."
+  ;; Prevent line-ends from inheriting `font-lock-keyword-face'
+  ;; REVIEW this might have unintended side effects
+  (nconc (delq 'org-activate-folds ret-val)
+         ;; NOTE org-modern interferes with this rule if set during `org-font-lock-set-keywords-hook'
+         `((,(rx (seq bol "#+" (or "caption" "CAPTION") ": " (group (+ nonl))))
+            1 'org-caption t))))
+
 ;;* Org-clock-reminder
 (defvar dtm-org-clock-reminder-mode-auto t
   "Controls `dtm-org-clock-reminder-mode-auto-h'.
