@@ -608,7 +608,7 @@
   (custom-set-faces!
     '(jinx-misspelled (((class color) (min-colors 88) (background dark)
                         (supports :underline (:style wave)))
-                       :underline (:style wave :color "#ff665c")))))
+                       :underline (:style wave :color "#ff751a")))))
 
 (use-package! magit-todos
   :defer t
