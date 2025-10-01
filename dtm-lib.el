@@ -837,10 +837,9 @@ Searches `dtm-cape-dict-dir' and `dtm-cape-dict-personal-dir'."
 (defun dtm-global-jinx-mode-safe ()
   "Enable `global-jinx-mode' if `jinx--load-module' was successful."
   (require 'jinx)
-  (when (condition-case err
-            (progn (jinx--load-module) 'success)
-          (error (message "Error: %s" (cadr err))))
-    (global-jinx-mode +1)))
+  (condition-case err
+      (progn (jinx--load-module) (global-jinx-mode))
+    (error (message "Error: %s" (cadr err)))))
 
 ;;* Markdown
 (defun dtm-flycheck-disable-proselint-rmd-h ()
