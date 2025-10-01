@@ -1062,11 +1062,11 @@ The result is printed to the echo-area."
 (defun dtm-org-link-as-png--convert (conversions)
   "Convert CONVERSIONS to PNG format.
 CONVERSIONS should have the structure of `dtm-org-link-as-png-parse-all'."
-  (when (eq 'executable-find dtm-org-link-convert-executable)
+  (unless (stringp dtm-org-link-convert-executable)
     (setq dtm-org-link-convert-executable (executable-find "convert")))
   (if (not (and dtm-org-link-convert-executable
                 (file-executable-p dtm-org-link-convert-executable)))
-      (progn (warn "Org[as_png]: `dtm-org-link-convert-executable' unset or non-executable!") nil)
+      (progn (warn "Org[as_png]: `dtm-org-link-convert-executable' is non-executable!") nil)
     (let (warn-msg)
       (dolist (conv conversions)
         (let* ((infile (car conv))
