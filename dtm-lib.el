@@ -833,6 +833,15 @@ Searches `dtm-cape-dict-dir' and `dtm-cape-dict-personal-dir'."
                  (lambda (elt) (string= "dic" (file-name-extension elt)))))))
     (setq-local cape-dict-file (nconc pdict dict))))
 
+;;* Jinx
+(defun dtm-global-jinx-mode-safe ()
+  "Enable `global-jinx-mode' if `jinx--load-module' was successful."
+  (require 'jinx)
+  (when (condition-case err
+            (progn (jinx--load-module) 'success)
+          (error (warn "%s" (cadr err))))
+    (global-jinx-mode +1)))
+
 ;;* Markdown
 (defun dtm-flycheck-disable-proselint-rmd-h ()
   "Disable the \"proselint\" flycheck checker when in R markdown.

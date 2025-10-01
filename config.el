@@ -601,7 +601,7 @@
   :config (vertico-mouse-mode +1))
 
 (use-package! jinx
-  :hook (doom-first-buffer . global-jinx-mode)
+  :hook (doom-first-buffer . dtm-global-jinx-mode-safe)
   :general ([remap ispell-word] #'jinx-correct)
   :config
   ;; Also use a red underline for dark themes (default is yellow)
