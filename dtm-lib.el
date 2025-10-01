@@ -839,7 +839,7 @@ Searches `dtm-cape-dict-dir' and `dtm-cape-dict-personal-dir'."
   (require 'jinx)
   (when (condition-case err
             (progn (jinx--load-module) 'success)
-          (error (warn "%s" (cadr err))))
+          (error (message "Error: %s" (cadr err))))
     (global-jinx-mode +1)))
 
 ;;* Markdown
