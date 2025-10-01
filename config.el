@@ -764,7 +764,7 @@
   (add-hook 'org-export-before-processing-functions #'dtm-org-export-remember-source-file-h))
 
 (after! ox-odt
-  (setq org-odt-preferred-output-format "docx"))
+  (setq org-odt-with-latex 'dvipng))
 
 ;; Ensure `org-mode-ox-odt' takes precedence over org's ox-odt.el.
 ;; Ref: https://github.com/kjambunathan/org-mode-ox-odt/discussions/133

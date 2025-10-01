@@ -20,11 +20,11 @@
   (warn! "Couldn't find proselint command. Linting of text-mode buffers is impaired"))
 
 ;; Ox-odt
-(unless (executable-find "libreoffice")
-  (warn! "Couldn't find libreoffice command. Org to ODT export will be impaired."))
+(unless (executable-find "soffice")
+  (warn! "Couldn't find soffice command. Org to ODT export will be impaired."))
 
 (unless (executable-find "dvipng")
-  (warn! "Couldn't find libreoffice command. Org to ODT export of LaTeX fragments might be impaired."))
+  (warn! "Couldn't find dvipng command. Org to ODT export of LaTeX fragments is impaired."))
 
 ;; Ox-latex/auctex
 (unless (executable-find "latexmk")
