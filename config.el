@@ -833,11 +833,6 @@
         org-download-timestamp "__%Y%m%d%H%M%S"
         org-download-heading-lvl nil))
 
-(after! org-pomodoro
-  (setq org-pomodoro-format "%s"
-        org-pomodoro-manual-break t
-        org-pomodoro-keep-killed-pomodoro-time t))
-
 ;; Org-roam init settings
 (when (modulep! :lang org +roam)
   (setq org-roam-directory "~/Sync/PKM/"
