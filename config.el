@@ -957,7 +957,10 @@
   (keymap-unset pdf-annot-edit-contents-minor-mode-map "C-c C-k"))
 
 (when (modulep! :lang latex)
-  (setq +latex-viewers '(pdf-tools)))
+  (setq +latex-viewers '(pdf-tools))
+
+  ;; Enable latexmk (`org-latex-pdf-process' uses this by default if available)
+  (setq-hook! LaTeX-mode TeX-command-default "LaTeXMk"))
 
 (after! reftex
   ;; BUG: Fix stringp error when exporting to latex buffer from Org

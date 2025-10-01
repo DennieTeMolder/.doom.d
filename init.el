@@ -167,8 +167,7 @@
        ;;javascript        ; all(hope(abandon(ye(who(enter(here))))))
        (julia +tree-sitter); Python, R, and MATLAB in a blender
        ;;kotlin            ; a better, slicker Java(Script)
-       (latex              ; writing papers in Emacs has never been so fun
-        +latexmk)          ; what else would you use?
+       latex               ; writing papers in Emacs has never been so fun
        ;;lean
        ;;ledger            ; an accounting system in Emacs
        ;;lua               ; one-based indices? one-based indices
