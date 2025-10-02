@@ -710,6 +710,9 @@
     '(outline-3 :height 1.05)
     '(org-headline-done :strike-through t))
 
+  ;; Enforce `+org/insert-item-below' to respect `org-blank-before-new-entry'
+  (add-hook 'org-insert-heading-hook #'dtm-org-insert-heading-check-blank)
+
   ;; Custom link type [[as_png:<file_name>]], trigger conversion to .png on export
   (push '("as_png" . dtm-org-link-as-png) org-link-abbrev-alist)
   (add-hook 'org-export-before-parsing-functions #'dtm/org-link-as-png-convert)

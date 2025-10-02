@@ -925,6 +925,14 @@ Also syncs `org-appear-mode' and `org-pretty-entities-include-sub-superscripts'.
        (org-clock-goto))
      (org-clock-get-last-clock-out-time))))
 
+(defun dtm-org-insert-heading-check-blank ()
+  "Enforce `org-blank-before-new-entry' assuming point is on a new entry.
+Intended for `org-insert-heading-hook' when using `+org--insert-item'."
+  (when (save-excursion
+          (org-forward-heading-same-level -1)
+          (org--blank-before-heading-p))
+    (org-N-empty-lines-before-current 1)))
+
 ;;** Org-export (ox)
 (defvar dtm-org-export-source-file nil
   "Current source file. Set by `org-export-before-processing-functions'.
