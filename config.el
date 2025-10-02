@@ -1,24 +1,25 @@
 ;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
-;; NOTE custom functions/variables/macros are prefixed with 'dtm'
-(load! "dtm-lib")
-
+;;
 ;; Place your private configuration here! Remember, you do not need to run 'doom
 ;; sync' after modifying this file!
+
+;; NOTE custom functions/variables/macros are prefixed with 'dtm'
+(load! "dtm-lib")
 
 ;;* Machine local settings
 (defvar dtm-default-font-size 11.0)
 (defvar dtm-maximize-on-startup nil)
 (defvar dtm-maximize-performance nil)
 
+;; Some functionality uses this to identify you, e.g. GPG configuration, email
+;; clients, file templates and snippets. It is optional.
+(setq user-full-name "John Doe"
+      user-mail-address "john@doe.com")
+
 ;; Allow above settings to be overridden
 (load! "local_vars.el" nil t)
 
 ;;* Doom preamble
-;; Some functionality uses this to identify you, e.g. GPG configuration, email
-;; clients, file templates and snippets. It is optional.
-(setq user-full-name "Dennie te Molder"
-      user-mail-address "john@doe.com")
-
 ;; Doom exposes five (optional) variables for controlling fonts in Doom:
 ;;
 ;; - `doom-font' -- the primary font to use
