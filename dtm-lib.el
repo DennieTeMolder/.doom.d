@@ -360,7 +360,7 @@ Based on `+popup/diagnose'."
           imenu-generic-expression))
   (setq imenu-generic-expression
         (append (cl-remove "Section" imenu-generic-expression :test #'string= :key #'car)
-                `(("Section" ,(concat +emacs-lisp-outline-regexp "[ \t]*\\([^\n]+\\)") 1)))))
+                `(("Section" ,(concat +emacs-lisp-outline-regexp "[ \t]*\\([^- \t].*?\\)\\(-[-*]-\\|$\\)") 1)))))
 
 (defvar dtm-imenu-orginal-index-function nil
   "Original indexing function before calling `dtm-imenu-merge-index-h'")
