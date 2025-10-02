@@ -110,17 +110,15 @@
 ;;* Basic Settings
 (setq confirm-kill-emacs nil
       delete-by-moving-to-trash t
-      text-scale-mode-step 1.1)
-
-;; Add clipboard to kill ring
-;; Cycle w/ <C-p> or <C-n> after pasting or use <M-y> `consult-yank-pop'
-(setq save-interprogram-paste-before-kill t)
-
-;; Increase horizontal scroll (shift + mwheel) sensitivity
-(setq mouse-wheel-scroll-amount-horizontal 12)
+      text-scale-mode-step 1.1
+      ;; Add clipboard to kill ring
+      ;; Cycle w/ <C-p> or <C-n> after pasting or use <M-y> `consult-yank-pop'
+      save-interprogram-paste-before-kill t
+      ;; Increase shift + mwheel sensitivity
+      mouse-wheel-scroll-amount-horizontal 12)
 
 ;;* UI Settings
-;; Maximise emacs if desired
+;; Maximize Emacs if desired
 (when dtm-maximize-on-startup
   (add-to-list 'default-frame-alist '(fullscreen . maximized)))
 
