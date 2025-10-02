@@ -810,6 +810,9 @@
           (cons (file-name-concat dir "clocking.png")
                 (file-name-concat dir "inactivity.png"))))
 
+  (advice-add 'org-clock-reminder-on-clock-out
+              :override #'dtm-org-clock-reminder-clock-out-silent)
+
   ;; BUG `org-clock-reminder-state' can get out of sync
   (add-hook! 'org-clock-reminder-mode-hook #'dtm-org-clock-reminder-fix))
 

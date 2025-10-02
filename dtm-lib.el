@@ -1146,8 +1146,8 @@ Intended for `org-clock-in-prepare-hook'."
   (when dtm-org-clock-reminder-mode-auto
     (org-clock-reminder-mode +1)))
 
-(defun dtm-org-clock-reminder-on-cancel ()
-  "Change `org-clock-reminder-state' on clock cancel."
+(defun dtm-org-clock-reminder-clock-out-silent ()
+  "Silent version of `org-clock-reminder-on-clock-out'."
   (setf org-clock-reminder-state :clocked-out)
   (org-clock-reminder-reset-timer))
 
@@ -1158,8 +1158,8 @@ Intended for `org-clock-reminder-mode-hook'."
       (progn
         ;; Org-clock-reminder-mode doesn't check if we are already clocked in
         (when (org-clocking-p) (org-clock-reminder-on-clock-in))
-        (add-hook 'org-clock-cancel-hook #'dtm-org-clock-reminder-on-cancel))
-    (remove-hook 'org-clock-cancel-hook #'dtm-org-clock-reminder-on-cancel)))
+        (add-hook 'org-clock-cancel-hook #'dtm-org-clock-reminder-clock-out-silent))
+    (remove-hook 'org-clock-cancel-hook #'dtm-org-clock-reminder-clock-out-silent)))
 
 ;;* Org-download
 (defun dtm-org-download-file-format (filename)
