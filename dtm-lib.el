@@ -602,9 +602,9 @@ Intended as :after `image-toggle-display-image' advice."
   (clear-image-cache t))
 
 ;;* Elisp-refs
-(defun dtm-elisp-refs--find-file-a (button)
+(defun dtm-elisp-refs-button-other-window (button)
   "Open the file referenced by BUTTON in the other window.
-Intended as :override advice for `elisp-refs--find-file'."
+Ref: `elisp-refs--find-file'."
   (find-file-other-window (button-get button 'path))
   (goto-char (point-min)))
 

@@ -1014,14 +1014,12 @@
   (map! :map edebug-mode-map :n "R" #'edebug-remove-instrumentation))
 
 (after! elisp-refs
-  ;; HACK Include buffers in `helpful-max-buffers' & `helpful-kill-buffers'
-  (setq-hook! 'elisp-refs-mode-hook major-mode 'helpful-mode)
-  (add-hook 'elisp-refs-mode-hook #'hide-mode-line-mode)
-
-  (set-popup-rule! "\\*refs:" :slot 2 :vslot -8 :size 0.42 :select t :ttl nil)
+  (set-popup-rule! "\\*refs:" :slot 2 :vslot -8 :size 0.3 :select t :ttl 120)
 
   ;; Open files in other window to preserve the popup window
-  (advice-add 'elisp-refs--find-file :override #'dtm-elisp-refs--find-file-a)
+  (button-type-put 'elisp-refs-path-button
+    'action #'dtm-elisp-refs-button-other-window)
+
   (map! :map elisp-refs-mode-map
         [remap elisp-refs-visit-match] #'elisp-refs-visit-match-other-window))
 
