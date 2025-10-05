@@ -635,27 +635,6 @@
         "C-c C-c"   #'tempel-done
         "C-c C-k"   #'tempel-abort))
 
-;; Improved isearch
-(use-package! ctrlf
-  :defer t
-  :config
-  ;; Use 'M-s s' while searching to change styles
-  (setq ctrlf-default-search-style 'fuzzy-multi
-        ctrlf-show-match-count-at-eol t
-        ctrlf-auto-recenter t)
-
-  ;; Fuzzy matching across multiple lines
-  (push '(fuzzy-multi . (:prompt "fuzzy multi-line"
-                         :translator dtm-translate-fuzzy-multi-literal
-                         :case-fold ctrlf-no-uppercase-literal-p))
-        ctrlf-style-alist)
-
-  (map! :map ctrlf-minibuffer-mode-map
-        "C-s" #'ctrlf-next-match
-        "C-r" #'ctrlf-previous-match
-        "C-u" #'ctrlf-previous-page
-        "C-d" #'ctrlf-next-page))
-
 ;;* Writing/Organisation Tools
 ;; Spell checking
 (after! flycheck

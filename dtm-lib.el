@@ -1574,14 +1574,6 @@ Alternative `conda-env-activate-for-buffer' that prompts before activation"
   (unless (or non-essential (dtm-buffer-remote-p))
     (dtm/conda-env-guess)))
 
-;;* CTRLF
-(defun dtm-translate-fuzzy-multi-literal (input)
-  "Build a fuzzy-matching regexp from literal INPUT.
-See `ctrlf-split-fuzzy' for how INPUT is split into subinputs.
-Each subinput is quoted and the results are joined with a non-greedy \".*\n?.*\".
-This enables each word of the query to be on consecutive non-blank lines."
-  (string-join (mapcar #'regexp-quote (ctrlf-split-fuzzy input))  ".*?\\(?:\n.*?\\)??"))
-
 ;;* Tempel
 (defun dtm/tempel-open-template-file ()
   "Open the last file in `tempel-path' in the other window."

@@ -5,7 +5,6 @@
       :n  "C-<left>"  #'dtm/move-splitter-left
       :n  "C-<down>"  #'dtm/move-splitter-down
       :n  "C-<up>"    #'dtm/move-splitter-up
-      :g  "C-s"       #'ctrlf-forward-default
       :gn "C-l"       #'+nav-flash/blink-cursor
 
       :i "C-x C-k" #'dtm/cape-keyword-dict
