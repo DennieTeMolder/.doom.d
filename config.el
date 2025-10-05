@@ -254,6 +254,16 @@
   ;; BUG: inhibit-insert-state inhibits all replace bindings but `evil-enter-replace-state'
   (advice-add 'evil-collection-inhibit-insert-state :after #'dtm-evil-collection-inhibit-insert-state-a))
 
+(after! isearch
+  (setq search-whitespace-regexp "[ \t\s]+"
+        isearch-lazy-count t
+        lazy-count-prefix-format nil
+        lazy-count-suffix-format " [%s/%s]"
+        lazy-highlight-max-at-a-time nil)
+
+  ;; Doom-themes doesn't distinguish `isearch' from `lazy-highlight' like it does for Evil
+  (custom-set-faces! '(isearch :inherit evil-ex-search)))
+
 (after! projectile
   ;; Projectle sorting by recently opened
   (setq projectile-sort-order 'recently-active
@@ -889,9 +899,6 @@
 
 (after! pdf-tools
   (setq pdf-view-resize-factor 1.1)
-
-  ;; Distinguish current match
-  (custom-set-faces! '(pdf-isearch-match :inherit highlight))
 
   (add-hook 'pdf-annot-edit-contents-minor-mode-hook #'dtm-pdf-annot-edit-contents-setup-h)
 
