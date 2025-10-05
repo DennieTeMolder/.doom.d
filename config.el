@@ -401,20 +401,15 @@
 
 (when (modulep! :ui popup)
   (set-popup-rules!
-    ;; Redefined rules
-    '(("^\\*\\(?:Wo\\)?Man "
-       :vslot -6 :size 0.45 :select t :quit t :ttl nil)
-      ("^\\*\\([Hh]elp\\|Apropos\\)"
-       :slot 2 :vslot -8 :size 0.42 :select t :ttl nil)
+    ;; Redefine rules to keep popups alive
+    '(("^\\*\\([Hh]elp\\|Apropos\\)"
+       :slot 2 :vslot -8 :size 0.45 :select t :ttl nil)
       ("^\\*info\\*$"
-       :slot 2 :vslot 2 :size 0.45 :select t :ttl nil)
+       :slot 2 :vslot -8 :size 0.45 :select t :ttl nil)
       ("^\\*Backtrace"
        :vslot 99 :size 0.4 :select t :quit t :ttl nil)))
   (unless (dtm-doctor-running-p)
-    (+popup-cleanup-rules-h))
-
-  ;; Allow popups to be balanced
-  (advice-remove 'balance-windows #'+popup-save-a))
+    (+popup-cleanup-rules-h)))
 
 (after! dired
   (setq dired-clean-confirm-killing-deleted-buffers nil
@@ -989,9 +984,9 @@
   (setq vterm-clear-scrollback-when-clearing t)
 
   ;; Don't consider vterm buffer as popup (only doom:vterm)
-  (set-popup-rule! "^\\*vterm" :ignore t)
+  (cl-callf2 cl-delete "^\\*vterm" +popup--display-buffer-alist
+    :key #'car :test #'equal)
   (set-popup-rule! "^ \\*Install vterm" :ttl 0)
-  (+popup-cleanup-rules-h)
 
   (remove-hook! 'vterm-mode-hook #'hide-mode-line-mode)
 
