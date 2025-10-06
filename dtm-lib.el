@@ -1574,6 +1574,63 @@ Alternative `conda-env-activate-for-buffer' that prompts before activation"
   (unless (or non-essential (dtm-buffer-remote-p))
     (dtm/conda-env-guess)))
 
+;;* Evil-anzu
+(defun dtm-evil-anzu-search-next-a (orig-fn &optional pattern &rest args)
+  "Set `case-fold-search' according to PATTERN and apply ORIG-FN with ARGS.
+Intended as :around `evil-anzu-search-next' advice."
+  (let ((case-fold-search (evil-ex-pattern-ignore-case
+                           (or pattern evil-ex-search-pattern))))
+    (apply orig-fn pattern args)))
+
+;;* CTRLF
+(defun dtm-ctrlf-local-mode-disable ()
+  "Disable `ctrlf-local-mode'."
+  (ctrlf-local-mode -1))
+
+(defun dtm-ctrlf-translate-lax (input)
+  "Translate INPUT like `isearch-lax-whitespace' is non-nil."
+  (string-join (mapcar #'regexp-quote (ctrlf-split-fuzzy input))
+               search-whitespace-regexp))
+
+(defun dtm-ctrlf-translate-evil (input)
+  "Translate INPUT using `evil-transform-vim-style-regexp'."
+  (let ((evil-ex-search-vim-style-regexp t))
+    (or (evil-ex-pattern-regex (evil-ex-make-pattern input 'ignore t)) "")))
+
+(defun dtm-ctrlf-case-fold-p-evil (input)
+  "Return non-nil if case should be ignored according to `evil-ex-regex-case'."
+  (eq (evil-ex-regex-case input 'smart) 'insensitive))
+
+(defun dtm-ctrlf-evil-remember-a (str)
+  "Respect `ctrlf--case-fold-search' and omit `evil-ex-search-history'.
+Intended as :override `'ctrlf--evil-remember-search-string' advice."
+  (when (and (bound-and-true-p evil-mode)
+             (eq evil-search-module 'evil-search))
+    (with-no-warnings
+      (let* ((style-plist (alist-get ctrlf--style ctrlf-style-alist))
+             (translated-str (funcall (plist-get style-plist :translator) str))
+             (ignore-case (if (eq ctrlf--case-fold-search :auto)
+                              ctrlf--case-fold-search-last-guessed
+                            ctrlf--case-fold-search)))
+        (setq evil-ex-search-direction 'forward
+              evil-ex-search-pattern (list translated-str ignore-case t))
+        (when evil-ex-search-persistent-highlight
+          (evil-ex-search-activate-highlight evil-ex-search-pattern)))))
+  str)
+
+(defun dtm-ctrlf-yank-word-or-char ()
+  "CTRLF version of `isearch-yank-word-or-char' (C-w).
+Ref: https://github.com/radian-software/ctrlf/issues/65"
+  (interactive)
+  (let (yank)
+    (with-current-buffer (window-buffer (minibuffer-selected-window))
+      (setq yank (buffer-substring-no-properties
+                  (goto-char (or (cdr-safe ctrlf--match-bounds)
+                                 ctrlf--current-starting-point))
+                  (progn (forward-word) (point)))))
+    (goto-char (field-end (point-max)))
+    (insert yank)))
+
 ;;* Tempel
 (defun dtm/tempel-open-template-file ()
   "Open the last file in `tempel-path' in the other window."

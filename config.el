@@ -244,8 +244,14 @@
     (evil-add-command-properties cmd :jump nil))
 
   (map! :map evil-motion-state-map
-        "'" #'evil-goto-mark            ; swap these two commands
-        "`" #'evil-goto-mark-line))
+        ;; Swap these two commands
+        "'" #'evil-goto-mark
+        "`" #'evil-goto-mark-line
+        ;; Replace ex-search with isearch
+        "/" #'isearch-forward
+        "?" #'isearch-backward
+        "n" #'isearch-repeat-forward
+        "N" #'isearch-repeat-backward))
 
 (after! evil-snipe
   ;; Make snipe commands (bound to f,F,t,T,s,S) go beyond the current line
@@ -256,6 +262,9 @@
 (after! evil-collection
   ;; BUG: inhibit-insert-state inhibits all replace bindings but `evil-enter-replace-state'
   (advice-add 'evil-collection-inhibit-insert-state :after #'dtm-evil-collection-inhibit-insert-state-a))
+
+(after! evil-anzu
+  (advice-add 'evil-anzu-search-next :around #'dtm-evil-anzu-search-next-a))
 
 (after! isearch
   ;; Perform lax matching across new lines and comment chars
@@ -268,8 +277,39 @@
   ;; Doom-themes doesn't distinguish `isearch' from `lazy-highlight' like it does for Evil
   (custom-set-faces! '(isearch :inherit evil-ex-search)))
 
+;; Improved isearch with evil-ex-search integration
+(use-package! ctrlf
+  :hook (doom-first-buffer . ctrlf-mode)
+  :init
+  ;; Leverage evil-search integration for n/N candidate cycling
+  (map! :map ctrlf-mode-map
+        [remap isearch-repeat-forward]  #'evil-ex-search-next
+        [remap isearch-repeat-backward] #'evil-ex-search-previous)
+  :config
+  ;; Use 'M-s s' while searching to change styles
+  (setq ctrlf-default-search-style 'lax
+        ctrlf-go-to-end-of-match nil
+        ctrlf-auto-recenter t)
+
+  ;; Literal matching using `search-whitespace-regexp' like `isearch-lax-whitespace'
+  (push '(lax . (:prompt "lax"
+                 :translator dtm-ctrlf-translate-lax
+                 :case-fold ctrlf-no-uppercase-literal-p))
+        ctrlf-style-alist)
+  (push '(vim . (:prompt "vim"
+                 :translator dtm-ctrlf-translate-evil
+                 :case-fold dtm-ctrlf-case-fold-p-evil))
+        ctrlf-style-alist)
+
+  ;; Improve Evil integration
+  (advice-add 'ctrlf--evil-remember-search-string :override #'dtm-ctrlf-evil-remember-a)
+  (advice-add 'ctrlf--start :before (lambda (&rest _) (evil-ex-nohighlight)))
+
+  (map! :map ctrlf-minibuffer-mode-map
+        "M-w" #'dtm-ctrlf-yank-word-or-char))
+
 (after! projectile
-  ;; Projectle sorting by recently opened
+  ;; Projectile sorting by recently opened
   (setq projectile-sort-order 'recently-active
         ;; Replace the doom-project-ignored-p function to ignore remote projects
         projectile-ignored-project-function #'dtm-project-ignored-p)
