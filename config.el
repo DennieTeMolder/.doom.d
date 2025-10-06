@@ -351,6 +351,8 @@
   (advice-add 'cape--dict-list :override #'dtm-cape--dict-list-a))
 
 (after! consult
+  (add-hook 'consult-after-jump-hook #'recenter)
+
   (consult-customize
    ;; Set default selection for `consult-theme' based on `dtm-recommend-theme'
    consult-theme :default (symbol-name (dtm-recommend-theme))))
