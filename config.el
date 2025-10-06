@@ -258,7 +258,8 @@
   (advice-add 'evil-collection-inhibit-insert-state :after #'dtm-evil-collection-inhibit-insert-state-a))
 
 (after! isearch
-  (setq search-whitespace-regexp "[ \t\s]+"
+  ;; Perform lax matching across new lines and comment chars
+  (setq search-whitespace-regexp "[ \t\n]+\\s<*[ \t]*"
         isearch-lazy-count t
         lazy-count-prefix-format nil
         lazy-count-suffix-format " [%s/%s]"
