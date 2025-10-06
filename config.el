@@ -228,8 +228,11 @@
 (after! evil
   ;; Enable granular undo (remembers delete actions during insert state)
   (setq evil-want-fine-undo t
+        evil-magic 'very-magic
         evil-vsplit-window-right t
         evil-split-window-below t)
+
+  (advice-add 'evil-ex-search :after #'doom-recenter-a)
 
   ;; Indicate `evil-repeat' to ignore certain commands because they freeze emacs
   (evil-declare-not-repeat #'+workspace/switch-left)
