@@ -1715,11 +1715,6 @@ Meant for hooking onto `prog-mode-hook' and `text-mode-hook'."
                       completion-at-point-functions)))
 
 ;;* Pixel-scroll-precision-mode
-(defun dtm-pixel-scroll-precision-mode-h ()
-  "Prevent `pixel-scroll-precision-mode' from changing
-`make-cursor-line-fully-visible'. Use with `pixel-scroll-precision-mode-hook'."
-  (setq-default make-cursor-line-fully-visible t))
-
 (defun dtm-window-usable-height ()
   "Return the usable height of the selected window.
 Return the pixel height of the area of the selected window
