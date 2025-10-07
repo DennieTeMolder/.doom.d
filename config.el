@@ -1016,6 +1016,20 @@
 ;; Don't replace case when programming
 (setq-hook! 'prog-mode-hook dabbrev-case-replace nil)
 
+;; Header line showing current defun
+(use-package! topsy
+  :hook ((prog-mode . topsy-mode)
+         (magit-section-mode . topsy-mode))
+  :config
+  ;; Add `header-line-indent' and debounce `topsy-fn' (helps w/ smooth scrolling)
+  (setq topsy-header-line-format
+        '((:propertize " " display (space :align-to 0))
+          header-line-indent
+          (:eval (dtm-topsy-fn-debounce))))
+
+  ;; We circumvent `header-line-indent-mode' for efficiency
+  (add-hook 'display-line-numbers-mode-hook #'dtm-topsy-header-line-update))
+
 (after! comint
   (setq comint-input-ignoredups t
         comint-scroll-to-bottom-on-input 'this

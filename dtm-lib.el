@@ -1785,6 +1785,43 @@ Ref: https://mbork.pl/2025-09-15_Entering_dates_in_Emacs_Calc"
     (ignore org-read-date-prefer-future)
     (calc-eval (format "<%s>" (org-read-date)) 'push)))
 
+;;* Topsy
+(defvar-local dtm-topsy--header-pos nil
+  "The position of `window-start' for which `dtm-topsy--header' is valid.")
+(defvar-local dtm-topsy--header nil
+  "Debounced output of `topsy-fn'. Updated by `dtm-topsy--update'.")
+(defvar-local dtm-topsy--timer nil
+  "Timer responsible for updating `dtm-topsy--header'")
+
+(defun dtm-topsy-fn-debounce ()
+  "Debounce `topsy-fn' for better performance. For use in `header-line-format'.
+Only updates if `window-start' changed.
+Updates run on a 0.15s delay and also refreshes `header-line-indent'."
+  (unless (or (eq dtm-topsy--header-pos (window-start))
+              (and (timerp dtm-topsy--timer)
+                   (not (timer--triggered dtm-topsy--timer))))
+    (setq dtm-topsy--timer
+          (run-with-timer 0.15 nil #'dtm-topsy--update (current-buffer))))
+  dtm-topsy--header)
+
+(defun dtm-topsy--update (buf)
+  "Timer function used by `dtm-topsy-fn-debounce' to update `dtm-topsy--header'."
+  (when-let ((win (and (buffer-live-p buf)
+                       (get-buffer-window buf))))
+    (with-selected-window win
+      (setq dtm-topsy--header (funcall topsy-fn)
+            dtm-topsy--header-pos (window-start))
+      (dtm-topsy-header-line-update))))
+
+(defun dtm-topsy-header-line-update (&rest _)
+  "Update `header-line-indent' and fore redisplay of header line."
+  (when topsy-mode
+    (and (not (bound-and-true-p header-line-indent-mode))
+         (fboundp 'header-line-indent--watch-line-number-width)
+         (header-line-indent--watch-line-number-width nil))
+    ;; NOTE this will eval `header-line-format', be aware of infinite loops
+    (force-mode-line-update)))
+
 ;;* Commands
 (defun dtm/load-session (file)
   "Stripped down `doom/load-session' with a proper default value.

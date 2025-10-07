@@ -88,6 +88,7 @@
 (package! magit-todos)
 (package! org-modern)
 (package! org-appear)
+(package! topsy)
 (package! org-clock-reminder
   :recipe (:host github :repo "inickey/org-clock-reminder"))
 (package! elpy-shell
