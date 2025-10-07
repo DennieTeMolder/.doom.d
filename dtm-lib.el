@@ -197,13 +197,6 @@ See also: `split-window-sensibly'"
        (warn "Font \"%s\" not found!" (font-get spec :family))
        (font-put spec :family nil)))))
 
-(defun dtm-doom-modeline-conditional-encoding-h ()
-  "Only display encoding in modeline when it's not UTF-8.
-Use for `after-change-major-mode-hook'."
-  (setq-local doom-modeline-buffer-encoding
-              (not (memq (coding-system-get buffer-file-coding-system :category)
-                         '(coding-category-undecided coding-category-utf-8)))))
-
 (defun dtm-doom-ascii-banner-fn ()
   (let* ((banner
           '(",---.,-.-.,---.,---.,---."
@@ -290,6 +283,19 @@ Respects `delete-by-moving-to-trash'. Intended as :around advice."
   (or (file-remote-p project-root)
       (file-in-directory-p project-root temporary-file-directory)
       (file-in-directory-p project-root doom-local-dir)))
+
+;;* Doom-modeline
+(defun dtm-doom-modeline-conditional-encoding-h ()
+  "Only display encoding in modeline when it's not UTF-8.
+Use for `after-change-major-mode-hook'."
+  (setq-local doom-modeline-buffer-encoding
+              (not (memq (coding-system-get buffer-file-coding-system :category)
+                         '(coding-category-undecided coding-category-utf-8)))))
+
+(defun dtm-doom-modeline-segment-buf-pos-a (res)
+  "Conditionally remove `doom-modeline-wspc' from start of RES to fix spacing.
+Intended as :filter-return `doom-modeline-segment--buffer-position' advice."
+  (if (or line-number-mode column-number-mode) res (cdr res)))
 
 ;;* Doom Popup
 (defun dtm-popup-ensure ()
@@ -1770,11 +1776,11 @@ Higher values give slower scrolling.")
     (call-interactively #'evil-scroll-page-down)))
 
 ;;* Evil-collection
-  (defun dtm-evil-collection-inhibit-insert-state-a (map-sym)
-    "Advice that additionally ignores `evil-enter-replace-state' (R) in MAP-SYM.
-Intended as :after advice for `evil-collection-inhibit-insert-state'."
-    (evil-collection-define-key 'normal map-sym
-      [remap evil-enter-replace-state] #'ignore))
+(defun dtm-evil-collection-inhibit-insert-state-a (map-sym)
+  "Ignore `evil-enter-replace-state' (R) in MAP-SYM.
+Intended as :after `evil-collection-inhibit-insert-state' advice."
+  (evil-collection-define-key 'normal map-sym
+    [remap evil-enter-replace-state] #'ignore))
 
 ;;* Calc
 (defun dtm-calc-read-date ()

@@ -133,18 +133,6 @@
       (:eval
        (if (buffer-modified-p) " +" ""))))
 
-(after! doom-modeline
-  (setq doom-modeline-buffer-file-name-style 'truncate-except-project)
-
-  ;; Only display encoding in modeline when it's not UTF-8
-  (add-hook 'after-change-major-mode-hook #'dtm-doom-modeline-conditional-encoding-h))
-
-(use-package! battery
-  :defer 1
-  :config
-  (unless (string= "N/A" (alist-get ?p (funcall battery-status-function)))
-    (display-battery-mode +1)))
-
 ;; Replace the default doom splash screen with a more subtle one
 (setq +doom-dashboard-ascii-banner-fn #'dtm-doom-ascii-banner-fn)
 
@@ -339,6 +327,32 @@
   ;; Exclude autosave file/folder and root from recent files
   (add-to-list 'recentf-exclude "/autosave/?\\'")
   (add-to-list 'recentf-exclude "\\`/\\'"))
+
+(after! doom-modeline
+  (setq doom-modeline-buffer-file-name-style 'truncate-except-project)
+
+  ;; Only display encoding in modeline when it's not UTF-8
+  (add-hook 'after-change-major-mode-hook #'dtm-doom-modeline-conditional-encoding-h))
+
+(use-package! battery
+  :defer 1
+  :config
+  (unless (string= "N/A" (alist-get ?p (funcall battery-status-function)))
+    (display-battery-mode +1)))
+
+(use-package! mlscroll
+  :hook (doom-modeline-mode . mlscroll-mode)
+  :init
+  (remove-hook 'doom-modeline-mode-hook #'column-number-mode)
+  :config
+  (setq mlscroll-width-chars 18
+        mlscroll-alter-percent-position nil
+        doom-modeline-percent-position nil)
+
+  (advice-add 'doom-modeline-segment--buffer-position
+              :filter-return #'dtm-doom-modeline-segment-buf-pos-a)
+
+  (line-number-mode -1))
 
 (after! vertico
   (setq vertico-resize 'grow-only))
