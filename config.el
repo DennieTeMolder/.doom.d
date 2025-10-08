@@ -638,18 +638,23 @@
     (add-hook 'doom-first-buffer-hook #'pixel-scroll-precision-mode))
   :config
   (setq pixel-scroll-precision-interpolation-total-time 0.15
+        pixel-scroll-precision-interpolation-between-scroll 0.005
         pixel-scroll-precision-large-scroll-height 40
         pixel-scroll-precision-interpolate-page t
         scroll-conservatively 101
         scroll-margin 0)
 
-  (define-key pixel-scroll-precision-mode-map [prior] #'dtm-precision-scroll-page-up)
-  (define-key pixel-scroll-precision-mode-map [next] #'dtm-precision-scroll-page-down)
+  ;; Prevent comint prompts from being partially off-screen
+  (add-hook 'pixel-scroll-precision-mode-hook #'dtm-pixel-scroll-precision-mode-h)
 
-  (global-set-key [remap evil-scroll-up] #'dtm-precision-scroll-up)
-  (global-set-key [remap evil-scroll-down] #'dtm-precision-scroll-down)
-  (global-set-key [remap evil-scroll-page-up] #'dtm-precision-scroll-page-up)
-  (global-set-key [remap evil-scroll-page-down] #'dtm-precision-scroll-page-down))
+  ;; Custom commands to smooth scroll using keys
+  (map! :map pixel-scroll-precision-mode-map
+        [prior] #'dtm-precision-scroll-page-up
+        [next] #'dtm-precision-scroll-page-down
+        [remap evil-scroll-up] #'dtm-precision-scroll-up
+        [remap evil-scroll-down] #'dtm-precision-scroll-down
+        [remap evil-scroll-page-up] #'dtm-precision-scroll-page-up
+        [remap evil-scroll-page-down] #'dtm-precision-scroll-page-down))
 
 ;;* Core functionality extensions
 ;; Add colours to info pages to make them more readable

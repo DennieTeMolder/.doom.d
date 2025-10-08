@@ -1715,6 +1715,11 @@ Meant for hooking onto `prog-mode-hook' and `text-mode-hook'."
                       completion-at-point-functions)))
 
 ;;* Pixel-scroll-precision-mode
+(defun dtm-pixel-scroll-precision-mode-h ()
+  "Set `make-cursor-line-fully-visible' default value to t.
+Use with `pixel-scroll-precision-mode-hook'."
+  (setq-default make-cursor-line-fully-visible t))
+
 (defun dtm-window-usable-height ()
   "Return the usable height of the selected window.
 Return the pixel height of the area of the selected window
@@ -1743,32 +1748,24 @@ Higher values give slower scrolling.")
     (pixel-scroll-precision-interpolate delta nil 1)))
 
 (defun dtm-precision-scroll-up ()
-  "Scroll up half a window, obeying `pixel-scroll-precision-mode'."
+  "Smooth scroll up half a window."
   (interactive)
-  (if pixel-scroll-precision-mode
-      (dtm-precision-scroll-window-fraction 0.49)
-    (call-interactively #'evil-scroll-up)))
+  (dtm-precision-scroll-window-fraction 0.49))
 
 (defun dtm-precision-scroll-down ()
-  "Scroll down half a window, obeying `pixel-scroll-precision-mode'."
+  "Smooth scroll up down a window."
   (interactive)
-  (if pixel-scroll-precision-mode
-      (dtm-precision-scroll-window-fraction -0.49)
-    (call-interactively #'evil-scroll-down)))
+  (dtm-precision-scroll-window-fraction -0.49))
 
 (defun dtm-precision-scroll-page-up ()
-  "Scroll up a full page, obeying `pixel-scroll-precision-mode'."
+  "Smooth scroll up a full window."
   (interactive)
-  (if pixel-scroll-precision-mode
-      (dtm-precision-scroll-window-fraction 0.99)
-    (call-interactively #'evil-scroll-page-up)))
+  (dtm-precision-scroll-window-fraction 0.99))
 
 (defun dtm-precision-scroll-page-down ()
-  "Scroll down a full page, obeying `pixel-scroll-precision-mode'."
+  "Smooth scroll down a full window."
   (interactive)
-  (if pixel-scroll-precision-mode
-      (dtm-precision-scroll-window-fraction -0.99)
-    (call-interactively #'evil-scroll-page-down)))
+  (dtm-precision-scroll-window-fraction -0.99))
 
 ;;* Evil-collection
 (defun dtm-evil-collection-inhibit-insert-state-a (map-sym)
