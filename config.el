@@ -408,9 +408,11 @@
 (after! consult
   (add-hook 'consult-after-jump-hook #'recenter)
 
-  (consult-customize
-   ;; Set default selection for `consult-theme' based on `dtm-recommend-theme'
-   consult-theme :default (symbol-name (dtm-recommend-theme))))
+  ;; Ignore empty strings
+  (consult-customize consult-yank-pop :predicate (lambda (el) (length> el 0)))
+
+  ;; Set default selection for `consult-theme' based on `dtm-recommend-theme'
+  (consult-customize consult-theme :default (symbol-name (dtm-recommend-theme))))
 
 (after! consult-imenu
   ;; Should match entries from `imenu-generic-expression'
