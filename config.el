@@ -672,11 +672,15 @@
   :hook (doom-first-buffer . dtm-global-jinx-mode-safe)
   :general ([remap ispell-word] #'jinx-correct)
   :config
-  ;; Also use a red underline for dark themes (default is yellow)
+  ;; Use an orange underline for dark themes (default is yellow)
   (custom-set-faces!
     '(jinx-misspelled (((class color) (min-colors 88) (background dark)
                         (supports :underline (:style wave)))
-                       :underline (:style wave :color "#ff751a")))))
+                       :underline (:style wave :color "#ff751a"))))
+
+  ;; Move cursor back to what Evil considers as end of word
+  (advice-add 'jinx-next :after (lambda (_) (backward-char))
+              '((name . "backward-char"))))
 
 (use-package! magit-todos
   :defer t
