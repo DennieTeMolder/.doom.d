@@ -216,9 +216,10 @@
 (after! evil
   ;; Enable granular undo (remembers delete actions during insert state)
   (setq evil-want-fine-undo t
-        evil-magic 'very-magic
         evil-vsplit-window-right t
-        evil-split-window-below t)
+        evil-split-window-below t
+        ;; During search treat special characters as literal (prefix \v to disable)
+        evil-magic 'very-nomagic)
 
   ;; Indicate `evil-repeat' to ignore certain commands because they freeze emacs
   (evil-declare-not-repeat #'+workspace/switch-left)
@@ -232,12 +233,7 @@
   (map! :map evil-motion-state-map
         ;; Swap these two commands
         "'" #'evil-goto-mark
-        "`" #'evil-goto-mark-line
-        ;; Replace ex-search with isearch
-        "/" #'isearch-forward
-        "?" #'isearch-backward
-        "n" #'isearch-repeat-forward
-        "N" #'isearch-repeat-backward))
+        "`" #'evil-goto-mark-line))
 
 (after! evil-snipe
   ;; Make snipe commands (bound to f,F,t,T,s,S) go beyond the current line
@@ -267,10 +263,10 @@
 (use-package! ctrlf
   :hook (doom-first-buffer . ctrlf-mode)
   :init
-  ;; Leverage evil-search integration for n/N candidate cycling
+  ;; CTRLF can replace evil-ex-search-forward/backward
   (map! :map ctrlf-mode-map
-        [remap isearch-repeat-forward]  #'evil-ex-search-next
-        [remap isearch-repeat-backward] #'evil-ex-search-previous)
+        [remap evil-ex-search-forward]  #'ctrlf-forward-default
+        [remap evil-ex-search-backward] #'ctrlf-backward-default)
   :config
   ;; Use 'M-s s' while searching to change styles
   (setq ctrlf-default-search-style 'lax

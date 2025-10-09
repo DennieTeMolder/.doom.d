@@ -1600,12 +1600,24 @@ Intended as :around `evil-anzu-search-next' advice."
 
 (defun dtm-ctrlf-translate-evil (input)
   "Translate INPUT using `evil-transform-vim-style-regexp'."
-  (let ((evil-ex-search-vim-style-regexp t))
+  (let ((evil-ex-search-vim-style-regexp t)
+        (evil-magic 'very-magic))
     (or (evil-ex-pattern-regex (evil-ex-make-pattern input 'ignore t)) "")))
 
 (defun dtm-ctrlf-case-fold-p-evil (input)
   "Return non-nil if case should be ignored according to `evil-ex-regex-case'."
   (eq (evil-ex-regex-case input 'smart) 'insensitive))
+
+(defun dtm/evil-ex-search-set-offset (&optional offset)
+  "Set `evil-ex-search-offset' independent of `evil-ex-start-search'.
+OFFSET is number of lines after match (negative for before).
+Prefix with s/b or e to offset characters from start or end."
+  (interactive
+   (list (read-string "Search offset ([seb]?<num>): ")))
+  (goto-char evil-ex-search-start-point)
+  (evil-ex-search-find-next-pattern evil-ex-search-pattern)
+  (when (evil-ex-search-goto-offset offset)
+    (setq evil-ex-search-offset offset)))
 
 (defun dtm-ctrlf-evil-remember-a (str)
   "Respect `ctrlf--case-fold-search' and omit `evil-ex-search-history'.
@@ -1618,8 +1630,11 @@ Intended as :override `'ctrlf--evil-remember-search-string' advice."
              (ignore-case (if (eq ctrlf--case-fold-search :auto)
                               ctrlf--case-fold-search-last-guessed
                             ctrlf--case-fold-search)))
-        (setq evil-ex-search-direction 'forward
-              evil-ex-search-pattern (list translated-str ignore-case t))
+        (setq evil-ex-search-direction (if ctrlf--backward-p 'backward 'forward)
+              evil-ex-search-pattern (list translated-str ignore-case t)
+              evil-ex-search-start-point ctrlf--starting-point
+              evil-ex-search-offset nil
+              evil-ex-last-was-search t)
         (when evil-ex-search-persistent-highlight
           (evil-ex-search-activate-highlight evil-ex-search-pattern)))))
   str)
