@@ -220,8 +220,6 @@
         evil-vsplit-window-right t
         evil-split-window-below t)
 
-  (advice-add 'evil-ex-search :after #'doom-recenter-a)
-
   ;; Indicate `evil-repeat' to ignore certain commands because they freeze emacs
   (evil-declare-not-repeat #'+workspace/switch-left)
   (evil-declare-not-repeat #'+workspace/switch-right)
@@ -276,8 +274,7 @@
   :config
   ;; Use 'M-s s' while searching to change styles
   (setq ctrlf-default-search-style 'lax
-        ctrlf-go-to-end-of-match nil
-        ctrlf-auto-recenter t)
+        ctrlf-go-to-end-of-match nil)
 
   ;; Literal matching using `search-whitespace-regexp' like `isearch-lax-whitespace'
   (push '(lax . (:prompt "lax"
@@ -406,8 +403,6 @@
   (advice-add 'cape--dict-list :override #'dtm-cape--dict-list-a))
 
 (after! consult
-  (add-hook 'consult-after-jump-hook #'recenter)
-
   ;; Ignore empty strings
   (consult-customize consult-yank-pop :predicate (lambda (el) (length> el 0)))
 
@@ -540,7 +535,8 @@
         :n "TAB" #'dirvish-subtree-toggle
         :n "."   #'dtm/dirvish-find-file
         :n "?"   #'dirvish-dispatch)
-  ;; Descriptions only work when bound to `major-mode' map
+  ;; BUG descriptions only work when bound to `major-mode' map
+  ;; Ref: https://github.com/doomemacs/doomemacs/issues/8539
   (map! :map dired-mode-map
         :localleader
         :desc "Configure UI"    "c" #'dirvish-setup-menu
@@ -642,9 +638,7 @@
   (setq pixel-scroll-precision-interpolation-total-time 0.15
         pixel-scroll-precision-interpolation-between-scroll 0.005
         pixel-scroll-precision-large-scroll-height 40
-        pixel-scroll-precision-interpolate-page t
-        scroll-conservatively 101
-        scroll-margin 0)
+        pixel-scroll-precision-interpolate-page t)
 
   ;; Prevent comint prompts from being partially off-screen
   (add-hook 'pixel-scroll-precision-mode-hook #'dtm-pixel-scroll-precision-mode-h)
