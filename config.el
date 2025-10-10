@@ -810,7 +810,10 @@
   (add-hook 'org-export-before-processing-functions #'dtm-org-export-remember-source-file-h))
 
 (after! ox-odt
-  (setq org-odt-with-latex 'dvipng))
+  (setq org-odt-preferred-output-format "docx"
+        org-odt-with-latex 'dvipng)
+
+  (advice-add 'org-odt-convert :before-until #'dtm-org-odt-convert-prompt-a))
 
 ;; Ensure `org-mode-ox-odt' takes precedence over org's ox-odt.el.
 ;; Ref: https://github.com/kjambunathan/org-mode-ox-odt/discussions/133

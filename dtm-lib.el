@@ -940,6 +940,16 @@ Intended for `org-insert-heading-hook' when using `+org--insert-item'."
     (org-N-empty-lines-before-current 1)))
 
 ;;** Org-export (ox)
+(defun dtm-org-odt-convert-prompt-a (&optional target output-fmt _open)
+  "Request confirmation before conversion to `org-odt-preferred-output-format'.
+Intended as :before-until `org-odt-convert' advice.
+Should only activate during `org-export-dispatch' when not exporting async.
+If conversion is canceled return TARGET like `org-odt--export-wrap'."
+  (when (and (eq this-command 'org-export-dispatch)
+             (not noninteractive))
+    (unless (y-or-n-p (format "Convert '%s' to %s?" target output-fmt))
+      target)))
+
 (defvar dtm-org-export-source-file nil
   "Current source file. Set by `org-export-before-processing-functions'.
 Not guaranteed to be correct during async export with multiple processes.")
