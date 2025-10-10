@@ -1038,12 +1038,12 @@
   :hook ((prog-mode . topsy-mode)
          (magit-section-mode . topsy-mode))
   :config
-  ;; Add `header-line-indent' and debounce `topsy-fn' (helps w/ smooth scrolling)
+  ;; Account for `header-line-indent-width' and debounce `topsy-fn' (helps w/ smooth scrolling)
   (setq topsy-header-line-format
-        '((:propertize " " display (space :align-to 0))
-          header-line-indent
+        '((:propertize " " display (space :align-to header-line-indent-width))
           (:eval (dtm-topsy-fn-debounce))))
 
+  ;; Smarter fallback function
   (setf (alist-get nil topsy-mode-functions) #'dtm-topsy-fallback-fn)
 
   ;; We circumvent `header-line-indent-mode' for efficiency

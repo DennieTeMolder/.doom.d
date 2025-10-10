@@ -1819,7 +1819,7 @@ Ref: https://mbork.pl/2025-09-15_Entering_dates_in_Emacs_Calc"
 (defun dtm-topsy-fn-debounce ()
   "Debounce `topsy-fn' for better performance. For use in `header-line-format'.
 Only updates if `window-start' changed.
-Updates run on a 0.15s delay and also refreshes `header-line-indent'."
+Updates run on a 0.15s delay and also refresh `header-line-indent-width'."
   (unless (or (eq dtm-topsy--header-pos (window-start))
               (and (timerp dtm-topsy--timer)
                    (not (timer--triggered dtm-topsy--timer))))
@@ -1837,11 +1837,11 @@ Updates run on a 0.15s delay and also refreshes `header-line-indent'."
       (dtm-topsy-header-line-update))))
 
 (defun dtm-topsy-header-line-update (&rest _)
-  "Update `header-line-indent' and fore redisplay of header line."
+  "Update `header-line-indent-width' and redisplay the header line."
   (when topsy-mode
-    (and (not (bound-and-true-p header-line-indent-mode))
-         (fboundp 'header-line-indent--watch-line-number-width)
-         (header-line-indent--watch-line-number-width nil))
+    (or (bound-and-true-p header-line-indent-mode)
+        (setq-local header-line-indent-width
+                    (truncate (line-number-display-width 'columns))))
     ;; NOTE this will eval `header-line-format', be aware of infinite loops
     (force-mode-line-update)))
 
