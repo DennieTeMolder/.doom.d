@@ -1041,6 +1041,8 @@
           header-line-indent
           (:eval (dtm-topsy-fn-debounce))))
 
+  (setf (alist-get nil topsy-mode-functions) #'dtm-topsy-fallback-fn)
+
   ;; We circumvent `header-line-indent-mode' for efficiency
   (add-hook 'display-line-numbers-mode-hook #'dtm-topsy-header-line-update))
 

@@ -1835,6 +1835,17 @@ Updates run on a 0.15s delay and also refreshes `header-line-indent'."
     ;; NOTE this will eval `header-line-format', be aware of infinite loops
     (force-mode-line-update)))
 
+(defun dtm-topsy-fallback-fn ()
+  "Return first line of `thing-at-point' \\='defun.
+Will return nil when beyond end of defun, contrary to `beginning-of-defun'."
+  (when (> (window-start) 1)
+    (save-excursion
+      (when-let ((start (car (bounds-of-thing-at-point 'defun))))
+        (when (< start (point))
+          (goto-char start)
+          (font-lock-ensure (point) (pos-eol))
+          (buffer-substring (point) (pos-eol)))))))
+
 ;;* Commands
 (defun dtm/load-session (file)
   "Stripped down `doom/load-session' with a proper default value.
