@@ -1275,7 +1275,7 @@
               '(("Rule" "^rule \\(\\_<[^ \t():\n]+\\_>\\):" 1)))
   (add-hook 'python-mode-hook #'dtm-imenu-merge-index-h 'append)
 
-  (map! (:map python-mode-map
+  (map! (:map (python-mode-map python-ts-mode-map)
          :nv [C-return] #'dtm/elpy-send-current-and-step
          (:localleader
           :desc "Eval buffer"            "b"   #'elpy-shell-send-buffer
@@ -1290,7 +1290,7 @@
          :localleader
          :desc "Switch to script" "TAB" #'elpy-shell-switch-to-buffer)
 
-        (:map (python-mode-map inferior-python-mode-map)
+        (:map (python-mode-map python-ts-mode-map inferior-python-mode-map)
          :localleader :prefix ("c" . "Conda")
          "g" #'dtm/conda-env-guess
          "a" #'conda-env-activate
