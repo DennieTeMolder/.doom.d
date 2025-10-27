@@ -393,6 +393,8 @@
         (list (concat dtm-cape-dict-personal-dir "en_US.dic")
               (concat dtm-cape-dict-dir "en_US")))
 
+  (add-hook 'text-mode-hook #'dtm-cape-dict-replace-ispell-capf)
+
   ;; Enable cape-file in more modes then prog-mode
   (add-hook! '(conf-mode-hook text-mode-hook eshell-mode-hook)
              #'+corfu-add-cape-file-h)

@@ -775,6 +775,11 @@ is selected."
   "Collect all completions from the output of a capf as a list of strings."
   (all-completions "" (nth 2 capf-table)))
 
+(defun dtm-cape-dict-replace-ispell-capf ()
+  "Locally replace `ispell-completion-at-point' with `cape-dict' capf."
+  (remove-hook 'completion-at-point-functions #'ispell-completion-at-point 'local)
+  (add-hook 'completion-at-point-functions #'cape-dict 30 'local))
+
 (defun dtm-cape--dict-list-a (input)
   "Override advice for `cape--dict-list'.
 Uses prefix matching and sorts the output."
