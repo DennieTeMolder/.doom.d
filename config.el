@@ -327,7 +327,10 @@
   (setq doom-modeline-buffer-file-name-style 'truncate-except-project)
 
   ;; Only display encoding in modeline when it's not UTF-8
-  (add-hook 'after-change-major-mode-hook #'dtm-doom-modeline-conditional-encoding-h))
+  (add-hook 'after-change-major-mode-hook #'dtm-doom-modeline-conditional-encoding-h)
+
+  ;; BUG update `selection-info' when `buffer-position' segment is hidden
+  (advice-add 'evil-visual-highlight :after #'dtm-doom-modeline-evil-update-visual))
 
 (use-package! battery
   :defer 1

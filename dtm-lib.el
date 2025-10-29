@@ -297,6 +297,12 @@ Use for `after-change-major-mode-hook'."
 Intended as :filter-return `doom-modeline-segment--buffer-position' advice."
   (if (or line-number-mode column-number-mode) res (cdr res)))
 
+(defun dtm-doom-modeline-evil-update-visual (&optional arg)
+  "Update mode line if ARG is nil or non-negative.
+Intended as :after `evil-visual-highlight' advice."
+  (unless (and (numberp arg) (< arg 1))
+    (force-mode-line-update)))
+
 ;;* Doom Popup
 (defun dtm-popup-ensure ()
   "Ensure a popup is selected."
@@ -1606,14 +1612,6 @@ Alternative `conda-env-activate-for-buffer' that prompts before activation"
   (unless (or non-essential (dtm-buffer-remote-p))
     (dtm/conda-env-guess)))
 
-;;* Evil-anzu
-(defun dtm-evil-anzu-search-next-a (orig-fn &optional pattern &rest args)
-  "Set `case-fold-search' according to PATTERN and apply ORIG-FN with ARGS.
-Intended as :around `evil-anzu-search-next' advice."
-  (let ((case-fold-search (evil-ex-pattern-ignore-case
-                           (or pattern evil-ex-search-pattern))))
-    (apply orig-fn pattern args)))
-
 ;;* CTRLF
 (defun dtm-ctrlf-local-mode-disable ()
   "Disable `ctrlf-local-mode'."
@@ -1814,6 +1812,14 @@ Higher values give slower scrolling.")
 Intended as :after `evil-collection-inhibit-insert-state' advice."
   (evil-collection-define-key 'normal map-sym
     [remap evil-enter-replace-state] #'ignore))
+
+;;* Evil-anzu
+(defun dtm-evil-anzu-search-next-a (orig-fn &optional pattern &rest args)
+  "Set `case-fold-search' according to PATTERN and apply ORIG-FN with ARGS.
+Intended as :around `evil-anzu-search-next' advice."
+  (let ((case-fold-search (evil-ex-pattern-ignore-case
+                           (or pattern evil-ex-search-pattern))))
+    (apply orig-fn pattern args)))
 
 ;;* Calc
 (defun dtm-calc-read-date ()
