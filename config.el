@@ -1058,6 +1058,9 @@
 
   (add-hook 'comint-mode-hook #'dtm/word-wrap-mode-no-fill)
 
+  ;; Prompt to create directory if missing
+  (advice-add 'comint-write-input-ring :before #'dtm-comint-write-input-ring-a)
+
   ;; Shell style clear REPL binding
   (general-evil-define-key '(n) 'comint-mode-map
     "C-l" #'comint-clear-buffer))

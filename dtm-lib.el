@@ -1341,6 +1341,17 @@ Intended for `pdf-annot-edit-contents-minor-mode-hook'"
   (goto-char (point-max))
   (evil-insert-state))
 
+;;* Comint
+(defun dtm-comint-write-input-ring-a ()
+  "Prompt user to create dir for `comint-input-ring-file-name' if missing.
+Intended as :before `comint-write-input-ring' advice"
+  (when-let ((dir (and comint-input-ring-file-name
+                       (file-name-directory comint-input-ring-file-name))))
+    (and (not noninteractive)
+         (not (file-exists-p dir))
+         (y-or-n-p (format "Comint-history: create '%s'?" dir))
+         (make-directory dir 'parents))))
+
 ;;* ESS
 (defun dtm-ess-insert-string (mystr)
   "Insert string, undo if the same input event is issued twice"
