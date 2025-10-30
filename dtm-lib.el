@@ -1662,6 +1662,22 @@ Intended as :override `'ctrlf--evil-remember-search-string' advice."
           (evil-ex-search-activate-highlight evil-ex-search-pattern)))))
   str)
 
+(defun dtm-ctrlf-evil-substitute ()
+  "Run `evil-ex' substitute with the current/last CTRLF search query.
+Ref: `ctrlf-occur'."
+  (interactive)
+  (let ((input (if ctrlf--active-p (minibuffer-contents)
+                 (car ctrlf-search-history))))
+    (unless input
+      (user-error "No previous search"))
+    (let* ((translator (plist-get
+                        (alist-get ctrlf--style ctrlf-style-alist)
+                        :translator))
+           (regexp (funcall translator input)))
+      (save-excursion
+        (with-current-buffer (window-buffer (minibuffer-selected-window))
+          (evil-ex (concat "%s/" regexp "/")))))))
+
 (defun dtm-ctrlf-yank-word-or-char ()
   "CTRLF version of `isearch-yank-word-or-char' (C-w).
 Ref: https://github.com/radian-software/ctrlf/issues/65"

@@ -293,7 +293,8 @@
   (advice-add 'ctrlf--start :before (lambda (&rest _) (evil-ex-nohighlight)))
 
   (map! :map ctrlf-minibuffer-mode-map
-        "M-w" #'dtm-ctrlf-yank-word-or-char))
+        "M-w" #'dtm-ctrlf-yank-word-or-char
+        "M-%" #'dtm-ctrlf-evil-substitute))
 
 (after! projectile
   ;; Projectile sorting by recently opened
