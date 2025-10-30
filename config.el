@@ -930,7 +930,7 @@
    org-roam-dailies-capture-templates
    '(("d" "default" entry "* %?"
       :target (file+head "%<%Y-%m-%d>.org"
-                         "#+title: %<%a %b %d %Y>\n#+date: %<%A %B %d, Week %W %Y>\n \n* Agenda\n")
+                         "#+title: %<%a %b %d %Y>\n#+date: %<%A %B %d, Week %V %Y>\n \n* Agenda\n")
       :empty-lines 1))))
 
 (when (modulep! :tools biblio)
