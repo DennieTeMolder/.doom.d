@@ -823,10 +823,6 @@
 
   (advice-add 'org-odt-convert :before-until #'dtm-org-odt-convert-prompt-a))
 
-;; Ensure `org-mode-ox-odt' takes precedence over org's ox-odt.el.
-;; Ref: https://github.com/kjambunathan/org-mode-ox-odt/discussions/133
-(dtm-straight-prioritize "ox-odt")
-
 (use-package! org-appear
   :defer t
   :config

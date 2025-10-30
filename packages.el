@@ -68,15 +68,6 @@
 ;; Only used by `lispy-occur', use `consult-line' instead
 (package! swiper :ignore t)
 
-;; Improved Org ODT export
-(package! ox-odt
-  :recipe (:host github :repo "kjambunathan/org-mode-ox-odt"
-           :files ("lisp/ox-odt.el"
-                   "lisp/odt.el"
-                   "etc"
-                   "docs"
-                   "contrib/odt/LibreOffice")))
-
 ;;* Custom packages
 (package! ess-r-insert-obj)
 (package! transpose-frame)
