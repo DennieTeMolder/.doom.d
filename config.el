@@ -208,6 +208,10 @@
         ("Anaconda packages" "https://anaconda.org/search?q=%s")))
 
 (after! text-mode
+  ;; Disable ispell capf and replace with cape-dict
+  (setq text-mode-ispell-word-completion nil)
+  (add-hook 'text-mode-hook #'dtm-cape-dict-add-h)
+
   ;; Disable visual line mode by default
   (remove-hook 'text-mode-hook #'visual-line-mode)
   (remove-hook 'text-mode-hook #'+word-wrap-mode))
@@ -395,8 +399,6 @@
   (setq cape-dict-file
         (list (concat dtm-cape-dict-personal-dir "en_US.dic")
               (concat dtm-cape-dict-dir "en_US")))
-
-  (add-hook 'text-mode-hook #'dtm-cape-dict-replace-ispell-capf)
 
   ;; Enable cape-file in more modes then prog-mode
   (add-hook! '(conf-mode-hook text-mode-hook eshell-mode-hook)
