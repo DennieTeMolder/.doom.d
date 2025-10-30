@@ -944,10 +944,20 @@ Also syncs `org-appear-mode' and `org-pretty-entities-include-sub-superscripts'.
 (defun dtm-org-insert-heading-check-blank ()
   "Enforce `org-blank-before-new-entry' assuming point is on a new entry.
 Intended for `org-insert-heading-hook' when using `+org--insert-item'."
-  (when (save-excursion
-          (org-forward-heading-same-level -1)
-          (org--blank-before-heading-p))
-    (org-N-empty-lines-before-current 1)))
+  (cond ((save-excursion
+           (org-forward-heading-same-level -1)
+           (org--blank-before-heading-p))
+         (org-N-empty-lines-before-current 1))
+        ((save-excursion
+           (org-forward-heading-same-level 1)
+           (org--blank-before-heading-p))
+         (org-N-empty-lines-before-current 1))
+        ((save-excursion
+           (org-forward-heading-same-level 2)
+           (org--blank-before-heading-p))
+         (save-excursion
+           (org-forward-heading-same-level 1)
+           (org-N-empty-lines-before-current 1)))))
 
 ;;** Org-export (ox)
 (defun dtm-org-odt-convert-prompt-a (&optional target output-fmt _open)
@@ -957,7 +967,7 @@ Should only activate during `org-export-dispatch' when not exporting async.
 If conversion is canceled return TARGET like `org-odt--export-wrap'."
   (when (and (eq this-command 'org-export-dispatch)
              (not noninteractive))
-    (unless (y-or-n-p (format "Convert '%s' to %s?" target output-fmt))
+    (unless (y-or-n-p (format "Convert '%s' to '%s'?" target output-fmt))
       target)))
 
 (defvar dtm-org-export-source-file nil
