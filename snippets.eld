@@ -77,7 +77,7 @@ ess-r-mode
 (timer "system.time({" n r> "})" n)
 (opt "options(plot.width = " (p "7") ", plot.height = " (p "5") ")" q)
 
-python-mode
+python-mode python-ts-mode
 
 (__ "#!/usr/bin/env python3" n)
 (rule "rule " (s name) ":" n
