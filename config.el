@@ -815,7 +815,10 @@
 
 (after! ox
   ;; BUG used by `dtm-reftex-TeX-master-file-a' to fix errors when exporting to buffer
-  (add-hook 'org-export-before-processing-functions #'dtm-org-export-remember-source-file-h))
+  (add-hook 'org-export-before-processing-functions #'dtm-org-export-remember-source-file-h)
+
+  ;; Make ODT/man/ASCII export ignore table width cookies (e.g. <10>)
+  (advice-add 'org-export-table-cell-width :override #'ignore))
 
 (after! ox-odt
   (setq org-odt-preferred-output-format "docx"
