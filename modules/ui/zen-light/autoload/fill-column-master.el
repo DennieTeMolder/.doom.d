@@ -28,9 +28,8 @@
     (remove-hook 'text-scale-mode-hook #'fill-column-master-adjust 'local)))
 
 (defun fill-column-master-reset (window)
-  "Reset the min-margins, fringes, and margins of WINDOW."
+  "Reset the min-margins and margins of WINDOW."
   (set-window-parameter window 'min-margins nil)
-  (set-window-fringes window nil)
   (set-window-margins window nil))
 
 (defun fill-column-master-adjust (&optional window)
@@ -38,12 +37,7 @@
   (or window (setq window (selected-window)))
   (with-selected-window window
     (fill-column-master-reset window)
-    (if (not (or fill-column-center-mode fill-column-visual-mode))
-        (kill-local-variable 'mode-line-right-align-edge)
-      ;; Keep margin right aligned, ref: https://github.com/seagle0128/doom-modeline/issues/701
-      (if (and fill-column-center-mode (not fill-column-visual-mode))
-          (setq-local mode-line-right-align-edge 'right-margin)
-        (setq-local mode-line-right-align-edge 'window))
+    (when (or fill-column-center-mode fill-column-visual-mode)
       (let* ((scale (expt text-scale-mode-step text-scale-mode-amount))
              ;; +2 to match with `auto-fill-mode'
              (margin (- (window-width) (truncate (* (+ fill-column 2) scale)))))
