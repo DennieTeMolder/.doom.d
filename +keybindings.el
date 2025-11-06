@@ -21,7 +21,15 @@
 
       ;; Use mouse buttons to go forward/backward through window configs
       :n [mouse-8] #'winner-undo
-      :n [mouse-9] #'winner-redo)
+      :n [mouse-9] #'winner-redo
+
+      ;; Make mouse click behave same in margin is in buffer
+      [left-margin mouse-1] (global-key-binding [mouse-1])
+      [left-margin mouse-2] (global-key-binding [mouse-2])
+      [left-margin mouse-3] (global-key-binding [mouse-3])
+      [right-margin mouse-1] (global-key-binding [mouse-1])
+      [right-margin mouse-2] (global-key-binding [mouse-2])
+      [right-margin mouse-3] (global-key-binding [mouse-3]))
 
 ;;* <leader>
 (map! :leader
