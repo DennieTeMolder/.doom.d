@@ -757,6 +757,8 @@
     '(outline-1 :height 1.2)
     '(outline-2 :height 1.1)
     '(outline-3 :height 1.05)
+    ;; Prevent doom-themes from overwriting ellipsis color
+    '(org-ellipsis :foreground unspecified :background unspecified)
     '(org-headline-done :strike-through t))
 
   ;; Enforce `+org/insert-item-below' to respect `org-blank-before-new-entry'
