@@ -329,10 +329,8 @@
   (add-to-list 'recentf-exclude "\\`/\\'"))
 
 (after! doom-modeline
-  (setq doom-modeline-buffer-file-name-style 'truncate-except-project)
-
-  ;; Only display encoding in modeline when it's not UTF-8
-  (add-hook 'after-change-major-mode-hook #'dtm-doom-modeline-conditional-encoding-h)
+  (setq doom-modeline-buffer-file-name-style 'truncate-except-project
+        doom-modeline-buffer-encoding 'nondefault)
 
   ;; BUG update `selection-info' when `buffer-position' segment is hidden
   (advice-add 'evil-visual-highlight :after #'dtm-doom-modeline-evil-update-visual))

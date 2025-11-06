@@ -285,13 +285,6 @@ Respects `delete-by-moving-to-trash'. Intended as :around advice."
       (file-in-directory-p project-root doom-local-dir)))
 
 ;;* Doom-modeline
-(defun dtm-doom-modeline-conditional-encoding-h ()
-  "Only display encoding in modeline when it's not UTF-8.
-Use for `after-change-major-mode-hook'."
-  (setq-local doom-modeline-buffer-encoding
-              (not (memq (coding-system-get buffer-file-coding-system :category)
-                         '(coding-category-undecided coding-category-utf-8)))))
-
 (defun dtm-doom-modeline-segment-buf-pos-a (res)
   "Conditionally remove `doom-modeline-wspc' from start of RES to fix spacing.
 Intended as :filter-return `doom-modeline-segment--buffer-position' advice."
