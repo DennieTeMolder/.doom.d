@@ -294,7 +294,8 @@
 
   (map! :map ctrlf-minibuffer-mode-map
         "M-w" #'dtm-ctrlf-yank-word-or-char
-        "M-%" #'dtm-ctrlf-evil-substitute))
+        "M-%" #'dtm-ctrlf-evil-substitute
+        "M-s w" #'dtm-ctrlf-toggle-word))
 
 (after! projectile
   ;; Projectile sorting by recently opened

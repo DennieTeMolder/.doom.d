@@ -1695,6 +1695,11 @@ Ref: https://github.com/radian-software/ctrlf/issues/65"
     (goto-char (field-end (point-max)))
     (insert yank)))
 
+(defun dtm-ctrlf-toggle-word ()
+  "Toggle CTRLF style to `word' or back to `literal'."
+  (interactive)
+  (setq ctrlf--style (if (eq ctrlf--style 'word) 'literal 'word)))
+
 ;;* Tempel
 (defun dtm/tempel-open-template-file ()
   "Open the last file in `tempel-path' in the other window."
