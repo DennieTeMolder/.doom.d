@@ -1324,7 +1324,8 @@ The DATE is derived from the #+title which must match the Org date format."
 
 ;;* Pdf-tools
 (defun dtm/pdf-view-fit-half-height ()
-  "Fit PDF height to 2x window (minus 0.1 to fix scrolling)"
+  "Fit PDF height to 2x window (minus 0.1 to fix scrolling).
+Ref: `pdf-view-enlarge'"
   (interactive)
   (pdf-view-fit-height-to-window)
   (let* ((size (pdf-view-image-size))
@@ -1761,15 +1762,6 @@ Ref: https://github.com/minad/tempel"
         (cons 'l template)
       (message "Template %s not found" (cadr elt))
       nil)))
-
-;; Unused
-(defun dtm-tempel-setup-capf-h ()
-  "Add the Tempel Capf to `completion-at-point-functions'.
-Caution: make sure `tempel-trigger-prefix' is not nil.
-Meant for hooking onto `prog-mode-hook' and `text-mode-hook'."
-  (setq-local completion-at-point-functions
-                (cons #'tempel-expand
-                      completion-at-point-functions)))
 
 ;;* Pixel-scroll-precision-mode
 (defun dtm-pixel-scroll-precision-mode-h ()
