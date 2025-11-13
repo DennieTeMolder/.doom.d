@@ -737,7 +737,6 @@
         org-indent-indentation-per-level 1
         org-pretty-entities-include-sub-superscripts nil
         org-list-demote-modify-bullet '(("+" . "-") ("-" . "+") ("*" . "+"))
-        org-use-property-inheritance t  ; can cause slowdown when searching
         org-image-actual-width '(640)   ; default if no ATTR_ is provided
         org-startup-shrink-all-tables t
         org-clock-mode-line-total 'current
@@ -845,6 +844,9 @@
         org-modern-list '((?+ . "›")
                           (?- . "‒")
                           (?* . "•")))
+
+  ;; We use Iosevka expanded making normal width already a step down
+  (custom-set-faces! '(org-modern-label :width normal :height unspecified))
 
   ;; Introduce `org-caption' face to enable spell checking
   (advice-add 'org-modern--make-font-lock-keywords :filter-return
