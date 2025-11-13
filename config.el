@@ -701,10 +701,10 @@
                                dtm-tempel-include))
 
   (map! :map tempel-map
-        "<tab>"     #'tempel-next
-        "<backtab>" #'tempel-previous
-        "C-c C-c"   #'tempel-done
-        "C-c C-k"   #'tempel-abort))
+        :i "<tab>"     #'tempel-next
+        :i "<backtab>" #'tempel-previous
+           "C-c C-c"   #'tempel-done
+           "C-c C-k"   #'tempel-abort))
 
 ;;* Writing/Organisation Tools
 ;; Spell checking
