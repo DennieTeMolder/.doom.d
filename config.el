@@ -3,10 +3,11 @@
 ;; Place your private configuration here! Remember, you do not need to run 'doom
 ;; sync' after modifying this file!
 
-;; NOTE custom functions/variables/macros are prefixed with 'dtm'
+;; NOTE personal functions/variables/macros are prefixed with 'dtm'
 (load! "dtm-lib")
 
 ;;* Machine local settings
+;; Use float for size as it indicates point size rather then pixels (better scaling)
 (defvar dtm-default-font-size 11.0)
 (defvar dtm-maximize-on-startup nil)
 (defvar dtm-maximize-performance nil)
@@ -40,11 +41,9 @@
 ;; refresh your font settings. If Emacs still can't find your font, it likely
 ;; wasn't installed correctly. Font issues are rarely Doom issues!
 
-;; Use float for size as it indicates point size rather then pixels (better scaling)
-(setq doom-font (font-spec :family "Iosevka Term SS05" :width 'expanded
+(setq doom-font (font-spec :family "Iosevka Term" :width 'expanded
                            :size dtm-default-font-size)
-      doom-variable-pitch-font (font-spec :family "Iosevka Aile")
-      doom-symbol-font (font-spec :family (font-get doom-font :family)))
+      doom-variable-pitch-font (font-spec :family "Iosevka Aile" :width 'normal))
 
 (dtm-doom-check-fonts)
 

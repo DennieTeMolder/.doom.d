@@ -192,10 +192,13 @@ See also: `split-window-sensibly'"
 (defun dtm-doom-check-fonts ()
   "Check if doom fonts are installed, otherwise prevent a blank display."
   (when (display-graphic-p)
-   (dolist (spec (list doom-font doom-serif-font doom-variable-pitch-font))
-     (when (and spec (not (find-font spec)))
-       (warn "Font \"%s\" not found!" (font-get spec :family))
-       (font-put spec :family nil)))))
+    (dolist (spec (list doom-font doom-variable-pitch-font doom-serif-font
+                        doom-emoji-font doom-symbol-font))
+      (when (and spec (not (find-font spec)))
+        (warn "Font not found: %s (width: %s)"
+              (font-get spec :family) (font-get spec :width))
+        (font-put spec :family nil)
+        (font-put spec :width nil)))))
 
 (defun dtm-doom-ascii-banner-fn ()
   (let* ((banner
