@@ -110,6 +110,7 @@
 (setq confirm-kill-emacs nil
       delete-by-moving-to-trash t
       text-scale-mode-step 1.1
+      doom-font-increment 1
       ;; Add clipboard to kill ring
       ;; Cycle w/ <C-p> or <C-n> after pasting or use <M-y> `consult-yank-pop'
       save-interprogram-paste-before-kill t
