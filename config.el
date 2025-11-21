@@ -450,9 +450,13 @@
         :desc "Show help" "h" #'helpful-symbol))
 
 (after! persp-mode
-  ;; Open private config files in a dedicated workspace
-  (advice-add 'doom/open-private-config :before #'dtm-doom-private-goto-workspace)
-  (advice-add 'doom/find-file-in-private-config :before #'dtm-doom-private-goto-workspace)
+  ;; Open specific buffers in a dedicated workspace
+  (advice-add 'persp-add-or-not-on-find-file :before #'dtm-workspace-dedicated-persp-a)
+  (setq dtm-workspace-dedicated-alist
+        `((,doom-user-dir . "*config*")
+          (,(expand-file-name "~/Sync/PKM/notes/") . "*bib*")
+          (,(expand-file-name "~/Sync/Zotero/") . "*bib*")
+          (,(expand-file-name "~/Sync/PKM/") . "*roam*")))
 
   ;; Fix default input value for `doom/load-session'
   (global-set-key [remap doom/load-session] #'dtm/load-session))
@@ -916,15 +920,6 @@
   ;; Add ID, Type, Tags, and Aliases to top of backlinks buffer.
   (advice-add #'org-roam-buffer-set-header-line-format :after #'dtm-org-roam-add-preamble-a)
 
-  ;; Open all roam buffers in a dedicated workspace
-  (dolist (symbol '(org-roam-node-find
-                    org-roam-node-random
-                    org-roam-ref-find
-                    org-roam-dailies--capture
-                    org-roam-buffer-display-dedicated
-                    org-roam-buffer-toggle))
-    (advice-add symbol :before #'dtm-org-roam-goto-workspace))
-
   ;; Roam templates
   (setq
    org-roam-capture-templates
@@ -948,12 +943,7 @@
         citar-org-roam-subdir "notes")
 
   ;; Ensure notes are shown by `citar-open-notes'
-  (add-transient-hook! 'citar-has-notes (require 'citar-org-roam))
-
-  ;; Dedicated workspaces
-  (advice-add 'citar-file-open :before #'dtm-citar-goto-workspace)
-  (advice-add 'citar-create-note :before #'dtm-org-roam-goto-workspace)
-  (advice-add 'citar-open-note :before #'dtm-org-roam-goto-workspace))
+  (add-transient-hook! 'citar-has-notes (require 'citar-org-roam)))
 
 ;; Org-noter settings
 (after! org-noter

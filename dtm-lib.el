@@ -238,14 +238,6 @@ Respects `delete-by-moving-to-trash'. Intended as :around advice."
       (+workspace-rename (+workspace-current-name) name))
     (+workspace/display)))
 
-(defun dtm-doom-private-goto-workspace ()
-  "Open/create the dedicated private config workspace"
-  (dtm-workspace-switch-maybe "*config*"))
-
-(defun dtm-citar-goto-workspace (&rest _)
-  "Open/create the dedicated citar bibliography workspace"
-  (dtm-workspace-switch-maybe "*bib*"))
-
 (defun dtm/buffer-move-to-workspace (name &optional alist)
   "Move `current-buffer' to workspace with NAME and switch"
   (interactive (list
@@ -259,6 +251,20 @@ Respects `delete-by-moving-to-trash'. Intended as :around advice."
         (persp-remove-buffer buffer persp))
       (dtm-workspace-switch-maybe name))
     (display-buffer-same-window buffer alist)))
+
+(defvar dtm-workspace-dedicated-alist '()
+  "List of base paths to open in a dedicated workspace/perspective.
+Each element should be a `cons' of (PATH . WORKSPACE).")
+
+(defun dtm-workspace-dedicated-persp-a ()
+  "Open buffer in dedicated workspace based on `dtm-workspace-dedicated-alist'.
+Intended as :before `persp-add-or-not-on-find-file' advice."
+  (when-let ((path (or buffer-file-name default-directory)))
+    (setq path (file-truename (expand-file-name path)))
+    (cl-dolist (elt dtm-workspace-dedicated-alist)
+      (when (string-prefix-p (car elt) path)
+        (and (cdr elt) (dtm-workspace-switch-maybe (cdr elt)))
+        (cl-return)))))
 
 (defun dtm-get-buffer (b-or-n)
   "Wrapper for `get-buffer', that handles `read-buffer' cons cells."
@@ -1229,14 +1235,9 @@ Use as advice :before `org-tree-slide--setup'."
   (jinx-mode -1))
 
 ;;* Org-roam
-(defun dtm-org-roam-goto-workspace (&rest _)
-  "Open/create the dedicated org-roam workspace"
-  (dtm-workspace-switch-maybe "*roam*"))
-
 (defun dtm/org-roam-open-index ()
   "Open `dtm-org-roam-index-file' in dedicated workspace, activate `org-overview'."
   (interactive)
-  (dtm-org-roam-goto-workspace)
   (find-file (expand-file-name dtm-org-roam-index-file org-roam-directory))
   (while-let ((lvl (org-up-heading-safe))
               ((not (eq 1 lvl)))))
