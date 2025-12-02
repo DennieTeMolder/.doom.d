@@ -783,13 +783,12 @@
   ;; Prettify, enable hard wrapping and automate paragraph filling
   (add-hook 'org-mode-hook #'dtm-org-mode-setup-h))
 
-;; Keys bound in after! org seem to get overwritten, this works
+;; Keys bound in (after! org) seem to get overwritten, this works
 (after! org-keys
   (map! :map org-mode-map
-        :ie [tab]   #'org-cycle
         :n  "C-j"   #'+org/return
-        :i  "C-c ]" #'org-cite-insert
-        :g  "C-c [" #'org-roam-node-insert
+        :ni "C-c ]" #'org-cite-insert
+        :ni "C-c [" #'org-roam-node-insert
         (:localleader
          :desc "Clock-in after last"   "c a" #'dtm/org-clock-in-after
          :desc "Toggle pretty visuals" "v"   #'dtm/org-pretty-mode-toggle)
