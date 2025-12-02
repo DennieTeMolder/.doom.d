@@ -848,8 +848,8 @@
                           (?- . "‒")
                           (?* . "•")))
 
-  ;; We use Iosevka expanded making normal width already a step down
-  (custom-set-faces! '(org-modern-label :width normal :height unspecified))
+  ;; We use Iosevka expanded -> normal width gives narrower text
+  (custom-set-faces! '(org-modern-label :width normal :height 0.9))
 
   ;; Introduce `org-caption' face to enable spell checking
   (advice-add 'org-modern--make-font-lock-keywords :filter-return
