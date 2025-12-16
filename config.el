@@ -541,6 +541,7 @@
         :n "o"   #'dirvish-quick-access
         :n "y"   #'dirvish-yank-menu
         :n "Y"   #'dtm/dirvish-copy-file-name
+        :n "z"   nil
         :n "TAB" #'dirvish-subtree-toggle
         :n "."   #'dtm/dirvish-find-file
         :n "?"   #'dirvish-dispatch)
