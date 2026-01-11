@@ -1891,6 +1891,7 @@ Updates run on a 0.15s delay and also refresh `header-line-indent-width'."
 Will return nil when beyond end of defun, contrary to `beginning-of-defun'."
   (when (> (window-start) 1)
     (save-excursion
+      (goto-char (window-start))
       (when-let ((start (car (bounds-of-thing-at-point 'defun))))
         (when (< start (point))
           (goto-char start)
