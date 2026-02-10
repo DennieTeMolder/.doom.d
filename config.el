@@ -1116,6 +1116,9 @@
   ;; Prettier function evaluation
   (setq lispy-eval-display-style 'overlay)
 
+  ;; BUG patch compatibility with Eros's API changes
+  (defalias 'eros--eval-overlay #'eros-eval-overlay)
+
   ;; Make `lispy-goto-symbol' (M-.) behave better with evil
   (evil-add-command-properties #'lispy-goto-symbol :jump t)
   (advice-add 'lispy-goto-symbol :after (lambda (&rest _) (evil-insert-state)))
