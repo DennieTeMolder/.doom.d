@@ -169,11 +169,11 @@
      :icon (nerd-icons-octicon "nf-oct-book" :face 'doom-dashboard-menu-title)
      :action doom/help)))
 
-;; Reflect `delete-by-moving-to-trash' state in y-or-n-p prompts
-(advice-add 'doom/delete-this-file :around #'dtm-y-or-n-p-trash-a)
-
 ;;* General Doom Settings
 (setq doom-scratch-initial-major-mode t)
+
+;; Reflect `delete-by-moving-to-trash' state in y-or-n-p prompts
+(advice-add 'doom/delete-this-file :around #'dtm-y-or-n-p-trash-a)
 
 ;; Report package load times when running 'emacs --debug-init'
 (when init-file-debug
@@ -450,6 +450,9 @@
         :desc "Show help" "h" #'helpful-symbol))
 
 (after! persp-mode
+  ;; Exclude Dirvish buffers because they mess with `+vertico/switch-workspace-buffer' previews
+  (add-to-list 'persp-common-buffer-filter-functions #'dtm-dirvish-buffer-p)
+
   ;; Open specific buffers in a dedicated workspace
   (advice-add 'persp-add-or-not-on-find-file :before #'dtm-workspace-dedicated-persp-a)
   (setq dtm-workspace-dedicated-alist
@@ -507,7 +510,6 @@
 
 (after! dirvish
   (setq dirvish-hide-details t
-        dirvish-reuse-session nil
         dirvish-quick-access-entries
         `(("D" "~/Downloads/" "Downloads")
           ("dc" ,doom-core-dir "Doom Core")
