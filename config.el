@@ -27,7 +27,7 @@
 ;; - `doom-variable-pitch-font' -- a non-monospace font (where applicable)
 ;; - `doom-big-font' -- used for `doom-big-font-mode'; use this for
 ;;   presentations or streaming.
-;; - `doom-unicode-font' -- for unicode glyphs
+;; - `doom-symbol-font' -- for symbols
 ;; - `doom-serif-font' -- for the `fixed-pitch-serif' face
 ;;
 ;; See 'C-h v doom-font' for documentation and more examples of what they
@@ -40,7 +40,6 @@
 ;; up, `M-x eval-region' to execute elisp code, and 'M-x doom/reload-font' to
 ;; refresh your font settings. If Emacs still can't find your font, it likely
 ;; wasn't installed correctly. Font issues are rarely Doom issues!
-
 (setq doom-font (font-spec :family "Iosevka Term" :width 'expanded
                            :size dtm-default-font-size)
       doom-variable-pitch-font (font-spec :family "Iosevka Aile" :width 'normal))
@@ -74,23 +73,22 @@
 (setq display-line-numbers-type t)
 
 ;; Whenever you reconfigure a package, make sure to wrap your config in an
-;; `after!' block, otherwise Doom's defaults may override your settings. E.g.
+;; `with-eval-after-load' block, otherwise Doom's defaults may override your
+;; settings. E.g.
 ;;
-;;   (after! PACKAGE
+;;   (with-eval-after-load 'PACKAGE
 ;;     (setq x y))
 ;;
 ;; The exceptions to this rule:
 ;;
 ;;   - Setting file/directory variables (like `org-directory')
 ;;   - Setting variables which explicitly tell you to set them before their
-;;     package is loaded (see 'C-h v VARIABLE' to look up their documentation).
+;;     package is loaded (see 'C-h v VARIABLE' to look them up).
 ;;   - Setting doom variables (which start with 'doom-' or '+').
 ;;
 ;; Here are some additional functions/macros that will help you configure Doom.
 ;;
 ;; - `load!' for loading external *.el files relative to this one
-;; - `use-package!' for configuring packages
-;; - `after!' for running code after a package has loaded
 ;; - `add-load-path!' for adding directories to the `load-path', relative to
 ;;   this file. Emacs searches the `load-path' when you load packages with
 ;;   `require' or `use-package'.
@@ -207,7 +205,7 @@
         ("AUR"               "https://aur.archlinux.org/packages?O=0&K=%s")
         ("Anaconda packages" "https://anaconda.org/search?q=%s")))
 
-(after! text-mode
+(with-eval-after-load 'text-mode
   ;; Disable ispell capf and replace with cape-dict
   (setq text-mode-ispell-word-completion nil)
   (add-hook 'text-mode-hook #'dtm-cape-dict-add-h)
@@ -217,7 +215,7 @@
   (remove-hook 'text-mode-hook #'+word-wrap-mode))
 
 ;;* Core functionality modifications
-(after! evil
+(with-eval-after-load 'evil
   ;; Enable granular undo (remembers delete actions during insert state)
   (setq evil-want-fine-undo t
         evil-vsplit-window-right t
@@ -239,20 +237,20 @@
         "'" #'evil-goto-mark
         "`" #'evil-goto-mark-line))
 
-(after! evil-snipe
+(with-eval-after-load 'evil-snipe
   ;; Make snipe commands (bound to f,F,t,T,s,S) go beyond the current line
   (setq evil-snipe-scope 'visible)
 
   (add-to-list 'evil-snipe-disabled-modes 'pdf-view-mode))
 
-(after! evil-collection
+(with-eval-after-load 'evil-collection
   ;; BUG: inhibit-insert-state inhibits all replace bindings but `evil-enter-replace-state'
   (advice-add 'evil-collection-inhibit-insert-state :after #'dtm-evil-collection-inhibit-insert-state-a))
 
-(after! evil-anzu
+(with-eval-after-load 'evil-anzu
   (advice-add 'evil-anzu-search-next :around #'dtm-evil-anzu-search-next-a))
 
-(after! isearch
+(with-eval-after-load 'isearch
   ;; Perform lax matching across new lines and comment chars
   (setq search-whitespace-regexp "[ \t\n]+\\s<*[ \t]*"
         isearch-lazy-count t
@@ -264,7 +262,7 @@
   (custom-set-faces! '(isearch :inherit evil-ex-search)))
 
 ;; Improved isearch with evil-ex-search integration
-(use-package! ctrlf
+(use-package ctrlf
   :hook (doom-first-buffer . ctrlf-mode)
   :init
   ;; CTRLF can replace evil-ex-search-forward/backward
@@ -297,7 +295,7 @@
         "M-%" #'dtm-ctrlf-evil-substitute
         "M-s w" #'dtm-ctrlf-toggle-word))
 
-(after! projectile
+(with-eval-after-load 'projectile
   ;; Projectile sorting by recently opened
   (setq projectile-sort-order 'recently-active
         ;; Replace the doom-project-ignored-p function to ignore remote projects
@@ -316,7 +314,7 @@
                    (concat " | " project-name)))
                t))
 
-(after! recentf
+(with-eval-after-load 'recentf
   ;;Exclude non-existent & remote files from recent files list after cleanup
   (setq recentf-keep '(dtm-file-local-readable-p))
   (add-to-list 'recentf-exclude #'dtm-ess-plot-file-p t)
@@ -329,20 +327,20 @@
   (add-to-list 'recentf-exclude "/autosave/?\\'")
   (add-to-list 'recentf-exclude "\\`/\\'"))
 
-(after! doom-modeline
+(with-eval-after-load 'doom-modeline
   (setq doom-modeline-buffer-file-name-style 'truncate-except-project
         doom-modeline-buffer-encoding 'nondefault)
 
   ;; BUG update `selection-info' when `buffer-position' segment is hidden
   (advice-add 'evil-visual-highlight :after #'dtm-doom-modeline-evil-update-visual))
 
-(use-package! battery
+(use-package battery
   :defer 1
   :config
   (unless (string= "N/A" (alist-get ?p (funcall battery-status-function)))
     (display-battery-mode +1)))
 
-(use-package! mlscroll
+(use-package mlscroll
   :hook (doom-modeline-mode . mlscroll-mode)
   :init
   (remove-hook 'doom-modeline-mode-hook #'column-number-mode)
@@ -356,19 +354,19 @@
 
   (line-number-mode -1))
 
-(after! vertico
+(with-eval-after-load 'vertico
   (setq vertico-resize 'grow-only))
 
-(after! vertico-multiform
+(with-eval-after-load 'vertico-multiform
   ;; Preserve original candidate order for specific functions
-  (pushnew! vertico-multiform-commands
-            '(dirvish-history-jump (vertico-sort-function . dtm-dirvish-sort-history)))
+  (add-to-list 'vertico-multiform-commands
+               '(dirvish-history-jump (vertico-sort-function . dtm-dirvish-sort-history)))
 
   ;; Display Jinx results in a grid
-  (pushnew! vertico-multiform-categories
-            '(jinx grid (vertico-grid-annotate . 20) (vertico-count . 9))))
+  (add-to-list 'vertico-multiform-categories
+               '(jinx grid (vertico-grid-annotate . 20) (vertico-count . 9))))
 
-(after! corfu
+(with-eval-after-load 'corfu
   (setq +corfu-want-tab-prefer-navigating-org-tables t
         +corfu-want-minibuffer-completion t
         corfu-preselect 'prompt
@@ -395,7 +393,7 @@
          "C-S-j" nil
          "C-M-j" #'corfu-popupinfo-scroll-up)))
 
-(after! cape
+(with-eval-after-load 'cape
   (setq cape-dict-file
         (list (concat dtm-cape-dict-personal-dir "en_US.dic")
               (concat dtm-cape-dict-dir "en_US")))
@@ -407,14 +405,14 @@
   ;; Improve `cape-dict' candidate sorting
   (advice-add 'cape--dict-list :override #'dtm-cape--dict-list-a))
 
-(after! consult
+(with-eval-after-load 'consult
   ;; Ignore empty strings
   (consult-customize consult-yank-pop :predicate (lambda (el) (length> el 0)))
 
   ;; Set default selection for `consult-theme' based on `dtm-recommend-theme'
   (consult-customize consult-theme :default (symbol-name (dtm-recommend-theme))))
 
-(after! consult-imenu
+(with-eval-after-load 'consult-imenu
   ;; Should match entries from `imenu-generic-expression'
   (setq consult-imenu-config
         '((emacs-lisp-mode :toplevel "Functions"
@@ -442,14 +440,14 @@
            :types ((?f "Functions" font-lock-function-name-face)
                    (?r "Rule" font-lock-string-face))))))
 
-(after! embark
+(with-eval-after-load 'embark
   ;; Open package source from `doom/help-packages' (SPC h p)
-  (map! :map (+vertico/embark-doom-package-map embark-library-map)
+  (map! :map (+vertico-embark-doom-package-map embark-library-map)
         :desc "Find definition" "d" #'find-library
         :map embark-symbol-map
         :desc "Show help" "h" #'helpful-symbol))
 
-(after! persp-mode
+(with-eval-after-load 'persp-mode
   ;; Exclude Dirvish buffers because they mess with `+vertico/switch-workspace-buffer' previews
   (add-to-list 'persp-common-buffer-filter-functions #'dtm-dirvish-buffer-p)
 
@@ -464,7 +462,7 @@
   ;; Fix default input value for `doom/load-session'
   (global-set-key [remap doom/load-session] #'dtm/load-session))
 
-(after! ibuffer
+(with-eval-after-load 'ibuffer
   (unless noninteractive
     ;; Ref: https://gist.github.com/Bad-ptr/1aca1ec54c3bdb2ee80996eb2b68ad2d#file-persp-mode-ibuffer-groups-el
     (define-ibuffer-filter persp
@@ -490,7 +488,7 @@
   (unless (dtm-doctor-running-p)
     (+popup-cleanup-rules-h)))
 
-(after! dired
+(with-eval-after-load 'dired
   (setq dired-clean-confirm-killing-deleted-buffers nil
         dired-dwim-target nil
         dired-listing-switches
@@ -501,14 +499,14 @@
         [remap dired-do-delete] #'dtm/dired-delete-marked
         [remap dired-diff]      #'dtm/dired-ediff))
 
-(after! dired-x
+(with-eval-after-load 'dired-x
   ;; Hide all files starting with a dot or pound sign by default
   (setq dired-omit-files (rx (seq bos (or "." "#")))))
 
-(after! diredfl
+(with-eval-after-load 'diredfl
   (set-face-attribute 'diredfl-dir-name nil :bold t))
 
-(after! dirvish
+(with-eval-after-load 'dirvish
   (setq dirvish-hide-details t
         dirvish-quick-access-entries
         `(("D" "~/Downloads/" "Downloads")
@@ -522,7 +520,7 @@
           ("p" "~/Sync/PhD/Projects/" "Projects")
           ("r" "/" "Root")
           ("s" "~/Sync/" "Sync")))
-  (pushnew! dirvish-preview-disabled-exts "bgz")
+  (add-to-list 'dirvish-preview-disabled-exts "bgz")
 
   ;; Make dirvish recognise custom project types
   (advice-add 'dirvish--get-project-root :override #'projectile-project-root)
@@ -562,29 +560,29 @@
         :desc "Narrow to regex" "n" #'dtm/dirvish-narrow
         :desc "Subtree menu"    "s" #'dirvish-subtree-menu))
 
-;; (after! dirvish-side
+;; (with-eval-after-load 'dirvish-side
 ;;   (dirvish-side-follow-mode +1))
 
-(after! tramp
+(with-eval-after-load 'tramp
   (setq remote-file-name-inhibit-locks t
         tramp-use-scp-direct-remote-copying t
         tramp-copy-size-limit (* 1024 1024)
         tramp-verbose 2))
 
-(after! avy
+(with-eval-after-load 'avy
   ;; Make "g s s" search al windows (C-u to limit to current)
   (setq avy-all-windows t
         avy-all-windows-alt nil))
 
 ;; Still used by `special-lispy-x' & `special-lh-knight/body'
-(after! hydra
+(with-eval-after-load 'hydra
   (setq hydra-hint-display-type 'posframe
         hydra-posframe-show-params
         '(:poshandler posframe-poshandler-frame-bottom-center
           :internal-border-width 1
           :internal-border-color "#51afef")))
 
-(after! vundo
+(with-eval-after-load 'vundo
   (setq vundo-glyph-alist vundo-ascii-symbols
         vundo-diff-quit 'kill)
 
@@ -597,7 +595,7 @@
   (map! :map vundo-mode-map
         :n "D" #'dtm-vundo-live-diff-mode))
 
-(after! image-mode
+(with-eval-after-load 'image-mode
   (advice-add 'image-toggle-display-image :after #'dtm-image-center-maybe)
 
   (map! :map image-mode-map
@@ -608,20 +606,21 @@
 (when (modulep! :ui indent-guides)
   (remove-hook 'text-mode-hook #'+indent-guides-init-maybe-h))
 
-(after! indent-bars
+(with-eval-after-load 'indent-bars
   (setq indent-bars-display-on-blank-lines nil))
 
-(after! word-wrap-mode
-  (pushnew! word-wrap-whitespace-characters ?- 59 ?– ?—))
+(with-eval-after-load 'word-wrap-mode
+  (dolist (sym '(?- 59 ?– ?—))
+    (add-to-list 'word-wrap-whitespace-characters sym)))
 
 (when (modulep! :editor word-wrap)
   ;; Word wrapping (visual-line-mode) at fill-column in text mode buffers
   (setq-hook! 'text-mode-hook +word-wrap-fill-style 'auto))
 
-(after! helpful
+(with-eval-after-load 'helpful
   (setq helpful-max-buffers 10))
 
-(after! ace-window
+(with-eval-after-load 'ace-window
   (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)
         aw-minibuffer-flag t)
 
@@ -634,13 +633,13 @@
 
   (unless noninteractive (ace-window-posframe-mode +1)))
 
-(after! re-builder
+(with-eval-after-load 're-builder
   (setq reb-re-syntax 'rx))
 
-(after! calc
+(with-eval-after-load 'calc
   (map! :map calc-mode-map "C-c ." #'dtm-calc-read-date))
 
-(use-package! pixel-scroll
+(use-package pixel-scroll
   :if (>= emacs-major-version 29)
   :defer t
   :init
@@ -666,15 +665,15 @@
 
 ;;* Core functionality extensions
 ;; Add colours to info pages to make them more readable
-(use-package! info-colors
+(use-package info-colors
   :hook (Info-selection . info-colors-fontify-node))
 
 ;; Enable vertico mouse extension (included with vertico)
-(use-package! vertico-mouse
+(use-package vertico-mouse
   :after vertico
   :config (vertico-mouse-mode +1))
 
-(use-package! jinx
+(use-package jinx
   :hook (doom-first-buffer . dtm-global-jinx-mode-safe)
   :general ([remap ispell-word] #'jinx-correct)
   :config
@@ -688,7 +687,7 @@
   (advice-add 'jinx-next :after (lambda (_) (backward-char))
               '((name . "backward-char"))))
 
-(use-package! magit-todos
+(use-package magit-todos
   :defer t
   :config
   ;; Make colon suffix optional
@@ -697,7 +696,7 @@
   (define-key magit-todos-section-map "j" nil))
 
 ;; Template/snippet system
-(use-package! tempel
+(use-package tempel
   :defer t
   :init
   ;; Templates for new/empty files
@@ -716,14 +715,14 @@
 
 ;;* Writing/Organisation Tools
 ;; Spell checking
-(after! flycheck
+(with-eval-after-load 'flycheck
   (setq flycheck-lintr-linters
         "linters_with_defaults(line_length_linter(120), T_and_F_symbol_linter = NULL)")
 
   ;; Validate setup (SPC c X) in popup. Use SPC c x  to list errors
   (set-popup-rule! "^\\*Flycheck checkers\\*" :size 0.4 :select t :ttl 0))
 
-(after! calendar
+(with-eval-after-load 'calendar
   ;; Show week numbers in calendar
   (setq calendar-week-start-day 1
         calendar-intermonth-text
@@ -739,7 +738,7 @@
   "`line-spacing' used by `dtm-org-mode-setup-h'.
 `org-modern-mode' recommends a value between 0.1-0.4.")
 
-(after! org
+(with-eval-after-load 'org
   (setq org-ellipsis " …"
         org-indent-indentation-per-level 1
         org-pretty-entities-include-sub-superscripts nil
@@ -786,8 +785,8 @@
   ;; Prettify, enable hard wrapping and automate paragraph filling
   (add-hook 'org-mode-hook #'dtm-org-mode-setup-h))
 
-;; Keys bound in (after! org) seem to get overwritten, this works
-(after! org-keys
+;; Keys bound in (with-eval-after-load 'org) seem to get overwritten, this works
+(with-eval-after-load 'org-keys
   (map! :map org-mode-map
         :n  "C-j"   #'+org/return
         :ni "C-c ]" #'org-cite-insert
@@ -800,7 +799,7 @@
         (:localleader
          :desc "Log clocked time" "l" #'org-agenda-log-mode)))
 
-(after! evil-org
+(with-eval-after-load 'evil-org
   ;; Mark tab-navigation through tables as non-repeatable
   (evil-declare-not-repeat #'org-cycle)
   (evil-declare-not-repeat #'org-shifttab)
@@ -813,33 +812,33 @@
         :i "C-l" nil))
 
 ;; Org-cite settings
-(after! oc
+(with-eval-after-load 'oc
   ;; according to the `oc-biblatex.el' you should use bibstyle/citestyle
   (setq org-cite-csl-styles-dir "~/Sync/Zotero/Styles"
         org-cite-export-processors '((latex biblatex "ieee/numeric-comp")
                                      (t csl "ieee.csl"))))
 
-(after! ox
+(with-eval-after-load 'ox
   ;; BUG used by `dtm-reftex-TeX-master-file-a' to fix errors when exporting to buffer
   (add-hook 'org-export-before-processing-functions #'dtm-org-export-remember-source-file-h)
 
   ;; Make ODT/man/ASCII export ignore table width cookies (e.g. <10>)
   (advice-add 'org-export-table-cell-width :override #'ignore))
 
-(after! ox-odt
+(with-eval-after-load 'ox-odt
   (setq org-odt-preferred-output-format "docx"
         org-odt-with-latex 'dvipng)
 
   (advice-add 'org-odt-convert :before-until #'dtm-org-odt-convert-prompt-a))
 
-(use-package! org-appear
+(use-package org-appear
   :defer t
   :config
   (setq org-appear-autoentities t
         org-appear-autoemphasis t
         org-appear-inside-latex t))
 
-(use-package! org-modern
+(use-package org-modern
   :defer t
   :init
   (add-hook 'org-agenda-finalize-hook #'org-modern-agenda)
@@ -858,7 +857,7 @@
   (advice-add 'org-modern--make-font-lock-keywords :filter-return
               #'dtm-org-modern--make-font-lock-keywords-a))
 
-(use-package! org-clock-reminder
+(use-package org-clock-reminder
   :commands org-clock-reminder-mode
   :hook (org-clock-in . dtm-org-clock-reminder-mode-auto-h)
   :config
@@ -878,7 +877,7 @@
   ;; BUG `org-clock-reminder-state' can get out of sync
   (add-hook! 'org-clock-reminder-mode-hook #'dtm-org-clock-reminder-fix))
 
-(after! org-tree-slide
+(with-eval-after-load 'org-tree-slide
   ;; Make presentations even prettier
   (add-hook 'org-tree-slide-mode-hook #'dtm-org-tree-slide-setup-h 'append)
 
@@ -891,7 +890,7 @@
         :n [right] #'org-tree-slide-move-next-tree
         :n [C-up]  #'org-tree-slide-content))
 
-(after! org-download
+(with-eval-after-load 'org-download
   ;; BUG the doom custom download: link-format ignores the WIDTH attribute
   (setq org-download-link-format "[[file:%s]]\n"
         org-download-abbreviate-filename-function #'file-relative-name
@@ -909,7 +908,7 @@
 
   (defvar dtm-org-roam-index-file "pages/contents.org"))
 
-(after! org-roam
+(with-eval-after-load 'org-roam
   ;; Disable roam completion outside of links as it blocks the more useful dabbrev capf
   (setq org-roam-completion-everywhere nil)
 
@@ -937,10 +936,10 @@
       :empty-lines 1))))
 
 (when (modulep! :tools biblio)
-  (setq! citar-bibliography '("~/Sync/Zotero/master.bib")
+  (setq citar-bibliography '("~/Sync/Zotero/master.bib")
          citar-library-paths '("~/Sync/Zotero/")))
 
-(after! citar
+(with-eval-after-load 'citar
   (setq citar-org-roam-note-title-template "${=key=}: ${title}\n\n* Notes"
         citar-org-roam-subdir "notes")
 
@@ -948,7 +947,7 @@
   (add-transient-hook! 'citar-has-notes (require 'citar-org-roam)))
 
 ;; Org-noter settings
-(after! org-noter
+(with-eval-after-load 'org-noter
   (setq org-noter-hide-other nil
         org-noter-always-create-frame nil)
 
@@ -962,7 +961,7 @@
     (unless (string-match-p "\\.pdf\\'" filename)
       (funcall fn size op-type filename offer-raw))))
 
-(after! pdf-tools
+(with-eval-after-load 'pdf-tools
   (setq pdf-view-resize-factor 1.1)
 
   (add-hook 'pdf-annot-edit-contents-minor-mode-hook #'dtm-pdf-annot-edit-contents-setup-h)
@@ -998,7 +997,7 @@
          :n [mouse-8]   #'pdf-history-backward
          :n [mouse-9]   #'pdf-history-forward)))
 
-(after! pdf-annot
+(with-eval-after-load 'pdf-annot
   ;; Display C-c C-q (also bound to `pdf-annot-edit-contents-abort') in the tooltip
   (keymap-unset pdf-annot-edit-contents-minor-mode-map "C-c C-k"))
 
@@ -1008,15 +1007,15 @@
   ;; Enable latexmk (`org-latex-pdf-process' uses this by default if available)
   (setq-hook! LaTeX-mode TeX-command-default "LaTeXMk"))
 
-(after! reftex
+(with-eval-after-load 'reftex
   ;; BUG: Fix stringp error when exporting to latex buffer from Org
   (advice-add 'reftex-TeX-master-file :around #'dtm-reftex-TeX-master-file-a))
 
-(after! markdown-mode
+(with-eval-after-load 'markdown-mode
   ;; Disable proselint in Rmarkdown files
   (add-hook 'markdown-mode-hook #'dtm-flycheck-disable-proselint-rmd-h))
 
-(after! evil-markdown
+(with-eval-after-load 'evil-markdown
   (evil-declare-motion 'dtm/markdown-backward-same-level)
   (evil-declare-motion 'markdown-outline-next-same-level)
   (evil-declare-motion 'dtm/markdown-up)
@@ -1036,7 +1035,7 @@
 (setq-hook! 'prog-mode-hook dabbrev-case-replace nil)
 
 ;; Header line showing current defun
-(use-package! topsy
+(use-package topsy
   :hook ((prog-mode . topsy-mode)
          (magit-section-mode . topsy-mode))
   :config
@@ -1051,7 +1050,7 @@
   ;; We circumvent `header-line-indent-mode' for efficiency
   (add-hook 'display-line-numbers-mode-hook #'dtm-topsy-header-line-update))
 
-(after! comint
+(with-eval-after-load 'comint
   (setq comint-input-ignoredups t
         comint-scroll-to-bottom-on-input 'this
         comint-scroll-to-bottom-on-output 'others)
@@ -1065,12 +1064,12 @@
   (general-evil-define-key '(n) 'comint-mode-map
     "C-l" #'comint-clear-buffer))
 
-(after! eshell
+(with-eval-after-load 'eshell
   ;; Fuzzy match parent directories (a.k.a. "bd")
   ;; The "z" command does the same but for dir history
   (add-to-list '+eshell-aliases '("up" "eshell-up $1")))
 
-(after! vterm
+(with-eval-after-load 'vterm
   ;; Actually clear buffer upon C-l
   (setq vterm-clear-scrollback-when-clearing t)
 
@@ -1088,7 +1087,7 @@
   (map! :map vterm-mode-map
         :i "C-x C-n" #'dtm/vterm-cape-dabbrev))
 
-(after! sh-script
+(with-eval-after-load 'sh-script
   (map! :map sh-mode-map
         :nv [C-return] #'dtm/vterm-send-current-region-or-line
         :localleader "TAB" #'vterm-other-window))
@@ -1101,10 +1100,10 @@
 
   (defalias 'elisp-mode #'emacs-lisp-mode))
 
-(after! edebug
+(with-eval-after-load 'edebug
   (map! :map edebug-mode-map :n "R" #'edebug-remove-instrumentation))
 
-(after! elisp-refs
+(with-eval-after-load 'elisp-refs
   (set-popup-rule! "\\*refs:" :slot 2 :vslot -8 :size 0.3 :select t :ttl 120)
 
   ;; Open files in other window to preserve the popup window
@@ -1114,7 +1113,7 @@
   (map! :map elisp-refs-mode-map
         [remap elisp-refs-visit-match] #'elisp-refs-visit-match-other-window))
 
-(after! lispy
+(with-eval-after-load 'lispy
   ;; Prettier function evaluation
   (setq lispy-eval-display-style 'overlay)
 
@@ -1158,7 +1157,7 @@
         "s" #'special-lispy-outline-next
         "w" #'special-lispy-outline-prev))
 
-(after! lispyville
+(with-eval-after-load 'lispyville
   ;; Custom (atom-movement t) key-theme
   (dtm-lispyville-smart-remap evil-forward-WORD-begin #'lispyville-forward-atom-begin)
   (dtm-lispyville-smart-remap evil-forward-WORD-end #'lispyville-forward-atom-end)
@@ -1174,11 +1173,11 @@
       '((operators normal) (prettify insert) mark-toggle c-w
         slurp/barf-lispy additional additional-insert))
 
-(after! eros
+(with-eval-after-load 'eros
   ;; Large results can freeze emacs, this limits the inconvenience
   (setq eros-eval-result-duration 2))
 
-(after! ess
+(with-eval-after-load 'ess
   ;; Use current dir for session
   (setq ess-startup-directory-function #'dtm-ess-startup-dir
         ess-ask-for-ess-directory nil
@@ -1227,7 +1226,7 @@
   (advice-add 'ess-calculate-width :around #'dtm-ess-calculate-width-a)
 
   ;; BUG highlight single warning messages + more visible font
-  (pushnew! ess-R-message-prefixes "Warning message")
+  (add-to-list 'ess-R-message-prefixes "Warning message")
   (setq ess-R-error-face 'show-paren-mismatch
         ess-R-fl-keyword:messages
         (cons (regexp-opt ess-R-message-prefixes 'enc-paren)
@@ -1265,19 +1264,19 @@
         (:map ess-debug-minor-mode-map
               "M-K" #'dtm/ess-print-last-value)))
 
-(after! ess-tracebug
+(with-eval-after-load 'ess-tracebug
   ;; Track previous debug position for `dtm/ess-debug-goto-previous'
   (advice-add 'ess--dbg-activate-overlays :before #'dtm-ess-debug-track-previous))
 
-(after! ess-s-lang
+(with-eval-after-load 'ess-s-lang
   ;; Imenu search entries, best invoked with `consult-imenu' (SPC s i)
   (add-to-list 'ess-imenu-S-generic-expression
                '("Section" "^\\(#+ .+\\) [-=#]\\{4,\\}" 1)))
 
-(use-package! ess-plot
+(use-package ess-plot
   :hook (ess-r-post-run . ess-plot-on-startup-h))
 
-(after! python
+(with-eval-after-load 'python
   ;; Add generic imenu expression and ensure python doesn't ignore them
   (setq-hook! 'python-mode-hook imenu-generic-expression
               '(("Rule" "^rule \\(\\_<[^ \t():\n]+\\_>\\):" 1)))
@@ -1311,14 +1310,14 @@
 (when (modulep! :lang python +conda)
   (add-hook 'compilation-mode-hook #'dtm-conda-env-guess-maybe))
 
-(use-package! elpy-shell
+(use-package elpy-shell
   :defer t
   :config
   ;; HACK use doom te create elpy process for pyenv support (also starts conda)
   (advice-add 'elpy-shell-get-or-create-process
               :override #'dtm-elpy-shell-get-doom-process-a))
 
-(after! csv-mode
+(with-eval-after-load 'csv-mode
   ;; Assume the first line of a csv is a header
   (setq csv-header-lines 1)
 
