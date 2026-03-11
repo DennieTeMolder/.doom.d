@@ -200,23 +200,16 @@ See also: `split-window-sensibly'"
         (font-put spec :family nil)
         (font-put spec :width nil)))))
 
-(defun dtm-doom-ascii-banner-fn ()
-  (let* ((banner
-          '(",---.,-.-.,---.,---.,---."
-            "|---'| | |,---||    `---."
-            "`---'' ' '`---'`---'`---'"
-            "                       DOOM"))
-         (longest-line (apply #'max (mapcar #'length banner))))
-    (put-text-property
-     (point)
-     (dolist (line banner (point))
-       (insert (+doom-dashboard--center
-                +doom-dashboard--width
-                (concat
-                 line (make-string (max 0 (- longest-line (length line)))
-                                   32)))
-               "\n"))
-     'face 'doom-dashboard-banner)))
+(defun dtm-dashboard-ascii-banner-fn ()
+  "Returns custom Doom dashboard banner string."
+  (propertize
+   (string-join
+    '(",---.,-.-.,---.,---.,---."
+      "|---'| | |,---||    `---."
+      "`---'' ' '`---'`---'`---'"
+      "                       DOOM")
+    "\n")
+   'face '+dashboard-banner))
 
 (defun dtm-y-or-n-p-trash-a (orig-fun &rest args)
   "Replace delete by trashed in `y-or-n-p' prompts within ORIG-FUN.
