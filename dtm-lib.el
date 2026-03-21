@@ -573,18 +573,6 @@ Ref: https://github.com/casouri/vundo/issues/112"
     (with-current-buffer vundo--orig-buffer
       (vundo-diff--quit))))
 
-;;* CSV/TSV-mode
-(defvar dtm-csv-mode-max-length 300
-  "Maximum characters per line for csv/tsv-mode to be enabled.")
-
-(defun dtm-csv-mode-maybe-h ()
-  "Activate csv/tsv-mode if max line is below `dtm-csv-mode-max-length'."
-  (when-let ((file (buffer-file-name)))
-    (when (< (cadr (buffer-line-statistics)) dtm-csv-mode-max-length)
-      (pcase (file-name-extension file)
-        ("csv" (csv-mode))
-        ("tsv" (tsv-mode))))))
-
 ;;* Image-mode
 (defun dtm-image-overlay ()
   "Return current image overlay, create one if it not exists."

@@ -677,6 +677,9 @@
   :hook (doom-first-buffer . dtm-global-jinx-mode-safe)
   :general ([remap ispell-word] #'jinx-correct)
   :config
+  ;; Disable spellchecking in csv/tsv-mode
+  (add-hook! 'csv-mode-hook (jinx-mode -1))
+
   ;; Use an orange underline for dark themes (default is yellow)
   (custom-set-faces!
     '(jinx-misspelled (((class color) (min-colors 88) (background dark)
@@ -1324,11 +1327,5 @@
   ;; Ensure delimiters are not hidden when aligning
   (setq-hook! 'csv-mode-hook
     buffer-invisibility-spec nil))
-
-;; Start csv/tsv files in so-long-mode to prevent freezing
-(push '("\\.\\(c\\|t\\)sv\\'" . so-long-mode) auto-mode-alist)
-
-;; Enable csv/tsv mode on files with short lines
-(add-hook 'so-long-mode-hook #'dtm-csv-mode-maybe-h)
 
 (load! "+keybindings")
