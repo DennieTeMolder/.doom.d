@@ -369,9 +369,7 @@
 (with-eval-after-load 'corfu
   (setq +corfu-want-tab-prefer-navigating-org-tables t
         +corfu-want-minibuffer-completion t
-        corfu-preselect 'prompt
-        corfu-auto-delay 0.4
-        corfu-auto-prefix 3)
+        corfu-preselect 'prompt)
 
   ;; Keep the corfu childframe alive when using this command
   (add-to-list 'corfu-continue-commands #'dtm/corfu-complete-always)
@@ -392,6 +390,10 @@
          "C-M-k" #'corfu-popupinfo-scroll-down
          "C-S-j" nil
          "C-M-j" #'corfu-popupinfo-scroll-up)))
+
+(with-eval-after-load 'corfu-auto
+  (setq corfu-auto-delay 0.4
+        corfu-auto-prefix 3))
 
 (with-eval-after-load 'cape
   (setq cape-dict-file
