@@ -1098,8 +1098,9 @@
         :localleader "TAB" #'vterm-other-window))
 
 (when (modulep! :lang emacs-lisp)
-  (setq lispy-outline "^[ \t]*;;[;*]+[^#]"
-        +emacs-lisp-outline-regexp lispy-outline)
+  ;; Recognize `lispy-outline' bullets and add Imenu groups
+  (setq +emacs-lisp-outline-regexp
+        "^[ \t]*;;[;*]+[ \t]+\\([^\n]*?\\)\\(?:[ \t]*-[-*]-[^\n]*\\|$\\)")
 
   (add-hook 'emacs-lisp-mode-hook #'dtm-elisp-extend-imenu-h 'append)
 
@@ -1122,7 +1123,10 @@
   ;; Prettier function evaluation
   (setq lispy-eval-display-style 'overlay)
 
-  ;; BUG patch compatibility with Eros's API changes
+  ;; Undo doom's `+emacs-lisp-outline-regexp' integration for font-lock parity
+  (setq lispy-outline "^;;\\(?:;[^#]\\|\\*+\\)")
+  (advice-remove #'lispy-outline-level #'+emacs-lisp-outline-level)
+
   (defalias 'eros--eval-overlay #'eros-eval-overlay)
 
   ;; Make `lispy-goto-symbol' (M-.) behave better with evil
