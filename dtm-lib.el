@@ -449,10 +449,12 @@ https://github.com/purcell/ibuffer-projectile"
                                  default nil t)))
     (ediff (expand-file-name file dir) target)))
 
-(defun dtm-dirvish-buffer-p (buffer)
+(defun dtm-dirvish-ff-buffer-p (buffer)
   "Return non-nil if BUFFER is a full-frame Dirvish session."
-  (and (boundp 'dirvish--props)
-       (buffer-local-value 'dirvish-props buffer)))
+  (when (boundp 'dirvish--props)
+    (with-current-buffer buffer
+      (when dirvish--props
+        (dv-curr-layout (dirvish-curr))))))
 
 (defun dtm-dirvish-preview-window-p (&optional window)
   "Returns t if WINDOW is a dirvish preview window, defaults to `selected-window'."

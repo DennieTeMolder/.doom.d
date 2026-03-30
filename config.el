@@ -451,7 +451,7 @@
 
 (with-eval-after-load 'persp-mode
   ;; Exclude Dirvish buffers because they mess with `+vertico/switch-workspace-buffer' previews
-  (add-to-list 'persp-common-buffer-filter-functions #'dtm-dirvish-buffer-p)
+  (add-to-list 'persp-common-buffer-filter-functions #'dtm-dirvish-ff-buffer-p)
 
   ;; Open specific buffers in a dedicated workspace
   (advice-add 'persp-add-or-not-on-find-file :before #'dtm-workspace-dedicated-persp-a)
