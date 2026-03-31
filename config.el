@@ -408,6 +408,8 @@
   (advice-add 'cape--dict-list :override #'dtm-cape--dict-list-a))
 
 (with-eval-after-load 'consult
+  (setq consult-preview-excluded-buffers #'dtm-dirvish-buffer-p)
+
   ;; Ignore empty strings
   (consult-customize consult-yank-pop :predicate (lambda (el) (length> el 0)))
 
@@ -450,8 +452,9 @@
         :desc "Show help" "h" #'helpful-symbol))
 
 (with-eval-after-load 'persp-mode
-  ;; Exclude Dirvish buffers because they mess with `+vertico/switch-workspace-buffer' previews
-  (add-to-list 'persp-common-buffer-filter-functions #'dtm-dirvish-ff-buffer-p)
+  ;; BUG `+vertico--workspace-buffer-state' doesn't respect `consult-preview-excluded-buffers'
+  ;; Exclude Dirvish buffers as they mess with `+vertico/switch-workspace-buffer' previews
+  (add-to-list 'persp-common-buffer-filter-functions #'dtm-dirvish-buffer-p)
 
   ;; Open specific buffers in a dedicated workspace
   (advice-add 'persp-add-or-not-on-find-file :before #'dtm-workspace-dedicated-persp-a)
