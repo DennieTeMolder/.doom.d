@@ -54,6 +54,7 @@
 
       ;; Code
       (:prefix "c"
+       :desc "Multi-edit symbol"      "m" #'evil-multiedit-match-all
        :desc "Describe error checker" "X" #'dtm/diagnostics-describe)
 
       ;; Insert
