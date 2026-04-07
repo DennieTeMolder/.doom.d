@@ -1331,9 +1331,13 @@ Ref: `pdf-view-enlarge'"
           (- (* 2 scale) 0.1))
     (pdf-view-redisplay t)))
 
+(defun dtm-pdf-view-mode-setup-h ()
+  "Customizations for `pdf-view-mode-hook'."
+  (anzu-mode -1)
+  (ctrlf-local-mode -1))
+
 (defun dtm-pdf-annot-edit-contents-setup-h ()
-  "Apply personal customizations.
-Intended for `pdf-annot-edit-contents-minor-mode-hook'"
+  "Customizations for `pdf-annot-edit-contents-minor-mode-hook'"
   ;; Inherit `jinx-languages' from pdf buffer
   (when-let ((langs (buffer-local-value 'jinx-languages
                                         (pdf-annot-get-buffer
@@ -1610,10 +1614,6 @@ Alternative `conda-env-activate-for-buffer' that prompts before activation"
     (dtm/conda-env-guess)))
 
 ;;* CTRLF
-(defun dtm-ctrlf-local-mode-disable ()
-  "Disable `ctrlf-local-mode'."
-  (ctrlf-local-mode -1))
-
 (defun dtm-ctrlf-translate-lax (input)
   "Translate INPUT like `isearch-lax-whitespace' is non-nil."
   (string-join (mapcar #'regexp-quote (ctrlf-split-fuzzy input))

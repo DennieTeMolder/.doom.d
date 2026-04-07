@@ -274,8 +274,6 @@
         [remap evil-ex-search-forward]  #'ctrlf-forward-default
         [remap evil-ex-search-backward] #'ctrlf-backward-default)
 
-  (add-hook 'pdf-view-mode-hook #'dtm-ctrlf-local-mode-disable)
-
   :config
   ;; Use 'M-s s' while searching to change styles
   (setq ctrlf-default-search-style 'lax
@@ -977,6 +975,7 @@
 (with-eval-after-load 'pdf-tools
   (setq pdf-view-resize-factor 1.1)
 
+  (add-hook 'pdf-view-mode-hook #'dtm-pdf-view-mode-setup-h)
   (add-hook 'pdf-annot-edit-contents-minor-mode-hook #'dtm-pdf-annot-edit-contents-setup-h)
 
   (map! (:map pdf-view-mode-map
