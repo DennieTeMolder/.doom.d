@@ -252,12 +252,13 @@ Each element should be a `cons' of (PATH . WORKSPACE).")
 (defun dtm-workspace-dedicated-persp-a ()
   "Open buffer in dedicated workspace based on `dtm-workspace-dedicated-alist'.
 Intended as :before `persp-add-or-not-on-find-file' advice."
-  (when-let ((path (or buffer-file-name default-directory)))
-    (setq path (file-truename (expand-file-name path)))
-    (cl-dolist (elt dtm-workspace-dedicated-alist)
-      (when (string-prefix-p (car elt) path)
-        (and (cdr elt) (dtm-workspace-switch-maybe (cdr elt)))
-        (cl-return)))))
+  (unless noninteractive
+    (when-let ((path (or buffer-file-name default-directory)))
+      (setq path (file-truename (expand-file-name path)))
+      (cl-dolist (elt dtm-workspace-dedicated-alist)
+        (when (string-prefix-p (car elt) path)
+          (and (cdr elt) (dtm-workspace-switch-maybe (cdr elt)))
+          (cl-return))))))
 
 (defun dtm-get-buffer (b-or-n)
   "Wrapper for `get-buffer', that handles `read-buffer' cons cells."
