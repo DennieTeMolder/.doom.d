@@ -259,7 +259,11 @@
         lazy-highlight-max-at-a-time nil)
 
   ;; Doom-themes doesn't distinguish `isearch' from `lazy-highlight' like it does for Evil
-  (custom-set-faces! '(isearch :inherit evil-ex-search)))
+  (custom-set-faces! '(isearch :inherit evil-ex-search))
+
+  (map! :map isearch-mode-map
+        "C-w" #'doom/delete-backward-word
+        "M-w" #'isearch-yank-word-or-char))
 
 ;; Improved isearch with evil-ex-search integration
 (use-package ctrlf
