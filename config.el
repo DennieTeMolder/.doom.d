@@ -1208,8 +1208,8 @@
     #'doom--setq-comint-scroll-to-bottom-on-output-for-inferior-ess-mode-h
     #'doom--setq-comint-scroll-to-bottom-on-input-for-inferior-ess-mode-h)
 
-  ;; Setting `tab-width' also affects `evil-shift-width' (doom specific)
-  (setq-hook! 'ess-mode-hook tab-width ess-indent-offset)
+  ;; Make `tab-width' follow `ess-indent-offset'
+  (set-indent-vars! 'ess-r-mode 'ess-indent-offset)
 
   ;; Font locking of strings in the repl buffer fails too often to be useful
   (setq-hook! 'inferior-ess-mode-hook font-lock-string-face nil)
