@@ -1062,12 +1062,16 @@
   ;; We circumvent `header-line-indent-mode' for efficiency
   (add-hook 'display-line-numbers-mode-hook #'dtm-topsy-header-line-update))
 
+(with-eval-after-load 'compile
+  (add-hook 'compilation-mode-hook #'dtm-scroll-conservative-no-recenter))
+
 (with-eval-after-load 'comint
   (setq comint-input-ignoredups t
         comint-scroll-to-bottom-on-input 'this
         comint-scroll-to-bottom-on-output 'others)
 
   (add-hook 'comint-mode-hook #'dtm/word-wrap-mode-no-fill)
+  (add-hook 'comint-mode-hook #'dtm-scroll-conservatively-no-recenter)
 
   ;; Prompt to create directory if missing
   (advice-add 'comint-write-input-ring :before #'dtm-comint-write-input-ring-a)
@@ -1077,6 +1081,8 @@
     "C-l" #'comint-clear-buffer))
 
 (with-eval-after-load 'eshell
+  (add-hook 'eshell-mode-hook #'dtm-scroll-conservatively-no-recenter)
+
   ;; Fuzzy match parent directories (a.k.a. "bd")
   ;; The "z" command does the same but for dir history
   (add-to-list '+eshell-aliases '("up" "eshell-up $1")))
@@ -1085,16 +1091,18 @@
   ;; Actually clear buffer upon C-l
   (setq vterm-clear-scrollback-when-clearing t)
 
-  ;; Don't consider vterm buffer as popup (only doom:vterm)
-  (cl-callf2 cl-delete "^\\*vterm" +popup--display-buffer-alist
-    :key #'car :test #'equal)
-  (set-popup-rule! "^ \\*Install vterm" :ttl 0)
+  (add-hook 'vterm-mode-hook #'dtm-scroll-conservatively-no-recenter)
 
   (remove-hook! 'vterm-mode-hook #'hide-mode-line-mode)
 
   ;; Fix evil cursor getting out of sync
   (advice-add 'vterm-send-key :before #'dtm-vterm-sync-cursor-a)
   (advice-add 'vterm--redraw :around #'dtm-vterm-redraw-cursor-a)
+
+  ;; Don't consider vterm buffer as popup (only doom:vterm)
+  (cl-callf2 cl-delete "^\\*vterm" +popup--display-buffer-alist
+    :key #'car :test #'equal)
+  (set-popup-rule! "^ \\*Install vterm" :ttl 0)
 
   (map! :map vterm-mode-map
         :i "C-x C-n" #'dtm/vterm-cape-dabbrev))

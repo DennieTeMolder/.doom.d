@@ -115,6 +115,9 @@ Intended as :around advice (e.g. for capf functions)."
       (apply orig-fun args)
     (user-error nil)))
 
+(defun dtm-scroll-conservatively-no-recenter (&rest _)
+  (setq-local scroll-conservatively 101))
+
 ;;* Buffer functions
 (defun dtm-buffer-remote-p (&optional buf)
   "Returns t if BUF belongs to a remote directory."
