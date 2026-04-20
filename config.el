@@ -1142,8 +1142,6 @@
   (setq lispy-outline "^;;\\(?:;[^#]\\|\\*+\\)")
   (advice-remove #'lispy-outline-level #'+emacs-lisp-outline-level)
 
-  (defalias 'eros--eval-overlay #'eros-eval-overlay)
-
   ;; Make `lispy-goto-symbol' (M-.) behave better with evil
   (evil-add-command-properties #'lispy-goto-symbol :jump t)
   (advice-add 'lispy-goto-symbol :after (lambda (&rest _) (evil-insert-state)))
