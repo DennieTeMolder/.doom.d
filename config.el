@@ -516,6 +516,7 @@
 
 (with-eval-after-load 'dirvish
   (setq dirvish-hide-details t
+        dirvish-side-width 40
         dirvish-quick-access-entries
         `(("D" "~/Downloads/" "Downloads")
           ("dc" ,doom-core-dir "Doom Core")
@@ -567,9 +568,6 @@
         :desc "Mark menu"       "m" #'dirvish-mark-menu
         :desc "Narrow to regex" "n" #'dtm/dirvish-narrow
         :desc "Subtree menu"    "s" #'dirvish-subtree-menu))
-
-;; (with-eval-after-load 'dirvish-side
-;;   (dirvish-side-follow-mode +1))
 
 (with-eval-after-load 'tramp
   (setq remote-file-name-inhibit-locks t
