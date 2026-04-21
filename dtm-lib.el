@@ -1485,11 +1485,22 @@ Unless NO-HISTORY is non-nil `better-jumper-set-jump' is called before jumping."
   "Print .Last.value in `ess-local-process-name'.
 If `ess--dbg-is-active-p' eval the object at `dtm-ess-debug-previous-position'."
   (interactive)
-  (save-window-excursion
+  (save-excursion
     (if (and (ess--dbg-is-active-p)
              (dtm/ess-debug-goto-previous 'no-history))
         (dtm/ess-eval-object-at-point)
       (ess-send-string (ess-get-current-process) ".Last.value" t))))
+
+(defvar dtm-ess-ls-str-cmd
+  "print(utils::ls.str(all.names = FALSE), max.level = 1, list.len = 5, give.attr = FALSE)"
+  "R command used by `dtm/ess-print-ls-str'.")
+
+(defun dtm/ess-print-ls-str (&optional arg)
+  (interactive "p")
+  (when (and (numberp arg) (> arg 1))
+    (setq dtm-ess-ls-str-cmd
+          (read-string "Modified ls.str() cmd: " dtm-ess-ls-str-cmd)))
+  (ess-send-string (ess-get-current-process) dtm-ess-ls-str-cmd t))
 
 (defun dtm-ess-plot-file-p (file)
   "Return non-nil if FILE is an ESS plot."

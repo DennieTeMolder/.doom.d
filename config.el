@@ -1259,6 +1259,7 @@
          :desc "Eval reg|func|para"         "e" #'ess-eval-region-or-function-or-paragraph
          :desc "Environment list R objects" "E" #'ess-rdired
          :desc "Print last value"           "k" #'dtm/ess-print-last-value
+         :desc "Print current env"          "K" #'dtm/ess-print-ls-str
          :desc "Source current file"        "s" #'ess-load-file
          :desc "Change selected process"    "S" #'ess-switch-process
          :desc "Eval reg|func|para step"    "," #'dtm/ess-eval-rfp-and-step-recenter
@@ -1282,10 +1283,11 @@
               "g" #'dtm/ess-debug-goto-previous)
 
         (:map ess-debug-minor-mode-map
-              "M-K" #'dtm/ess-print-last-value)))
+              "M-K" #'dtm/ess-print-last-value
+              "M-L" #'dtm/ess-print-ls-str)))
 
 (with-eval-after-load 'ess-tracebug
-  ;; Track previous debug position for `dtm/ess-debug-goto-previous'
+  ;; Track previous debug position for `dtm/ess-debug-goto-previous' & `dtm/ess-print-last-value'
   (advice-add 'ess--dbg-activate-overlays :before #'dtm-ess-debug-track-previous))
 
 (with-eval-after-load 'ess-s-lang
