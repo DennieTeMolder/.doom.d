@@ -164,7 +164,7 @@
        ;;janet             ; Fun fact: Janet is me!
        ;;(java +meghanada) ; the poster child for carpal tunnel syndrome
        ;;javascript        ; all(hope(abandon(ye(who(enter(here))))))
-       (julia +tree-sitter); Python, R, and MATLAB in a blender
+       ;;julia             ; Python, R, and MATLAB in a blender
        ;;kotlin            ; a better, slicker Java(Script)
        latex               ; writing papers in Emacs has never been so fun
        ;;lean
