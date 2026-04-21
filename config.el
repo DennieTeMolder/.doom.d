@@ -1061,7 +1061,7 @@
   (add-hook 'display-line-numbers-mode-hook #'dtm-topsy-header-line-update))
 
 (with-eval-after-load 'compile
-  (add-hook 'compilation-mode-hook #'dtm-scroll-conservative-no-recenter))
+  (add-hook 'compilation-mode-hook #'dtm-scroll-conservatively-no-recenter))
 
 (with-eval-after-load 'comint
   (setq comint-input-ignoredups t
