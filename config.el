@@ -1087,8 +1087,9 @@
   (advice-add 'comint-write-input-ring :before #'dtm-comint-write-input-ring-a)
 
   ;; Shell style clear REPL binding
-  (general-evil-define-key '(n) 'comint-mode-map
-    "C-l" #'comint-clear-buffer))
+  (map! :map comint-mode-map
+        :n "C-l" #'comint-clear-buffer
+        :localleader "r" #'consult-history))
 
 (with-eval-after-load 'eshell
   (add-hook 'eshell-mode-hook #'dtm-scroll-conservatively-no-recenter)
@@ -1286,6 +1287,7 @@
           :desc "Quit Process"  "q" #'dtm/ess-quit-and-kill-no-save))
 
         (:map inferior-ess-mode-map
+         :n "RET" #'inferior-ess-send-input
          :localleader
          "TAB" #'ess-switch-to-inferior-or-script-buffer
          "x r" #'inferior-ess-reload
