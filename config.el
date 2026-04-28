@@ -487,12 +487,16 @@
 (when (modulep! :ui popup)
   (set-popup-rules!
     ;; Redefine rules to keep popups alive
-    '(("^\\*\\([Hh]elp\\|Apropos\\)"
+    `(("^\\*\\([Hh]elp\\|Apropos\\)"
        :slot 2 :vslot -8 :size 0.45 :select t :ttl nil)
       ("^\\*info\\*$"
        :slot 2 :vslot -8 :size 0.45 :select t :ttl nil)
       ("^\\*Backtrace"
-       :vslot 99 :size 0.4 :select t :quit t :ttl nil)))
+       :vslot 99 :size 0.4 :select t :quit t :ttl nil)
+      (,(format "^\\(%s\\|%s\\)"
+                (regexp-quote shell-command-buffer-name)
+                (regexp-quote shell-command-buffer-name-async))
+       :ttl nil)))
   (unless (dtm-doctor-running-p)
     (+popup-cleanup-rules-h)))
 
