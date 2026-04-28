@@ -669,6 +669,14 @@
         [remap evil-scroll-page-up] #'dtm-precision-scroll-page-up
         [remap evil-scroll-page-down] #'dtm-precision-scroll-page-down))
 
+(with-eval-after-load 'eww
+  (add-hook 'eww-mode-hook #'fill-column-center-mode)
+  (setq-hook! 'eww-mode-hook fill-column shr-max-width)
+
+  (map! :map eww-mode-map
+        :nvi [mouse-8] #'eww-back-url
+        :nvi [mouse-9] #'eww-forward-url))
+
 ;;* Core functionality extensions
 ;; Add colours to info pages to make them more readable
 (use-package info-colors
