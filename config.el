@@ -535,8 +535,8 @@
           ("s" "~/Sync/" "Sync")))
   (add-to-list 'dirvish-preview-disabled-exts "bgz")
 
-  ;; Make dirvish recognise custom project types
-  (advice-add 'dirvish--get-project-root :override #'projectile-project-root)
+  ;; Make Dirvish recognize custom project types
+  (advice-add 'dirvish--vc-root-dir :override #'projectile-project-root)
 
   (map! :map dirvish-mode-map
         :n "C-o" #'dirvish-history-jump
