@@ -1019,6 +1019,10 @@
          :n [mouse-8]   #'pdf-history-backward
          :n [mouse-9]   #'pdf-history-forward)))
 
+;; BUG: fix void function in `pdf-links-action-perform'
+(with-eval-after-load 'pdf-links
+  (require 'pdf-roll))
+
 (with-eval-after-load 'pdf-annot
   ;; Display C-c C-q (also bound to `pdf-annot-edit-contents-abort') in the tooltip
   (keymap-unset pdf-annot-edit-contents-minor-mode-map "C-c C-k"))
