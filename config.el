@@ -107,6 +107,7 @@
 ;;* Basic Settings
 (setq confirm-kill-emacs nil
       delete-by-moving-to-trash t
+      window-combination-resize t
       text-scale-mode-step 1.1
       doom-font-increment 1
       ;; Add clipboard to kill ring
