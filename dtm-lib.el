@@ -1335,7 +1335,7 @@ Ref: `pdf-view-enlarge'"
           (- (* 2 scale) 0.1))
     (pdf-view-redisplay t)))
 
-(defun dtm-pdf-view-mode-setup-h ()
+(defun dtm-pdf-tools-setup-h ()
   "Customizations for `pdf-view-mode-hook'."
   (anzu-mode -1)
   (ctrlf-local-mode -1))
