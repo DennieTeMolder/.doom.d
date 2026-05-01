@@ -1352,6 +1352,19 @@ Ref: `pdf-view-enlarge'"
   (goto-char (point-max))
   (evil-insert-state))
 
+(defun dtm-pdf-isearch-search-fun ()
+  "Returns custom PDF search function, which uses
+`pdf-isearch-hyphenation-character' for all string searches (not just word).
+Ref: `pdf-isearch-search-fun-default'"
+  (if (or (eq isearch-regexp-function t) isearch-regexp)
+      (pdf-isearch-search-fun-default)
+    (lambda (string &optional pages)
+      (pdf-info-search-regexp
+       (pdf-isearch-word-search-regexp
+        string 'lax pdf-isearch-hyphenation-character)
+       pages 'invalid-regexp))))
+
+
 ;;* Comint
 (defun dtm-comint-write-input-ring-a ()
   "Prompt user to create dir for `comint-input-ring-file-name' if missing.

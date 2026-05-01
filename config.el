@@ -984,7 +984,8 @@
       (funcall fn size op-type filename offer-raw))))
 
 (with-eval-after-load 'pdf-tools
-  (setq pdf-view-resize-factor 1.1)
+  (setq pdf-view-resize-factor 1.1
+        pdf-isearch-search-fun-function 'dtm-pdf-isearch-search-fun)
 
   (add-hook 'pdf-tools-enabled-hook #'dtm-pdf-tools-setup-h)
   (add-hook 'pdf-annot-edit-contents-minor-mode-hook #'dtm-pdf-annot-edit-contents-setup-h)
