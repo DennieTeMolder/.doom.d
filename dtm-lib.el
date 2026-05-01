@@ -207,10 +207,11 @@ See also: `split-window-sensibly'"
   "Returns custom Doom dashboard banner string."
   (propertize
    (string-join
-    '(",---.,-.-.,---.,---.,---."
-      "|---'| | |,---||    `---."
-      "`---'' ' '`---'`---'`---'"
-      "                       DOOM")
+    '("                             "
+      "  ,---.,-.-.,---.,---.,---.  "
+      "  |---'| | |,---||    `---.  "
+      "  `---'' ' '`---'`---'`---'  "
+      "                         DOOM")
     "\n")
    'face '+dashboard-banner))
 
