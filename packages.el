@@ -67,6 +67,9 @@
 ;; Only used by `lispy-occur', use `consult-line' instead
 (package! swiper :ignore t)
 
+;; BUG: https://github.com/minad/jinx/issues/261
+(unpin! compat)
+
 ;;* Custom packages
 (package! ess-r-insert-obj)
 (package! transpose-frame)
