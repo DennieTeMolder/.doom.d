@@ -74,7 +74,10 @@ ess-r-mode
 (h1 "### " (r nil) " " (i div) q :post (forward-char 1))
 (h2 "## " (r nil) " " (i div) q :post (forward-char 1))
 (fun p " <- function(" p ") {" n> q n "}")
-(timer "system.time({" n r> "})" n)
+(timer "system.time({" n r> "})" %
+       :post (when (looking-back "{\n" (- (point) 2))
+               (open-line 1)
+               (indent-according-to-mode)))
 (opt "options(plot.width = " (p "7") ", plot.height = " (p "5") ")" q)
 
 python-mode python-ts-mode
