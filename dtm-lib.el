@@ -955,6 +955,27 @@ Intended for `org-insert-heading-hook' when using `+org--insert-item'."
            (org-forward-heading-same-level 1)
            (org-N-empty-lines-before-current 1)))))
 
+(defun dtm/org-link-kill ()
+  "Kill the org link at point."
+  (interactive)
+  (let ((bounds (org--bounds-of-link-at-point)))
+    (if bounds
+        (kill-region (car bounds) (cdr bounds))
+      (user-error "No link at point!"))))
+
+(defun dtm-org-link-complete-name (&optional arg)
+  "Complete Org link based on #+name:, <<target>>, and :CUSTOM_ID: values."
+  (completing-read
+   "Internal (#+name:, <<target>>, or :CUSTOM_ID:): "
+   (org-element-map (org-element-parse-buffer)
+       '(headline paragraph table src-block target)
+     (lambda (el)
+       (pcase (org-element-type el)
+         ('headline (let ((id (org-element-property :CUSTOM_ID el)))
+                      (when id (concat "#" id))))
+         ('target (org-element-property :value el))
+         (_ (org-element-property :name el)))))))
+
 ;;** Org-export (ox)
 (defun dtm-org-odt-convert-prompt-a (&optional target output-fmt _open)
   "Request confirmation before conversion to `org-odt-preferred-output-format'.

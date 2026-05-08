@@ -792,9 +792,12 @@
   ;; Enforce `+org/insert-item-below' to respect `org-blank-before-new-entry'
   (add-hook 'org-insert-heading-hook #'dtm-org-insert-heading-check-blank)
 
-  ;; Custom link type [[as_png:<file_name>]], trigger conversion to .png on export
+  ;; Custom link type [[as_png:<abbrev>:<file_name>]]
   (push '("as_png" . dtm-org-link-as-png) org-link-abbrev-alist)
   (add-hook 'org-export-before-parsing-functions #'dtm/org-link-as-png-convert)
+
+  ;; Fake custom link type for completing #+name: candidates in `org-insert-link'
+  (org-link-set-parameters "name" :complete #'dtm-org-link-complete-name)
 
   ;; BUG: org-read-date doesn't use org-mode so it won't trigger evil-org to load
   (advice-add 'org-read-date :before (lambda (&rest _) (require 'evil-org))
@@ -815,6 +818,7 @@
         :ni "C-c [" #'org-roam-node-insert
         (:localleader
          :desc "Clock-in after last"   "c a" #'dtm/org-clock-in-after
+                                       "l D" #'dtm/org-link-kill
          :desc "Toggle pretty visuals" "v"   #'dtm/org-pretty-mode-toggle)
 
         :map org-agenda-mode-map
