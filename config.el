@@ -184,7 +184,7 @@
   (buffer-file-name (buffer-base-buffer)))
 
 ;; Disable global hl-line-mode
-(remove-hook! 'doom-first-buffer-hook #'global-hl-line-mode)
+(remove-hook 'doom-first-buffer-hook #'global-hl-line-mode)
 
 ;; Make current line more visible
 (custom-set-faces! '(line-number-current-line :weight bold))
@@ -324,7 +324,7 @@
   (add-to-list 'recentf-exclude #'dtm-ess-plot-file-p t)
 
   ;; Revert back to running cleanup on mode start instead of emacs shutdown
-  (remove-hook! 'kill-emacs-hook #'recentf-cleanup)
+  (remove-hook 'kill-emacs-hook #'recentf-cleanup)
   (setq recentf-auto-cleanup 'mode)
 
   ;; Exclude autosave file/folder and root from recent files
@@ -1109,7 +1109,7 @@
 
   (add-hook 'vterm-mode-hook #'dtm-scroll-conservatively-no-recenter)
 
-  (remove-hook! 'vterm-mode-hook #'hide-mode-line-mode)
+  (remove-hook 'vterm-mode-hook #'mode-line-invisible-mode)
 
   ;; Fix evil cursor getting out of sync
   (advice-add 'vterm-send-key :before #'dtm-vterm-sync-cursor-a)

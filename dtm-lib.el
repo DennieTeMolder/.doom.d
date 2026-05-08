@@ -308,7 +308,7 @@ Intended as :after `evil-visual-highlight' advice."
   "Ensure a popup is selected."
   (or (+popup-window-p)
       (+popup/other)
-      (user-error "No popups are open"))
+      (user-error "No popups are open!"))
   (current-buffer))
 
 (defun dtm/popup-raise ()
@@ -316,8 +316,8 @@ Intended as :after `evil-visual-highlight' advice."
   (interactive)
   (dtm-popup-ensure)
   (call-interactively #'+popup/raise)
-  (when (bound-and-true-p hide-mode-line-mode)
-    (hide-mode-line-mode -1)))
+  (when (bound-and-true-p mode-line-invisible-mode)
+    (mode-line-invisible-mode -1)))
 
 (defun dtm/popup-kill ()
   "Kill the currently open popup."
