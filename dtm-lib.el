@@ -967,7 +967,7 @@ Intended for `org-insert-heading-hook' when using `+org--insert-item'."
   "Complete Org link based on #+name:, <<target>>, and :CUSTOM_ID: values."
   (completing-read
    "Internal (#+name:, <<target>>, or :CUSTOM_ID:): "
-   (org-element-map (org-element-parse-buffer)
+   (org-element-map (org-element-parse-buffer 'element)
        '(headline paragraph table src-block target)
      (lambda (el)
        (pcase (org-element-type el)
