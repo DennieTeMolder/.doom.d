@@ -436,6 +436,38 @@ https://github.com/purcell/ibuffer-projectile"
         (ibuffer-update nil t)))))
 
 ;;* Dired/Dirvish
+(defun dtm-dirvish-setf-curr-layout (dv val)
+  "Set curr-layout slot of `dirvish' struct DV to VAL.
+Uses index to avoid `setf' void function errors."
+  (if (eq (aref dv 10) (dv-curr-layout dv))
+      (setf (aref dv 10) val)
+    (warn "dtm-dirvish-setf-curr-layout: dv cl-defstruct has changed!")))
+
+(defun dtm-dirvish--clear-session-a (dv &optional _from-quit)
+  "Clear current layout of DV to make it single window.
+This prevents the buffer from claiming the full frame when switched to later.
+Intended as :before `dirvish--clear-session' advice."
+  (dtm-dirvish-setf-curr-layout dv nil))
+
+(defun dtm-dirvish-preview-window-p (&optional window)
+  "Returns t if WINDOW is a Dirvish preview window, defaults to `selected-window'."
+  (when (fboundp 'dirvish-curr)
+    (or window (setq window (selected-window)))
+    (cl-some (lambda (win)
+               (when-let (dv (with-current-buffer (window-buffer win)
+                               (dirvish-curr)))
+                 (eq window (dv-preview-window dv))))
+             (window-list))))
+
+(defun dtm-dirvish-sort-history (hist)
+  "Preserve sorting of HIST removing duplicates and the `default-directory'.
+Intended for use as `vertico-sort-function' via `vertico-multiform-commands'."
+  (let ((res))
+    (dolist (x hist)
+      (unless (string= x default-directory)
+          (cl-pushnew x res :test #'string=)))
+    (reverse res)))
+
 (defun dtm/dired-delete-marked ()
   "Delete marked or current file(s), with C-u toggle `delete-by-moving-to-trash'."
   (interactive)
@@ -453,21 +485,6 @@ https://github.com/purcell/ibuffer-projectile"
          (target (read-file-name (format-prompt "Diff %s with" default file)
                                  default nil t)))
     (ediff (expand-file-name file dir) target)))
-
-(defun dtm-dirvish-buffer-p (buffer)
-  "Return non-nil if BUFFER is a Dirvish buffer."
-  (and (boundp 'dirvish--props)
-       (buffer-local-value 'dirvish--props buffer)))
-
-(defun dtm-dirvish-preview-window-p (&optional window)
-  "Returns t if WINDOW is a dirvish preview window, defaults to `selected-window'."
-  (when (fboundp 'dirvish-curr)
-    (or window (setq window (selected-window)))
-    (cl-some (lambda (win)
-               (when-let (dv (with-current-buffer (window-buffer win)
-                               (dirvish-curr)))
-                 (eq window (dv-preview-window dv))))
-             (window-list))))
 
 (defun dtm/dirvish-side ()
   "Wrapper for `dirvish-side' that always closes the window if visible."
@@ -509,15 +526,6 @@ https://github.com/purcell/ibuffer-projectile"
   (call-interactively #'dirvish-narrow)
   (message "Run `revert-buffer' (%s) to un-narrow"
            (substitute-command-keys "\\[revert-buffer]")))
-
-(defun dtm-dirvish-sort-history (hist)
-  "Preserve sorting of HIST removing duplicates and the `default-directory'.
-Intended for use as `vertico-sort-function' via `vertico-multiform-commands'."
-  (let ((res))
-    (dolist (x hist)
-      (unless (string= x default-directory)
-          (cl-pushnew x res :test #'string=)))
-    (reverse res)))
 
 (defun dtm/dirvish-fd (dir pattern)
   "Like `dirvish-fd' but always prompts for PATTERN when interactive."
