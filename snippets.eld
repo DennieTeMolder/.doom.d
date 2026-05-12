@@ -79,6 +79,7 @@ ess-r-mode
                (open-line 1)
                (indent-according-to-mode)))
 (opt "options(plot.width = " (p "7") ", plot.height = " (p "5") ")" q)
+(show "#@ess-plot-show")
 
 python-mode python-ts-mode
 
