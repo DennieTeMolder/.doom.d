@@ -494,19 +494,14 @@ https://github.com/purcell/ibuffer-projectile"
                    (confirm-nonexistent-file-or-buffer))))
 
 (defun dtm/dirvish-search-cwd ()
-  "Grep files from current dirvish directory, kill dirvish on confirm."
+  "Grep files from current directory, `dirvish-quit' on confirm."
   (interactive)
-  (let ((dv (or (dirvish-curr) (user-error "Not a dirvish buffer")))
-        (path default-directory))
-    (let ((dirvish-reuse-session 'resume))
-      (dirvish-quit)
-      (let ((default-directory path)
-            (inhibit-quit t))
-        (or (with-local-quit
-              (+default/search-cwd) t)
-            (dirvish))))
-    (unless (memq dirvish-reuse-session `(t resume open))
-      (dirvish--clear-session dv))))
+  (let ((dv (or (dirvish-curr) (user-error "Not a Dirvish buffer!"))))
+    (and (dv-curr-layout dv) (dirvish-layout-toggle))
+    (let ((inhibit-quit t))
+      (save-current-buffer
+        (+default/search-cwd)))
+    (dirvish-quit)))
 
 (defun dtm/dirvish-narrow ()
   "Run `dirvish-narrow' and provide revert instruction after finish."
