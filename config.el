@@ -532,7 +532,7 @@
 
   ;; Make Dirvish recognize custom project types
   (advice-add 'dirvish--vc-root-dir :override #'projectile-project-root)
-  (advice-add 'dirvish--clear-session :before #'dtm-dirvish--clear-session-a)
+  (advice-add 'dirvish--clear-session :after #'dtm-dirvish--clear-session-a)
 
   (map! :map dirvish-mode-map
         :n "C-o" #'dirvish-history-jump

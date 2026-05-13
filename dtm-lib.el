@@ -446,7 +446,7 @@ Uses index to avoid `setf' void function errors."
 (defun dtm-dirvish--clear-session-a (dv &optional _from-quit)
   "Clear current layout of DV to make it single window.
 This prevents the buffer from claiming the full frame when switched to later.
-Intended as :before `dirvish--clear-session' advice."
+Intended as :after `dirvish--clear-session' advice."
   (dtm-dirvish-setf-curr-layout dv nil))
 
 (defun dtm-dirvish-preview-window-p (&optional window)
