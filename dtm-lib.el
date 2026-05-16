@@ -124,6 +124,15 @@ Intended as :around advice (e.g. for capf functions)."
   (or buf (setq buf (current-buffer)))
   (ignore-errors (file-remote-p (buffer-local-value 'default-directory buf))))
 
+(defun dtm-get-buffer (b-or-n)
+  "Wrapper for `get-buffer', that handles `read-buffer' cons cells."
+  (let ((buf (cond ((listp b-or-n) (cdr b-or-n))
+                   ((stringp b-or-n) (get-buffer b-or-n))
+                   (t b-or-n))))
+    (unless (bufferp buf)
+      (error "No buffer found for: %s" b-or-n))
+    buf))
+
 ;;* Window functions
 (defun dtm/split-window-optimally (&optional window min-width)
   "Split WINDOW based on width of the new window after `balance-windows'.
@@ -264,14 +273,28 @@ Intended as :before `persp-add-or-not-on-find-file' advice."
           (and (cdr elt) (dtm-workspace-switch-maybe (cdr elt)))
           (cl-return))))))
 
-(defun dtm-get-buffer (b-or-n)
-  "Wrapper for `get-buffer', that handles `read-buffer' cons cells."
-  (let ((buf (cond ((listp b-or-n) (cdr b-or-n))
-                   ((stringp b-or-n) (get-buffer b-or-n))
-                   (t b-or-n))))
-    (unless (bufferp buf)
-      (error "No buffer found for: %s" b-or-n))
-    buf))
+(defvar dtm-persp-with-dirvish-side '()
+  "List of persps where `dirvish-side' should be activated.
+Elements should be cons cells of: (name . path)")
+
+(defun dtm-persp-remember-dirvish-side (_new-persp target)
+  "Register persp to `dtm-persp-with-dirvish-side' if `dirvish-side' is open."
+  (when-let* ((side-win (and (framep target)
+                             (featurep 'dirvish)
+                             (dirvish-side--session-visible-p)))
+              (name (safe-persp-name (get-current-persp)))
+              (path (with-selected-window side-win default-directory)))
+    (cl-pushnew (cons name path) dtm-persp-with-dirvish-side
+                :key #'car :test #'string=)))
+
+(defun dtm-persp-restore-dirvish-side (type)
+  "Restore `dirvish-side' if persp is in `dtm-persp-with-dirvish-side'."
+  (when-let* (((eq type 'frame))
+              (name (safe-persp-name (get-current-persp)))
+              (path (cdr-safe (assoc name dtm-persp-with-dirvish-side))))
+    (setq dtm-persp-with-dirvish-side
+          (assoc-delete-all name dtm-persp-with-dirvish-side))
+    (save-selected-window (dirvish-side--new path))))
 
 (defun dtm-buffer-orphan-p (&optional buf)
   "Return t if buffer BUF does not belong to any workspace/perspective."

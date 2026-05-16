@@ -530,6 +530,11 @@
           ("s" "~/Sync/" "Sync")))
   (add-to-list 'dirvish-preview-disabled-exts "bgz")
 
+  ;; Make `persp-mode' remember and restore `dirvish-side' windows
+  ;; Should run before `+dired--cleanup-dirvish-h'
+  (add-hook 'persp-before-switch-functions #'dtm-persp-remember-dirvish-side)
+  (add-hook 'persp-activated-functions #'dtm-persp-restore-dirvish-side)
+
   ;; Make Dirvish recognize custom project types
   (advice-add 'dirvish--vc-root-dir :override #'projectile-project-root)
   (advice-add 'dirvish--clear-session :after #'dtm-dirvish--clear-session-a)
