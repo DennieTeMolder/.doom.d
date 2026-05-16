@@ -1291,7 +1291,8 @@
           :desc "Quit Process"  "q" #'dtm/ess-quit-and-kill-no-save))
 
         (:map inferior-ess-mode-map
-         :n "RET" #'inferior-ess-send-input
+         :n "RET"    #'inferior-ess-send-input
+         :n [return] #'inferior-ess-send-input
          :localleader
          "TAB" #'ess-switch-to-inferior-or-script-buffer
          "x r" #'inferior-ess-reload
