@@ -280,7 +280,7 @@ Elements should be cons cells of: (name . path)")
 (defun dtm-persp-remember-dirvish-side (_new-persp target)
   "Register persp to `dtm-persp-with-dirvish-side' if `dirvish-side' is open."
   (when-let* ((side-win (and (framep target)
-                             (featurep 'dirvish)
+                             (featurep 'dirvish-side)
                              (dirvish-side--session-visible-p)))
               (name (safe-persp-name (get-current-persp)))
               (path (with-selected-window side-win default-directory)))
