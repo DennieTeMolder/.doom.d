@@ -484,6 +484,8 @@
     ;; Redefine rules to keep popups alive
     `(("^\\*\\([Hh]elp\\|Apropos\\)"
        :slot 2 :vslot -8 :size 0.45 :select t :ttl nil)
+      ("^\\*compilation"
+       :vslot -2 :size 0.3 :autosave t :ttl dtm-compilation-kill-if-success)
       ("^\\*info\\*$"
        :slot 2 :vslot -8 :size 0.45 :select t :ttl nil)
       ("^\\*Backtrace"

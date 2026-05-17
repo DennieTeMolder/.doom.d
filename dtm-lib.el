@@ -387,6 +387,11 @@ Based on `+popup/diagnose'."
    (list (read-buffer "Select popup: " nil t #'dtm-popup-buffer-p)))
   (display-buffer buf))
 
+(defun dtm-compilation-kill-if-success (buf)
+  "Kill `compilation-mode' buffer BUF if compilation was successful."
+  (when (string= ":exit [0]" (car (buffer-local-value 'mode-line-process buf)))
+    (kill-buffer buf)))
+
 ;;* Imenu
 (defun dtm-elisp-extend-imenu-h ()
   "Add `modulep!' and `+emacs-lisp-outline-regexp' support to `imenu'."
