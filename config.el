@@ -516,9 +516,7 @@
   (set-face-attribute 'diredfl-dir-name nil :bold t))
 
 (with-eval-after-load 'dirvish
-  (setq dirvish-hide-details t
-        dirvish-side-width 40
-        dirvish-quick-access-entries
+  (setq dirvish-quick-access-entries
         `(("D" "~/Downloads/" "Downloads")
           ("dc" ,doom-core-dir "Doom Core")
           ("dl" ,doom-local-dir "Doom Local")
