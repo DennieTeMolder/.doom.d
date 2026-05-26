@@ -795,6 +795,13 @@ Ref: https://github.com/akermu/emacs-libvterm/pull/401"
       (vterm-send-C-w))
     (vterm-send-string completion t)))
 
+;;* Consult
+(defun dtm-consult-repl-history ()
+  "Call `consult-history' at end of buffer."
+  (interactive)
+  (goto-char (point-max))
+  (call-interactively #'consult-history))
+
 ;;* Corfu/Cape
 (defun dtm/corfu-complete-always ()
   "Wrapper for `corfu-complete' that accepts the first selection when none

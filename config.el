@@ -1098,7 +1098,7 @@
   ;; Shell style clear REPL binding
   (map! :map comint-mode-map
         :n "C-l" #'comint-clear-buffer
-        :localleader "r" #'consult-history))
+        :localleader "r" #'dtm-consult-repl-history))
 
 (with-eval-after-load 'eshell
   (add-hook 'eshell-mode-hook #'dtm-scroll-conservatively-no-recenter)
