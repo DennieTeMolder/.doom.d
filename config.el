@@ -359,7 +359,8 @@
   (line-number-mode -1))
 
 (with-eval-after-load 'vertico
-  (setq vertico-resize 'grow-only))
+  (setq vertico-resize 'grow-only
+        vertico-scroll-margin (/ vertico-count 2)))
 
 (with-eval-after-load 'vertico-multiform
   ;; Preserve original candidate order for specific functions
