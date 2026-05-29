@@ -118,6 +118,14 @@ Intended as :around advice (e.g. for capf functions)."
 (defun dtm-scroll-conservatively-no-recenter (&rest _)
   (setq-local scroll-conservatively 101))
 
+(defun dtm-undo-exclude-and-reset-a (orig-fn &rest args)
+  "Call ORIG-FN without undo and reset `buffer-undo-list'.
+Intended as :around advice."
+  (buffer-disable-undo)
+  (apply orig-fn args)
+  (buffer-enable-undo)
+  (setq buffer-undo-list nil))
+
 ;;* Buffer functions
 (defun dtm-buffer-remote-p (&optional buf)
   "Returns t if BUF belongs to a remote directory."
@@ -1507,7 +1515,7 @@ Bypasses `ess-completing-read', defers further lookup if process is busy."
              (y-or-n-p (format "Kill process '%s'?" ess-local-process-name)))
     (let ((buf (ess-get-process-buffer)))
       (ess-quit 'no-save)
-      (when (y-or-n-p "Kill process window?")
+      (when (y-or-n-p "Delete process window?")
         (when-let* ((win (get-buffer-window buf)))
           (delete-window win))
         (kill-buffer buf)

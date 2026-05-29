@@ -1095,6 +1095,7 @@
 
   ;; Prompt to create directory if missing
   (advice-add 'comint-write-input-ring :before #'dtm-comint-write-input-ring-a)
+  (advice-add 'comint-truncate-buffer :around #'dtm-undo-exclude-and-reset-a)
 
   ;; Shell style clear REPL binding
   (map! :map comint-mode-map
