@@ -184,7 +184,7 @@
   (buffer-file-name (buffer-base-buffer)))
 
 ;; Disable global hl-line-mode
-(remove-hook 'doom-first-buffer-hook #'global-hl-line-mode)
+(remove-hook 'doom-first-input-hook #'global-hl-line-mode)
 
 ;; Make current line more visible
 (custom-set-faces! '(line-number-current-line :weight bold))
