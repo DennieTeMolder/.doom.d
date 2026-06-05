@@ -517,7 +517,8 @@
   (set-face-attribute 'diredfl-dir-name nil :bold t))
 
 (with-eval-after-load 'dirvish
-  (setq dirvish-quick-access-entries
+  (setq dirvish-hide-details t
+        dirvish-quick-access-entries
         `(("D" "~/Downloads/" "Downloads")
           ("dc" ,doom-core-dir "Doom Core")
           ("dl" ,doom-local-dir "Doom Local")
@@ -564,16 +565,17 @@
   ;; Ref: https://github.com/doomemacs/doomemacs/issues/8539
   (map! :map dired-mode-map
         :localleader
-        :desc "Configure UI"    "c" #'dirvish-setup-menu
-        :desc "Emerge/group"    "e" #'dirvish-emerge-menu
-        :desc "Fd"              "f" #'dtm/dirvish-fd
-        :desc "Fd menu"         "F" #'dirvish-fd-switches-menu
-        :desc "Git menu"        "g" #'dirvish-vc-menu
-        :desc "Hide/omit files" "h" #'dired-omit-mode
-        :desc "Ls menu"         "l" #'dirvish-ls-switches-menu
-        :desc "Mark menu"       "m" #'dirvish-mark-menu
-        :desc "Narrow to regex" "n" #'dtm/dirvish-narrow
-        :desc "Subtree menu"    "s" #'dirvish-subtree-menu))
+        :desc "Configure UI"       "c" #'dirvish-setup-menu
+        :desc "Emerge/group"       "e" #'dirvish-emerge-menu
+        :desc "Fd"                 "f" #'dtm/dirvish-fd
+        :desc "Fd menu"            "F" #'dirvish-fd-switches-menu
+        :desc "Git menu"           "g" #'dirvish-vc-menu
+        :desc "Hide/omit files"    "h" #'dired-omit-mode
+        :desc "Open link location" "l" #'dtm/dirvish-open-link-location
+        :desc "Ls menu"            "L" #'dirvish-ls-switches-menu
+        :desc "Mark menu"          "m" #'dirvish-mark-menu
+        :desc "Narrow to regex"    "n" #'dtm/dirvish-narrow
+        :desc "Subtree menu"       "s" #'dirvish-subtree-menu))
 
 (with-eval-after-load 'tramp
   (setq remote-file-name-inhibit-locks t

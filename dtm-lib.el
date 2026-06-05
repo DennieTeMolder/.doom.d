@@ -533,10 +533,12 @@ Intended for use as `vertico-sort-function' via `vertico-multiform-commands'."
 (defun dtm/dirvish-copy-file-name ()
   "Copy file name, or path with C-u. Also works for multiple marked files."
   (interactive)
+  (require 'dirvish-extras)
   (call-interactively
-   (if current-prefix-arg
-       #'dirvish-copy-file-path
-     #'dirvish-copy-file-name)))
+   (pcase (car-safe current-prefix-arg)
+     (16 #'dirvish-copy-file-true-path)
+     (4  #'dirvish-copy-file-path)
+     (_  #'dirvish-copy-file-name))))
 
 (defun dtm/dirvish-find-file ()
   "Like `find-file' but for use in `dirvish' buffers."
@@ -545,6 +547,16 @@ Intended for use as `vertico-sort-function' via `vertico-multiform-commands'."
    'find-file
    (read-file-name "Open: " nil default-directory
                    (confirm-nonexistent-file-or-buffer))))
+
+(defun dtm/dirvish-open-link-location ()
+  "Open the directory of the symlink at the current line."
+  (interactive)
+  (let ((file (dired-get-file-for-visit)))
+    (unless (f-symlink-p file)
+      (user-error "Not a symlink!"))
+    (dirvish--find-entry
+     'find-file
+     (file-name-directory (file-truename file)))))
 
 (defun dtm/dirvish-search-cwd ()
   "Grep files from current directory, `dirvish-quit' on confirm."
