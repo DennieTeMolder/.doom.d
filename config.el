@@ -1128,7 +1128,9 @@
   (set-popup-rule! "^ \\*Install vterm" :ttl 0)
 
   (map! :map vterm-mode-map
-        :i "C-x C-n" #'dtm/vterm-cape-dabbrev))
+        :i "C-x C-n" #'dtm/vterm-cape-dabbrev
+        :i [prior]   #'vterm--self-insert
+        :i [next]    #'vterm--self-insert))
 
 (with-eval-after-load 'sh-script
   (map! :map sh-mode-map
