@@ -530,6 +530,14 @@ Intended for use as `vertico-sort-function' via `vertico-multiform-commands'."
       (progn (select-window window) (dirvish-quit))
     (call-interactively #'dirvish-side)))
 
+(defun dtm/dirvish-find-file ()
+  "Like `find-file' but for use in `dirvish' buffers."
+  (interactive)
+  (dirvish--find-entry
+   'find-file
+   (read-file-name "Open: " nil default-directory
+                   (confirm-nonexistent-file-or-buffer))))
+
 (defun dtm/dirvish-search-cwd ()
   "Grep files from current directory, `dirvish-quit' on confirm."
   (interactive)
