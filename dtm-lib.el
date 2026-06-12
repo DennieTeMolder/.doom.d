@@ -289,7 +289,7 @@ Elements should be cons cells of: (name . path)")
   "Register persp to `dtm-persp-with-dirvish-side' if `dirvish-side' is open."
   (when-let* ((side-win (and (framep target)
                              (featurep 'dirvish-side)
-                             (dirvish-side--session-visible-p)))
+                             (dirvish-side-session-visible-p)))
               (name (safe-persp-name (get-current-persp)))
               (path (with-selected-window side-win default-directory)))
     (cl-pushnew (cons name path) dtm-persp-with-dirvish-side
@@ -485,6 +485,13 @@ This prevents the buffer from claiming the full frame when switched to later.
 Intended as :after `dirvish--clear-session' advice."
   (dtm-dirvish-setf-curr-layout dv nil))
 
+(defun dtm-dirvish-with-reuse-session-a (orig-fn &rest args)
+  "Call ORIG-FUN with ARGS with `dirvish-reuse-session' = t.
+Intended as :around advice."
+  (let ((dirvish-reuse-session t))
+    (ignore dirvish-reuse-session)
+    (apply orig-fn args)))
+
 (defun dtm-dirvish-preview-window-p (&optional window)
   "Returns t if WINDOW is a Dirvish preview window, defaults to `selected-window'."
   (when (fboundp 'dirvish-curr)
@@ -525,8 +532,8 @@ Intended for use as `vertico-sort-function' via `vertico-multiform-commands'."
 (defun dtm/dirvish-side ()
   "Wrapper for `dirvish-side' that always closes the window if visible."
   (interactive)
-  (if-let (window (and (fboundp 'dirvish-side--session-visible-p)
-                       (dirvish-side--session-visible-p)))
+  (if-let (window (and (fboundp 'dirvish-side-session-visible-p)
+                       (dirvish-side-session-visible-p)))
       (progn (select-window window) (dirvish-quit))
     (call-interactively #'dirvish-side)))
 

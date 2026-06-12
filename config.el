@@ -518,6 +518,7 @@
 
 (with-eval-after-load 'dirvish
   (setq dirvish-hide-details t
+        dirvish-reuse-session nil
         dirvish-quick-access-entries
         `(("D" "~/Downloads/" "Downloads")
           ("dc" ,doom-core-dir "Doom Core")
@@ -532,14 +533,15 @@
           ("s" "~/Sync/" "Sync")))
   (add-to-list 'dirvish-preview-disabled-exts "bgz")
 
-  ;; Make `persp-mode' remember and restore `dirvish-side' windows
-  ;; Should run before `+dired--cleanup-dirvish-h'
-  (add-hook 'persp-before-switch-functions #'dtm-persp-remember-dirvish-side)
-  (add-hook 'persp-activated-functions #'dtm-persp-restore-dirvish-side)
+  ;; BUG: Prevent Dirvish buffer from closing when opening in other window
+  (advice-add 'dired-find-file-other-window :around #'dtm-dirvish-with-reuse-session-a)
+
+  ;; Remove the fullframe layout to prevent buffers spawning unwanted windows when previewed
+  (when dirvish-reuse-session
+   (advice-add 'dirvish--clear-session :after #'dtm-dirvish--clear-session-a))
 
   ;; Make Dirvish recognize custom project types
   (advice-add 'dirvish--vc-root-dir :override #'projectile-project-root)
-  (advice-add 'dirvish--clear-session :after #'dtm-dirvish--clear-session-a)
 
   (map! :map dirvish-mode-map
         :n "C-o" #'dirvish-history-jump
@@ -575,6 +577,15 @@
         :desc "Mark menu"       "m" #'dirvish-mark-menu
         :desc "Narrow to regex" "n" #'dtm/dirvish-narrow
         :desc "Subtree menu"    "s" #'dirvish-subtree-menu))
+
+(with-eval-after-load 'dirvish-side
+  ;; Make `persp-mode' remember and restore `dirvish-side' windows
+  ;; Should run before `+dired--cleanup-dirvish-h'
+  (add-hook 'persp-before-switch-functions #'dtm-persp-remember-dirvish-side)
+  (add-hook 'persp-activated-functions #'dtm-persp-restore-dirvish-side)
+
+  ;; BUG: Prevent side window from closing when `dirvish-reuse-session' = nil
+  (advice-add 'dirvish-side-open-file :around #'dtm-dirvish-with-reuse-session-a))
 
 (with-eval-after-load 'tramp
   (setq remote-file-name-inhibit-locks t
