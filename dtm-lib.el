@@ -569,6 +569,20 @@ Intended for use as `vertico-sort-function' via `vertico-multiform-commands'."
                      (completing-read-multiple "Pattern: " nil)))
   (dirvish-fd dir pattern))
 
+(defvar-local dtm-dired-omit-count 0
+  "Number of files hidden by `dired-omit-mode'.")
+
+(defun dtm-dired-omit-expunge-remember-a (count)
+  "Set `dtm-dired-omit-count' to COUNT buffer local.
+Intended as `dired-omit-expunge' :filter-return advice."
+  (setq-local dtm-dired-omit-count count))
+
+(defun dtm-dirvish-omit-ml-a (element)
+  "Suppresses ELEMENT if `dtm-dired-omit-count' is 0.
+Intended as `dirvish-omit-ml' :filter-return advice"
+  (unless (zerop dtm-dired-omit-count)
+    element))
+
 ;;* Vundo
 (defun dtm-vundo-pre-enter-h ()
   "Ensure cursor remains visible in the edited buffer."

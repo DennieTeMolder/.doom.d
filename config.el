@@ -512,7 +512,10 @@
 
 (with-eval-after-load 'dired-x
   ;; Hide all files starting with a dot or pound sign by default
-  (setq dired-omit-files (rx (seq bos (or "." "#")))))
+  (setq dired-omit-files (rx (seq bos (or "." "#"))))
+
+  ;; Track number of files omitted for Dirvish modeline
+  (advice-add 'dired-omit-expunge :filter-return #'dtm-dired-omit-expunge-remember-a))
 
 (with-eval-after-load 'diredfl
   (set-face-attribute 'diredfl-dir-name nil :bold t))
@@ -586,6 +589,10 @@
 
   ;; BUG: Prevent side window from closing when `dirvish-reuse-session' = nil
   (advice-add 'dirvish-side-open-file :around #'dtm-dirvish-with-reuse-session-a))
+
+(with-eval-after-load 'dirvish-widgets
+  ;; Only show the "Omit" indicator when files are being hidden
+  (advice-add 'dirvish-omit-ml :filter-return #'dtm-dirvish-omit-ml-a))
 
 (with-eval-after-load 'tramp
   (setq remote-file-name-inhibit-locks t
