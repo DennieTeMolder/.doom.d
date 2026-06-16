@@ -1155,6 +1155,9 @@
         :nv [C-return] #'dtm/vterm-send-current-region-or-line
         :localleader "TAB" #'vterm-other-window))
 
+;; Recognize Apptainer/Singulairity definition files
+(push `(,(rx (seq ".def" eos)) . conf-unix-mode) auto-mode-alist)
+
 (when (modulep! :lang emacs-lisp)
   ;; Recognize `lispy-outline' bullets and add Imenu groups
   (setq +emacs-lisp-outline-regexp
@@ -1347,9 +1350,11 @@
 
 (with-eval-after-load 'python
   ;; Add generic imenu expression and ensure python doesn't ignore them
-  (setq-hook! 'python-mode-hook imenu-generic-expression
-              '(("Rule" "^rule \\(\\_<[^ \t():\n]+\\_>\\):" 1)))
-  (add-hook 'python-mode-hook #'dtm-imenu-merge-index-h 'append)
+  (setq-hook! '(python-mode-hook python-ts-mode-hook)
+    imenu-generic-expression
+    '(("Rule" "^rule \\(\\_<[^ \t():\n]+\\_>\\):" 1)))
+  (add-hook! '(python-mode-hook python-ts-mode-hook)
+             :append #'dtm-imenu-merge-index-h)
 
   (map! (:map (python-mode-map python-ts-mode-map)
          :nv [C-return] #'dtm/elpy-send-current-and-step
