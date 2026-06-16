@@ -503,7 +503,7 @@
   (setq dired-clean-confirm-killing-deleted-buffers nil
         dired-dwim-target nil
         dired-listing-switches
-        "-lv --almost-all --human-readable --group-directories-first --no-group")
+        "-lh --almost-all --group-directories-first")
 
   ;; Custom overrides
   (map! :map dired-mode-map
