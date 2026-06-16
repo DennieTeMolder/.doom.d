@@ -11,6 +11,7 @@
 (defvar dtm-default-font-size 11.0)
 (defvar dtm-maximize-on-startup nil)
 (defvar dtm-maximize-performance nil)
+(defvar dtm-dirvish-local-entries '())
 
 ;; Some functionality uses this to identify you, e.g. GPG configuration, email
 ;; clients, file templates and snippets. It is optional.
@@ -520,17 +521,16 @@
   (setq dirvish-hide-details t
         dirvish-reuse-session nil
         dirvish-quick-access-entries
-        `(("D" "~/Downloads/" "Downloads")
-          ("dc" ,doom-core-dir "Doom Core")
-          ("dl" ,doom-local-dir "Doom Local")
-          ("dm" ,doom-modules-dir "Doom Modules")
-          ("dp" ,doom-user-dir "Doom Private")
-          ("dr" ,(concat doom-local-dir "straight/repos/") "Doom Repos")
-          ("h" "~/" "Home")
-          ("m" "/mnt/" "Mount")
-          ("p" "~/Sync/PhD/Projects/" "Projects")
-          ("r" "/" "Root")
-          ("s" "~/Sync/" "Sync")))
+        (append
+         `(("dc" ,doom-core-dir "Doom Core")
+           ("dl" ,doom-local-dir "Doom Local")
+           ("dm" ,doom-modules-dir "Doom Modules")
+           ("dp" ,doom-user-dir "Doom Private")
+           ("dr" ,(concat doom-local-dir "straight/repos/") "Doom Repos")
+           ("r" "/" "Root")
+           ("h" "~/" "Home")
+           ("D" "~/Downloads/" "Downloads"))
+         dtm-dirvish-local-entries))
   (add-to-list 'dirvish-preview-disabled-exts "bgz")
 
   ;; BUG: Prevent Dirvish buffer from closing when opening in other window
@@ -538,7 +538,7 @@
 
   ;; Remove the fullframe layout to prevent buffers spawning unwanted windows when previewed
   (when dirvish-reuse-session
-   (advice-add 'dirvish--clear-session :after #'dtm-dirvish--clear-session-a))
+    (advice-add 'dirvish--clear-session :after #'dtm-dirvish--clear-session-a))
 
   ;; Make Dirvish recognize custom project types
   (advice-add 'dirvish--vc-root-dir :override #'projectile-project-root)
