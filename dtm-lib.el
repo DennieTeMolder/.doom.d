@@ -1035,6 +1035,15 @@ Intended for `org-insert-heading-hook' when using `+org--insert-item'."
          ('target (org-element-property :value el))
          (_ (org-element-property :name el)))))))
 
+(defun dtm/org-table-copy-to-clipboard ()
+  "Copy the current table to the clipboard as TSV."
+  (interactive)
+  (unless (org-at-table-p)
+    (user-error "Not an org table!"))
+  (let ((tbl (org-table-to-lisp)))
+    (gui-set-selection 'CLIPBOARD (orgtbl-to-tsv tbl nil)))
+  (message "Table copied to clipboard"))
+
 ;;** Org-export (ox)
 (defun dtm-org-odt-convert-prompt-a (&optional target output-fmt _open)
   "Request confirmation before conversion to `org-odt-preferred-output-format'.

@@ -52,7 +52,7 @@
 ;; `load-theme' function. This is the default:
 
 ;; Settings for smart defaults in `dtm-recommend-theme' & `dtm/consult-theme'
-(defvar dtm-first-hour-of-day 8)
+(defvar dtm-first-hour-of-day 7)
 (defvar dtm-last-hour-of-day 17)
 (defvar dtm-light-theme 'doom-one-light)
 (defvar dtm-dark-theme 'doom-vibrant)
@@ -479,7 +479,9 @@
     ;; Group buffers based on perspective/workspace
     (add-hook 'ibuffer-hook #'dtm-ibuffer-group-by-persp-h))
 
-  (map! :map ibuffer-mode-map :n "g r" #'ibuffer-update))
+  (map! :map ibuffer-mode-map
+        :n "g r" #'ibuffer-update
+        :n "q"   #'kill-current-buffer))
 
 (when (modulep! :ui popup)
   (set-popup-rules!
@@ -668,7 +670,11 @@
   (setq reb-re-syntax 'rx))
 
 (with-eval-after-load 'calc
-  (map! :map calc-mode-map "C-c ." #'dtm-calc-read-date))
+  (setq calc-kill-line-numbering nil)
+
+  (map! :map calc-mode-map
+        :n "C-c ." #'dtm-calc-read-date
+        :n "y"     #'calc-copy-as-kill))
 
 (use-package pixel-scroll
   :if (>= emacs-major-version 29)
@@ -789,6 +795,7 @@
         org-startup-shrink-all-tables t
         org-clock-mode-line-total 'current
         org-clock-idle-time 15
+        org-clock-string-limit 25
         org-agenda-start-day nil
         org-agenda-span 14
         org-agenda-time-grid '((daily today require-timed)
@@ -1148,7 +1155,8 @@
   (map! :map vterm-mode-map
         :i "C-x C-n" #'dtm/vterm-cape-dabbrev
         :i [prior]   #'vterm--self-insert
-        :i [next]    #'vterm--self-insert))
+        :i [next]    #'vterm--self-insert
+        :i "C-g"     #'vterm--self-insert))
 
 (with-eval-after-load 'sh-script
   (map! :map sh-mode-map
