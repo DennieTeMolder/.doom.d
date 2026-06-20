@@ -180,7 +180,7 @@
   (add-hook 'doom-after-init-hook #'use-package-report 110))
 
 ;; Don't recognise non file visiting buffers as packages
-(defadvice! dtm-base-buffer-file-name ()
+(defadvice! dtm-emacs-lisp--in-package-buffer-p-a ()
   :before-while #'+emacs-lisp--in-package-buffer-p
   (buffer-file-name (buffer-base-buffer)))
 
@@ -734,6 +734,9 @@
   ;; Move cursor back to what Evil considers as end of word
   (advice-add 'jinx-next :after (lambda (_) (backward-char))
               '((name . "backward-char"))))
+
+(with-eval-after-load 'magit
+  (add-hook 'magit-status-headers-hook #'magit-insert-user-header 'append))
 
 (use-package magit-todos
   :defer t

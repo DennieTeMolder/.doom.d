@@ -2006,6 +2006,17 @@ Will return nil when beyond end of defun, contrary to `beginning-of-defun'."
           (font-lock-ensure (point) (pos-eol))
           (buffer-substring (point) (pos-eol)))))))
 
+;;* Magit
+(defun dtm/magit-set-local-user (&optional name email)
+  "Set user.name and user.email for the current git project."
+  (interactive
+   (list (read-string "Git user: " (magit-get "user.name"))
+         (read-string "Git email: " (magit-get "user.email"))))
+  (when name
+    (magit-set name "user.name"))
+  (when email
+    (magit-set email "user.email")))
+
 ;;* Commands
 (defun dtm/load-session (file)
   "Stripped down `doom/load-session' with a proper default value.
