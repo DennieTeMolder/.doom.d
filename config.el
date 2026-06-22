@@ -551,6 +551,7 @@
   (map! :map dirvish-mode-map
         :n "C-o" #'dirvish-history-jump
         :n "C-s" #'dtm/dirvish-search-cwd
+        :n "TAB" #'dirvish-subtree-toggle
         :n "a"   #'dirvish-quick-access
         :n "s"   #'dirvish-quicksort
         :n "c"   #'dired-create-empty-file
@@ -565,7 +566,7 @@
         :n "y"   #'dirvish-yank-menu
         :n "Y"   #'dirvish-file-info-menu
         :n "z"   nil
-        :n "TAB" #'dirvish-subtree-toggle
+        :n "z h" #'dired-omit-mode
         :n "."   #'dtm/dirvish-find-file
         :n "?"   #'dirvish-dispatch)
   ;; BUG descriptions only work when bound to `major-mode' map
