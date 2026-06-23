@@ -1900,17 +1900,17 @@ Ref: `good-scroll--window-usable-height'."
       (- w-bottom w-top (+ hl-height tl-height)))))
 
 (defvar dtm-precision-scroll-time-factor 5
-  "Factor to increase scrolling time with when scroll the full display height.
+  "Factor multiplying scrolling duration when scrolling a full frame.
 Higher values give slower scrolling.")
 
 (defun dtm-precision-scroll-window-fraction (fraction)
   "Scroll window by FRACTION of total height."
   (let* ((delta (* fraction (dtm-window-usable-height)))
          (pixel-scroll-precision-interpolation-total-time
-          (max pixel-scroll-precision-interpolation-total-time
-               (* pixel-scroll-precision-interpolation-total-time
-                  (/ (abs delta) (display-pixel-height))
-                  dtm-precision-scroll-time-factor))))
+          (* pixel-scroll-precision-interpolation-total-time
+             (max 1 (* dtm-precision-scroll-time-factor
+                       (/ (abs delta) (frame-pixel-height)))))))
+    (ignore pixel-scroll-precision-interpolation-total-time)
     (pixel-scroll-precision-interpolate delta nil 1)))
 
 (defun dtm-precision-scroll-up ()
