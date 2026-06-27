@@ -324,10 +324,6 @@
   (setq recentf-keep '(dtm-file-local-readable-p))
   (add-to-list 'recentf-exclude #'dtm-ess-plot-file-p t)
 
-  ;; Revert back to running cleanup on mode start instead of emacs shutdown
-  (remove-hook 'kill-emacs-hook #'recentf-cleanup)
-  (setq recentf-auto-cleanup 'mode)
-
   ;; Exclude autosave file/folder and root from recent files
   (add-to-list 'recentf-exclude "/autosave/?\\'")
   (add-to-list 'recentf-exclude "\\`/\\'"))
