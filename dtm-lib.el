@@ -323,11 +323,6 @@ Elements should be cons cells of: (name . path)")
       (file-in-directory-p project-root doom-local-dir)))
 
 ;;* Doom-modeline
-(defun dtm-doom-modeline-segment-buf-pos-a (res)
-  "Conditionally remove `doom-modeline-wspc' from start of RES to fix spacing.
-Intended as :filter-return `doom-modeline-segment--buffer-position' advice."
-  (if (or line-number-mode column-number-mode) res (cdr res)))
-
 (defun dtm-doom-modeline-evil-update-visual (&optional arg)
   "Update mode line if ARG is nil or non-negative.
 Intended as :after `evil-visual-highlight' advice."

@@ -74,7 +74,6 @@
 (package! ess-r-insert-obj)
 (package! transpose-frame)
 (package! info-colors)
-(package! mlscroll)
 (package! trashed)
 (package! ctrlf)
 (package! jinx)

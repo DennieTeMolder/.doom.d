@@ -345,20 +345,6 @@
   (unless (string= "N/A" (alist-get ?p (funcall battery-status-function)))
     (display-battery-mode +1)))
 
-(use-package mlscroll
-  :hook (doom-modeline-mode . mlscroll-mode)
-  :init
-  (remove-hook 'doom-modeline-mode-hook #'column-number-mode)
-  :config
-  (setq mlscroll-width-chars 18
-        mlscroll-alter-percent-position nil
-        doom-modeline-percent-position nil)
-
-  (advice-add 'doom-modeline-segment--buffer-position
-              :filter-return #'dtm-doom-modeline-segment-buf-pos-a)
-
-  (line-number-mode -1))
-
 (with-eval-after-load 'vertico
   (setq vertico-resize 'grow-only
         vertico-scroll-margin (/ vertico-count 2)))
