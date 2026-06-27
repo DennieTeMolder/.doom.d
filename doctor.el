@@ -1,19 +1,21 @@
 ;;; doctor.el -*- lexical-binding: t; -*-
 
 ;; Jinx
+(unless (fboundp 'module-load)
+  (warn! "Your emacs wasn't built with dynamic modules support. Jinx module won't compile"))
+
 (unless (executable-find "aspell")
   (warn! "Couldn't find aspell command. Jinx spell checking might be impaired"))
 
-(unless (executable-find "pkg-config")
-  (warn! "Couldn't find pkg-config command. Jinx module won't compile"))
+(if (not (executable-find "pkg-config"))
+    (warn! "Couldn't find pkg-config command. Jinx module won't compile")
+  (unless (condition-case nil
+              (process-lines "pkg-config" "--cflags" "--libs" "enchant-2")
+            (error nil))
+    (warn! "Couldn't find libenchant2 headers. Jinx module won't compile")))
 
-(unless (condition-case nil
-            (process-lines "pkg-config" "--cflags" "--libs" "enchant-2")
-          (error nil))
-  (warn! "Couldn't find libenchant2 headers. Jinx module won't compile"))
-
-(unless (fboundp 'module-load)
-  (warn! "Your emacs wasn't built with dynamic modules support. Jinx module won't compile"))
+(unless (string-suffix-p "Sync/Emacs/Enchant/" (file-truename "~/.config/enchant/"))
+  (warn! "~/.config/enchant/ is not symlinked to the shared personal dictionary"))
 
 ;; Flycheck
 (unless (executable-find "proselint")
