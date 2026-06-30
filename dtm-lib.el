@@ -575,7 +575,7 @@ Intended as `dired-omit-expunge' :filter-return advice."
 (defun dtm-dirvish-omit-ml-a (element)
   "Suppresses ELEMENT if `dtm-dired-omit-count' is 0.
 Intended as `dirvish-omit-ml' :filter-return advice"
-  (unless (zerop dtm-dired-omit-count)
+  (unless (zerop (or dtm-dired-omit-count 0))
     element))
 
 ;;* Vundo
