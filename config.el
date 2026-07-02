@@ -222,8 +222,8 @@
   (setq evil-want-fine-undo t
         evil-vsplit-window-right t
         evil-split-window-below t
-        ;; During search treat special characters as literal (prefix \v to disable)
-        evil-magic 'very-nomagic)
+        ;; During search treat all possible characters as special (prefix \V to disable)
+        evil-magic 'very-magic)
 
   ;; Indicate `evil-repeat' to ignore certain commands because they freeze emacs
   (evil-declare-not-repeat #'+workspace/switch-left)
@@ -243,7 +243,15 @@
   ;; Make snipe commands (bound to f,F,t,T,s,S) go beyond the current line
   (setq evil-snipe-scope 'visible)
 
-  (add-to-list 'evil-snipe-disabled-modes 'pdf-view-mode))
+  (add-to-list 'evil-snipe-disabled-modes 'pdf-view-mode)
+
+  ;; Swap evil-snipe repeat keys
+  (map! :map evil-snipe-override-local-mode-map
+        :m "," #'evil-snipe-repeat
+        :m ";" #'evil-snipe-repeat-reverse
+        :map evil-snipe-parent-transient-map
+        "," #'evil-snipe-repeat
+        ";" #'evil-snipe-repeat-reverse))
 
 (with-eval-after-load 'evil-collection
   ;; BUG: inhibit-insert-state inhibits all replace bindings but `evil-enter-replace-state'
