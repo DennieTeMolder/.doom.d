@@ -2110,6 +2110,15 @@ Relative lines are more performant, but fail with folded/wrapped lines"
         (t
          (user-error "No diagnostics backend detected. See `+default/diagnostics'."))))
 
+(defun dtm/yank-default-directory (&optional root)
+  "Copy the current buffer's `default-directory' to the kill ring."
+  (interactive)
+  (if (null default-directory)
+      (user-error "Couldn't copy default directory in current buffer")
+    (let ((path (abbreviate-file-name default-directory)))
+      (kill-new path)
+      (message "Copied path: %s" path))))
+
 ;;** Move-splitter
 (defun dtm/move-splitter-left (arg)
   "Move window splitter left. Ref: hydra-examples"

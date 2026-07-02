@@ -57,6 +57,9 @@
        :desc "Multi-edit symbol"      "m" #'evil-multiedit-match-all
        :desc "Describe error checker" "X" #'dtm/diagnostics-describe)
 
+      ;; File
+      :desc "yank working directory" "f w" #'dtm/yank-default-directory
+
       ;; Insert
       :desc "snippet" "i s" #'tempel-insert
 
