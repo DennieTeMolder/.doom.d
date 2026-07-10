@@ -117,6 +117,9 @@
       ;; Increase shift + mwheel sensitivity
       mouse-wheel-scroll-amount-horizontal 12)
 
+(setq completion-ignored-extensions
+      (delete ".idx" completion-ignored-extensions))
+
 ;;* UI Settings
 ;; Maximize Emacs if desired
 (when dtm-maximize-on-startup
@@ -504,7 +507,8 @@
 
 (with-eval-after-load 'dired-x
   ;; Hide all files starting with a dot or pound sign by default
-  (setq dired-omit-files (rx (seq bos (or "." "#"))))
+  (setq dired-omit-files (rx (seq bos (or "." "#")))
+        dired-omit-extensions (remove ".idx" dired-omit-extensions))
 
   ;; Track number of files omitted for Dirvish modeline
   (advice-add 'dired-omit-expunge :filter-return #'dtm-dired-omit-expunge-remember-a))
