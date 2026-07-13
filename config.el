@@ -591,6 +591,11 @@
   ;; Only show the "Omit" indicator when files are being hidden
   (advice-add 'dirvish-omit-ml :filter-return #'dtm-dirvish-omit-ml-a))
 
+(with-eval-after-load 'dirvish-extras
+  (transient-append-suffix
+    'dirvish-mark-menu "X"
+    '("TAB" "Toggle subtree state" dtm/dirvish-do-toggle-subtree)))
+
 (with-eval-after-load 'tramp
   (setq remote-file-name-inhibit-locks t
         tramp-use-scp-direct-remote-copying t

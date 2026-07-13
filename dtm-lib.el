@@ -578,6 +578,11 @@ Intended as `dirvish-omit-ml' :filter-return advice"
   (unless (zerop (or dtm-dired-omit-count 0))
     element))
 
+(defun dtm/dirvish-do-toggle-subtree ()
+  "Call `dirvish-subtree-toggle' on all marked files."
+  (interactive)
+  (dired-map-over-marks (dirvish-subtree-toggle) nil))
+
 ;;* Vundo
 (defun dtm-vundo-pre-enter-h ()
   "Ensure cursor remains visible in the edited buffer."
