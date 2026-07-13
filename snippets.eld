@@ -52,7 +52,7 @@ emacs-lisp-mode
 sh-mode
 
 ;; Using '/usr/bin/env bash' is not recognised by sh-mode
-(__ "#!/bin/bash" n)
+(__ "#!/bin/bash" n "set -euo pipefail" n)
 (for "for " p " in " p "; do" n> r> n "done")
 (if "if [ " p " ]; then" n> r> n "fi")
 
