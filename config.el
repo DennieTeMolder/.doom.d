@@ -628,6 +628,9 @@
   (map! :map vundo-mode-map
         :n "D" #'dtm-vundo-live-diff-mode))
 
+(with-eval-after-load 'image
+  (setq image-use-external-converter t))
+
 (with-eval-after-load 'image-mode
   (advice-add 'image-toggle-display-image :after #'dtm-image-center-maybe)
 
