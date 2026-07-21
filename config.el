@@ -523,7 +523,7 @@
         (append
          `(("dc" ,doom-core-dir "Doom Core")
            ("dl" ,doom-local-dir "Doom Local")
-           ("dm" ,doom-modules-dir "Doom Modules")
+           ("dm" ,(car (last doom-module-load-path)) "Doom Modules")
            ("dp" ,doom-user-dir "Doom Private")
            ("dr" ,(concat doom-local-dir "straight/repos/") "Doom Repos")
            ("r" "/" "Root")
