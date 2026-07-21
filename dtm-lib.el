@@ -774,37 +774,35 @@ Ref: https://github.com/noctuid/lispyville/issues/284"
         (evil-move-beyond-eol t))
     (apply oldfun args)))
 
-;;* Vterm
-(defun dtm-vterm-redraw-cursor-a (orig-fn &rest args)
-  "Prevent vterm from modifying `cursor-type'.
-Intended as around advice for `vterm--redraw'
-Ref: https://github.com/akermu/emacs-libvterm/issues/313#issuecomment-1191400836"
-  (let ((cursor-type cursor-type)) (apply orig-fn args)))
+;;* Ghostel
+(defun dtm/ghostel-other-window ()
+  "Switch to the dedicated `ghostel' terminal for the current workspace.
+Uses `display-buffer-reuse-window'."
+  (interactive)
+  (unless (functionp '+ghostel--buffer-name)
+    (autoload-do-load (symbol-function #'+ghostel/here)))
+  (dlet ((ghostel-buffer-name (+ghostel--buffer-name)))
+    (select-window (display-buffer (save-window-excursion (ghostel))
+                                   'display-buffer-reuse-window))))
 
-(defun dtm-vterm-sync-cursor-a (&rest _)
-  "Keep vterm cursor position consistent with evil.
-Intended as before advice for `vterm-send-key'"
-  (vterm-goto-char (point)))
-
-(defun dtm/vterm-send-current-region-or-line (&optional no-step)
-  "Execute the current line in the vterm buffer.
+(defun dtm/ghostel-send-current-region-or-line (&optional no-step)
+  "Send the current line to `dtm/ghostel-other'.
 Moves the point to the next non-empty line unless NO-STEP is non-nil."
   (interactive "P")
   (let ((command (dtm-region-as-string 'deactivate)))
     (if command
-        (setq command (string-trim command "[\\n\\r]+"))
+        (setq command (string-trim command))
       (when (dtm-line-empty-p) (dtm-forward-line-non-empty))
       (setq command (dtm-current-line-as-string))
       (+nav-flash-blink-cursor)
       (unless no-step (dtm-forward-line-non-empty)))
     (save-selected-window
-      (vterm-other-window)
-      (vterm--goto-line -1)
-      (vterm-send-string command)
-      (vterm-send-return))))
+      (dtm/ghostel-other)
+      (goto-char (point-max))
+      (ghostel-send-string (concat command "\n")))))
 
-(defun dtm/vterm-cape-dabbrev ()
-  "Vterm compatible `cape-dabbrev' completion using `completing-read'.
+(defun dtm/ghostel-cape-dabbrev ()
+  "Ghostel compatible `cape-dabbrev' completion using `completing-read'.
 `completion-at-point' fails for read-only buffers because preview is blocked.
 Ref: https://github.com/akermu/emacs-libvterm/pull/401"
   (interactive)
@@ -813,8 +811,17 @@ Ref: https://github.com/akermu/emacs-libvterm/pull/401"
       (user-error "cape-dabbrev: No completions"))
     (setq completion (completing-read "Dabbrev:" completion))
     (when (thing-at-point 'symbol)
-      (vterm-send-C-w))
-    (vterm-send-string completion t)))
+      (evil-ghostel--passthrough-ctrl-w))
+    (ghostel-send-string completion)))
+
+(defun dtm/ghostel-yank-pop-consult ()
+  "Re-implementation of `ghostel-yank-pop' that uses Consult."
+  (interactive)
+  (if (memq last-command '(ghostel-yank ghostel-yank-pop))
+      (ghostel-yank-pop)
+    (when-let* ((text (consult--read-from-kill-ring)))
+      (ghostel--on-user-input)
+      (ghostel--paste-text text))))
 
 ;;* Consult
 (defun dtm-consult-repl-history ()

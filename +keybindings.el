@@ -72,8 +72,7 @@
       ;; Open
       (:prefix "o"
        :desc "Folder sidebar"       "s" #'dtm/dirvish-side
-       :desc "Find file in sidebar" "S" #'+dired/dirvish-side-and-follow
-       :desc "Vterm here"           "T" #'vterm)
+       :desc "Find file in sidebar" "S" #'+dired/dirvish-side-and-follow)
 
       ;; Project
       :desc "List project todos" "p t" #'magit-todos-list

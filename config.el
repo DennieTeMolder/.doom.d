@@ -1144,33 +1144,14 @@
   ;; The "z" command does the same but for dir history
   (add-to-list '+eshell-aliases '("up" "eshell-up $1")))
 
-(with-eval-after-load 'vterm
-  ;; Actually clear buffer upon C-l
-  (setq vterm-clear-scrollback-when-clearing t)
-
-  (add-hook 'vterm-mode-hook #'dtm-scroll-conservatively-no-recenter)
-
-  (remove-hook 'vterm-mode-hook #'mode-line-invisible-mode)
-
-  ;; Fix evil cursor getting out of sync
-  (advice-add 'vterm-send-key :before #'dtm-vterm-sync-cursor-a)
-  (advice-add 'vterm--redraw :around #'dtm-vterm-redraw-cursor-a)
-
-  ;; Don't consider vterm buffer as popup (only doom:vterm)
-  (cl-callf2 cl-delete "^\\*vterm" +popup--display-buffer-alist
-    :key #'car :test #'equal)
-  (set-popup-rule! "^ \\*Install vterm" :ttl 0)
-
-  (map! :map vterm-mode-map
-        :i "C-x C-n" #'dtm/vterm-cape-dabbrev
-        :i [prior]   #'vterm--self-insert
-        :i [next]    #'vterm--self-insert
-        :i "C-g"     #'vterm--self-insert))
+(with-eval-after-load 'ghostel
+  (map! :map ghostel-semi-char-mode-map
+        [remap ghostel-yank-pop] #'dtm/ghostel-yank-pop-consult))
 
 (with-eval-after-load 'sh-script
   (map! :map sh-mode-map
-        :nv [C-return] #'dtm/vterm-send-current-region-or-line
-        :localleader "TAB" #'vterm-other-window))
+        :nv [C-return] #'dtm/ghostel-send-current-region-or-line
+        :localleader "TAB" #'dtm/ghostel-other-window))
 
 ;; Recognize Apptainer/Singulairity definition files
 (push `(,(rx (seq ".def" eos)) . conf-unix-mode) auto-mode-alist)
