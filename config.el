@@ -843,20 +843,23 @@
   ;; Prettify, enable hard wrapping and automate paragraph filling
   (add-hook 'org-mode-hook #'dtm-org-mode-setup-h))
 
-;; Keys bound in (with-eval-after-load 'org) seem to get overwritten, this works
-(with-eval-after-load 'org-keys
-  (map! :map org-mode-map
-        :n  "C-j"   #'+org/return
-        :ni "C-c ]" #'org-cite-insert
-        :ni "C-c [" #'org-roam-node-insert
-        (:localleader
-         :desc "Clock-in after last"   "c a" #'dtm/org-clock-in-after
-                                       "l D" #'dtm/org-link-kill
-         :desc "Toggle pretty visuals" "v"   #'dtm/org-pretty-mode-toggle)
+;; Bind keys late enough to override `+org-init-keybinds-h'
+(add-hook! 'org-load-hook :append
+  (defun dtm-org-init-keybinds-h ()
+    (map! :map org-mode-map
+          :n  "C-j"   #'+org/return
+          :ni "C-c ]" #'org-cite-insert
+          :ni "C-c [" #'org-roam-node-insert
 
-        :map org-agenda-mode-map
-        (:localleader
-         :desc "Log clocked time" "l" #'org-agenda-log-mode)))
+          :localleader
+          :desc "Clock-in after last"   "c a" #'dtm/org-clock-in-after
+                                        "l D" #'dtm/org-link-kill
+          :desc "Toggle pretty visuals" "v"   #'dtm/org-pretty-mode-toggle)
+
+    (map! :after org-agenda
+          :map org-agenda-mode-map
+          :localleader
+          :desc "Log clocked time" "l" #'org-agenda-log-mode)))
 
 (with-eval-after-load 'evil-org
   ;; Mark tab-navigation through tables as non-repeatable
