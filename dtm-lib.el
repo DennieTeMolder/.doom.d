@@ -1888,10 +1888,44 @@ Ref: https://github.com/minad/tempel"
       nil)))
 
 ;;* Pixel-scroll-precision-mode
-(defun dtm-pixel-scroll-precision-mode-h ()
-  "Set `make-cursor-line-fully-visible' default value to t.
-Use with `pixel-scroll-precision-mode-hook'."
-  (setq-default make-cursor-line-fully-visible t))
+(defun dtm-window-screen-pos (&optional window)
+  "Return the vertical position of `point' relative to WINDOW in pixels."
+  (cadr (pos-visible-in-window-p nil window 'partially)))
+
+(defun dtm-pixel-scroll-store-screen-pos-a (&rest _)
+  "Store `dtm-window-screen-pos' as a `window-parameter'.
+Intended as `pixel-scroll-precision-interpolate' :before advice."
+  (unless (window-parameter nil 'interpolated-scroll-remainder)
+    (set-window-parameter nil 'interpolated-scroll-screen-pos
+                          (dtm-window-screen-pos))
+    ;; Based on `evil-ensure-column'
+    (or (memq last-command '(next-line previous-line))
+        (setq temporary-goal-column
+              (if (and track-eol (eolp) (not (bolp))) most-positive-fixnum
+                (current-column))))))
+
+(defun dtm-pixel-scroll-preserve-screen-pos-a (orig-fun &rest args)
+  "Restore `point' to `dtm-pixel-scroll-save-cursor-pos-a'.
+This mimics `scroll-preserve-screen-position' == always.
+Intended as `pixel-scroll-precision-scroll-up' :around advice (also for down)."
+  (prog1 (apply orig-fun args)
+    (let* ((target (window-parameter nil 'interpolated-scroll-screen-pos))
+           (current (dtm-window-screen-pos))
+           (direction (if (< target current) -1 1))
+           (height-diff (abs (- target current)))
+           (line-height (pixel-line-height)))
+      (while (< line-height height-diff)
+        (forward-line direction)
+        (setq height-diff (- height-diff line-height)
+              line-height (pixel-line-height))))
+    ;; Taken from `evil-ensure-column'
+    (line-move-to-column
+     (or goal-column
+         (if (consp temporary-goal-column)
+             (max 0 (+ (truncate (car temporary-goal-column))
+                       (cdr temporary-goal-column)))
+           temporary-goal-column)))
+    (setq this-command 'next-line)))
 
 (defun dtm-window-usable-height ()
   "Return the usable height of the selected window.
@@ -1924,21 +1958,25 @@ Higher values give slower scrolling.")
   "Smooth scroll up half a window."
   (interactive)
   (dtm-precision-scroll-window-fraction 0.49))
+(put 'dtm-precision-scroll-up 'scroll-command t)
 
 (defun dtm-precision-scroll-down ()
   "Smooth scroll up down a window."
   (interactive)
   (dtm-precision-scroll-window-fraction -0.49))
+(put 'dtm-precision-scroll-down 'scroll-command t)
 
 (defun dtm-precision-scroll-page-up ()
   "Smooth scroll up a full window."
   (interactive)
   (dtm-precision-scroll-window-fraction 0.99))
+(put 'dtm-precision-scroll-page-up 'scroll-command t)
 
 (defun dtm-precision-scroll-page-down ()
   "Smooth scroll down a full window."
   (interactive)
   (dtm-precision-scroll-window-fraction -0.99))
+(put 'dtm-precision-scroll-page-down 'scroll-command t)
 
 ;;* Evil-collection
 (defun dtm-evil-collection-inhibit-insert-state-a (map-sym)

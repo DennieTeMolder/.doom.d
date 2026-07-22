@@ -694,6 +694,11 @@
   ;; Prevent comint prompts from being partially off-screen
   (add-hook 'pixel-scroll-precision-mode-hook #'dtm-pixel-scroll-precision-mode-h)
 
+  ;; Preserve cursor position during scrolling
+  (advice-add 'pixel-scroll-precision-interpolate :before #'dtm-pixel-scroll-store-screen-pos-a)
+  (advice-add 'pixel-scroll-precision-scroll-down :around #'dtm-pixel-scroll-preserve-screen-pos-a)
+  (advice-add 'pixel-scroll-precision-scroll-up :around #'dtm-pixel-scroll-preserve-screen-pos-a)
+
   ;; Custom commands to smooth scroll using keys
   (map! :map pixel-scroll-precision-mode-map
         [prior] #'dtm-precision-scroll-page-up
