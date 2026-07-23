@@ -716,6 +716,11 @@
         :nvi [mouse-8] #'eww-back-url
         :nvi [mouse-9] #'eww-forward-url))
 
+(with-eval-after-load 'ws-butler
+  ;; Don't trim trailing tabs or other whitespace in .tsv files
+  (add-to-list 'ws-butler-global-exempt-modes 'so-long-mode)
+  (add-to-list 'ws-butler-global-exempt-modes 'csv-mode))
+
 ;;* Core functionality extensions
 ;; Add colours to info pages to make them more readable
 (use-package info-colors
