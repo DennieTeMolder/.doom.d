@@ -1888,6 +1888,11 @@ Ref: https://github.com/minad/tempel"
       nil)))
 
 ;;* Pixel-scroll-precision-mode
+(defun dtm-pixel-scroll-precision-mode-h ()
+  "Set `make-cursor-line-fully-visible' default value to t.
+Use with `pixel-scroll-precision-mode-hook'."
+  (setq-default make-cursor-line-fully-visible t))
+
 (defun dtm-window-screen-pos (&optional window)
   "Return the vertical position of `point' relative to WINDOW in pixels."
   (cadr (pos-visible-in-window-p nil window 'partially)))
