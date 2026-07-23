@@ -115,9 +115,6 @@ Intended as :around advice (e.g. for capf functions)."
       (apply orig-fun args)
     (user-error nil)))
 
-(defun dtm-scroll-conservatively-no-recenter (&rest _)
-  (setq-local scroll-conservatively 101))
-
 (defun dtm-undo-exclude-and-reset-a (orig-fn &rest args)
   "Call ORIG-FN without undo and reset `buffer-undo-list'.
 Intended as :around advice."
@@ -1892,6 +1889,11 @@ Ref: https://github.com/minad/tempel"
   "Set `make-cursor-line-fully-visible' default value to t.
 Use with `pixel-scroll-precision-mode-hook'."
   (setq-default make-cursor-line-fully-visible t))
+
+(defun dtm-scroll-process-friendly-h (&rest _)
+  "Disable re-centering and scroll margin, desirable in process buffers."
+  (setq-local scroll-conservatively 101
+              scroll-margin 0))
 
 (defun dtm-window-screen-pos (&optional window)
   "Return the vertical position of `point' relative to WINDOW in pixels."

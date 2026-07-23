@@ -114,6 +114,9 @@
       ;; Add clipboard to kill ring
       ;; Cycle w/ <C-p> or <C-n> after pasting or use <M-y> `consult-yank-pop'
       save-interprogram-paste-before-kill t
+      scroll-margin 3
+      hscroll-margin 8
+      scroll-preserve-screen-position 'always
       ;; Increase shift + mwheel sensitivity
       mouse-wheel-scroll-amount-horizontal 12)
 
@@ -1128,7 +1131,7 @@
   (add-hook 'display-line-numbers-mode-hook #'dtm-topsy-header-line-update))
 
 (with-eval-after-load 'compile
-  (add-hook 'compilation-mode-hook #'dtm-scroll-conservatively-no-recenter))
+  (add-hook 'compilation-mode-hook #'dtm-scroll-process-friendly-h))
 
 (with-eval-after-load 'comint
   (setq comint-input-ignoredups t
@@ -1136,7 +1139,7 @@
         comint-scroll-to-bottom-on-output 'others)
 
   (add-hook 'comint-mode-hook #'dtm/word-wrap-mode-no-fill)
-  (add-hook 'comint-mode-hook #'dtm-scroll-conservatively-no-recenter)
+  (add-hook 'comint-mode-hook #'dtm-scroll-process-friendly-h)
 
   ;; Prompt to create directory if missing
   (advice-add 'comint-write-input-ring :before #'dtm-comint-write-input-ring-a)
@@ -1148,7 +1151,7 @@
         :localleader "r" #'dtm-consult-repl-history))
 
 (with-eval-after-load 'eshell
-  (add-hook 'eshell-mode-hook #'dtm-scroll-conservatively-no-recenter)
+  (add-hook 'eshell-mode-hook #'dtm-scroll-process-friendly-h)
 
   ;; Fuzzy match parent directories (a.k.a. "bd")
   ;; The "z" command does the same but for dir history
