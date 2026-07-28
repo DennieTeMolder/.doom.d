@@ -1895,44 +1895,30 @@ Use with `pixel-scroll-precision-mode-hook'."
   (setq-local scroll-conservatively 101
               scroll-margin 0))
 
-(defun dtm-window-screen-pos (&optional window)
-  "Return the vertical position of `point' relative to WINDOW in pixels."
-  (cadr (pos-visible-in-window-p nil window 'partially)))
-
 (defun dtm-pixel-scroll-store-screen-pos-a (&rest _)
-  "Store `dtm-window-screen-pos' as a `window-parameter'.
+  "Store current relative (X-CHAR . Y-PIXEL) position as a `window-parameter'.
+Required for `dtm-pixel-scroll-preserve-screen-pos-a' to function.
 Intended as `pixel-scroll-precision-interpolate' :before advice."
-  (unless (window-parameter nil 'interpolated-scroll-remainder)
-    (set-window-parameter nil 'interpolated-scroll-screen-pos
-                          (dtm-window-screen-pos))
-    ;; Based on `evil-ensure-column'
-    (or (memq last-command '(next-line previous-line))
-        (setq temporary-goal-column
-              (if (and track-eol (eolp) (not (bolp))) most-positive-fixnum
-                (current-column))))))
+  (unless (eq last-command 'pixel-scroll-precision)
+    (let ((pos (pos-visible-in-window-p nil nil 'partially)))
+      (set-window-parameter nil 'interpolated-scroll-screen-pos
+                            (cons (/ (car pos) (frame-char-width))
+                                  (cadr pos))))))
 
-(defun dtm-pixel-scroll-preserve-screen-pos-a (orig-fun &rest args)
-  "Restore `point' to `dtm-pixel-scroll-save-cursor-pos-a'.
+;; REVIEW: debounce this function?
+(defun dtm-pixel-scroll-preserve-screen-pos-a (&rest _)
+  "Restore XY position of `point' to `dtm-pixel-scroll-save-cursor-pos-a'.
 This mimics `scroll-preserve-screen-position' == always.
-Intended as `pixel-scroll-precision-scroll-up' :around advice (also for down)."
-  (prog1 (apply orig-fun args)
-    (let* ((target (window-parameter nil 'interpolated-scroll-screen-pos))
-           (current (dtm-window-screen-pos))
-           (direction (if (< target current) -1 1))
-           (height-diff (abs (- target current)))
-           (line-height (pixel-line-height)))
-      (while (< line-height height-diff)
-        (forward-line direction)
-        (setq height-diff (- height-diff line-height)
-              line-height (pixel-line-height))))
-    ;; Taken from `evil-ensure-column'
-    (line-move-to-column
-     (or goal-column
-         (if (consp temporary-goal-column)
-             (max 0 (+ (truncate (car temporary-goal-column))
-                       (cdr temporary-goal-column)))
-           temporary-goal-column)))
-    (setq this-command 'next-line)))
+Intended as `pixel-scroll-precision-scroll-up'/down :after advice."
+  (let* ((target (window-parameter nil 'interpolated-scroll-screen-pos))
+         (current (cadr (pos-visible-in-window-p nil nil 'partially)))
+         (direction (cons (car target) (if (< (cdr target) current) -1 1)))
+         (height-diff (abs (- (cdr target) current)))
+         (line-height (pixel-line-height (point))))
+    (while (<= line-height height-diff)
+      (vertical-motion direction)
+      (setq height-diff (- height-diff line-height)
+            line-height (pixel-line-height (point))))))
 
 (defun dtm-window-usable-height ()
   "Return the usable height of the selected window.
@@ -1953,6 +1939,7 @@ Higher values give slower scrolling.")
 
 (defun dtm-precision-scroll-window-fraction (fraction)
   "Scroll window by FRACTION of total height."
+  (setq this-command 'pixel-scroll-precision)
   (let* ((delta (* fraction (dtm-window-usable-height)))
          (pixel-scroll-precision-interpolation-total-time
           (* pixel-scroll-precision-interpolation-total-time
