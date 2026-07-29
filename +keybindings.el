@@ -58,7 +58,9 @@
        :desc "Describe error checker" "X" #'dtm/diagnostics-describe)
 
       ;; File
-      :desc "yank working directory" "f w" #'dtm/yank-default-directory
+      (:prefix "f"
+       :desc "Delete this file"       "D" #'dtm/delete-this-file
+       :desc "Yank working directory" "w" #'dtm/yank-default-directory)
 
       ;; Insert
       :desc "snippet" "i s" #'tempel-insert

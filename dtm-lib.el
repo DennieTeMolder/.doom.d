@@ -93,6 +93,13 @@ If NAME is not provided `buffer-file-name' is used."
               (not (eobp)))
     (forward-line)))
 
+(defun dtm-advice-list (symbol)
+  "Return the list of functions advising SYMBOL."
+  (let (result)
+    (advice-mapc (lambda (ad props) (push ad result))
+     symbol)
+    (nreverse result)))
+
 (defvar dtm-doom-build-dir
   (file-name-as-directory
    (file-name-concat (file-truename doom-local-dir)
@@ -2080,12 +2087,13 @@ Also checks if FILE exists."
     (setq delete-by-moving-to-trash t)
     (message "Now moving deleted files to trash")))
 
-(defun dtm-advice-list (symbol)
-  "Return the list of functions advising SYMBOL."
-  (let (result)
-    (advice-mapc (lambda (ad props) (push ad result))
-     symbol)
-    (nreverse result)))
+(defun dtm/delete-this-file ()
+  (interactive)
+  (let ((delete-by-moving-to-trash (if current-prefix-arg
+                                       (not delete-by-moving-to-trash)
+                                     delete-by-moving-to-trash))
+        current-prefix-arg)
+    (call-interactively #'doom/delete-this-file)))
 
 (defun dtm/advice-remove (symbol advice)
   "Remove ADVICE from SYMBOL, with interactive support.
