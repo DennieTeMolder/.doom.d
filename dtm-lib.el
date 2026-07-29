@@ -108,6 +108,7 @@ Ref: lisp/doom-straight.el")
         (setq load-path (cons pkg-path (delete pkg-path load-path)))
       (warn "Could not find: %s" pkg-path))))
 
+;;* General advice
 (defun dtm-ignore-user-error-a (orig-fun &rest args)
   "Calls ORIG-FUN with ARGS, return nil when an `user-error' is raised.
 Intended as :around advice (e.g. for capf functions)."
@@ -122,6 +123,15 @@ Intended as :around advice."
   (apply orig-fn args)
   (buffer-enable-undo)
   (setq buffer-undo-list nil))
+
+(defun dtm-y-or-n-p-trash-a (orig-fun &rest args)
+  "Replace delete by trashed in `y-or-n-p' prompts within ORIG-FUN.
+Respects `delete-by-moving-to-trash'. Intended as :around advice."
+  (letf! ((defadvice y-or-n-p (:filter-args (args))
+            (if delete-by-moving-to-trash
+                (list (string-replace "delete" "trash" (car args)))
+              args)))
+    (apply orig-fun args)))
 
 ;;* Buffer functions
 (defun dtm-buffer-remote-p (&optional buf)
@@ -228,15 +238,6 @@ See also: `split-window-sensibly'"
       "                         DOOM")
     "\n")
    'face '+dashboard-banner))
-
-(defun dtm-y-or-n-p-trash-a (orig-fun &rest args)
-  "Replace delete by trashed in `y-or-n-p' prompts within ORIG-FUN.
-Respects `delete-by-moving-to-trash'. Intended as :around advice."
-  (letf! ((defun y-or-n-p (prompt)
-            (when delete-by-moving-to-trash
-              (setq prompt (string-replace "delete" "trash" prompt)))
-            (funcall y-or-n-p prompt)))
-    (apply orig-fun args)))
 
 ;;* Workspaces/perspectives
 (defun dtm-workspace-switch-maybe (name)
@@ -669,8 +670,8 @@ Ref: `elisp-refs--find-file'."
 (defun dtm/lispy-mark-car ()
   "Wrap `lispy-mark-car' to also work on sharp-quoted symbols."
   (interactive)
-  (letf! ((defun looking-at (regexp)
-            (funcall looking-at (string-replace "'" "#'" regexp))))
+  (letf! ((defadvice looking-at (:filter-args (args))
+            (list (string-replace "'" "#'" (car args)))))
     (lispy-mark-car)))
 
 (defun dtm/lispy-step-into (arg)

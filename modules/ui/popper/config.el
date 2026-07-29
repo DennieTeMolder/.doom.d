@@ -41,7 +41,7 @@
 (defadvice! +popup--ignore-window-parameters-a (fn &rest args)
   "Allow *interactive* commands to enter windows with the `no-other-window' parameter."
   :around '(windmove-up windmove-down windmove-left windmove-right)
-  (letf! (defun windmove-find-other-window (dir &optional arg window)
+  (letf! (defun! windmove-find-other-window (dir &optional arg window)
            (window-in-direction
             (pcase dir (`up 'above) (`down 'below) (_ dir))
             window t arg windmove-wrap-around t))
