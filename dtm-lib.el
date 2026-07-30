@@ -1908,9 +1908,10 @@ Use with `pixel-scroll-precision-mode-hook'."
 Required for `dtm-pixel-scroll-preserve-screen-pos-a' to function.
 Intended as `pixel-scroll-precision-interpolate' :before advice."
   (unless (eq last-command 'pixel-scroll-precision)
-    (let ((pos (pos-visible-in-window-p nil nil 'partially)))
+    (let* ((pos (pos-visible-in-window-p nil nil 'partially))
+           (xpos-adjust (- (car pos) (line-number-display-width 'pixelwise))))
       (set-window-parameter nil 'interpolated-scroll-screen-pos
-                            (cons (/ (car pos) (frame-char-width))
+                            (cons (/ xpos-adjust (frame-char-width))
                                   (cadr pos))))))
 
 ;; REVIEW: debounce this function?
