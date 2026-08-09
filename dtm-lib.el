@@ -965,9 +965,9 @@ Intended for `markdown-mode-hook'."
 (defun dtm-org-mode-setup-h ()
   "Personal org-mode customisation's after mode startup"
   (unless (dtm-org-limit-styling-p)
-    (setq-local line-spacing dtm-org-line-spacing)
-    ;; NOTE org-hide-emphasis-markers used by +org-pretty-mode is very expensive
-    (setq-local org-pretty-entities t)
+    (setq-local line-spacing dtm-org-line-spacing
+                org-pretty-entities t)
+    (org-appear-mode +1)
     (+word-wrap-mode +1)
     (+zen-light/toggle +1)
     (add-hook! 'evil-insert-state-exit-hook :local #'dtm-org-fill-paragraph)
@@ -987,7 +987,6 @@ Intended for `org-font-lock-hook'."
   "Toggle `+org-pretty-mode' keeping `org-pretty-entities' in-sync.
 Also syncs `org-appear-mode' and `org-pretty-entities-include-sub-superscripts'."
   (interactive)
-  (make-local-variable 'org-hide-emphasis-markers)
   (let ((enable (not +org-pretty-mode)))
     (when (and org-pretty-entities enable)
       (setq-local org-pretty-entities nil))
@@ -1240,11 +1239,6 @@ CONVERSIONS should have the structure of `dtm-org-link-as-png-parse-all'."
       (if warn-msg (progn (warn warn-msg) nil) t))))
 
 ;;* Org-modern
-(defun dtm-org-modern-mode-maybe-h ()
-  "Activate `org-modern-mode' unless in `doom-emacs-dir'.
-The additional markup used in doom-style org documents causes rendering issues."
-  (unless (dtm-org-limit-styling-p) (org-modern-mode +1)))
-
 ;; REVIEW This patch might be merged into org-mode in the future.
 ;; See: https://list.orgmode.org/87le6q5ip9.fsf@cassou.me/T/#u
 (defface org-caption '((t (:inherit org-block)))

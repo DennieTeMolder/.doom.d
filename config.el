@@ -809,6 +809,7 @@
   (setq org-ellipsis " …"
         org-indent-indentation-per-level 1
         org-pretty-entities-include-sub-superscripts nil
+        org-hide-emphasis-markers nil
         org-list-demote-modify-bullet '(("+" . "-") ("-" . "+") ("*" . "+"))
         org-image-actual-width '(640)   ; default if no ATTR_ is provided
         org-startup-shrink-all-tables t
@@ -821,6 +822,9 @@
                                (759 1159 1259 1659)
                                " ┄┄┄┄┄ " "┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄")
         org-agenda-current-time-string "<- NOW ────────")
+
+  ;; Prevent `+org-pretty-mode' from affecting styling globally
+  (make-local-variable 'org-hide-emphasis-markers)
 
   ;; Make headings bold and larger
   (custom-set-faces!
@@ -906,19 +910,14 @@
 
   (advice-add 'org-odt-convert :before-until #'dtm-org-odt-convert-prompt-a))
 
-(use-package org-appear
-  :defer t
-  :config
+(with-eval-after-load 'org-appear
   (setq org-appear-autoentities t
         org-appear-autoemphasis t
         org-appear-inside-latex t))
 
-(use-package org-modern
-  :defer t
-  :init
-  (add-hook 'org-agenda-finalize-hook #'org-modern-agenda)
-  (add-hook 'org-mode-hook #'dtm-org-modern-mode-maybe-h)
-  :config
+(remove-hook 'org-mode-hook #'org-appear-mode)
+
+(with-eval-after-load 'org-modern
   (setq org-modern-progress nil
         org-modern-table nil
         org-modern-list '((?+ . "›")
