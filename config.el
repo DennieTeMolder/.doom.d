@@ -1311,33 +1311,34 @@
               'ess-R-error-face))
 
   ;; ESS R keybindings, make < add a <-, type twice to undo (same goes for >)
-  (map! (:map ess-r-mode-map
-         :nv [C-return] #'ess-eval-region-or-line-and-step
-         :localleader
-         :desc "Eval reg|func|para"         "e" #'ess-eval-region-or-function-or-paragraph
-         :desc "Environment list R objects" "E" #'ess-rdired
-         :desc "Print last value"           "k" #'dtm/ess-print-last-value
-         :desc "Print current env"          "K" #'dtm/ess-print-ls-str
-         :desc "Source current file"        "s" #'ess-load-file
-         :desc "Change selected process"    "S" #'ess-switch-process
-         :desc "Eval reg|func|para step"    "," #'dtm/ess-eval-rfp-and-step-recenter
-         :desc "Eval object at point"       "." #'dtm/ess-eval-object-at-point)
-
-        (:map (ess-r-mode-map inferior-ess-r-mode-map)
+  (map! (:map (ess-r-mode-map inferior-ess-r-mode-map)
          :i "C-x C-a" #'ess-r-insert-obj-col-name
          :i "<"       #'dtm/ess-r-insert-assign
          :i ">"       #'dtm/ess-r-insert-pipe
          (:localleader
-          :desc "View R object" "o" #'ess-view-data-print
-          :desc "Quit Process"  "q" #'dtm/ess-quit-and-kill-no-save))
+          :desc "Environment list R objects" "E" #'ess-rdired
+          :desc "Print last value"           "k" #'dtm/ess-print-last-value
+          :desc "Print current env"          "K" #'dtm/ess-print-ls-str
+          :desc "View R object"              "o" #'ess-view-data-print
+          :desc "Change selected process"    "s" #'ess-switch-process
+          :desc "Quit Process"               "q" #'dtm/ess-quit-and-kill-no-save))
+
+        (:map ess-r-mode-map
+         :nv [C-return] #'ess-eval-region-or-line-and-step
+         :localleader
+         :desc "Eval reg|func|para"         "e" #'ess-eval-region-or-function-or-paragraph
+         :desc "Source current file"        "S" #'ess-load-file
+         :desc "Eval reg|func|para step"    "," #'dtm/ess-eval-rfp-and-step-recenter
+         :desc "Eval object at point"       "." #'dtm/ess-eval-object-at-point)
 
         (:map inferior-ess-mode-map
-         :n "RET"    #'inferior-ess-send-input
          :n [return] #'inferior-ess-send-input
          :localleader
-         "TAB" #'ess-switch-to-inferior-or-script-buffer
-         "x r" #'inferior-ess-reload
-         "h h" #'ess-display-help-on-object)
+         [tab] #'ess-switch-to-inferior-or-script-buffer
+         "h"    'ess-doc-map
+         "x"    'ess-extra-map
+         "p"    'ess-r-package-dev-map
+         "v"    'ess-dev-map)
 
         (:map ess-dev-map
               "g" #'dtm/ess-debug-goto-previous)
