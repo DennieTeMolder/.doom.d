@@ -785,13 +785,14 @@ Ref: https://github.com/noctuid/lispyville/issues/284"
 Uses `display-buffer-reuse-window'."
   (interactive)
   (unless (functionp '+ghostel--buffer-name)
-    (autoload-do-load (symbol-function #'+ghostel/here)))
+    (autoload-do-load (symbol-function #'+ghostel/toggle)))
+  ;; REVIEW: drop dlet+autoload when Doom updates `+ghostel/here'
   (dlet ((ghostel-buffer-name (+ghostel--buffer-name)))
     (select-window (display-buffer (save-window-excursion (ghostel))
                                    'display-buffer-reuse-window))))
 
 (defun dtm/ghostel-send-current-region-or-line (&optional no-step)
-  "Send the current line to `dtm/ghostel-other'.
+  "Send the current line to `dtm/ghostel-other-window'.
 Moves the point to the next non-empty line unless NO-STEP is non-nil."
   (interactive "P")
   (let ((command (dtm-region-as-string 'deactivate)))
@@ -802,7 +803,7 @@ Moves the point to the next non-empty line unless NO-STEP is non-nil."
       (+nav-flash-blink-cursor)
       (unless no-step (dtm-forward-line-non-empty)))
     (save-selected-window
-      (dtm/ghostel-other)
+      (dtm/ghostel-other-window)
       (goto-char (point-max))
       (ghostel-send-string (concat command "\n")))))
 
@@ -822,6 +823,7 @@ Ref: https://github.com/akermu/emacs-libvterm/pull/401"
 (defun dtm/ghostel-yank-pop-consult ()
   "Re-implementation of `ghostel-yank-pop' that uses Consult."
   (interactive)
+  (require 'consult)
   (if (memq last-command '(ghostel-yank ghostel-yank-pop))
       (ghostel-yank-pop)
     (when-let* ((text (consult--read-from-kill-ring)))
