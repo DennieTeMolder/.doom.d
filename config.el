@@ -176,6 +176,7 @@
      :action doom/help)))
 
 ;;* General Doom Settings
+;; Inherit scratch buffer major mode from current buffer
 (setq doom-scratch-initial-major-mode t)
 
 ;; Reflect `delete-by-moving-to-trash' state in y-or-n-p prompts
@@ -207,8 +208,8 @@
         ("Github"            "https://github.com/search?ref=simplesearch&q=%s")
         ("StackOverflow"     "https://stackoverflow.com/search?q=%s")
         ("Arch wiki"         "https://wiki.archlinux.org/index.php?search=%s")
-        ("Doom Emacs issues" "https://github.com/doomemacs/doomemacs/issues?q=is%%3Aissue+%s")
-        ("Ubuntu packages"   "https://packages.ubuntu.com/search?suite=focal&arch=arm64&keywords=%s")
+        ("Doom Emacs issues" "https://github.com/orgs/doomemacs/projects/2/views/30?filterQuery=%s")
+        ("Ubuntu packages"   "https://packages.ubuntu.com/search?suite=resolute&arch=arm64&keywords=%s")
         ("Manjaro packages"  "https://packages.manjaro.org/?query=%s")
         ("AUR"               "https://aur.archlinux.org/packages?O=0&K=%s")
         ("Anaconda packages" "https://anaconda.org/search?q=%s")))
@@ -348,12 +349,6 @@
 
   ;; BUG update `selection-info' when `buffer-position' segment is hidden
   (advice-add 'evil-visual-highlight :after #'dtm-doom-modeline-evil-update-visual))
-
-(use-package battery
-  :defer 1
-  :config
-  (unless (string= "N/A" (alist-get ?p (funcall battery-status-function)))
-    (display-battery-mode +1)))
 
 (with-eval-after-load 'vertico
   (setq vertico-resize 'grow-only
@@ -1326,6 +1321,7 @@
           :desc "Quit Process"               "q" #'dtm/ess-quit-and-kill-no-save))
 
         (:map ess-r-mode-map
+         ;; Only works in GUI Emacs
          :nv [C-return] #'ess-eval-region-or-line-and-step
          :localleader
          :desc "Eval reg|func|para"         "e" #'ess-eval-region-or-function-or-paragraph
@@ -1334,9 +1330,9 @@
          :desc "Eval object at point"       "." #'dtm/ess-eval-object-at-point)
 
         (:map inferior-ess-mode-map
-         :n [return] #'inferior-ess-send-input
+         :n "RET" #'inferior-ess-send-input
          :localleader
-         [tab] #'ess-switch-to-inferior-or-script-buffer
+         "TAB" #'ess-switch-to-inferior-or-script-buffer
          "h"    'ess-doc-map
          "x"    'ess-extra-map
          "p"    'ess-r-package-dev-map
