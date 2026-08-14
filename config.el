@@ -594,6 +594,12 @@
     'dirvish-mark-menu "X"
     '("TAB" "Toggle subtree state" dtm/dirvish-do-toggle-subtree)))
 
+(with-eval-after-load 'drivish-fd
+  ;; BUG: fix unbound suffix <return>
+  (transient-append-suffix
+   'dirvish-fd-switches-menu "RET"
+   '("<return>" "Rerun" dirvish-fd--apply-switches)))
+
 (with-eval-after-load 'tramp
   (setq remote-file-name-inhibit-locks t
         tramp-use-scp-direct-remote-copying t

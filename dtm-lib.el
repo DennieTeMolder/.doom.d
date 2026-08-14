@@ -567,7 +567,8 @@ Intended for use as `vertico-sort-function' via `vertico-multiform-commands'."
   (interactive (list (and current-prefix-arg
                           (read-directory-name "Fd target directory: " nil "" t))
                      (completing-read-multiple "Pattern: " nil)))
-  (dirvish-fd dir pattern))
+  (let ((current-prefix-arg '(16)))
+   (dirvish-fd dir pattern)))
 
 (defvar-local dtm-dired-omit-count 0
   "Number of files hidden by `dired-omit-mode'.")
