@@ -318,6 +318,7 @@
 (with-eval-after-load 'projectile
   ;; Projectile sorting by recently opened
   (setq projectile-sort-order 'recently-active
+        projectile-auto-update-cache nil ; Can make deleting files slow
         ;; Replace the doom-project-ignored-p function to ignore remote projects
         projectile-ignored-project-function #'dtm-project-ignored-p)
 
