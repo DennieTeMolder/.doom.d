@@ -315,6 +315,7 @@
   (map! :map ctrlf-minibuffer-mode-map
         "M-w" #'dtm/ctrlf-yank-word-or-char
         "M-%" #'dtm/ctrlf-evil-substitute
+        "M-s S" #'ctrlf-toggle-symbol
         "M-s w" #'dtm/ctrlf-toggle-word))
 
 (with-eval-after-load 'projectile
