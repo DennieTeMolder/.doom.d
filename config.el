@@ -289,7 +289,9 @@
   ;; CTRLF can replace evil-ex-search-forward/backward
   (map! :map ctrlf-mode-map
         [remap evil-ex-search-forward]  #'ctrlf-forward-default
-        [remap evil-ex-search-backward] #'ctrlf-backward-default)
+        [remap evil-ex-search-backward] #'ctrlf-backward-default
+        [remap evil-ex-search-word-forward]  #'dtm/ctrlf-evil-search-word-forward
+        [remap evil-ex-search-word-backward] #'dtm/ctrlf-evil-search-word-backward)
 
   :config
   ;; Use 'M-s s' while searching to change styles
@@ -311,9 +313,9 @@
   (advice-add 'ctrlf--start :before (lambda (&rest _) (evil-ex-nohighlight)))
 
   (map! :map ctrlf-minibuffer-mode-map
-        "M-w" #'dtm-ctrlf-yank-word-or-char
-        "M-%" #'dtm-ctrlf-evil-substitute
-        "M-s w" #'dtm-ctrlf-toggle-word))
+        "M-w" #'dtm/ctrlf-yank-word-or-char
+        "M-%" #'dtm/ctrlf-evil-substitute
+        "M-s w" #'dtm/ctrlf-toggle-word))
 
 (with-eval-after-load 'projectile
   ;; Projectile sorting by recently opened

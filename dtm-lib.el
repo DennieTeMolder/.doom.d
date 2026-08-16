@@ -1782,7 +1782,7 @@ Intended as :override `'ctrlf--evil-remember-search-string' advice."
           (evil-ex-search-activate-highlight evil-ex-search-pattern)))))
   str)
 
-(defun dtm-ctrlf-evil-substitute ()
+(defun dtm/ctrlf-evil-substitute ()
   "Run `evil-ex' substitute with the current/last CTRLF search query.
 Ref: `ctrlf-occur'."
   (interactive)
@@ -1798,7 +1798,7 @@ Ref: `ctrlf-occur'."
         (with-current-buffer (window-buffer (minibuffer-selected-window))
           (evil-ex (concat "%s/" regexp "/")))))))
 
-(defun dtm-ctrlf-yank-word-or-char ()
+(defun dtm/ctrlf-yank-word-or-char ()
   "CTRLF version of `isearch-yank-word-or-char' (C-w).
 Ref: https://github.com/radian-software/ctrlf/issues/65"
   (interactive)
@@ -1811,10 +1811,26 @@ Ref: https://github.com/radian-software/ctrlf/issues/65"
     (goto-char (field-end (point-max)))
     (insert yank)))
 
-(defun dtm-ctrlf-toggle-word ()
+(defun dtm/ctrlf-toggle-word ()
   "Toggle CTRLF style to `word' or back to `literal'."
   (interactive)
   (setq ctrlf--style (if (eq ctrlf--style 'word) 'literal 'word)))
+
+(defun dtm/ctrlf-evil-search-word-forward ()
+  "Ctrlf equivalent of `evil-ex-search-word-forward'."
+  (interactive)
+  (let* ((type (if evil-symbol-word-search 'symbol 'word))
+         (string (or (evil-find-thing 'forward type)
+                     (user-error "No word under point"))))
+    (ctrlf-forward type nil string)))
+
+(defun dtm/ctrlf-evil-search-word-backward ()
+  "Ctrlf equivalent of `evil-ex-search-word-backward'."
+  (interactive)
+  (let* ((type (if evil-symbol-word-search 'symbol 'word))
+         (string (or (evil-find-thing 'backward type)
+                     (user-error "No word under point"))))
+    (ctrlf-backward type nil string)))
 
 ;;* Tempel
 (defun dtm/tempel-open-template-file ()
