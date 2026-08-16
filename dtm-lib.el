@@ -6,11 +6,6 @@
 Required because doctor sets `noninteractive' to nil."
   (boundp 'doom-doctor--errors))
 
-(defun dtm-doom-docs-p ()
-  "Return non-nil if current buffer will trigger `doom-docs-org-mode'."
-  (eq (alist-get 'mode (cdr (hack-dir-local--get-variables nil)))
-      'doom-docs-org))
-
 (defun dtm-member-previous (item lst &optional test key)
   "Return the sublist of LST where the KEY of `cdr' matches ITEM using TEST.
 Defaults to comparing with `car' using `equal'."
@@ -953,8 +948,8 @@ Intended for `markdown-mode-hook'."
 ;;* Org-mode
 (defun dtm-org-limit-styling-p ()
   "Return non-nil if limited styling should be applied."
-  (or (doom-temp-buffer-p (current-buffer))
-      (dtm-doom-docs-p)
+  (or (eq major-mode 'doom-docs-mode)
+      (doom-temp-buffer-p (current-buffer))
       (dtm-dirvish-preview-window-p)))
 
 (defun dtm-org-fill-paragraph ()
