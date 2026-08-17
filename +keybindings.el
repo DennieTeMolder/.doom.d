@@ -67,9 +67,11 @@
 
       ;; Notes roam
       (:prefix "n"
-       :desc "Bibliography"      "b"     #'citar-open
-       :desc "Open index"        "r o"   #'dtm/org-roam-open-index
-       :desc "Schedule headline" "r d s" #'dtm/org-roam-dailies-schedule-time)
+       :desc "Bibliography" "b" #'citar-open
+       (:prefix ("r" . "Roam")
+        :desc "Open index"       "o" #'dtm/org-roam-open-index
+        :desc "Find file"        "f" #'dtm/org-roam-find-file
+        :desc "Search directory" "s" #'dtm/org-roam-grep))
 
       ;; Open
       (:prefix "o"
@@ -111,11 +113,11 @@
 ;;* Custom modules
 (map! :leader
       ;; :when (modulep! :ui zen-light)
-      :desc "Zen/focus mode"     "t z" #'+zen-light/toggle
+      :desc "Zen/focus mode" "t z" #'+zen-light/toggle
 
       ;; :when (modulep! :ui keycast)
-      ;; :desc "Keycast mode"        "t k" #'keycast-mode
-      ;; :desc "Keycast log mode"    "t K" #'keycast-log-mode
+      ;; :desc "Keycast mode"     "t k" #'keycast-mode
+      ;; :desc "Keycast log mode" "t K" #'keycast-log-mode
 
       ;; :when (modulep! :ui popper)
       ;;"/" nil ; Unbind `+default/search-project' (also bound to "SPC s p")

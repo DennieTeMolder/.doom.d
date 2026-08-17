@@ -130,14 +130,7 @@
 
 ;; Simplify window title and give a visual indication if file is edited
 (setq frame-title-format
-    '(""
-      (:eval
-       (if (s-contains-p (abbreviate-file-name (concat org-roam-directory "pages"))
-                         (or buffer-file-truename ""))
-           (replace-regexp-in-string ".*/[0-9]*-?" ">" buffer-file-name)
-         "%b"))
-      (:eval
-       (if (buffer-modified-p) " +" ""))))
+      '("%b" (:eval (if (buffer-modified-p) " +" ""))))
 
 ;; Replace the default doom splash screen with a more subtle one
 (setq +dashboard-ascii-banner-fn #'dtm-dashboard-ascii-banner-fn)
@@ -155,18 +148,12 @@
     ("Recently opened files"
      :icon (nerd-icons-octicon "nf-oct-file" :face '+dashboard-menu-title)
      :action recentf-open-files)
-    ("Open roam index"
-     :icon (nerd-icons-octicon "nf-oct-database" :face '+dashboard-menu-title)
-     :action dtm/org-roam-open-index)
-    ("Open roam today"
-     :icon (nerd-icons-octicon "nf-oct-calendar" :face '+dashboard-menu-title)
-     :action org-roam-dailies-goto-today)
-    ("Open project"
-     :icon (nerd-icons-octicon "nf-oct-briefcase" :face '+dashboard-menu-title)
-     :action projectile-switch-project)
     ("Jump to bookmark"
      :icon (nerd-icons-octicon "nf-oct-bookmark" :face '+dashboard-menu-title)
      :action bookmark-jump)
+    ("Open project"
+     :icon (nerd-icons-octicon "nf-oct-briefcase" :face '+dashboard-menu-title)
+     :action projectile-switch-project)
     ("Open private configuration"
      :icon (nerd-icons-octicon "nf-oct-tools" :face '+dashboard-menu-title)
      :when (file-directory-p doom-user-dir)
@@ -456,8 +443,7 @@
   (setq dtm-workspace-dedicated-alist
         `((,doom-user-dir . "*config*")
           (,(expand-file-name "~/Sync/PKM/notes/") . "*bib*")
-          (,(expand-file-name "~/Sync/Zotero/") . "*bib*")
-          (,(expand-file-name "~/Sync/PKM/") . "*roam*")))
+          (,(expand-file-name "~/Sync/Zotero/") . "*bib*")))
 
   ;; Fix default input value for `doom/load-session'
   (global-set-key [remap doom/load-session] #'dtm/load-session))
@@ -857,10 +843,6 @@
   (advice-add 'org-read-date :before (lambda (&rest _) (require 'evil-org))
               '((name . "require evil-org")))
 
-  ;; Sync org-agenda with org-roam dailies
-  (when (modulep! :lang org +roam)
-    (advice-add 'org-agenda :before #'dtm-org-roam-dailies-sync-agenda))
-
   ;; Prettify, enable hard wrapping and automate paragraph filling
   (add-hook 'org-mode-hook #'dtm-org-mode-setup-h))
 
@@ -870,7 +852,6 @@
     (map! :map org-mode-map
           :n  "C-j"   #'+org/return
           :ni "C-c ]" #'org-cite-insert
-          :ni "C-c [" #'org-roam-node-insert
 
           :localleader
           :desc "Clock-in after last"   "c a" #'dtm/org-clock-in-after
@@ -978,52 +959,6 @@
         org-download-timestamp "__%Y%m%d%H%M%S"
         org-download-heading-lvl nil))
 
-;; Org-roam init settings
-(when (modulep! :lang org +roam)
-  (setq org-roam-directory "~/Sync/PKM/"
-        org-roam-dailies-directory "journals/"
-        org-roam-file-exclude-regexp "Rubbish/")
-
-  (defvar dtm-org-roam-index-file "pages/contents.org"))
-
-(with-eval-after-load 'org-roam
-  ;; Disable roam completion outside of links as it blocks the more useful dabbrev capf
-  (setq org-roam-completion-everywhere nil)
-
-  ;; Custom org-roam buffer preview function
-  (setq org-roam-preview-function #'dtm-org-element-at-point-get-content)
-
-  ;; Make the backlinks buffer easier to peruse by folding leaves by default.
-  (add-hook 'org-roam-buffer-postrender-functions #'magit-section-show-level-2)
-
-  ;; Add ID, Type, Tags, and Aliases to top of backlinks buffer.
-  (advice-add #'org-roam-buffer-set-header-line-format :after #'dtm-org-roam-add-preamble-a)
-
-  ;; Roam templates
-  (setq
-   org-roam-capture-templates
-   '(("d" "default" plain "%?"
-      :target (file+head "pages/%<%Y%m%d%H%M%S>-${slug}.org"
-                         "#+title: ${title}\n")
-      :unnarrowed t
-      :empty-lines 1))
-   org-roam-dailies-capture-templates
-   '(("d" "default" entry "* %?"
-      :target (file+head "%<%Y-%m-%d>.org"
-                         "#+title: %<%a %b %d %Y>\n#+date: %<%A %B %d, Week %V %Y>\n \n* Agenda\n")
-      :empty-lines 1))))
-
-(when (modulep! :tools biblio)
-  (setq citar-bibliography '("~/Sync/Zotero/master.bib")
-         citar-library-paths '("~/Sync/Zotero/")))
-
-(with-eval-after-load 'citar
-  (setq citar-org-roam-note-title-template "${=key=}: ${title}\n\n* Notes"
-        citar-org-roam-subdir "notes")
-
-  ;; Ensure notes are shown by `citar-open-notes'
-  (add-transient-hook! 'citar-has-notes (require 'citar-org-roam)))
-
 ;; Org-noter settings
 (with-eval-after-load 'org-noter
   (setq org-noter-hide-other nil
@@ -1031,6 +966,16 @@
 
   (map! :map (org-noter-notes-mode-map org-noter-doc-mode-map)
         "C-c q" #'org-noter-kill-session))
+
+(defvar dtm-org-roam-dir "~/Sync/PKM/"
+  "Old org-roam-directory for grep.")
+
+(defvar dtm-org-roam-index "~/Sync/PKM/pages/contents.org"
+  "Old org-roam index file.")
+
+(when (modulep! :tools biblio)
+  (setq citar-bibliography '("~/Sync/Zotero/master.bib")
+        citar-library-paths '("~/Sync/Zotero/")))
 
 ;; BUG: should be part of doom's :init form not :config
 (when (modulep! :tools pdf)

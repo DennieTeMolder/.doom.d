@@ -31,16 +31,6 @@ block, send the entire code block."
         (t
          (call-interactively #'dtm/python-shell-send-statment-and-step))))
 
-;;* Conda
-(defun dtm-conda-call-json-a (orig-fn &rest args)
-  "Advice that forces `json-parse-string' to use nil to represent false.
-Intended as around advice for `conda--call-json'"
-  (require 'json)
-  (letf! ((defun json-parse-string (str &rest options)
-            (apply json-parse-string str
-                   (plist-put options :false-object nil))))
-    (apply orig-fn args)))
-
 ;;* Window management
 (defun dtm/window-half-height ()
   "Halves height of active window"
@@ -143,6 +133,54 @@ Calls `dtm-org-roam-update-slug-h' on `after-save-hook'.
 Ref: https://github.com/hlissner/.doom.d"
   (setq-local dtm-org-roam-old-slug (ignore-errors (org-roam-node-slug (org-roam-node-at-point))))
   (add-hook 'after-save-hook #'dtm-org-roam-update-slug-h 'append 'local))
+
+;;* Org-roam-dailies
+(defun dtm-org-roam-dailies-file-to-absolute (file)
+  "Convert file name (with gregorian date format) to absolute time"
+  (calendar-absolute-from-gregorian (org-roam-dailies-calendar--file-to-date file)))
+
+(defun dtm-org-roam-dailies-active-files ()
+  "Return list of daily files corresponding to TODAY or later"
+  (require 'org-roam-dailies)
+  (let ((files (org-roam-dailies--list-files))
+        (today (calendar-absolute-from-gregorian (calendar-current-date))))
+    (while (and files
+                (< (dtm-org-roam-dailies-file-to-absolute (car files))
+                   today))
+      (pop files))
+    files))
+
+(defun dtm-org-roam-dailies-sync-agenda (&rest _)
+  "Scan the dailies-directory and add current and future dates to agenda."
+  (mapc (lambda (x) (cl-pushnew x org-agenda-files :test #'string=))
+        (dtm-org-roam-dailies-active-files)))
+
+(defun dtm/org-roam-dailies-schedule-time ()
+  "Wrapper around `org-schedule' that only prompts for time.
+The DATE is derived from the #+title which must match the Org date format."
+  (interactive)
+  (unless (org-roam-dailies--daily-note-p)
+    (user-error "Not in a daily-note"))
+  (let ((date (file-name-base (buffer-file-name)))
+        (time (read-string "Schedule headline at (HH:MM): ")))
+    (org-schedule nil (concat date " " time (when (length< time 3) ":00")))))
+
+(defun dtm/org-roam-dailies-insert-timeblock ()
+  "Inserts an org roam headline for each hour in START to END with a timestamp.
+The DATE is derived from the #+title which must match the Org date format."
+  (interactive)
+  (let ((date (dtm-org-get-title-value))
+        (start (read-number "Start time (hour): " 8))
+        (end (- (read-number "End time (hour): " 17) 1)))
+    (end-of-line)
+    (newline)
+    (insert "* Schedule")
+    (dolist (hour (number-sequence start end))
+      (newline)
+      (insert "** EMPTY BLOCK")
+      (org-schedule nil (concat date " " (number-to-string hour) ":00"))
+      (line-move 1)
+      (end-of-line))))
 
 ;;* Visual-line-mode
 (defun dtm-visual-line-sync-fringe (symbol newval operation where)

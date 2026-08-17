@@ -1323,95 +1323,23 @@ Use as advice :before `org-tree-slide--setup'."
 
 ;;* Org-roam
 (defun dtm/org-roam-open-index ()
-  "Open `dtm-org-roam-index-file' in dedicated workspace, activate `org-overview'."
+  "Open `dtm-org-roam-index-file' and activate `org-overview'."
   (interactive)
-  (find-file (expand-file-name dtm-org-roam-index-file org-roam-directory))
+  (find-file dtm-org-roam-index-file)
   (while-let ((lvl (org-up-heading-safe))
               ((not (eq 1 lvl)))))
   (org-overview)
   (recenter))
 
-(defun dtm-org-element-at-point-get-content ()
-  "Return the current element's content without properties.
-Based on `org-mark-element' and `org-roam-preview-default-function'."
-  ;; Move to beginning of item to include children
-  (when (org-in-item-p)
-    (org-beginning-of-item))
-  (let* ((element (org-element-at-point))
-         (beg (org-element-property :begin element))
-         (end (org-element-property :end element)))
-    (string-trim (buffer-substring-no-properties beg end))))
-
-(defun dtm-org-roam-add-preamble-a (string)
-  "Add information about current node to top of org roam buffer.
-Ref: https://github.com/hlissner/.doom.d"
-  (let ((node org-roam-buffer-current-node))
-    (insert
-     (format "%-10s %s\n" (propertize "ID:" 'face 'bold)
-             (org-roam-node-id node))
-     (format "%-10s %s\n" (propertize "Type:" 'face 'bold)
-             (if-let (type (org-roam-node-doom-type node))
-                 (capitalize type)
-               "-"))
-     (format "%-10s %s\n" (propertize "Tags:" 'face 'bold)
-             (if-let (tags (org-roam-node-tags node))
-                 (mapconcat (lambda (tag)
-                              (propertize (concat "#" tag) 'face 'org-tag))
-                            tags " ")
-               "-"))
-     (format "%-10s %s\n" (propertize "Aliases:" 'face 'bold)
-             (if-let (aliases (org-roam-node-aliases node))
-                 (string-join aliases ", ")
-               "-"))
-     ?\n)))
-
-;;* Org-roam-dailies
-(defun dtm-org-roam-dailies-file-to-absolute (file)
-  "Convert file name (with gregorian date format) to absolute time"
-  (calendar-absolute-from-gregorian (org-roam-dailies-calendar--file-to-date file)))
-
-(defun dtm-org-roam-dailies-active-files ()
-  "Return list of daily files corresponding to TODAY or later"
-  (require 'org-roam-dailies)
-  (let ((files (org-roam-dailies--list-files))
-        (today (calendar-absolute-from-gregorian (calendar-current-date))))
-    (while (and files
-                (< (dtm-org-roam-dailies-file-to-absolute (car files))
-                   today))
-      (pop files))
-    files))
-
-(defun dtm-org-roam-dailies-sync-agenda (&rest _)
-  "Scan the dailies-directory and add current and future dates to agenda."
-  (mapc (lambda (x) (cl-pushnew x org-agenda-files :test #'string=))
-        (dtm-org-roam-dailies-active-files)))
-
-(defun dtm/org-roam-dailies-schedule-time ()
-  "Wrapper around `org-schedule' that only prompts for time.
-The DATE is derived from the #+title which must match the Org date format."
+(defun dtm/org-roam-find-file ()
+  "Find file in `dtm-org-roam-dir'."
   (interactive)
-  (unless (org-roam-dailies--daily-note-p)
-    (user-error "Not in a daily-note"))
-  (let ((date (file-name-base (buffer-file-name)))
-        (time (read-string "Schedule headline at (HH:MM): ")))
-    (org-schedule nil (concat date " " time (when (length< time 3) ":00")))))
+  (find-file (read-file-name "Open: " dtm-org-roam-dir)))
 
-(defun dtm/org-roam-dailies-insert-timeblock ()
-  "Inserts an org roam headline for each hour in START to END with a timestamp.
-The DATE is derived from the #+title which must match the Org date format."
+(defun dtm/org-roam-grep ()
+  "Grep search through `dtm-org-roam-dir'."
   (interactive)
-  (let ((date (dtm-org-get-title-value))
-        (start (read-number "Start time (hour): " 8))
-        (end (- (read-number "End time (hour): " 17) 1)))
-    (end-of-line)
-    (newline)
-    (insert "* Schedule")
-    (dolist (hour (number-sequence start end))
-      (newline)
-      (insert "** EMPTY BLOCK")
-      (org-schedule nil (concat date " " (number-to-string hour) ":00"))
-      (line-move 1)
-      (end-of-line))))
+  (+vertico-file-search :in dtm-org-roam-dir))
 
 ;;* Pdf-tools
 (defun dtm/pdf-view-fit-half-height ()
