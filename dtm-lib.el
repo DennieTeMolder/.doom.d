@@ -782,10 +782,15 @@ Uses `display-buffer-reuse-window'."
   (interactive)
   (unless (functionp '+ghostel--buffer-name)
     (autoload-do-load (symbol-function #'+ghostel/toggle)))
-  ;; REVIEW: drop dlet+autoload when Doom updates `+ghostel/here'
   (dlet ((ghostel-buffer-name (+ghostel--buffer-name)))
-    (select-window (display-buffer (save-window-excursion (ghostel))
-                                   'display-buffer-reuse-window))))
+    (select-window
+     (or (get-buffer-window ghostel-buffer-name)
+         (display-buffer
+          (save-window-excursion
+            (with-current-buffer (ghostel)
+              (setq-local ghostel-buffer-name-function nil)
+              (current-buffer)))
+          'display-buffer-reuse-window)))))
 
 (defun dtm/ghostel-send-current-region-or-line (&optional no-step)
   "Send the current line to `dtm/ghostel-other-window'.
