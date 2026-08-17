@@ -583,7 +583,7 @@
     'dirvish-mark-menu "X"
     '("TAB" "Toggle subtree state" dtm/dirvish-do-toggle-subtree)))
 
-(with-eval-after-load 'drivish-fd
+(with-eval-after-load 'dirvish-fd
   ;; BUG: fix unbound suffix <return>
   (transient-append-suffix
    'dirvish-fd-switches-menu "RET"
@@ -1293,11 +1293,11 @@
          "v"    'ess-dev-map)
 
         (:map ess-dev-map
-              "g" #'dtm/ess-debug-goto-previous)
+         "g" #'dtm/ess-debug-goto-previous)
 
         (:map ess-debug-minor-mode-map
-              "M-K" #'dtm/ess-print-last-value
-              "M-L" #'dtm/ess-print-ls-str)))
+         "M-K" #'dtm/ess-print-last-value
+         "M-L" #'dtm/ess-print-ls-str)))
 
 (with-eval-after-load 'ess-tracebug
   ;; Track previous debug position for `dtm/ess-debug-goto-previous' & `dtm/ess-print-last-value'
