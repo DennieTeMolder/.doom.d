@@ -2073,6 +2073,50 @@ Will return nil when beyond end of defun, contrary to `beginning-of-defun'."
   (when email
     (magit-set email "user.email")))
 
+;;* Move-splitter
+(defun dtm-move-right-splitter (amount)
+  "Move the right splitter right by AMOUNT."
+  (adjust-window-trailing-edge
+   (let ((windmove-wrap-around))
+     (or (when (windmove-find-other-window 'right) (selected-window))
+         (windmove-find-other-window 'left)
+         (selected-window)))
+   amount 'horizontal))
+
+(defun dtm-move-bottom-splitter (amount)
+  "Move the bottom splitter down by AMOUNT."
+  (adjust-window-trailing-edge
+   (let ((windmove-wrap-around))
+     (or (unless (window-minibuffer-p (windmove-find-other-window 'down))
+           (selected-window))
+         (windmove-find-other-window 'up)
+         (selected-window)))
+   amount))
+
+(defun dtm/move-splitter-right (arg)
+  "Move right window splitter right"
+  (interactive "p")
+  (require 'windmove)
+  (dtm-move-right-splitter arg))
+
+(defun dtm/move-splitter-left (arg)
+  "Move right window splitter left."
+  (interactive "p")
+  (require 'windmove)
+  (dtm-move-right-splitter (- arg)))
+
+(defun dtm/move-splitter-down (arg)
+  "Move bottom window splitter down."
+  (interactive "p")
+  (require 'windmove)
+  (dtm-move-bottom-splitter arg))
+
+(defun dtm/move-splitter-up (arg)
+  "Move bottom window splitter up"
+  (interactive "p")
+  (require 'windmove)
+  (dtm-move-bottom-splitter (- arg)))
+
 ;;* Commands
 (defun dtm/load-session (file)
   "Stripped down `doom/load-session' with a proper default value.
@@ -2181,39 +2225,3 @@ Relative lines are more performant, but fail with folded/wrapped lines"
       (kill-new path)
       (message "Copied path: %s" path))))
 
-;;** Move-splitter
-(defun dtm/move-splitter-left (arg)
-  "Move window splitter left. Ref: hydra-examples"
-  (interactive "p")
-  (require 'windmove)
-  (if (let ((windmove-wrap-around))
-        (windmove-find-other-window 'right))
-      (shrink-window-horizontally arg)
-    (enlarge-window-horizontally arg)))
-
-(defun dtm/move-splitter-right (arg)
-  "Move window splitter right. Ref: hydra-examples"
-  (interactive "p")
-  (require 'windmove)
-  (if (let ((windmove-wrap-around))
-        (windmove-find-other-window 'right))
-      (enlarge-window-horizontally arg)
-    (shrink-window-horizontally arg)))
-
-(defun dtm/move-splitter-up (arg)
-  "Move window splitter up. Ref: hydra-examples"
-  (interactive "p")
-  (require 'windmove)
-  (if (let ((windmove-wrap-around))
-        (windmove-find-other-window 'up))
-      (enlarge-window arg)
-    (shrink-window arg)))
-
-(defun dtm/move-splitter-down (arg)
-  "Move window splitter down. Ref: hydra-examples"
-  (interactive "p")
-  (require 'windmove)
-  (if (let ((windmove-wrap-around))
-        (windmove-find-other-window 'up))
-      (shrink-window arg)
-    (enlarge-window arg)))
