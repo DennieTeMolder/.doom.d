@@ -521,6 +521,8 @@
 (with-eval-after-load 'dirvish
   (setq dirvish-hide-details t
         dirvish-reuse-session nil
+        dirvish-mode-line-format
+        '(:left (sort file-user " " file-time symlink) :right (omit yank index))
         dirvish-quick-access-entries
         (append
          `(("dc" ,doom-core-dir "Doom Core")
@@ -564,10 +566,7 @@
         :n "z"   nil
         :n "z h" #'dired-omit-mode
         :n "."   #'dtm/dirvish-find-file
-        :n "?"   #'dirvish-dispatch)
-  ;; BUG descriptions only work when bound to `major-mode' map
-  ;; Ref: https://github.com/doomemacs/doomemacs/issues/8539
-  (map! :map dired-mode-map
+        :n "?"   #'dirvish-dispatch
         :localleader
         :desc "Configure UI"    "c" #'dirvish-setup-menu
         :desc "Emerge/group"    "e" #'dirvish-emerge-menu
