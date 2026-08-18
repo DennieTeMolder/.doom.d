@@ -1729,7 +1729,7 @@ Ref: `ctrlf-occur'."
            (regexp (funcall translator input)))
       (save-excursion
         (with-current-buffer (window-buffer (minibuffer-selected-window))
-          (evil-ex (concat "%s/" regexp "/")))))))
+          (evil-ex (concat (if (region-active-p) "'<,'>" "%") "s/" regexp "/")))))))
 
 (defun dtm/ctrlf-yank-word-or-char ()
   "CTRLF version of `isearch-yank-word-or-char' (C-w).
@@ -1747,11 +1747,13 @@ Ref: https://github.com/radian-software/ctrlf/issues/65"
 (defun dtm/ctrlf-toggle-word ()
   "Toggle CTRLF style to `word' or back to `literal'."
   (interactive)
+  (require 'ctrlf)
   (setq ctrlf--style (if (eq ctrlf--style 'word) 'literal 'word)))
 
 (defun dtm/ctrlf-evil-search-word-forward ()
   "Ctrlf equivalent of `evil-ex-search-word-forward'."
   (interactive)
+  (require 'ctrlf)
   (let* ((type (if evil-symbol-word-search 'symbol 'word))
          (string (or (evil-find-thing 'forward type)
                      (user-error "No word under point"))))
@@ -1760,10 +1762,30 @@ Ref: https://github.com/radian-software/ctrlf/issues/65"
 (defun dtm/ctrlf-evil-search-word-backward ()
   "Ctrlf equivalent of `evil-ex-search-word-backward'."
   (interactive)
+  (require 'ctrlf)
   (let* ((type (if evil-symbol-word-search 'symbol 'word))
          (string (or (evil-find-thing 'backward type)
                      (user-error "No word under point"))))
     (ctrlf-backward type nil string)))
+
+(evil-define-motion dtm/ctrlf-evil-search-visual-forward (beg end)
+  "Search for the visual selection forwards."
+  :jump t
+  :repeat nil
+  (interactive "<r>")
+  (require 'ctrlf)
+  (when (evil-visual-state-p)
+    (evil-exit-visual-state)
+    (ctrlf-forward 'literal nil (buffer-substring-no-properties beg end))))
+
+(evil-define-motion dtm/ctrlf-evil-search-visual-backward (beg end)
+  "Search for the visual selection forwards."
+  :jump t
+  :repeat nil
+  (interactive "<r>")
+  (when (evil-visual-state-p)
+    (evil-exit-visual-state)
+    (ctrlf-backward 'literal nil (buffer-substring-no-properties beg end))))
 
 ;;* Tempel
 (defun dtm/tempel-open-template-file ()

@@ -273,12 +273,14 @@
 (use-package ctrlf
   :hook (doom-first-buffer . ctrlf-mode)
   :init
-  ;; CTRLF can replace evil-ex-search-forward/backward
+  ;; Replace Evil bindings when ctrlf-mode is active
   (map! :map ctrlf-mode-map
         [remap evil-ex-search-forward]  #'ctrlf-forward-default
         [remap evil-ex-search-backward] #'ctrlf-backward-default
         [remap evil-ex-search-word-forward]  #'dtm/ctrlf-evil-search-word-forward
-        [remap evil-ex-search-word-backward] #'dtm/ctrlf-evil-search-word-backward)
+        [remap evil-ex-search-word-backward] #'dtm/ctrlf-evil-search-word-backward
+        [remap evil-visualstar/begin-search-forward]  #'dtm/ctrlf-evil-search-visual-forward
+        [remap evil-visualstar/begin-search-backward] #'dtm/ctrlf-evil-search-visual-backward)
 
   :config
   ;; Use 'M-s s' while searching to change styles
