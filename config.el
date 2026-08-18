@@ -336,7 +336,8 @@
 
 (with-eval-after-load 'doom-modeline
   (setq doom-modeline-buffer-file-name-style 'truncate-except-project
-        doom-modeline-buffer-encoding 'nondefault)
+        doom-modeline-buffer-encoding 'nondefault
+        doom-modeline-percent-position '(-3 "%P"))
 
   ;; BUG update `selection-info' when `buffer-position' segment is hidden
   (advice-add 'evil-visual-highlight :after #'dtm-doom-modeline-evil-update-visual))
