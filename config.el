@@ -445,8 +445,9 @@
   (advice-add 'persp-add-or-not-on-find-file :before #'dtm-workspace-dedicated-persp-a)
   (setq dtm-workspace-dedicated-alist
         `((,doom-user-dir . "*config*")
+          (,(expand-file-name "~/Sync/Zotero/") . "*bib*")
           (,(expand-file-name "~/Sync/PKM/notes/") . "*bib*")
-          (,(expand-file-name "~/Sync/Zotero/") . "*bib*")))
+          (,(expand-file-name "~/Sync/PKM/") . "*notes*")))
 
   ;; Fix default input value for `doom/load-session'
   (global-set-key [remap doom/load-session] #'dtm/load-session))
@@ -768,10 +769,10 @@
                                dtm-tempel-include))
 
   (map! :map tempel-map
-        :i "<tab>"     #'tempel-next
-        :i "<backtab>" #'tempel-previous
-           "C-c C-c"   #'tempel-done
-           "C-c C-k"   #'tempel-abort))
+        :i "C-n"     #'tempel-next
+        :i "C-p"     #'tempel-previous
+           "C-c C-c" #'tempel-done
+           "C-c C-k" #'tempel-abort))
 
 ;;* Writing/Organisation Tools
 ;; Spell checking
@@ -1019,10 +1020,10 @@
           :desc "Delete Annotation"   "d" #'pdf-annot-delete))
 
         (:map pdf-history-minor-mode-map
-         :n "<tab>"     #'pdf-history-backward
-         :n "<backtab>" #'pdf-history-forward
-         :n [mouse-8]   #'pdf-history-backward
-         :n [mouse-9]   #'pdf-history-forward)))
+         :n [tab]     #'pdf-history-backward
+         :n [backtab] #'pdf-history-forward
+         :n [mouse-8] #'pdf-history-backward
+         :n [mouse-9] #'pdf-history-forward)))
 
 ;; BUG: fix void function in `pdf-links-action-perform'
 (with-eval-after-load 'pdf-links
