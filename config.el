@@ -538,7 +538,7 @@
   (map! :map dirvish-mode-map
         :n "C-o" #'dirvish-history-jump
         :n "C-s" #'dtm/dirvish-search-cwd
-        :n "TAB" #'dirvish-subtree-toggle
+        :n "TAB" #'dtm/dirvish-subtree-toggle
         :n "a"   #'dirvish-quick-access
         :n "s"   #'dirvish-quicksort
         :n "c"   #'dired-create-empty-file
@@ -584,7 +584,7 @@
 (with-eval-after-load 'dirvish-extras
   (transient-append-suffix
     'dirvish-mark-menu "X"
-    '("TAB" "Toggle subtree state" dtm/dirvish-do-toggle-subtree)))
+    '("TAB" "Toggle subtree state" dtm/dirvish-do-subtree-toggle)))
 
 (with-eval-after-load 'dirvish-fd
   ;; BUG: fix unbound suffix <return>

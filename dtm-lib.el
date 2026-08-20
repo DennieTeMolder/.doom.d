@@ -579,10 +579,16 @@ Intended as `dirvish-omit-ml' :filter-return advice"
   (unless (zerop (or dtm-dired-omit-count 0))
     element))
 
-(defun dtm/dirvish-do-toggle-subtree ()
+(defun dtm/dirvish-do-subtree-toggle ()
   "Call `dirvish-subtree-toggle' on all marked files."
   (interactive)
   (dired-map-over-marks (dirvish-subtree-toggle) nil))
+
+(defun dtm/dirvish-subtree-toggle ()
+  "Like `dirvish-subtree-toggle' but C-u makes it act on marks."
+  (interactive)
+  (if current-prefix-arg (dtm/dirvish-do-toggle-subtree)
+    (dirvish-subtree-toggle)))
 
 ;;* Vundo
 (defun dtm-vundo-pre-enter-h ()
