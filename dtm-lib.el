@@ -1759,6 +1759,13 @@ Ref: https://github.com/radian-software/ctrlf/issues/65"
   (require 'ctrlf)
   (setq ctrlf--style (if (eq ctrlf--style 'word) 'literal 'word)))
 
+(defun dtm-ctrlf-backward (style &optional preserve initial-contents position fallback)
+  "Wrapper for `ctrlf-backward' with same args as `ctrlf-forward'."
+  (require 'ctrlf)
+  (letf! ((defadvice ctrlf--start (:filter-args (&rest _))
+            (list initial-contents position)))
+    (ctrlf-backward style preserve fallback)))
+
 (defun dtm/ctrlf-evil-search-word-forward ()
   "Ctrlf equivalent of `evil-ex-search-word-forward'."
   (interactive)
@@ -1766,16 +1773,15 @@ Ref: https://github.com/radian-software/ctrlf/issues/65"
   (let* ((type (if evil-symbol-word-search 'symbol 'word))
          (string (or (evil-find-thing 'forward type)
                      (user-error "No word under point"))))
-    (ctrlf-forward type nil string)))
+    (ctrlf-forward type nil string (1+ (point)))))
 
 (defun dtm/ctrlf-evil-search-word-backward ()
   "Ctrlf equivalent of `evil-ex-search-word-backward'."
   (interactive)
-  (require 'ctrlf)
   (let* ((type (if evil-symbol-word-search 'symbol 'word))
-         (string (or (evil-find-thing 'backward type)
+         (string (or (evil-find-thing nil type)
                      (user-error "No word under point"))))
-    (ctrlf-backward type nil string)))
+    (dtm-ctrlf-backward type nil string)))
 
 (evil-define-motion dtm/ctrlf-evil-search-visual-forward (beg end)
   "Search for the visual selection forwards."
@@ -1785,7 +1791,7 @@ Ref: https://github.com/radian-software/ctrlf/issues/65"
   (require 'ctrlf)
   (when (evil-visual-state-p)
     (evil-exit-visual-state)
-    (ctrlf-forward 'literal nil (buffer-substring-no-properties beg end))))
+    (ctrlf-forward 'literal nil (buffer-substring-no-properties beg end) (1+ (point)))))
 
 (evil-define-motion dtm/ctrlf-evil-search-visual-backward (beg end)
   "Search for the visual selection forwards."
@@ -1794,7 +1800,7 @@ Ref: https://github.com/radian-software/ctrlf/issues/65"
   (interactive "<r>")
   (when (evil-visual-state-p)
     (evil-exit-visual-state)
-    (ctrlf-backward 'literal nil (buffer-substring-no-properties beg end))))
+    (dtm-ctrlf-backward 'literal nil (buffer-substring-no-properties beg end))))
 
 ;;* Tempel
 (defun dtm/tempel-open-template-file ()
