@@ -201,15 +201,6 @@
         ("AUR"               "https://aur.archlinux.org/packages?O=0&K=%s")
         ("Anaconda packages" "https://anaconda.org/search?q=%s")))
 
-(with-eval-after-load 'text-mode
-  ;; Disable ispell capf and replace with cape-dict
-  (setq text-mode-ispell-word-completion nil)
-  (add-hook 'text-mode-hook #'dtm-cape-dict-add-h)
-
-  ;; Disable visual line mode by default
-  (remove-hook 'text-mode-hook #'visual-line-mode)
-  (remove-hook 'text-mode-hook #'+word-wrap-mode))
-
 ;;* Core functionality modifications
 (with-eval-after-load 'evil
   ;; Enable granular undo (remembers delete actions during insert state)
@@ -343,6 +334,9 @@
 
   ;; BUG update `selection-info' when `buffer-position' segment is hidden
   (advice-add 'evil-visual-highlight :after #'dtm-doom-modeline-evil-update-visual))
+
+(with-eval-after-load 'which-key
+  (setq-hook! 'which-key-init-buffer-hook line-spacing 3))
 
 (with-eval-after-load 'vertico
   (setq vertico-resize 'grow-only
@@ -793,6 +787,15 @@
                    (calendar-iso-from-absolute
                     (calendar-absolute-from-gregorian (list month day year)))))
           'font-lock-face 'font-lock-comment-face)))
+
+(with-eval-after-load 'text-mode
+  ;; Disable ispell capf and replace with cape-dict
+  (setq text-mode-ispell-word-completion nil)
+  (add-hook 'text-mode-hook #'dtm-cape-dict-add-h)
+
+  ;; Disable visual line mode by default
+  (remove-hook 'text-mode-hook #'visual-line-mode)
+  (remove-hook 'text-mode-hook #'+word-wrap-mode))
 
 ;; Org-mode settings
 (defvar dtm-org-line-spacing 0.1
