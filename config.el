@@ -623,12 +623,18 @@
   (setq image-use-external-converter t))
 
 (with-eval-after-load 'image-mode
+  ;; Fix image-mode-previous not giving user-error when there is no file
+  (advice-add 'image-mode--next-file :filter-return #'dtm-image-mode--next-file-a)
+  (advice-add 'image-mode--directory-buffers :filter-return #'dtm-image-mode--directory-buffers-a)
   (advice-add 'image-toggle-display-image :after #'dtm-image-center-maybe)
 
   (map! :map image-mode-map
         :n "C-e" #'image-scroll-down
         :n "C-l" #'dtm/image-center
-           "W"   nil))
+        :n "n" #'image-next-file
+        :n "N" #'image-previous-file
+        :n "p" #'image-previous-file
+        "W" nil))
 
 (when (modulep! :ui indent-guides)
   (remove-hook 'text-mode-hook #'+indent-guides-init-maybe-h))

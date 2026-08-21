@@ -671,6 +671,22 @@ Intended as :after `image-toggle-display-image' advice."
   (interactive)
   (clear-image-cache t))
 
+(defun dtm-image-mode--next-file-a (next-file)
+  "Don't return NEXT-FILE if it is `buffer-file-name'.
+Intended as :filter-return `image-mode--next-file' advice."
+  (unless (and next-file (string= next-file buffer-file-name))
+    next-file))
+
+(defun dtm-image-mode--directory-buffers-a (bufs)
+  "Update stale `dired' buffers in BUFS.
+Intended as :filter-return `image-mode--directory-buffers' advice."
+  (mapc (lambda (el)
+          (when (eq 'dired (car el))
+            (with-current-buffer (cdr el)
+              (when (dired-buffer-stale-p)
+                (revert-buffer)))))
+        bufs))
+
 ;;* Elisp-refs
 (defun dtm-elisp-refs-button-other-window (button)
   "Open the file referenced by BUTTON in the other window.
