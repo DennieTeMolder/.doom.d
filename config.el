@@ -763,8 +763,8 @@
                                dtm-tempel-include))
 
   (map! :map tempel-map
-        :i "C-n"     #'tempel-next
-        :i "C-p"     #'tempel-previous
+        :i [tab]     #'tempel-next
+        :i [backtab] #'tempel-previous
            "C-c C-c" #'tempel-done
            "C-c C-k" #'tempel-abort))
 
