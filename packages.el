@@ -80,6 +80,7 @@
 (package! xr)
 (package! magit-todos)
 (package! topsy)
+(package! snakemake-mode)
 (package! org-clock-reminder
   :recipe (:host github :repo "inickey/org-clock-reminder"))
 (package! elpy-shell

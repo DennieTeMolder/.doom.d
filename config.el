@@ -1325,13 +1325,6 @@
   :hook (ess-r-post-run . ess-plot-on-startup-h))
 
 (with-eval-after-load 'python
-  ;; Add generic imenu expression and ensure python doesn't ignore them
-  (setq-hook! '(python-mode-hook python-ts-mode-hook)
-    imenu-generic-expression
-    '(("Rule" "^rule \\(\\_<[^ \t():\n]+\\_>\\):" 1)))
-  (add-hook! '(python-mode-hook python-ts-mode-hook)
-             :append #'dtm-imenu-merge-index-h)
-
   (map! (:map (python-mode-map python-ts-mode-map)
          :nv [C-return] #'dtm/elpy-send-current-and-step
          (:localleader
@@ -1353,9 +1346,6 @@
          "a" #'conda-env-activate
          "d" #'conda-env-deactivate)))
 
-;; Snakefiles in python mode
-(push '("\\(Snakefile\\|\\.smk\\)\\'" . python-mode) auto-mode-alist)
-
 ;; Enable conda before compiling (useful for Snakemake)
 (when (modulep! :lang python +conda)
   (add-hook 'compilation-mode-hook #'dtm-conda-env-guess-maybe))
@@ -1366,6 +1356,9 @@
   ;; HACK use doom te create elpy process for pyenv support (also starts conda)
   (advice-add 'elpy-shell-get-or-create-process
               :override #'dtm-elpy-shell-get-doom-process-a))
+
+(use-package snakemake-mode
+  :defer t)
 
 (with-eval-after-load 'csv-mode
   ;; Assume the first line of a csv is a header
