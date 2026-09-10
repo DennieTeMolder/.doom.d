@@ -162,6 +162,8 @@
      :icon (nerd-icons-octicon "nf-oct-book" :face '+dashboard-menu-title)
      :action doom/help)))
 
+(defalias 'hide-modeline-mode #'mode-line-invisible-mode)
+
 ;;* General Doom Settings
 ;; Inherit scratch buffer major mode from current buffer
 (setq doom-scratch-initial-major-mode t)

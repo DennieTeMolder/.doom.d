@@ -1485,7 +1485,6 @@ Intended as :around `ess-calculate-width' advice."
   "Wrapper for `ess-display-help-on-object' to improve `+lookup/documentation'.
 Bypasses `ess-completing-read', defers further lookup if process is busy."
   (interactive)
-  (ess-make-buffer-current)
   (condition-case err
       (ess-display-help-on-object (ess-helpobjs-at-point--read-obj))
     (user-error
@@ -1495,16 +1494,17 @@ Bypasses `ess-completing-read', defers further lookup if process is busy."
 (defun dtm/ess-quit-and-kill-no-save ()
   "Call `ess-quit' and prompt to kill the inferior process buffer and window."
   (interactive)
-  (when (and (ess-process-live-p)
-             (y-or-n-p (format "Kill process '%s'?" ess-local-process-name)))
-    (let ((buf (ess-get-process-buffer)))
-      (ess-quit 'no-save)
-      (when (y-or-n-p "Delete process window?")
-        (when-let* ((win (get-buffer-window buf)))
-          (delete-window win))
-        (kill-buffer buf)
-        (when (featurep 'ess-plot)
-          (ess-plot-hide))))))
+  (ess-force-buffer-current)
+  (let* ((buf (ess-get-process-buffer))
+         (win (get-buffer-window buf))
+         (ask (or (not (ess-process-live-p))
+                  (when (y-or-n-p (format "Kill process '%s'?" ess-local-process-name))
+                    (ess-quit 'no-save)
+                    t))))
+    (when (and ask (y-or-n-p "Delete process window?"))
+      (and win (delete-window win))
+      (and buf (kill-buffer buf))
+      (and (featurep 'ess-plot) (ess-plot-hide)))))
 
 (defun dtm/ess-eval-rfp-and-step-recenter ()
   "Call `ess-eval-region-or-function-or-paragraph-and-step' and recenter."
