@@ -1902,26 +1902,33 @@ Use with `pixel-scroll-precision-mode-hook'."
 Required for `dtm-pixel-scroll-preserve-screen-pos-a' to function.
 Intended as `pixel-scroll-precision-interpolate' :before advice."
   (unless (eq last-command 'pixel-scroll-precision)
-    (let* ((pos (pos-visible-in-window-p nil nil 'partially))
-           (xpos-adjust (- (car pos) (line-number-display-width 'pixelwise))))
-      (set-window-parameter nil 'interpolated-scroll-screen-pos
-                            (cons (/ xpos-adjust (frame-char-width))
-                                  (cadr pos))))))
+    (let ((pos (pos-visible-in-window-p nil nil 'partially))
+          (pnt (point)))
+      (let ((xpos (- (car pos) (line-number-display-width 'pixelwise)))
+            ;; Ensure top `scroll-margin' is applied
+            (ypos (if (< pnt (progn
+                               (move-to-window-line scroll-margin)
+                               (point)))
+                      (cadr (pos-visible-in-window-p nil nil 'partially))
+                    (cadr pos))))
+        (goto-char pnt)
+        (set-window-parameter nil 'interpolated-scroll-screen-pos
+                              (cons (/ xpos (frame-char-width)) ypos))))))
 
 ;; REVIEW: debounce this function?
 (defun dtm-pixel-scroll-preserve-screen-pos-a (&rest _)
   "Restore XY position of `point' to `dtm-pixel-scroll-save-cursor-pos-a'.
 This mimics `scroll-preserve-screen-position' == always.
 Intended as `pixel-scroll-precision-scroll-up'/down :after advice."
-  (let* ((target (window-parameter nil 'interpolated-scroll-screen-pos))
-         (current (cadr (pos-visible-in-window-p nil nil 'partially)))
-         (direction (cons (car target) (if (< (cdr target) current) -1 1)))
-         (height-diff (abs (- (cdr target) current)))
-         (line-height (pixel-line-height (point))))
-    (while (<= line-height height-diff)
-      (vertical-motion direction)
-      (setq height-diff (- height-diff line-height)
-            line-height (pixel-line-height (point))))))
+  (let ((target (window-parameter nil 'interpolated-scroll-screen-pos))
+        (current (cadr (pos-visible-in-window-p nil nil 'partially))))
+    (let ((direction (cons (car target) (if (< (cdr target) current) -1 1)))
+          (height-diff (abs (- (cdr target) current)))
+          (line-height (pixel-line-height (point))))
+      (while (<= line-height height-diff)
+        (vertical-motion direction)
+        (setq height-diff (- height-diff line-height)
+              line-height (pixel-line-height (point)))))))
 
 (defun dtm-window-usable-height ()
   "Return the usable height of the selected window.
