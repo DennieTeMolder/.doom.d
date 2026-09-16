@@ -70,6 +70,10 @@
 ;; BUG: https://github.com/minad/jinx/issues/261
 (unpin! compat)
 
+;; BUG: fix helpful-demos.org not being included in the build directory
+(package! helpful
+  :recipe (:host github :repo "hlissner/helpful" :files ("*.el" "*.org")))
+
 ;;* Custom packages
 (package! ess-r-insert-obj)
 (package! transpose-frame)
