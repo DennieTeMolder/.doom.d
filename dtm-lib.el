@@ -590,7 +590,7 @@ Intended as `dirvish-omit-ml' :filter-return advice"
 (defun dtm/dirvish-subtree-toggle ()
   "Like `dirvish-subtree-toggle' but C-u makes it act on marks."
   (interactive)
-  (if current-prefix-arg (dtm/dirvish-do-toggle-subtree)
+  (if current-prefix-arg (dtm/dirvish-do-subtree-toggle)
     (dirvish-subtree-toggle)))
 
 ;;* Vundo
