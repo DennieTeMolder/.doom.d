@@ -1495,7 +1495,7 @@ Bypasses `ess-completing-read', defers further lookup if process is busy."
   "Call `ess-quit' and prompt to kill the inferior process buffer and window."
   (interactive)
   (ess-force-buffer-current)
-  (let* ((buf (ess-get-process-buffer))
+  (let* ((buf (ess-get-current-process-buffer))
          (win (get-buffer-window buf))
          (ask (or (not (ess-process-live-p))
                   (when (y-or-n-p (format "Kill process '%s'?" ess-local-process-name))
@@ -1905,9 +1905,9 @@ Intended as `pixel-scroll-precision-interpolate' :before advice."
     (let ((pos (pos-visible-in-window-p nil nil 'partially))
           (pnt (point)))
       (let ((xpos (- (car pos) (line-number-display-width 'pixelwise)))
-            ;; Ensure top `scroll-margin' is applied
+            ;; Apply top `scroll-margin' to prevent off-screen cursor lag
             (ypos (if (< pnt (progn
-                               (move-to-window-line scroll-margin)
+                               (move-to-window-line (max 1 scroll-margin))
                                (point)))
                       (cadr (pos-visible-in-window-p nil nil 'partially))
                     (cadr pos))))
