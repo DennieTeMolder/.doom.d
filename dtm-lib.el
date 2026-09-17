@@ -497,12 +497,20 @@ Intended as :around advice."
                  (eq window (dv-preview-window dv))))
              (window-list))))
 
+(defun dtm-dirvish-dired-noselect-a (_ dir-or-list &rest _)
+  "Remove DIR-OR-LIST from `dired-buffers' so its order is updated.
+Intended as :after `dirvish-dired-noselect-a' advice."
+  (when-let* ((dir (if (consp dir-or-list) (car dir-or-list) dir-or-list))
+              (key (file-name-as-directory (expand-file-name dir)))
+              (match (assoc key dired-buffers)))
+    (setq dired-buffers (delq match dired-buffers))))
+
 (defun dtm-dirvish-sort-history (hist)
   "Preserve sorting of HIST removing duplicates and the `default-directory'.
 Intended for use as `vertico-sort-function' via `vertico-multiform-commands'."
   (let ((res))
     (dolist (x hist)
-      (unless (string= x default-directory)
+      (or (string= x default-directory)
           (cl-pushnew x res :test #'string=)))
     (reverse res)))
 

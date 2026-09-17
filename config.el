@@ -345,10 +345,6 @@
         vertico-scroll-margin (/ vertico-count 2)))
 
 (with-eval-after-load 'vertico-multiform
-  ;; Preserve original candidate order for specific functions
-  (add-to-list 'vertico-multiform-commands
-               '(dirvish-history-jump (vertico-sort-function . dtm-dirvish-sort-history)))
-
   ;; Display Jinx results in a grid
   (add-to-list 'vertico-multiform-categories
                '(jinx grid (vertico-grid-annotate . 20) (vertico-count . 9))))
@@ -507,6 +503,7 @@
 (with-eval-after-load 'dirvish
   (setq dirvish-hide-details t
         dirvish-reuse-session nil
+        dirvish-history-sort-function #'dtm-dirvish-sort-history
         dirvish-mode-line-format
         '(:left (sort file-user " " file-time symlink) :right (omit yank index))
         dirvish-quick-access-entries
@@ -521,6 +518,9 @@
            ("D" "~/Downloads/" "Downloads"))
          dtm-dirvish-local-entries))
   (add-to-list 'dirvish-preview-disabled-exts "bgz")
+
+  ;; Improve history or `dirvish-history-jump'
+  (advice-add 'dirvish-dired-noselect-a :before #'dtm-dirvish-dired-noselect-a)
 
   ;; BUG: Prevent Dirvish buffer from closing when opening in other window
   (advice-add 'dired-find-file-other-window :around #'dtm-dirvish-with-reuse-session-a)
