@@ -1489,6 +1489,14 @@ Intended as :around `ess-calculate-width' advice."
       (setq nchars (string-to-number (apply orig-fn args))))
     (format ess-execute-screen-options-command (max nchars 10))))
 
+(defun dtm/ess-update-width ()
+  "Run `ess-execute-screen-options' on `ess-get-current-process-buffer'. "
+  (interactive)
+  (when-let* ((buf (ess-get-process-buffer))
+              (win (get-buffer-window buf)))
+    (with-selected-window win
+      (ess-execute-screen-options))))
+
 (defun dtm/ess-lookup-documentation ()
   "Wrapper for `ess-display-help-on-object' to improve `+lookup/documentation'.
 Bypasses `ess-completing-read', defers further lookup if process is busy."
@@ -1504,12 +1512,12 @@ Bypasses `ess-completing-read', defers further lookup if process is busy."
   (interactive)
   (ess-force-buffer-current)
   (let* ((buf (ess-get-current-process-buffer))
-         (win (get-buffer-window buf))
          (ask (or (not (ess-process-live-p))
                   (when (y-or-n-p (format "Kill process '%s'?" ess-local-process-name))
                     (ess-quit 'no-save)
-                    t))))
-    (when (and ask (y-or-n-p "Delete process window?"))
+                    t)))
+         (win (get-buffer-window buf)))
+    (when (and ask (y-or-n-p "Delete process buffer & window?"))
       (and win (delete-window win))
       (and buf (kill-buffer buf))
       (and (featurep 'ess-plot) (ess-plot-hide)))))

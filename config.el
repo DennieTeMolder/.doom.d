@@ -1262,9 +1262,6 @@
   (advice-add 'ess-r-package-completion :around #'dtm-ignore-user-error-a)
   (advice-add 'ess-r-object-completion :around #'dtm-ignore-user-error-a)
 
-  ;; Set `ess-auto-width' once, use "SPC m x w" to update
-  (add-hook 'ess-r-post-run-hook #'ess-execute-screen-options)
-
   ;; BUG prevent `ess-set-width' from setting invalid window sizes
   (advice-add 'ess-calculate-width :around #'dtm-ess-calculate-width-a)
 
@@ -1302,12 +1299,15 @@
          :localleader
          "TAB" #'ess-switch-to-inferior-or-script-buffer
          "h"    'ess-doc-map
-         "x"    'ess-extra-map
          "p"    'ess-r-package-dev-map
-         "v"    'ess-dev-map)
+         "v"    'ess-dev-map
+         "x"    'ess-extra-map)
 
         (:map ess-dev-map
          "g" #'dtm/ess-debug-goto-previous)
+
+        (:map ess-extra-map
+         "w" #'dtm/ess-update-width)
 
         (:map ess-debug-minor-mode-map
          "M-K" #'dtm/ess-print-last-value
