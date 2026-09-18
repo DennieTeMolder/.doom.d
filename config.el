@@ -1069,11 +1069,6 @@
         [remap markdown-up-heading] #'dtm/markdown-up))
 
 ;;* Programming Languages
-;; General interactive programming buffer settings
-(add-hook 'compilation-mode-hook #'dtm/word-wrap-mode-no-fill)
-(add-hook 'comint-mode-hook #'dtm/word-wrap-mode-no-fill)
-(add-hook 'term-mode-hook #'dtm/word-wrap-mode-no-fill)
-
 ;; Don't replace case when programming
 (setq-hook! 'prog-mode-hook dabbrev-case-replace nil)
 
@@ -1093,25 +1088,29 @@
   ;; We circumvent `header-line-indent-mode' for efficiency
   (add-hook 'display-line-numbers-mode-hook #'dtm-topsy-header-line-update))
 
-(with-eval-after-load 'compile
-  (add-hook 'compilation-mode-hook #'dtm-scroll-process-friendly-h))
+;;;###package compile
+(add-hook 'compilation-mode-hook #'dtm-scroll-process-friendly-h)
 
 (with-eval-after-load 'comint
   (setq comint-input-ignoredups t
         comint-scroll-to-bottom-on-input 'this
         comint-scroll-to-bottom-on-output 'others)
 
-  (add-hook 'comint-mode-hook #'dtm/word-wrap-mode-no-fill)
   (add-hook 'comint-mode-hook #'dtm-scroll-process-friendly-h)
 
   ;; Prompt to create directory if missing
   (advice-add 'comint-write-input-ring :before #'dtm-comint-write-input-ring-a)
+
+  ;; Complement `doom--comint-enable-undo-a' in .emacs.d/lisp/doom-emacs.el
   (advice-add 'comint-truncate-buffer :around #'dtm-undo-exclude-and-reset-a)
 
   ;; Shell style clear REPL binding
   (map! :map comint-mode-map
         :n "C-l" #'comint-clear-buffer
         :localleader "r" #'dtm-consult-repl-history))
+
+;;;###package term
+(add-hook 'term-mode-hook #'dtm-scroll-process-friendly-h)
 
 (with-eval-after-load 'eshell
   (add-hook 'eshell-mode-hook #'dtm-scroll-process-friendly-h)
