@@ -247,6 +247,11 @@
 (with-eval-after-load 'evil-anzu
   (advice-add 'evil-anzu-search-next :around #'dtm-evil-anzu-search-next-a))
 
+(with-eval-after-load 'doom-themes-base
+  ;; Distinguish the current `isearch' from `lazy-highlight' like evil-search
+  (setf (cdr (assq 'isearch doom-themes-base-faces))
+        (cdr (assq 'evil-ex-search doom-themes-base-faces))))
+
 (with-eval-after-load 'isearch
   ;; Perform lax matching across new lines and comment chars
   (setq search-whitespace-regexp "[ \t\n]+\\s<*[ \t]*"
@@ -254,9 +259,6 @@
         lazy-count-prefix-format nil
         lazy-count-suffix-format " [%s/%s]"
         lazy-highlight-max-at-a-time nil)
-
-  ;; Doom-themes doesn't distinguish `isearch' from `lazy-highlight' like it does for Evil
-  (custom-set-faces! '(isearch :inherit evil-ex-search))
 
   (map! :map isearch-mode-map
         "C-w" #'doom/delete-backward-word
