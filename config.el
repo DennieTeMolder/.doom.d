@@ -15,8 +15,8 @@
 
 ;; Some functionality uses this to identify you, e.g. GPG configuration, email
 ;; clients, file templates and snippets. It is optional.
-(setq user-full-name "John Doe"
-      user-mail-address "john@doe.com")
+;; (setq user-full-name "John Doe")
+(setq user-mail-address "john@doe.com")
 
 ;; Allow above settings to be overridden
 (load! "local_vars.el" nil t)
@@ -52,13 +52,11 @@
 ;; `load-theme' function. This is the default:
 
 ;; Settings for smart defaults in `dtm-recommend-theme' & `dtm/consult-theme'
-(defvar dtm-first-hour-of-day 7)
-(defvar dtm-last-hour-of-day 17)
-(defvar dtm-light-theme 'doom-one-light)
-(defvar dtm-dark-theme 'doom-vibrant)
-(defvar dtm-presentation-theme 'doom-tomorrow-day)
-(defvar dtm-alternative-light-theme 'doom-flatwhite)
-(defvar dtm-alternative-dark-theme 'doom-monokai-ristretto)
+(setq dtm-light-theme 'doom-one-light
+      dtm-dark-theme 'doom-vibrant
+      dtm-presentation-theme 'doom-tomorrow-day
+      dtm-alternative-light-theme 'doom-flatwhite
+      dtm-alternative-dark-theme 'doom-monokai-ristretto)
 
 ;; Load theme based on custom function
 (setq doom-flatwhite-no-highlight-variables t
@@ -808,12 +806,9 @@
   (remove-hook 'text-mode-hook #'+word-wrap-mode))
 
 ;; Org-mode settings
-(defvar dtm-org-line-spacing 0.1
-  "`line-spacing' used by `dtm-org-mode-setup-h'.
-`org-modern-mode' recommends a value between 0.1-0.4.")
-
 (with-eval-after-load 'org
   (setq org-ellipsis " …"
+        dtm-org-line-spacing 0.1
         org-indent-indentation-per-level 1
         org-pretty-entities-include-sub-superscripts nil
         org-hide-emphasis-markers nil
@@ -984,11 +979,8 @@
   (map! :map (org-noter-notes-mode-map org-noter-doc-mode-map)
         "C-c q" #'org-noter-kill-session))
 
-(defvar dtm-org-roam-dir "~/Sync/PKM/"
-  "Old org-roam-directory for grep.")
-
-(defvar dtm-org-roam-index "~/Sync/PKM/pages/contents.org"
-  "Old org-roam index file.")
+(setq dtm-org-roam-dir "~/Sync/PKM/"
+      dtm-org-roam-index "~/Sync/PKM/pages/contents.org")
 
 (when (modulep! :tools biblio)
   (setq citar-bibliography '("~/Sync/Zotero/master.bib")

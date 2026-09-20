@@ -204,6 +204,21 @@ See also: `split-window-sensibly'"
   (dtm-scroll-hide-eob))
 
 ;;* Theme recommendations
+(defvar dtm-first-hour-of-day 7
+  "First hour of the day as integer")
+(defvar dtm-last-hour-of-day 17
+  "Last hour of the day as integer")
+(defvar dtm-light-theme nil
+  "Symbol of the theme that is active during the day.")
+(defvar dtm-dark-theme nil
+  "Symbol of the theme that is active at night")
+(defvar dtm-presentation-theme nil
+  "Symbol of theme active during `org-tree-slide-mode'.")
+(defvar dtm-alternative-light-theme nil
+  "Alternative `dtm-light-theme'.")
+(defvar dtm-alternative-dark-theme nil
+  "Alternative `dtm-dark-theme'.")
+
 (defun dtm-theme-which-inactive (theme1 theme2)
   "Return THEME1 of not currently active, else return THEME2"
   (if (eq theme1 (car custom-enabled-themes)) theme2 theme1))
@@ -998,6 +1013,10 @@ Intended for `markdown-mode-hook'."
                   '(src-block comment))
       (org-fill-paragraph))))
 
+(defvar dtm-org-line-spacing 0
+  "`line-spacing' used by `dtm-org-mode-setup-h'.
+`org-modern-mode' recommends a value between 0.1-0.4.")
+
 (defun dtm-org-mode-setup-h ()
   "Personal org-mode customisation's after mode startup"
   (unless (dtm-org-limit-styling-p)
@@ -1360,14 +1379,20 @@ Use as advice :before `org-tree-slide--setup'."
   (jinx-mode -1))
 
 ;;* Org-roam
+(defvar dtm-org-roam-index nil
+  "Old org-roam index file.")
+
 (defun dtm/org-roam-open-index ()
-  "Open `dtm-org-roam-index-file' and activate `org-overview'."
+  "Open `dtm-org-roam-index' and activate `org-overview'."
   (interactive)
-  (find-file dtm-org-roam-index-file)
+  (find-file dtm-org-roam-index)
   (while-let ((lvl (org-up-heading-safe))
               ((not (eq 1 lvl)))))
   (org-overview)
   (recenter))
+
+(defvar dtm-org-roam-dir nil
+  "Old org-roam-directory for grep.")
 
 (defun dtm/org-roam-find-file ()
   "Find file in `dtm-org-roam-dir'."
