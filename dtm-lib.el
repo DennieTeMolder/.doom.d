@@ -527,7 +527,7 @@ Intended for use as `vertico-sort-function' via `vertico-multiform-commands'."
     (dolist (x hist)
       (or (string= x default-directory)
           (cl-pushnew x res :test #'string=)))
-    (reverse res)))
+    (nreverse res)))
 
 (defun dtm/dired-delete-marked ()
   "Delete marked or current file(s), with C-u toggle `delete-by-moving-to-trash'."

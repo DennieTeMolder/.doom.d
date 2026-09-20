@@ -519,7 +519,7 @@
          dtm-dirvish-local-entries))
   (add-to-list 'dirvish-preview-disabled-exts "bgz")
 
-  ;; Improve history or `dirvish-history-jump'
+  ;; Improve history for `dirvish-history-jump'
   (advice-add 'dirvish-dired-noselect-a :before #'dtm-dirvish-dired-noselect-a)
 
   ;; BUG: Prevent Dirvish buffer from closing when opening in other window
