@@ -572,15 +572,17 @@ Intended for use as `vertico-sort-function' via `vertico-multiform-commands'."
 (defun dtm/dirvish-search-cwd ()
   "Grep files from current directory, `dirvish-quit' on confirm."
   (interactive)
-  (let ((dv (or (dirvish-curr) (user-error "Not a Dirvish buffer!")))
+  (let ((dv (or (dirvish-curr)
+                (user-error "Not a Dirvish buffer!")))
         (cwd default-directory))
     (when (dv-curr-layout dv)
       (dirvish-layout-toggle))
-    (let ((inhibit-quit t)
-          (default-directory cwd))
-      (save-current-buffer
-        (+default/search-cwd)))
-    (dirvish-quit)))
+    ;; `dirvish-layout-toggle' temporarily messes with `default-directory'
+    (let ((default-directory cwd)
+          (dv-buf (current-buffer)))
+      (+default/search-cwd)
+      (set-buffer dv-buf)
+      (dirvish-quit))))
 
 (defun dtm/dirvish-narrow ()
   "Run `dirvish-narrow' and provide revert instruction after finish."
