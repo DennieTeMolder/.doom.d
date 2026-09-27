@@ -689,9 +689,13 @@ Intended as :after `image-toggle-display-image' advice."
   (when (eq major-mode 'image-mode)
     (dtm/image-center)))
 
-(defun dtm/image-clear-cache ()
-  "Run `clear-image-cache' on all frames."
+(defun dtm/image-cache-clear ()
+  "Run `clear-image-cache' on all frames and prompt to clear `dirvish-cache-dir'."
   (interactive)
+  (and (bound-and-true-p dirvish-cache-dir)
+       (file-exists-p dirvish-cache-dir)
+       (y-or-n-p (format "Also clear: '%s'? " dirvish-cache-dir))
+       (delete-directory dirvish-cache-dir 'recursive))
   (clear-image-cache t))
 
 (defun dtm-image-mode--next-file-a (next-file)
