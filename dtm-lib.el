@@ -178,10 +178,12 @@ See also: `split-window-sensibly'"
   (require 'ace-window)
   (let ((this-command 'ace-select-window)
         (aw-dispatch-when-more-than 2)
-        (aw-dispatch-always nil))
+        (aw-dispatch-always nil)
+        (p (point)))
     (when (eq 1 (length (aw-window-list)))
       (save-selected-window (dtm/split-window-optimally)))
-    (aw-select " Ace - Move Buffer" #'aw-move-window)))
+    (aw-select " Ace - Move Buffer" #'aw-move-window)
+    (goto-char p)))
 
 (defun dtm-scroll-hide-eob (&optional window)
   "If lines past `point-max' are visible `recenter' to hide them."
