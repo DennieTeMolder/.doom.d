@@ -1232,6 +1232,9 @@
         ess-use-ido nil
         ess-style 'RStudio)
 
+  (add-hook 'ess-mode-hook #'dtm-ess-mode-line-compact-process)
+  (add-hook 'inferior-ess-mode-hook #'dtm-inferior-ess-mode-h)
+
   ;; We have better comint defaults than the ESS module's defaults
   (remove-hook! 'inferior-ess-mode-hook
     #'doom--setq-comint-move-point-for-output-for-inferior-ess-mode-h
@@ -1241,18 +1244,11 @@
   ;; Make `tab-width' follow `ess-indent-offset'
   (set-indent-vars! 'ess-r-mode 'ess-indent-offset)
 
-  ;; Font locking of strings in the repl buffer fails too often to be useful
-  (setq-hook! 'inferior-ess-mode-hook font-lock-string-face nil)
-
   ;; Enable additional font locking
   (dolist (keyword '(ess-fl-keyword:fun-calls ess-fl-keyword:numbers ess-R-fl-keyword:F&T))
     (setf (alist-get keyword ess-R-font-lock-keywords) t))
 
   (custom-set-faces! '(ess-numbers-face :inherit font-lock-number-face))
-
-  ;; Indicate if process is busy in the modeline
-  (add-hook 'inferior-ess-mode-hook #'dtm-ess-mode-line-show-busy)
-  (add-hook 'ess-mode-hook #'dtm-ess-mode-line-compact-process)
 
   ;; Attempt to hide eob when opening plot windows
   (add-hook 'inferior-ess-mode-hook #'dtm-hide-eob-on-window-change)

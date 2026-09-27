@@ -1521,6 +1521,11 @@ Ref: `ess--tb-start', https://github.com/seagle0128/doom-modeline/issues/410"
                                   (:eval (nth ess--busy-count ess-busy-strings))
                                   " ")))
 
+(defun dtm-inferior-ess-mode-h ()
+  "Run `dtm-ess-mode-line-show-busy' and disable string/comment font-lock."
+  (dtm-ess-mode-line-show-busy)
+  (setcar (cdr font-lock-defaults) t))
+
 (defun dtm-ess-calculate-width-a (orig-fn &rest args)
   "Fix for `ess-calculate-width' that has a lower limit of 10 to prevent errors.
 Intended as :around `ess-calculate-width' advice."
@@ -1619,9 +1624,10 @@ If `ess--dbg-is-active-p' eval the object at `dtm-ess-debug-previous-position'."
   "print(utils::ls.str(all.names = FALSE), max.level = 1, list.len = 5, give.attr = FALSE)"
   "R command used by `dtm/ess-print-ls-str'.")
 
-(defun dtm/ess-print-ls-str (&optional arg)
-  (interactive "p")
-  (when (and (numberp arg) (> arg 1))
+(defun dtm/ess-print-ls-str (&optional modify)
+  "Evaluate `dtm-ess-ls-str-cmd', prompt for changes if MODIFY."
+  (interactive "P")
+  (when modify
     (setq dtm-ess-ls-str-cmd
           (read-string "Modified ls.str() cmd: " dtm-ess-ls-str-cmd)))
   (ess-send-string (ess-get-current-process) dtm-ess-ls-str-cmd t))
