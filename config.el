@@ -517,7 +517,12 @@
            ("h" "~/" "Home")
            ("D" "~/Downloads/" "Downloads"))
          dtm-dirvish-local-entries))
-  (add-to-list 'dirvish-preview-disabled-exts "bgz")
+
+  ;; Recognize Snakemake workflows (.smk) as text
+  (delete "smk" dirvish-video-exts)
+  (delete "smk" dirvish-binary-exts)
+  (push "bgz" dirvish-archive-exts)
+  (push "bgz" dirvish-binary-exts)
 
   ;; Improve history for `dirvish-history-jump'
   (advice-add 'dirvish-dired-noselect-a :before #'dtm-dirvish-dired-noselect-a)
