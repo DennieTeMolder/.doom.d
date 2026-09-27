@@ -13,6 +13,10 @@
   "Adjust right margin to end the buffer at `fill-column' in the current window."
   :init-value nil :lighter nil :global nil
   :after-hook (fill-column-master-adjust)
+  ;; Aligning to the right margin doesn't play nicely with this mode
+  (when (and fill-column-visual-mode
+             (eq mode-line-right-align-edge 'right-margin))
+    (setq-local mode-line-right-align-edge 'right-fringe))
   (unless fill-column-center-mode
     (fill-column-master--manage-hooks fill-column-visual-mode)))
 
