@@ -59,14 +59,14 @@ If NAME is not provided `buffer-file-name' is used."
   (<= (line-beginning-position) (mark) (line-end-position)))
 
 (defun dtm-deactivate-mark ()
-  "Run `deactivate-mark' keeping point at the left side of region."
-  (when (and (dtm-point-mark-same-line-p)
-             (< (mark) (point)))
-    (exchange-point-and-mark))
+  "Run `deactivate-mark', keeping point left if `dtm-point-mark-same-line-p'."
+  (and (< (mark) (point))
+       (dtm-point-mark-same-line-p)
+       (exchange-point-and-mark))
   (deactivate-mark))
 
 (defun dtm-region-as-string (&optional deactivate)
-  "Return the marked region as a string. If DEACTIVATE unmark the region."
+  "Return marked region as a bare string. If DEACTIVATE call `dtm-deactivate-mark'."
   (when (use-region-p)
     (prog1 (buffer-substring-no-properties (mark) (point))
       (when deactivate (dtm-deactivate-mark)))))
@@ -81,12 +81,12 @@ If NAME is not provided `buffer-file-name' is used."
     (beginning-of-line)
     (looking-at-p "[[:space:]]*$")))
 
-(defun dtm-forward-line-non-empty ()
-  "Move cursor to the start of the next non-empty line."
-  (forward-line)
-  (while (and (dtm-line-empty-p)
-              (not (eobp)))
-    (forward-line)))
+(defun dtm-skip-comments-empty-lines (&optional direction)
+  "Wrapper of `forward-comment' that takes DIRECTION."
+  (let ((factor (if (< (or direction 0) 0)
+                    -99999
+                  99999)))
+    (forward-comment factor)))
 
 (defun dtm-advice-list (symbol)
   "Return the list of functions advising SYMBOL."
@@ -846,11 +846,14 @@ Moves the point to the next non-empty line unless NO-STEP is non-nil."
   (interactive "P")
   (let ((command (dtm-region-as-string 'deactivate)))
     (if command
-        (setq command (string-trim command))
-      (when (dtm-line-empty-p) (dtm-forward-line-non-empty))
+        (setq command (string-trim command)
+              no-step (or no-step (dtm-point-mark-same-line-p)))
       (setq command (dtm-current-line-as-string))
-      (+nav-flash-blink-cursor)
-      (unless no-step (dtm-forward-line-non-empty)))
+      (+nav-flash-blink-cursor))
+    (unless no-step
+      (forward-line)
+      (dtm-skip-comments-empty-lines)
+      (back-to-indentation))
     (save-selected-window
       (dtm/ghostel-other-window)
       (goto-char (point-max))
