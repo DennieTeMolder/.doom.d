@@ -2216,6 +2216,7 @@ Also checks if FILE exists."
         current-prefix-arg)
     (call-interactively #'doom/delete-this-file)))
 
+;; REVIEW: this functionality was merged into `advice-remove' in Emacs 30
 (defun dtm/advice-remove (symbol advice)
   "Remove ADVICE from SYMBOL, with interactive support.
 Ref: https://emacs.stackexchange.com/a/33344"
@@ -2292,4 +2293,3 @@ Relative lines are more performant, but fail with folded/wrapped lines"
     (let ((path (abbreviate-file-name default-directory)))
       (kill-new path)
       (message "Copied path: %s" path))))
-

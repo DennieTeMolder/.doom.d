@@ -1103,6 +1103,7 @@
         comint-scroll-to-bottom-on-output 'others)
 
   (add-hook 'comint-mode-hook #'dtm-scroll-process-friendly-h)
+  (add-hook 'comint-mode-hook #'dtm-hide-eob-on-window-change)
 
   ;; Prompt to create directory if missing
   (advice-add 'comint-write-input-ring :before #'dtm-comint-write-input-ring-a)
@@ -1249,9 +1250,6 @@
     (setf (alist-get keyword ess-R-font-lock-keywords) t))
 
   (custom-set-faces! '(ess-numbers-face :inherit font-lock-number-face))
-
-  ;; Attempt to hide eob when opening plot windows
-  (add-hook 'inferior-ess-mode-hook #'dtm-hide-eob-on-window-change)
 
   ;; Improve lookup experience
   (set-lookup-handlers! '(ess-r-mode ess-julia-mode)
