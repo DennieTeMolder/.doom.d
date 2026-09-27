@@ -1962,15 +1962,15 @@ Ref: https://github.com/minad/tempel"
       nil)))
 
 ;;* Pixel-scroll-precision-mode
-(defun dtm-pixel-scroll-precision-mode-h ()
-  "Set `make-cursor-line-fully-visible' default value to t.
-Use with `pixel-scroll-precision-mode-hook'."
-  (setq-default make-cursor-line-fully-visible t))
-
 (defun dtm-scroll-process-friendly-h (&rest _)
   "Disable re-centering and scroll margin, desirable in process buffers."
   (setq-local scroll-conservatively 101
               scroll-margin 0))
+
+(defun dtm-pixel-scroll-precision-mode-h ()
+  "Set `make-cursor-line-fully-visible' default value to t.
+Use with `pixel-scroll-precision-mode-hook'."
+  (setq-default make-cursor-line-fully-visible t))
 
 (defun dtm-pixel-scroll-store-screen-pos-a (&rest _)
   "Store current relative (X-CHAR . Y-PIXEL) position as a `window-parameter'.
@@ -1996,7 +1996,9 @@ Intended as `pixel-scroll-precision-interpolate' :before advice."
 This mimics `scroll-preserve-screen-position' == always.
 Intended as `pixel-scroll-precision-scroll-up'/down :after advice."
   (let ((target (window-parameter nil 'interpolated-scroll-screen-pos))
-        (current (cadr (pos-visible-in-window-p nil nil 'partially))))
+        (current (cadr (pos-visible-in-window-p nil nil 'partially)))
+        ;; Reduce lag in non-selected windows
+        (cursor-in-non-selected-windows t))
     (let ((direction (cons (car target) (if (< (cdr target) current) -1 1)))
           (height-diff (abs (- (cdr target) current)))
           (line-height (pixel-line-height (point))))
