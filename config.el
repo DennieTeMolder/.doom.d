@@ -243,6 +243,8 @@
   (advice-add 'evil-collection-inhibit-insert-state :after #'dtm-evil-collection-inhibit-insert-state-a))
 
 (with-eval-after-load 'evil-anzu
+  ;; BUG: fix incorrect search count
+  ;; Related?: https://github.com/emacsorphanage/anzu/issues/103
   (advice-add 'evil-anzu-search-next :around #'dtm-evil-anzu-search-next-a))
 
 (with-eval-after-load 'doom-themes-base
@@ -287,12 +289,15 @@
         ctrlf-style-alist)
   (push '(vim . (:prompt "vim"
                  :translator dtm-ctrlf-translate-evil
-                 :case-fold dtm-ctrlf-case-fold-p-evil))
+                 :case-fold dtm-ctrlf-case-fold-evil-p))
         ctrlf-style-alist)
 
   ;; Improve Evil integration
   (advice-add 'ctrlf--evil-remember-search-string :override #'dtm-ctrlf-evil-remember-a)
   (advice-add 'ctrlf--start :before (lambda (&rest _) (evil-ex-nohighlight)))
+
+  ;; Reduce number of jumps stored to only the starting position
+  (advice-add 'ctrlf--evil-set-jump :override #'dtm-ctrlf--evil-set-jump-a)
 
   (map! :map ctrlf-minibuffer-mode-map
         "M-w" #'dtm/ctrlf-yank-word-or-char

@@ -1757,11 +1757,10 @@ Alternative `conda-env-activate-for-buffer' that prompts before activation"
 
 (defun dtm-ctrlf-translate-evil (input)
   "Translate INPUT using `evil-transform-vim-style-regexp'."
-  (let ((evil-ex-search-vim-style-regexp t)
-        (evil-magic 'very-magic))
+  (let ((evil-ex-search-vim-style-regexp t))
     (or (evil-ex-pattern-regex (evil-ex-make-pattern input 'ignore t)) "")))
 
-(defun dtm-ctrlf-case-fold-p-evil (input)
+(defun dtm-ctrlf-case-fold-evil-p (input)
   "Return non-nil if case should be ignored according to `evil-ex-regex-case'."
   (eq (evil-ex-regex-case input 'smart) 'insensitive))
 
@@ -1795,6 +1794,18 @@ Intended as :override `'ctrlf--evil-remember-search-string' advice."
         (when evil-ex-search-persistent-highlight
           (evil-ex-search-activate-highlight evil-ex-search-pattern)))))
   str)
+
+(defun dtm-ctrlf--evil-set-jump-a ()
+  "Reduce number of stored jumps.
+Only stores the location before search started (no intermediate/final matches).
+Also doesn't store the location if search was canceled.
+Intended as `ctrlf--evil-set-jump' :override advice. "
+  (when (and (fboundp 'evil-set-jump)
+             (eq this-command 'exit-minibuffer))
+    (with-selected-window (or (minibuffer-selected-window) (selected-window))
+      (save-excursion
+        (goto-char ctrlf--starting-point)
+        (evil-set-jump)))))
 
 (defun dtm/ctrlf-evil-substitute ()
   "Run `evil-ex' substitute with the current/last CTRLF search query.
