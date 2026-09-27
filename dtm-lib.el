@@ -2201,12 +2201,10 @@ Also checks if FILE exists."
 (defun dtm/toggle-trash-delete ()
   "Toggle between trashing and deleting files"
   (interactive)
-  (if delete-by-moving-to-trash
-      (progn
-        (setq delete-by-moving-to-trash nil)
-        (message "Now deleting files PERMANTLY"))
-    (setq delete-by-moving-to-trash t)
-    (message "Now moving deleted files to trash")))
+  (if (setq delete-by-moving-to-trash
+            (not delete-by-moving-to-trash))
+      (message "Moving deleted files to trash")
+    (message "Deleting files PERMANTLY")))
 
 (defun dtm/delete-this-file ()
   (interactive)
