@@ -486,6 +486,7 @@
 
   ;; Custom overrides
   (map! :map dired-mode-map
+        [remap evil-goto-line]  #'dtm/dired-last-line
         [remap dired-do-delete] #'dtm/dired-delete-marked
         [remap dired-diff]      #'dtm/dired-ediff))
 

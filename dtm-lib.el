@@ -529,6 +529,12 @@ Intended for use as `vertico-sort-function' via `vertico-multiform-commands'."
           (cl-pushnew x res :test #'string=)))
     (nreverse res)))
 
+(defun dtm/dired-last-line ()
+  "Move the point to the last line in the buffer."
+  (interactive)
+  (evil-goto-line)
+  (dired-next-line -1))
+
 (defun dtm/dired-delete-marked ()
   "Delete marked or current file(s), with C-u toggle `delete-by-moving-to-trash'."
   (interactive)
