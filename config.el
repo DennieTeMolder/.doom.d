@@ -1347,16 +1347,16 @@
          "a" #'conda-env-activate
          "d" #'conda-env-deactivate)))
 
-;; Enable conda before compiling (useful for Snakemake)
-(when (modulep! :lang python +conda)
-  (add-hook 'compilation-mode-hook #'dtm-conda-env-guess-maybe))
-
 (use-package elpy-shell
   :defer t
   :config
-  ;; HACK use doom te create elpy process for pyenv support (also starts conda)
+  ;; Use Doom to create Elpy process for Pyenv support (also starts conda)
   (advice-add 'elpy-shell-get-or-create-process
               :override #'dtm-elpy-shell-get-doom-process-a))
+
+;; Enable conda before compiling (useful for Snakemake)
+(when (modulep! :lang python +conda)
+  (add-hook 'compilation-mode-hook #'dtm-conda-env-guess-maybe))
 
 (use-package snakemake-mode
   :defer t)

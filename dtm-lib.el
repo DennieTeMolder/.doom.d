@@ -1743,14 +1743,16 @@ Respects `conda-project-env-path' and `conda-activate-base-by-default'."
 
 (defun dtm/conda-env-guess ()
   "Prompt the user to activate env from `dtm-conda-env-infer-name'.
-Alternative `conda-env-activate-for-buffer' that prompts before activation"
+Alternative `conda-env-activate-for-buffer' that prompts before activation."
   (interactive)
   (require 'conda)
-  (let ((conda-activate-base-by-default (called-interactively-p 'interactive)))
-    (when-let ((name (dtm-conda-env-infer-name)))
-      (and (not (string= name conda-env-current-name))
-           (y-or-n-p (format "Activate Conda env: %s?" name))
-           (conda-env-activate name)))))
+  (when-let* (((ignore-errors (conda--get-executable-path)))
+              (name (let ((conda-activate-base-by-default
+                           (called-interactively-p 'any)))
+                      (dtm-conda-env-infer-name))))
+    (and (not (string= name conda-env-current-name))
+         (y-or-n-p (format "Activate Conda env: %s?" name))
+         (conda-env-activate name))))
 
 (defun dtm-conda-env-guess-maybe ()
   "Run `dtm/conda-env-guess' unless `non-essential' or `dtm-buffer-remote-p'."
