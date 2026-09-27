@@ -1672,55 +1672,73 @@ with `dtm-cape-ess-r-object-completion'."
                    #'ess-filename-completion)
     (setq-local completion-at-point-functions)))
 
-;;* Python/Elpy-shell
+;;* Python/Elpy
+(defun dtm-inferior-python-mode-h ()
+  "Restores `comint-postoutput-scroll-to-bottom'."
+  (add-hook 'comint-output-filter-functions #'comint-postoutput-scroll-to-bottom))
+
+(defvar dtm-elpy-shell-use-ipython nil
+  "Whether `elpy-shell-get-or-create-process' should use Ipython.")
+
 (defun dtm-elpy-shell-get-doom-process-a (&optional sit)
   "Obtain a Python process using `+python/open-repl'.
 Intended as override advice for `elpy-shell-get-or-create-process'.
 Also prompts to activate a Conda env if executable is found."
   (or (python-shell-get-process)
       (progn
-        (when (and (fboundp #'conda-env-list)
-                   (require 'conda)
-                   (ignore-errors (conda--get-executable-path)))
-          (dtm/conda-env-guess))
-        (let ((buf (save-selected-window (+python/open-repl))))
+        (dtm/conda-env-guess)
+        (let ((buf (save-selected-window
+                     (if dtm-elpy-shell-use-ipython (+python/open-ipython-repl)
+                       (+python/open-repl)))))
           (and sit (sit-for sit))
           (get-buffer-process buf)))))
 
-(defun dtm-elpy-shell-send-string (str)
-  "Send STR to Python shell using `elpy-shell-send-buffer'.
-STR is first stripped and indented according to mode."
-  (with-temp-buffer
-    (insert (python-util-strip-string str))
-    (indent-according-to-mode)
-    (call-interactively #'elpy-shell-send-buffer)))
+(defun dtm-elpy-send-string (str)
+  "Send STR to Python shell respecting `elpy-shell-echo-output'. "
+  (elpy-shell--with-maybe-echo (python-shell-send-string str)))
 
 (defun dtm/elpy-send-region-and-step ()
   "Send current region to Python shell, step if region is multi-line."
   (interactive)
   (unless (use-region-p)
-    (user-error "No valid active region!"))
-  (dtm-elpy-shell-send-string (dtm-region-as-string 'deactivate)))
+    (user-error "Region is not active!"))
+  (elpy-shell-send-region-or-buffer-and-step)
+  (deactivate-mark)
+  (elpy-shell--skip-to-next-code-line)
+  (back-to-indentation))
 
-(defun dtm/elpy-send-statement-or-line ()
+(defun dtm/elpy-send-sexp-and-step ()
+  "Send the current sexp or line and step."
   (interactive)
-  (if (python-info-statement-starts-block-p)
-      (call-interactively #'elpy-shell-send-statement)
-    (dtm-elpy-shell-send-string (dtm-current-line-as-string))))
+  (require 'elpy-shell)
+  (elpy-shell--nav-beginning-of-statement)
+  (let ((start (point)))
+    (python-nav-forward-sexp-safe)
+    (elpy-shell--flash-and-message-region start (point))
+    (dtm-elpy-send-string
+     (python-shell-buffer-substring start (point))))
+  (if (not (looking-at-p "[[:space:]]*$"))
+      (forward-char)
+    (forward-line)
+    (elpy-shell--skip-to-next-code-line)
+    (back-to-indentation)))
 
-(defun dtm/elpy-send-statement-or-line-and-step ()
+(defun dtm/elpy-send-dwim-and-step (&optional no-recenter)
+  "Send current region, statement, or sexp to Python shell and step.
+Call `recenter' unless NO-RECENTER."
   (interactive)
-  (if (python-info-statement-starts-block-p)
-      (call-interactively #'elpy-shell-send-statement-and-step)
-    (dtm-elpy-shell-send-string (dtm-current-line-as-string))
-    (forward-line)))
+  (require 'elpy-shell)
+  (cond ((use-region-p)
+         (dtm/elpy-send-region-and-step))
+        ((python-info-statement-starts-block-p)
+         (elpy-shell-send-statement-and-step))
+        (t (dtm/elpy-send-sexp-and-step)))
+  (unless no-recenter (recenter)))
 
-(defun dtm/elpy-send-current-and-step ()
-  "Send current region, statement, or line to Python shell and step."
+(defun dtm/elpy-send-dwim ()
+  "Send current region, statement, or sexp to Python."
   (interactive)
-  (if (use-region-p)
-      (dtm/elpy-send-region-and-step)
-    (dtm/elpy-send-statement-or-line-and-step)))
+  (save-excursion (dtm/elpy-send-dwim-and-step 'no-recenter)))
 
 (defun dtm/elpy-print-symbol-or-region ()
   "Print the symbol at point or active region in the Python shell."
@@ -1728,7 +1746,7 @@ STR is first stripped and indented according to mode."
   (let* ((reg (or (dtm-region-as-string 'deactivate)
                   (python-info-current-symbol)))
          (cmd (concat "print(" reg ")")))
-    (dtm-elpy-shell-send-string cmd)))
+    (dtm-elpy-send-string cmd)))
 
 ;;* Conda
 (defun dtm-conda-env-infer-name ()
