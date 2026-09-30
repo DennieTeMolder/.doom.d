@@ -490,11 +490,12 @@
         dired-listing-switches
         "-lh --almost-all --group-directories-first")
 
-  ;; Custom overrides
-  (map! :map dired-mode-map
-        [remap evil-goto-line]  #'dtm/dired-last-line
-        [remap dired-do-delete] #'dtm/dired-delete-marked
-        [remap dired-diff]      #'dtm/dired-ediff))
+  (map! :map (dired-mode-map wdired-mode-map)
+        [remap evil-goto-first-line] #'dtm/dired-first-line
+        [remap evil-goto-line]       #'dtm/dired-last-line
+        :map dired-mode-map
+        [remap dired-do-delete]      #'dtm/dired-do-delete
+        [remap dired-diff]           #'dtm/dired-ediff))
 
 (with-eval-after-load 'dired-x
   ;; Hide all files starting with a dot or pound sign by default
