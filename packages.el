@@ -60,21 +60,21 @@
 ;; REVIEW https://github.com/vedang/pdf-tools/issues/89
 (package! tablist :recipe (:build (:not compile)))
 
-;; Custom template expansion, fully disable yasnippet
-;; See: (doom-package-depending-on 'yasnippet)
-(package! tempel)
-
 ;; Only used by `lispy-occur', use `consult-line' instead
 (package! swiper :ignore t)
-
-;; BUG: https://github.com/minad/jinx/issues/261
-(unpin! compat)
 
 ;; BUG: fix helpful-demos.org not being included in the build directory
 (package! helpful
   :recipe (:host github :repo "hlissner/helpful" :files ("*.el" "*.org")))
 
+;; BUG: https://github.com/minad/jinx/issues/261
+(unpin! compat)
+
+;; BUG: https://github.com/seagle0128/doom-modeline/commit/adbd6325be5f84eafbc85efb5685452a5ba489bf
+(unpin! doom-modeline)
+
 ;;* Custom packages
+(package! tempel)
 (package! ess-r-insert-obj)
 (package! transpose-frame)
 (package! info-colors)
