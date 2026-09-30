@@ -2320,3 +2320,24 @@ Relative lines are more performant, but fail with folded/wrapped lines"
     (let ((path (abbreviate-file-name default-directory)))
       (kill-new path)
       (message "Copied path: %s" path))))
+
+(defvar dtm-search-other-dir nil
+  "Last searched directory used by `dtm/search-other-dir'.")
+
+(defun dtm/search-other-dir ()
+  "Search `dtm-search-other-dir' using `+default/search-cwd'.
+Use `dtm/search-other-dir-select' to change directories and search."
+  (interactive)
+  (if dtm-search-other-dir
+      (let ((default-directory dtm-search-other-dir))
+        (+default/search-cwd))
+    (dtm/search-other-dir-select)))
+
+(defun dtm/search-other-dir-select (&optional arg)
+  "Prompt for a directory and search, if ARG use `dtm-search-other-dir'.
+Like `+default/search-other-cwd' but plays nicely with 'vertico-repeat'."
+  (interactive "P")
+  (unless (and arg dtm-search-other-dir)
+    (setq dtm-search-other-dir (read-directory-name "Search directory: ")))
+  (let ((this-command #'dtm/search-other-dir))
+    (call-interactively #'dtm/search-other-dir)))

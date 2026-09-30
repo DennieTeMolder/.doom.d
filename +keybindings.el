@@ -62,10 +62,13 @@
        :desc "Delete this file"       "D" #'dtm/delete-this-file
        :desc "Yank working directory" "w" #'dtm/yank-default-directory)
 
-      ;; Insert
-      :desc "snippet" "i s" #'tempel-insert
+      ;; Help
+      :desc "Keymap" "h b k" #'embark-bindings-in-keymap
 
-      ;; Notes roam
+      ;; Insert
+      :desc "Snippet" "i s" #'tempel-insert
+
+      ;; Notes/roam
       (:prefix "n"
        :desc "Bibliography" "b" #'citar-open
        (:prefix ("r" . "Roam")
@@ -80,6 +83,9 @@
 
       ;; Project
       :desc "List project todos" "p t" #'magit-todos-list
+
+      ;; Search
+      :desc "Search other directory" "s D" #'dtm/search-other-dir-select
 
       ;; Toggles
       (:prefix "t"
