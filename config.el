@@ -126,10 +126,6 @@
 (when dtm-maximize-on-startup
   (add-to-list 'default-frame-alist '(fullscreen . maximized)))
 
-;; Simplify window title and give a visual indication if file is edited
-(setq frame-title-format
-      '("%b" (:eval (if (buffer-modified-p) " +" ""))))
-
 ;; Replace the default doom splash screen with a more subtle one
 (setq +dashboard-ascii-banner-fn #'dtm-dashboard-ascii-banner-fn)
 
@@ -313,17 +309,7 @@
         projectile-ignored-project-function #'dtm-project-ignored-p)
 
   ;; Define a generic project as we ignore dotfiles for syncing
-  (projectile-register-project-type 'generic '("PROJECT") :project-file "PROJECT")
-
-  ;; Append the project name to the title frame format
-  (add-to-list 'frame-title-format
-               '(:eval
-                 (let* ((project-name (projectile-project-name))
-                        (project-name (if (string= "-" project-name)
-                                          "Emacs"
-                                        project-name)))
-                   (concat " | " project-name)))
-               t))
+  (projectile-register-project-type 'generic '("PROJECT") :project-file "PROJECT"))
 
 (with-eval-after-load 'recentf
   ;;Exclude non-existent & remote files from recent files list after cleanup
@@ -439,6 +425,8 @@
         :desc "Show help" "h" #'helpful-symbol))
 
 (with-eval-after-load 'persp-mode
+  (setq frame-title-format '((:eval (or persp-last-persp-name "%F"))))
+
   ;; Open specific buffers in a dedicated workspace
   (advice-add 'persp-add-or-not-on-find-file :before #'dtm-workspace-dedicated-persp-a)
   (setq dtm-workspace-dedicated-alist
