@@ -1076,6 +1076,10 @@
 ;; Don't replace case when programming
 (setq-hook! 'prog-mode-hook dabbrev-case-replace nil)
 
+(with-eval-after-load 'eldoc
+  (setq eldoc-echo-area-use-multiline-p nil)
+  (set-popup-rule! (rx "*eldoc*") :height 0.3))
+
 ;; Header line showing current defun
 (use-package topsy
   :hook ((prog-mode . topsy-mode)
