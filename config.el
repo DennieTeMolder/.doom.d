@@ -501,18 +501,23 @@
         dirvish-reuse-session nil
         dirvish-history-sort-function #'dtm-dirvish-sort-history
         dirvish-mode-line-format
-        '(:left (sort file-user " " file-time symlink) :right (omit yank index))
-        dirvish-quick-access-entries
-        (append
-         `(("dc" ,doom-core-dir "Doom Core")
-           ("dl" ,doom-local-dir "Doom Local")
-           ("dm" ,(car (last doom-module-load-path)) "Doom Modules")
-           ("dp" ,doom-user-dir "Doom Private")
-           ("dr" ,(concat doom-local-dir "straight/repos/") "Doom Repos")
-           ("r" "/" "Root")
-           ("h" "~/" "Home")
-           ("D" "~/Downloads/" "Downloads"))
-         dtm-dirvish-local-entries))
+        '(:left (sort file-user " " file-time symlink) :right (omit yank index)))
+
+  (setopt dirvish-quick-access-entries
+          (let ((dcore (abbreviate-file-name doom-core-dir))
+                (dlocal (abbreviate-file-name doom-local-dir))
+                (dmodule (abbreviate-file-name (car (last doom-module-load-path))))
+                (duser (abbreviate-file-name doom-user-dir)))
+            (append
+             `(("dc" ,dcore "Doom Core")
+               ("dl" ,dlocal "Doom Local")
+               ("dm" ,dmodule "Doom Modules")
+               ("dr" ,(concat dlocal "straight/repos/") "Doom Repos")
+               ("dp" ,duser "Doom Private")
+               ("r" "/" "Root")
+               ("h" "~/" "Home")
+               ("D" "~/Downloads/" "Downloads"))
+             dtm-dirvish-local-entries)))
 
   ;; Recognize Snakemake workflows (.smk) as text
   (delete "smk" dirvish-video-exts)
