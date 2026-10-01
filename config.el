@@ -691,13 +691,17 @@
         pixel-scroll-precision-large-scroll-height 40
         pixel-scroll-precision-interpolate-page t)
 
-  ;; Prevent comint prompts from being partially off-screen
+  ;; Prevent comint/shell prompts from being partially off-screen
   (add-hook 'pixel-scroll-precision-mode-hook #'dtm-pixel-scroll-precision-mode-h)
 
   ;; Preserve cursor position during scrolling
   (advice-add 'pixel-scroll-precision-interpolate :before #'dtm-pixel-scroll-store-screen-pos-a)
   (advice-add 'pixel-scroll-precision-scroll-down :after #'dtm-pixel-scroll-preserve-screen-pos-a)
   (advice-add 'pixel-scroll-precision-scroll-up :after #'dtm-pixel-scroll-preserve-screen-pos-a)
+
+  (dolist (fn '(dtm-precision-scroll-up dtm-precision-scroll-page-up
+                dtm-precision-scroll-down dtm-precision-scroll-page-down))
+    (evil-declare-not-repeat fn))
 
   ;; Custom commands to smooth scroll using keys
   (map! :map pixel-scroll-precision-mode-map
