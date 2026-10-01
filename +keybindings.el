@@ -106,6 +106,11 @@
                                       "S" #'evil-window-split
                                       "T" #'transpose-frame)
 
+      ;; Workspace
+      (:prefix "TAB"
+       :desc "Switch to last workspace" "l" #'+workspace/other
+       :desc "Load workspace from file" "L" #'+workspace/load)
+
       ;; Popups
       "/" nil       ; Unbind `+default/search-project' (also bound to "SPC s p")
       (:prefix ("/" . "popup")
