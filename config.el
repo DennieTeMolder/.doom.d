@@ -831,9 +831,6 @@
         org-list-demote-modify-bullet '(("+" . "-") ("-" . "+") ("*" . "+"))
         org-image-actual-width '(640)   ; default if no ATTR_ is provided
         org-startup-shrink-all-tables t
-        org-clock-mode-line-total 'current
-        org-clock-idle-time 15
-        org-clock-string-limit 25
         org-agenda-start-day nil
         org-agenda-span 14
         org-agenda-time-grid '((daily today require-timed)
@@ -854,8 +851,7 @@
     '(outline-2 :height 1.1)
     '(outline-3 :height 1.05)
     ;; Prevent doom-themes from overwriting ellipsis color
-    '(org-ellipsis :foreground unspecified :background unspecified)
-    '(org-headline-done :strike-through t))
+    '(org-ellipsis :foreground unspecified :background unspecified))
 
   ;; Enforce `+org/insert-item-below' to respect `org-blank-before-new-entry'
   (add-hook 'org-insert-heading-hook #'dtm-org-insert-heading-check-blank)
@@ -943,6 +939,14 @@
   ;; Introduce `org-caption' face to enable spell checking
   (advice-add 'org-modern--make-font-lock-keywords :filter-return
               #'dtm-org-modern--make-font-lock-keywords-a))
+
+(with-eval-after-load 'org-clock
+  (setq org-clock-mode-line-total 'current
+        org-clock-idle-time 15
+        org-clock-string-limit 60
+        org-clock-clocked-in-display 'frame-title
+        org-clock-frame-title-format
+        '(" " (:eval org-frame-title-format-backup) " " org-mode-line-string)))
 
 (use-package org-clock-reminder
   :commands org-clock-reminder-mode
