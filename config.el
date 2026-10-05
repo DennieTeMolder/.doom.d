@@ -334,7 +334,10 @@
 
 (with-eval-after-load 'vertico
   (setq vertico-resize 'grow-only
-        vertico-scroll-margin (/ vertico-count 2)))
+        vertico-scroll-margin (/ vertico-count 2))
+
+  ;; Left truncate long file names
+  (advice-add #'vertico--format-candidate :filter-args #'dtm-vertico-truncate-file))
 
 (with-eval-after-load 'vertico-multiform
   ;; Display Jinx results in a grid

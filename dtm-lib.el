@@ -903,6 +903,19 @@ Ref: https://github.com/akermu/emacs-libvterm/pull/401"
       (ghostel--on-user-input)
       (ghostel--paste-text text))))
 
+;;* Vertico
+(defun dtm-vertico-truncate-file (cand)
+  "Left-truncate long Vertico file candidates (CAND).
+Intended as `vertico--format-candidate' :filter-args advice."
+  (if-let* (((eq (completion-metadata-get vertico--metadata 'category)
+                 'file))
+            (str (car cand))
+            (l (length str))
+            (w (max 30 (- (window-width) 38)))
+            ((> l w)))
+      (setcar cand (concat "…" (truncate-string-to-width str l (- l w)))))
+  cand)
+
 ;;* Consult
 (defun dtm-consult-repl-history ()
   "Call `consult-history' at end of buffer."
