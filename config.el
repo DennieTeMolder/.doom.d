@@ -761,7 +761,10 @@
               '((name . "backward-char"))))
 
 (with-eval-after-load 'magit
-  (add-hook 'magit-status-headers-hook #'magit-insert-user-header 'append))
+  (add-hook 'magit-status-headers-hook #'magit-insert-user-header 'append)
+
+  ;; We already have `cape-dabbrev' installed
+  (remove-hook 'git-commit-setup-hook #'git-commit-setup-capf))
 
 (use-package magit-todos
   :defer t
