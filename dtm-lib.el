@@ -2012,33 +2012,42 @@ Ref: https://github.com/minad/tempel"
 Use with `pixel-scroll-precision-mode-hook'."
   (setq-default make-cursor-line-fully-visible t))
 
-(defun dtm-pixel-scroll-store-screen-pos-a (&rest _)
-  "Store current relative (X-CHAR . Y-PIXEL) position as a `window-parameter'.
-Required for `dtm-pixel-scroll-preserve-screen-pos-a' to function.
-Intended as `pixel-scroll-precision-interpolate' :before advice."
+(defun dtm-pixel-scroll-event-window (event)
+  "Return window associated with EVENT. Falls back to `selected-window'."
+  (if (not event)
+      (selected-window)
+    (let ((window (mwheel-event-window event)))
+      (if (framep window)
+          (frame-selected-window window)
+        window))))
+
+(defun dtm-pixel-scroll-store-screen-pos (&optional event)
+  "Store current relative (X-CHAR . Y-PIXEL) position as `window-parameter'.
+Required for `dtm-pixel-scroll-preserve-screen-pos' to function.
+Intended as `pixel-scroll-precision' :before advice."
+  (setq this-command 'pixel-scroll-precision)
   (unless (eq last-command 'pixel-scroll-precision)
-    (let ((pos (pos-visible-in-window-p nil nil 'partially))
-          (pnt (point)))
-      (let ((xpos (- (car pos) (line-number-display-width 'pixelwise)))
-            ;; Apply top `scroll-margin' to prevent off-screen cursor lag
-            (ypos (if (< pnt (progn
-                               (move-to-window-line (max 1 scroll-margin))
-                               (point)))
-                      (cadr (pos-visible-in-window-p nil nil 'partially))
-                    (cadr pos))))
+    (with-selected-window (dtm-pixel-scroll-event-window event)
+      (let* ((pos (pos-visible-in-window-p nil nil 'partially))
+             (pnt (point))
+             (xpos (- (car pos) (line-number-display-width 'pixelwise)))
+             ;; Apply top `scroll-margin' to prevent off-screen cursor lag
+             (ypos (if (< pnt (progn
+                                (move-to-window-line (max 1 scroll-margin))
+                                (point)))
+                       (cadr (pos-visible-in-window-p nil nil 'partially))
+                     (cadr pos))))
         (goto-char pnt)
         (set-window-parameter nil 'interpolated-scroll-screen-pos
                               (cons (/ xpos (frame-char-width)) ypos))))))
 
-;; REVIEW: debounce this function?
-(defun dtm-pixel-scroll-preserve-screen-pos-a (&rest _)
-  "Restore XY position of `point' to `dtm-pixel-scroll-save-cursor-pos-a'.
+(defun dtm-pixel-scroll-preserve-screen-pos (window)
+  "Restore XY position of `point' to `dtm-pixel-scroll-store-screen-pos'.
 This mimics `scroll-preserve-screen-position' == always.
 Intended as `pixel-scroll-precision-scroll-up'/down :after advice."
-  (let ((target (window-parameter nil 'interpolated-scroll-screen-pos))
-        (current (cadr (pos-visible-in-window-p nil nil 'partially)))
-        ;; Reduce lag in non-selected windows
-        (cursor-in-non-selected-windows t))
+  (let ((cursor-in-non-selected-windows t) ; Reduces lag
+        (target (window-parameter nil 'interpolated-scroll-screen-pos))
+        (current (cadr (pos-visible-in-window-p nil nil 'partially))))
     (let ((direction (cons (car target) (if (< (cdr target) current) -1 1)))
           (height-diff (abs (- (cdr target) current)))
           (line-height (pixel-line-height (point))))
@@ -2047,27 +2056,14 @@ Intended as `pixel-scroll-precision-scroll-up'/down :after advice."
         (setq height-diff (- height-diff line-height)
               line-height (pixel-line-height (point)))))))
 
-(defun dtm-window-usable-height ()
-  "Return the usable height of the selected window.
-Return the pixel height of the area of the selected window
-that the cursor is allowed to be inside.
-This is from the bottom of the header line to the top of the mode line.
-Ref: `good-scroll--window-usable-height'."
-  (let ((hl-height (window-header-line-height))
-        (tl-height (window-tab-line-height))
-        (w-edges (window-inside-pixel-edges)))
-    (let ((w-top (- (nth 1 w-edges) hl-height))
-          (w-bottom (+ (nth 3 w-edges) tl-height)))
-      (- w-bottom w-top (+ hl-height tl-height)))))
-
 (defvar dtm-precision-scroll-time-factor 5
   "Factor multiplying scrolling duration when scrolling a full frame.
 Higher values give slower scrolling.")
 
 (defun dtm-precision-scroll-window-fraction (fraction)
-  "Scroll window by FRACTION of total height."
-  (setq this-command 'pixel-scroll-precision)
-  (let* ((delta (* fraction (dtm-window-usable-height)))
+  "Smooth scroll window by FRACTION of total height."
+  (dtm-pixel-scroll-store-screen-pos)
+  (let* ((delta (* fraction (window-text-height nil 'pixelwise)))
          (pixel-scroll-precision-interpolation-total-time
           (* pixel-scroll-precision-interpolation-total-time
              (max 1 (* dtm-precision-scroll-time-factor

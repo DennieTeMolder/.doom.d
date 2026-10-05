@@ -703,9 +703,9 @@
   (add-hook 'pixel-scroll-precision-mode-hook #'dtm-pixel-scroll-precision-mode-h)
 
   ;; Preserve cursor position during scrolling
-  (advice-add 'pixel-scroll-precision-interpolate :before #'dtm-pixel-scroll-store-screen-pos-a)
-  (advice-add 'pixel-scroll-precision-scroll-down :after #'dtm-pixel-scroll-preserve-screen-pos-a)
-  (advice-add 'pixel-scroll-precision-scroll-up :after #'dtm-pixel-scroll-preserve-screen-pos-a)
+  (advice-add 'pixel-scroll-precision :before #'dtm-pixel-scroll-store-screen-pos)
+  (advice-add 'pixel-scroll-precision-scroll-down :after #'dtm-pixel-scroll-preserve-screen-pos)
+  (advice-add 'pixel-scroll-precision-scroll-up :after #'dtm-pixel-scroll-preserve-screen-pos)
 
   (dolist (fn '(dtm-precision-scroll-up dtm-precision-scroll-page-up
                 dtm-precision-scroll-down dtm-precision-scroll-page-down))
