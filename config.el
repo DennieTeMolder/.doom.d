@@ -1145,7 +1145,9 @@
 (with-eval-after-load 'sh-script
   (map! :map sh-mode-map
         :nv [C-return] #'dtm/ghostel-send-current-region-or-line
-        :localleader "TAB" #'dtm/ghostel-other-window))
+        :localleader
+        "TAB" #'dtm/ghostel-other-window
+        "l" (cmd! (dtm/ghostel-send-current-region-or-line 'no-step))))
 
 ;; Recognize Apptainer/Singulairity definition files
 (push `(,(rx (seq ".def" eos)) . conf-unix-mode) auto-mode-alist)
