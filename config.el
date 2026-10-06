@@ -1106,6 +1106,17 @@
   ;; We circumvent `header-line-indent-mode' for efficiency
   (add-hook 'display-line-numbers-mode-hook #'dtm-topsy-header-line-update))
 
+(when (modulep! :tools lsp)
+  ;; Enforce `dtm-lsp-ignored-modes'
+  (advice-add 'lsp! :before-while #'dtm-lsp-run-p))
+
+(with-eval-after-load 'eglot
+  ;; Make Eglot respect `dtm-lsp-ignored-modes'
+  (advice-add 'eglot-current-server :before-while #'dtm-lsp-run-p)
+
+  ;; Remove non-Eglot Eldoc functions so they don't take precedence
+  (advice-add 'eglot--managed-mode :around #'dtm-eglot--managed-mode-a))
+
 ;;;###package compile
 (add-hook 'compilation-mode-hook #'dtm-scroll-process-friendly-h)
 
@@ -1380,7 +1391,9 @@
   (add-hook 'compilation-mode-hook #'dtm-conda-env-guess-maybe))
 
 (use-package snakemake-mode
-  :defer t)
+  :defer t
+  :init
+  (add-to-list 'dtm-lsp-ignored-modes 'snakemake-mode))
 
 (with-eval-after-load 'csv-mode
   ;; Assume the first line of a csv is a header

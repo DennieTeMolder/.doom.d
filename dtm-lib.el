@@ -2179,6 +2179,35 @@ Will return nil when beyond end of defun, contrary to `beginning-of-defun'."
   (when email
     (magit-set email "user.email")))
 
+;;* Lsp/Eglot
+(defvar dtm-lsp-ignored-modes '()
+  "List of symbols for which the LSP is never started automatically.")
+
+(defun dtm-lsp-run-p ()
+  "Return t if `major-mode' is not in `dtm-lsp-ignored-modes'.`
+Useful as `lsp!'/`eglot-current-server' :before-while advice."
+  (not (member major-mode dtm-lsp-ignored-modes)))
+
+(defvar-local dtm-eglot-eldoc-original-functions nil
+  "Value of `eldoc-documentation-functions' before `eglot--managed-mode'.
+Used by `dtm-eglot--managed-mode-a'.")
+
+(defun dtm-eglot--managed-mode-a (orig-fn &rest args)
+  "Clear all non-Eglot funs from `eldoc-documentation-functions'.
+Resets `dtm-eglot-eldoc-original-functions' when Eglot is disabled.
+Intended as `eglot--managed-mode' :around advice."
+  (let (ret-val)
+    (setq eldoc-documentation-functions
+          (let ((old eldoc-documentation-functions)
+                (eldoc-documentation-functions nil))
+            (setq ret-val (apply orig-fn args))
+            (if eglot--managed-mode
+                (progn
+                  (setq-local dtm-eglot-eldoc-original-functions old)
+                  eldoc-documentation-functions)
+              dtm-eglot-eldoc-original-functions)))
+    ret-val))
+
 ;;* Move-splitter
 (defun dtm-move-right-splitter (amount)
   "Move the right splitter right by AMOUNT."
