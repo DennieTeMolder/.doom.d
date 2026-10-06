@@ -904,16 +904,24 @@ Ref: https://github.com/akermu/emacs-libvterm/pull/401"
       (ghostel--paste-text text))))
 
 ;;* Vertico
+(defun dtm-vertico-category (cand)
+  "Return the Vertico category of CAND."
+  (let ((cat (vertico--metadata-get 'category)))
+    (or (and (eq cat 'multi-category)
+             (car-safe (get-text-property 0 'multi-category (car cand))))
+        cat)))
+
 (defun dtm-vertico-truncate-file (cand)
   "Left-truncate long Vertico file candidates (CAND).
-Intended as `vertico--format-candidate' :filter-args advice."
-  (if-let* (((eq (completion-metadata-get vertico--metadata 'category)
-                 'file))
-            (str (car cand))
-            (l (length str))
-            (w (max 30 (- (window-width) 38)))
-            ((> l w)))
-      (setcar cand (concat "…" (truncate-string-to-width str l (- l w)))))
+Intended as `vertico--format-candidate' :filter-args advice.
+Ref: https://github.com/jdtsmith/vertico-truncate"
+  (when (eq 'file (dtm-vertico-category cand))
+    (let* ((str (car cand))
+           (l (length str))
+           (icon (length (cadr cand)))
+           (w (- (vertico--window-width) icon)))
+      (when (> l w)
+        (setcar cand (concat "…" (truncate-string-to-width str l (- l w -2)))))))
   cand)
 
 ;;* Consult
