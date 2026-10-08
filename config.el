@@ -321,7 +321,7 @@
   (add-to-list 'recentf-exclude "\\`/\\'"))
 
 (with-eval-after-load 'doom-modeline
-  (setq doom-modeline-buffer-file-name-style 'truncate-except-project
+  (setq doom-modeline-buffer-file-name-style 'truncate-with-project
         doom-modeline-buffer-encoding 'nondefault
         doom-modeline-percent-position '(-3 "%P")
         mode-line-right-align-edge 'right-fringe)
