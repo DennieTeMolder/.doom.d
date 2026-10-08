@@ -833,7 +833,8 @@
         org-list-demote-modify-bullet '(("+" . "-") ("-" . "+") ("*" . "+"))
         org-image-actual-width '(640)   ; default if no ATTR_ is provided
         org-startup-shrink-all-tables t
-        org-agenda-start-day nil
+        org-agenda-start-with-clockreport-mode t
+        org-agenda-start-on-weekday 1
         org-agenda-span 14
         org-agenda-time-grid '((daily today require-timed)
                                (759 1159 1259 1659)
@@ -948,7 +949,7 @@
         org-clock-string-limit 60
         org-clock-clocked-in-display 'frame-title
         org-clock-frame-title-format
-        '(" " (:eval org-frame-title-format-backup) " " org-mode-line-string)))
+        '(" " (:eval org-frame-title-format-backup) " -- " org-mode-line-string)))
 
 (use-package org-clock-reminder
   :commands org-clock-reminder-mode
