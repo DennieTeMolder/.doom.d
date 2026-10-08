@@ -1607,13 +1607,14 @@ Bypasses `ess-completing-read', defers further lookup if process is busy."
 (defun dtm/ess-eval-object-at-point ()
   "Send the object under the cursor or region to the current ESS process."
   (interactive)
-  (ess-send-string
-   (ess-get-current-process)
-   (or (dtm-region-as-string 'deactivate)
-       (when-let ((bounds (ess-bounds-of-symbol)))
-         (buffer-substring-no-properties (car bounds) (cdr bounds)))
-       (user-error "No object at point!"))
-   t))
+  (let ((str (or (dtm-region-as-string 'deactivate)
+                 (when-let* ((bounds (ess-bounds-of-symbol)))
+                   (buffer-substring-no-properties (car bounds) (cdr bounds))))))
+    (if (not str)
+        (when (called-interactively-p 'any)
+          (user-error "No object at point!"))
+      (ess-send-string (ess-get-current-process) str t)
+      str)))
 
 (defvar dtm-ess-debug-previous-position nil
   "Previous value of `ess--dbg-current-debug-position'.")
@@ -1624,14 +1625,13 @@ Intended as :before `ess--dbg-activate-overlays' advice."
   (setq dtm-ess-debug-previous-position
         (copy-marker ess--dbg-current-debug-position)))
 
-(defun dtm/ess-debug-goto-previous (&optional no-history)
-  "Goto to `dtm-ess-debug-previous-position' returning the buffer if successful.
-Unless NO-HISTORY is non-nil `better-jumper-set-jump' is called before jumping."
+(defun dtm/ess-debug-goto-previous ()
+  "Goto to `dtm-ess-debug-previous-position' returning the buffer if successful."
   (interactive)
   (when (and (markerp dtm-ess-debug-previous-position)
              (buffer-live-p (marker-buffer dtm-ess-debug-previous-position)))
-    (and (not no-history)
-         (bound-and-true-p better-jumper-mode)
+    (and (bound-and-true-p better-jumper-mode)
+         (called-interactively-p 'interactive)
          (better-jumper-set-jump))
     (pop-to-buffer-same-window (marker-buffer dtm-ess-debug-previous-position))
     (goto-char (marker-position dtm-ess-debug-previous-position))
@@ -1642,11 +1642,18 @@ Unless NO-HISTORY is non-nil `better-jumper-set-jump' is called before jumping."
   "Print .Last.value in `ess-local-process-name'.
 If `ess--dbg-is-active-p' eval the object at `dtm-ess-debug-previous-position'."
   (interactive)
-  (save-excursion
-    (if (and (ess--dbg-is-active-p)
-             (dtm/ess-debug-goto-previous 'no-history))
-        (dtm/ess-eval-object-at-point)
-      (ess-send-string (ess-get-current-process) ".Last.value" t))))
+  (ess-force-buffer-current)
+  (if (ess--dbg-is-active-p)
+      (let ((lproc ess-local-process-name)
+            (eob-p (eobp)))
+        (if (save-excursion
+              (and (dtm/ess-debug-goto-previous)
+                   (stringp ess-local-process-name)
+                   (string= lproc ess-local-process-name)
+                   (dtm/ess-eval-object-at-point)))
+            (and eob-p (goto-char (point-max))))
+        (user-error "ESS-dbg: location of last value is unknown"))
+    (ess-send-string (ess-get-current-process) ".Last.value" t)))
 
 (defvar dtm-ess-ls-str-cmd
   "print(utils::ls.str(all.names = FALSE), max.level = 1, list.len = 5, give.attr = FALSE)"
