@@ -344,6 +344,11 @@
   (add-to-list 'vertico-multiform-categories
                '(jinx grid (vertico-grid-annotate . 20) (vertico-count . 9))))
 
+;; Enable vertico mouse extension (included with vertico)
+(use-package vertico-mouse
+  :after vertico
+  :config (vertico-mouse-mode +1))
+
 (with-eval-after-load 'corfu
   (setq +corfu-want-tab-prefer-navigating-org-tables t
         +corfu-want-minibuffer-completion t
@@ -352,29 +357,28 @@
   ;; Keep the corfu childframe alive when using this command
   (add-to-list 'corfu-continue-commands #'dtm/corfu-complete-always)
 
-  (map! (:map corfu-map
-         ;; Bind `corfu-complete', which allows `cape-file' to continue expansion
-            "C-l"   #'dtm/corfu-complete-always
-         ;; Remap doom+evil bindings to free C-u/C-d
-         :i "C-d"   nil
-            "C-S-j" (cmd! (let (corfu-cycle)
-                            (funcall-interactively #'corfu-next corfu-count)))
-         :i "C-u"   nil
-            "C-S-k" (cmd! (let (corfu-cycle)
-                            (funcall-interactively #'corfu-next (- corfu-count)))))
-        (:after corfu-popupinfo
-         :map corfu-popupinfo-map
-         "C-S-k" nil
-         "C-M-k" #'corfu-popupinfo-scroll-down
-         "C-S-j" nil
-         "C-M-j" #'corfu-popupinfo-scroll-up)))
+  (map! :map corfu-map
+        ;; Bind `corfu-complete', which allows `cape-file' to continue expansion
+        "C-l"   #'dtm/corfu-complete-always
+        "C-S-j" #'corfu-scroll-up
+        "C-S-k" #'corfu-scroll-down))
+
+(with-eval-after-load 'corfu-popupinfo
+  ;; Free C-S-j/k bindings so they reach `corfu-map'
+  (map! :map corfu-popupinfo-map
+        "C-M-j" #'corfu-popupinfo-scroll-up
+        "C-M-k" #'corfu-popupinfo-scroll-down
+        "C-S-j" nil
+        "C-S-k" nil))
 
 (with-eval-after-load 'corfu-auto
   (setq corfu-auto-delay 0.4
         corfu-auto-prefix 3))
 
 (with-eval-after-load 'cape
-  (setq cape-dict-file
+  (setq dtm-cape-dict-dir (expand-file-name "~/Sync/Emacs/Wordlists/")
+        dtm-cape-dict-personal-dir (expand-file-name "~/.config/enchant/")
+        cape-dict-file
         (list (concat dtm-cape-dict-personal-dir "en_US.dic")
               (concat dtm-cape-dict-dir "en_US")))
 
@@ -737,11 +741,6 @@
 ;; Add colours to info pages to make them more readable
 (use-package info-colors
   :hook (Info-selection . info-colors-fontify-node))
-
-;; Enable vertico mouse extension (included with vertico)
-(use-package vertico-mouse
-  :after vertico
-  :config (vertico-mouse-mode +1))
 
 (use-package jinx
   :hook (doom-first-buffer . dtm-global-jinx-mode-safe)

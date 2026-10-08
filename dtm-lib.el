@@ -936,9 +936,9 @@ Ref: https://github.com/jdtsmith/vertico-truncate"
   "Wrapper for `corfu-complete' that accepts the first selection when none
 is selected."
   (interactive)
-  (when (< corfu--index 0)
-    (corfu-next))
-  (corfu-complete))
+  (when (< corfu--index 0) (corfu-next))
+  ;; NOTE: `call-interactively' is required for `evil-repeat' to register
+  (call-interactively #'corfu-complete))
 
 (defun dtm-cape-collect (capf-table)
   "Collect all completions from the output of a capf as a list of strings."
@@ -988,10 +988,10 @@ Uses prefix matching and sorts the output."
   (interactive)
   (cape-interactive #'dtm-cape-keyword-dict))
 
-(defvar dtm-cape-dict-dir (expand-file-name "~/Sync/Emacs/Wordlists/")
+(defvar dtm-cape-dict-dir nil
   "Directory with `cape-dict' word dictionaries.")
 
-(defvar dtm-cape-dict-personal-dir (expand-file-name "~/.config/enchant/")
+(defvar dtm-cape-dict-personal-dir nil
   "Directory with personal `cape-dict' word dictionaries.")
 
 (defun dtm/cape-dict-change-dictionary ()
@@ -999,17 +999,17 @@ Uses prefix matching and sorts the output."
 Searches `dtm-cape-dict-dir' and `dtm-cape-dict-personal-dir'."
   (interactive)
   (let ((dict (mapcar
-               (lambda (elt) (and elt (concat dtm-cape-dict-dir elt)))
+               (lambda (el) (and el (expand-file-name el dtm-cape-dict-dir)))
                (completing-read-multiple
                 "Select dictionary for cape-dict:"
                 (directory-files dtm-cape-dict-dir)
-                (lambda (elt) (not (string-match-p "\\." elt))))))
+                (lambda (el) (not (string-match-p "\\." el))))))
         (pdict (mapcar
-                (lambda (elt) (and elt (concat dtm-cape-dict-personal-dir elt)))
+                (lambda (el) (and el (expand-file-name el dtm-cape-dict-personal-dir)))
                 (completing-read-multiple
                  "Select personal dictionary for cape-dict:"
                  (directory-files dtm-cape-dict-personal-dir)
-                 (lambda (elt) (string= "dic" (file-name-extension elt)))))))
+                 (lambda (el) (string= "dic" (file-name-extension el)))))))
     (setq-local cape-dict-file (nconc pdict dict))))
 
 ;;* Jinx
@@ -2182,9 +2182,9 @@ Will return nil when beyond end of defun, contrary to `beginning-of-defun'."
   (interactive
    (list (read-string "Git user: " (magit-get "user.name"))
          (read-string "Git email: " (magit-get "user.email"))))
-  (when name
+  (when (< 0 (length name))
     (magit-set name "user.name"))
-  (when email
+  (when (< 0 (length email))
     (magit-set email "user.email")))
 
 ;;* Lsp/Eglot
@@ -2219,15 +2219,18 @@ Intended as `eglot--managed-mode' :around advice."
 ;;* Move-splitter
 (defun dtm-move-right-splitter (amount)
   "Move the right splitter right by AMOUNT."
+  (require 'windmove)
   (adjust-window-trailing-edge
    (let ((windmove-wrap-around))
-     (or (when (windmove-find-other-window 'right) (selected-window))
+     (or (when (windmove-find-other-window 'right)
+           (selected-window))
          (windmove-find-other-window 'left)
          (selected-window)))
    amount 'horizontal))
 
 (defun dtm-move-bottom-splitter (amount)
   "Move the bottom splitter down by AMOUNT."
+  (require 'windmove)
   (adjust-window-trailing-edge
    (let ((windmove-wrap-around))
      (or (unless (window-minibuffer-p (windmove-find-other-window 'down))
@@ -2239,25 +2242,21 @@ Intended as `eglot--managed-mode' :around advice."
 (defun dtm/move-splitter-right (arg)
   "Move right window splitter right"
   (interactive "p")
-  (require 'windmove)
   (dtm-move-right-splitter arg))
 
 (defun dtm/move-splitter-left (arg)
   "Move right window splitter left."
   (interactive "p")
-  (require 'windmove)
   (dtm-move-right-splitter (- arg)))
 
 (defun dtm/move-splitter-down (arg)
   "Move bottom window splitter down."
   (interactive "p")
-  (require 'windmove)
   (dtm-move-bottom-splitter arg))
 
 (defun dtm/move-splitter-up (arg)
   "Move bottom window splitter up"
   (interactive "p")
-  (require 'windmove)
   (dtm-move-bottom-splitter (- arg)))
 
 ;;* Commands
