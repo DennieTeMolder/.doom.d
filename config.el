@@ -390,11 +390,14 @@
   (advice-add 'cape--dict-list :override #'dtm-cape--dict-list-a))
 
 (with-eval-after-load 'consult
-  ;; Ignore empty strings
-  (consult-customize consult-yank-pop :predicate (lambda (el) (length> el 0)))
+  ;; Ignore empty/whitespace strings
+  (consult-customize consult-yank-pop :predicate (lambda (el) (not (string-blank-p el))))
 
   ;; Set default selection for `consult-theme' based on `dtm-recommend-theme'
-  (consult-customize consult-theme :default (symbol-name (dtm-recommend-theme))))
+  (consult-customize consult-theme :default (symbol-name (dtm-recommend-theme)))
+
+  ;; Fix repeating consult-yank-pop (M-y)
+  (evil-declare-insert-at-point-repeat #'consult-yank-pop))
 
 (with-eval-after-load 'consult-imenu
   ;; Should match entries from `imenu-generic-expression'
