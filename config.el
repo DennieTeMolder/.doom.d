@@ -740,6 +740,11 @@
   (add-to-list 'ws-butler-global-exempt-modes 'so-long-mode)
   (add-to-list 'ws-butler-global-exempt-modes 'csv-mode))
 
+(with-eval-after-load 'so-long
+  ;; Let long lines run off the screen
+  (delete '(truncate-lines . nil) so-long-variable-overrides)
+  (delete '(line-move-visual . t) so-long-variable-overrides))
+
 ;;* Core functionality extensions
 ;; Add colours to info pages to make them more readable
 (use-package info-colors
