@@ -1406,4 +1406,7 @@
   (setq-hook! 'csv-mode-hook
     buffer-invisibility-spec nil))
 
+;; Recognize .bed files as TSV
+(push `(,(rx (seq "." (or "bed" "agp") eos)) . tsv-mode) auto-mode-alist)
+
 (load! "+keybindings")
