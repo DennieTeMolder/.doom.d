@@ -222,7 +222,8 @@
 
 (with-eval-after-load 'evil-snipe
   ;; Make snipe commands (bound to f,F,t,T,s,S) go beyond the current line
-  (setq evil-snipe-scope 'visible)
+  (setq evil-snipe-scope 'visible
+        evil-snipe-repeat-keys nil)
 
   (add-to-list 'evil-snipe-disabled-modes 'pdf-view-mode)
 
