@@ -952,8 +952,7 @@ Intended as `vertico-next-group' :around advise."
 is selected."
   (interactive)
   (when (< corfu--index 0) (corfu-next))
-  ;; NOTE: `call-interactively' is required for `evil-repeat' to register
-  (call-interactively #'corfu-complete))
+  (corfu-complete))
 
 (defun dtm-cape-collect (capf-table)
   "Collect all completions from the output of a capf as a list of strings."

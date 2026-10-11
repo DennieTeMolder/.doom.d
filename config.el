@@ -371,7 +371,8 @@
         corfu-preselect 'prompt)
 
   ;; Keep the corfu childframe alive when using this command
-  (add-to-list 'corfu-continue-commands #'dtm/corfu-complete-always)
+  (push #'dtm/corfu-complete-always corfu-continue-commands)
+  (evil-declare-change-repeat #'dtm/corfu-complete-always)
 
   (map! :map corfu-map
         ;; Bind `corfu-complete', which allows `cape-file' to continue expansion
