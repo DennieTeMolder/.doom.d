@@ -237,7 +237,19 @@
 
 (with-eval-after-load 'evil-collection
   ;; BUG: inhibit-insert-state inhibits all replace bindings but `evil-enter-replace-state'
-  (advice-add 'evil-collection-inhibit-insert-state :after #'dtm-evil-collection-inhibit-insert-state-a))
+  (advice-add 'evil-collection-inhibit-insert-state :after #'dtm-evil-collection-inhibit-insert-state-a)
+
+  ;; Doom doesn't use `evil-collection-want-unimpaired-p', protect Doom's kbinds
+  (push "[" evil-collection-key-blacklist)
+  (push "]" evil-collection-key-blacklist))
+
+(with-eval-after-load 'evil-collection-magit
+  ;; Fix confusing Doom bindings
+  (map! :map magit-mode-map
+        [remap evil-forward-section-begin] #'magit-section-forward-sibling
+        [remap evil-backward-section-begin] #'magit-section-backward-sibling
+        :nv "[" nil
+        :nv "]" nil))
 
 (with-eval-after-load 'evil-anzu
   ;; BUG: fix incorrect search count
