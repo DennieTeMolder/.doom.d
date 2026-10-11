@@ -924,6 +924,21 @@ Ref: https://github.com/jdtsmith/vertico-truncate"
         (setcar cand (concat "…" (truncate-string-to-width str l (- l w -2)))))))
   cand)
 
+(defvar-local dtm-vertico-first-group nil
+  "Cons of (QUERY . FIRST_GROUP) for `dtm-vertico-next-group-a'.")
+
+(defun dtm-vertico-next-group-a (orig-fn n)
+  "Notify the user when a cycling back to the first group.
+Intended as `vertico-next-group' :around advise."
+  (when (cdr vertico--groups)
+    (let ((query (substring-no-properties (minibuffer-contents))))
+      (unless (and dtm-vertico-first-group
+                   (string= query (car dtm-vertico-first-group)))
+        (setq-local dtm-vertico-first-group (cons query (car vertico--groups)))))
+    (prog1 (funcall orig-fn n)
+      (when (string= (car vertico--groups) (cdr dtm-vertico-first-group))
+        (message "Back at first group")))))
+
 ;;* Consult
 (defun dtm-consult-repl-history ()
   "Call `consult-history' at end of buffer."
