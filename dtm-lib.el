@@ -535,13 +535,14 @@ Intended for use as `vertico-sort-function' via `vertico-multiform-commands'."
   "Move point to the first line in the buffer."
   (interactive)
   (evil-goto-first-line)
+  (move-end-of-line 1)
   (dired-move-to-filename))
 
 (defun dtm/dired-last-line ()
   "Move the point to the last line in the buffer."
   (interactive)
   (evil-goto-line)
-  (forward-line -1)
+  (forward-char -1)
   (dired-move-to-filename))
 
 (defun dtm/dired-do-delete ()
