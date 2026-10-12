@@ -789,7 +789,11 @@
   (add-hook 'magit-status-headers-hook #'magit-insert-user-header 'append)
 
   ;; We already have `cape-dabbrev' installed
-  (remove-hook 'git-commit-setup-hook #'git-commit-setup-capf))
+  (remove-hook 'git-commit-setup-hook #'git-commit-setup-capf)
+
+  ;; Override `evil-mouse-drag-region' to prevent eager visual-state activation
+  (map! :map magit-mode-map
+        :m [down-mouse-1] #'mouse-drag-region))
 
 (use-package magit-todos
   :defer t
