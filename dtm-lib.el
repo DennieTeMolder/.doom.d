@@ -2051,34 +2051,41 @@ Use with `pixel-scroll-precision-mode-hook'."
           (frame-selected-window window)
         window))))
 
+(defvar dtm-pixel-scroll-window nil
+  "Last/active window targeted by `pixel-scroll-precision' events.")
+
 (defun dtm-pixel-scroll-store-screen-pos (&optional event)
   "Store current relative (X-CHAR . Y-PIXEL) position as `window-parameter'.
 Required for `dtm-pixel-scroll-preserve-screen-pos' to function.
 Intended as `pixel-scroll-precision' :before advice."
   (setq this-command 'pixel-scroll-precision)
-  (unless (eq last-command 'pixel-scroll-precision)
-    (with-selected-window (dtm-pixel-scroll-event-window event)
-      (let* ((pos (pos-visible-in-window-p nil nil 'partially))
-             (pnt (point))
-             (xpos (- (car pos) (line-number-display-width 'pixelwise)))
-             ;; Apply top `scroll-margin' to prevent off-screen cursor lag
-             (ypos (if (< pnt (progn
-                                (move-to-window-line (max 1 scroll-margin))
-                                (point)))
-                       (cadr (pos-visible-in-window-p nil nil 'partially))
-                     (cadr pos))))
-        (goto-char pnt)
-        (set-window-parameter nil 'interpolated-scroll-screen-pos
-                              (cons (/ xpos (frame-char-width)) ypos))))))
+  (let ((win (dtm-pixel-scroll-event-window event)))
+    (unless (if (eq win dtm-pixel-scroll-window)
+                (eq last-command 'pixel-scroll-precision)
+              (setq dtm-pixel-scroll-window win)
+              nil)
+      (with-selected-window win
+        (let* ((pos (pos-visible-in-window-p nil nil 'partially))
+               (pnt (point))
+               (xpos (- (car pos) (line-number-display-width 'pixelwise)))
+               ;; Apply top `scroll-margin' to prevent off-screen cursor lag
+               (ypos (if (< pnt (progn
+                                  (move-to-window-line (max 1 scroll-margin))
+                                  (point)))
+                         (cadr (pos-visible-in-window-p nil nil 'partially))
+                       (cadr pos))))
+          (goto-char pnt)
+          (set-window-parameter nil 'interpolated-scroll-screen-pos
+                                (cons (/ xpos (frame-char-width)) ypos)))))))
 
 (defun dtm-pixel-scroll-preserve-screen-pos (window)
   "Restore XY position of `point' to `dtm-pixel-scroll-store-screen-pos'.
 This mimics `scroll-preserve-screen-position' == always.
 Intended as `pixel-scroll-precision-scroll-up'/down :after advice."
-  (let ((cursor-in-non-selected-windows t) ; Reduces lag
-        (target (window-parameter nil 'interpolated-scroll-screen-pos))
-        (current (cadr (pos-visible-in-window-p nil nil 'partially))))
-    (let ((direction (cons (car target) (if (< (cdr target) current) -1 1)))
+  (when-let* ((target (window-parameter nil 'interpolated-scroll-screen-pos))
+              (current (cadr (pos-visible-in-window-p nil nil 'partially))))
+    (let ((cursor-in-non-selected-windows t) ; Reduces lag
+          (direction (cons (car target) (if (< (cdr target) current) -1 1)))
           (height-diff (abs (- (cdr target) current)))
           (line-height (pixel-line-height (point))))
       (while (<= line-height height-diff)
