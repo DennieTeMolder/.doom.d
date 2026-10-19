@@ -875,12 +875,13 @@
         org-image-actual-width '(640)   ; default if no ATTR_ is provided
         org-startup-shrink-all-tables t
         org-agenda-start-with-clockreport-mode t
+        org-agenda-start-with-log-mode t
         org-agenda-start-on-weekday 1
-        org-agenda-span 14
-        org-agenda-time-grid '((daily today require-timed)
-                               (759 1159 1259 1659)
-                               " ┄┄┄┄┄ " "┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄")
-        org-agenda-current-time-string "<- NOW ────────")
+        org-agenda-span 7
+        org-agenda-current-time-string "<- NOW ────────"
+        org-agenda-time-grid '((daily today require-timed remove-match)
+                               (800 1200 1300 1700)
+                               " ┄┄┄┄┄ " "┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄"))
 
   ;; Prevent `+org-pretty-mode' from affecting styling globally
   (make-local-variable 'org-hide-emphasis-markers)
