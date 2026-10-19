@@ -772,6 +772,11 @@
   (delete '(truncate-lines . nil) so-long-variable-overrides)
   (delete '(line-move-visual . t) so-long-variable-overrides))
 
+(with-eval-after-load 'hl-line
+  ;; Sticky highlighting is not always removed when pasting, disable it
+  (setq global-hl-line-sticky-flag nil
+        hl-line-sticky-flag nil))
+
 ;;* Core functionality extensions
 ;; Add colours to info pages to make them more readable
 (use-package info-colors
