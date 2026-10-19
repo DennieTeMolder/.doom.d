@@ -249,7 +249,16 @@
         [remap evil-forward-section-begin] #'magit-section-forward-sibling
         [remap evil-backward-section-begin] #'magit-section-backward-sibling
         :nv "[" nil
-        :nv "]" nil))
+        :nv "]" nil
+
+        ;; Free the "g s" binding
+        :map magit-status-mode-map
+        :nv "gS" #'magit-jump-to-staged
+        :nv "gs" nil
+
+        :map (magit-section-mode-map magit-status-mode-map)
+        :nv "gsj" #'evilem-motion-next-visual-line
+        :nv "gsk" #'evilem-motion-previous-visual-line))
 
 (with-eval-after-load 'evil-anzu
   ;; BUG: fix incorrect search count
