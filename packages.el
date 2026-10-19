@@ -73,6 +73,11 @@
 ;; BUG: https://github.com/seagle0128/doom-modeline/commit/adbd6325be5f84eafbc85efb5685452a5ba489bf
 (unpin! doom-modeline)
 
+;; BUG: Fix inner/outer-quote/block Evil textobj
+(package! evil-textobj-anyblock
+  :recipe (:host github :repo "DennieTeMolder/evil-textobj-anyblock" :branch "master")
+  :pin "2983fe806cbfee6317150b91cb4c829a1eb5d0e9")
+
 ;;* Custom packages
 (package! tempel)
 (package! ess-r-insert-obj)
