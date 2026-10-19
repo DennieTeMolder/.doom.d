@@ -135,6 +135,12 @@ Respects `delete-by-moving-to-trash'. Intended as :around advice."
               args)))
     (apply orig-fun args)))
 
+(defun dtm-cusomize-save-ignore-a (orig-fn &rest args)
+  "Evaluate ORIG-FN with ARGS suppressing `customize-save-variable'.
+Intended as :around advice."
+  (cl-letf (((symbol-function 'customize-save-variable) #'ignore))
+    (apply orig-fn args)))
+
 ;;* Buffer functions
 (defun dtm-buffer-remote-p (&optional buf)
   "Returns t if BUF belongs to a remote directory."

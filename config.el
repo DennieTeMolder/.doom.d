@@ -906,6 +906,9 @@
   (advice-add 'org-read-date :before (lambda (&rest _) (require 'evil-org))
               '((name . "require evil-org")))
 
+  (advice-add 'org-agenda-file-to-front :around #'dtm-cusomize-save-ignore-a)
+  (advice-add 'org-remove-file :around #'dtm-cusomize-save-ignore-a)
+
   ;; Prettify, enable hard wrapping and automate paragraph filling
   (add-hook 'org-mode-hook #'dtm-org-mode-setup-h))
 
@@ -913,13 +916,17 @@
 (add-hook! 'org-load-hook :append
   (defun dtm-org-init-keybinds-h ()
     (map! :map org-mode-map
-          :n  "C-j"   #'+org/return
+              "C-c [" nil               ; org-agenda-file-to-front
+              "C-c ]" nil               ; org-remove-file
           :ni "C-c ]" #'org-cite-insert
+          :n  "C-j"   #'+org/return
 
           :localleader
-          :desc "Clock-in after last"   "c a" #'dtm/org-clock-in-after
-                                        "l D" #'dtm/org-link-kill
-          :desc "Toggle pretty visuals" "v"   #'dtm/org-pretty-mode-toggle)
+          :desc "Clock-in after last"     "c a" #'dtm/org-clock-in-after
+          :desc "Add file to Agenda"      "F a" #'org-agenda-file-to-front
+          :desc "Remove file from Agenda" "F r" #'org-remove-file
+          :desc "Delete link"             "l D" #'dtm/org-link-kill
+          :desc "Toggle pretty visuals"   "v"   #'dtm/org-pretty-mode-toggle)
 
     (map! :after org-agenda
           :map org-agenda-mode-map
