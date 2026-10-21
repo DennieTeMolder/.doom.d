@@ -946,12 +946,29 @@ Intended as `vertico-next-group' :around advise."
       (when (string= (car vertico--groups) (cdr dtm-vertico-first-group))
         (message "Back at first group")))))
 
+(defun dtm-vertico-sort-registers (list)
+  "Sort numbered registers in LIST first, the rest is sorted by alphabet.
+Intended for use with `consult-register'."
+  (let (front back)
+    (dolist (reg (vertico-sort-alpha list))
+      (if (string-match-p "^#[0-9]" reg)
+          (push reg front)
+        (push reg back)))
+    (nconc (nreverse front) (nreverse back))))
+
 ;;* Consult
-(defun dtm-consult-repl-history ()
+(defun dtm/consult-repl-history ()
   "Call `consult-history' at end of buffer."
   (interactive)
   (goto-char (point-max))
   (call-interactively #'consult-history))
+
+(defun dtm-consult-register-load-a (orig-fn &rest args)
+  "Force ORIG-FN with ARGS to use `evil-paste-from-register'.
+Intended as `consult-register-load' :around advice"
+  (letf! (defun! insert-register (reg &optional arg)
+           (evil-paste-from-register reg))
+    (apply orig-fn args)))
 
 ;;* Corfu/Cape
 (defun dtm/corfu-complete-always ()

@@ -367,7 +367,10 @@
 (with-eval-after-load 'vertico-multiform
   ;; Display Jinx results in a grid
   (add-to-list 'vertico-multiform-categories
-               '(jinx grid (vertico-grid-annotate . 20) (vertico-count . 9))))
+               '(jinx grid (vertico-grid-annotate . 20) (vertico-count . 9)))
+
+  (add-to-list 'vertico-multiform-commands
+               '(consult-register (vertico-sort-function . dtm-vertico-sort-registers))))
 
 ;; Enable vertico mouse extension (included with vertico)
 (use-package vertico-mouse
@@ -422,8 +425,14 @@
   ;; Set default selection for `consult-theme' based on `dtm-recommend-theme'
   (consult-customize consult-theme :default (symbol-name (dtm-recommend-theme)))
 
+  ;; Ensure custom `vertico-multiform-commands' sort function is used
+  (consult-customize consult-register :sort t)
+
   ;; Fix repeating consult-yank-pop (M-y)
-  (evil-declare-insert-at-point-repeat #'consult-yank-pop))
+  (evil-declare-insert-at-point-repeat #'consult-yank-pop)
+
+  ;; Make SPC i r paste over highlighted text in visual state as expected
+  (advice-add 'consult-register-load :around #'dtm-consult-register-load-a))
 
 (with-eval-after-load 'consult-imenu
   ;; Should match entries from `imenu-generic-expression'
@@ -1189,7 +1198,7 @@
   ;; Shell style clear REPL binding
   (map! :map comint-mode-map
         :n "C-l" #'comint-clear-buffer
-        :localleader "r" #'dtm-consult-repl-history))
+        :localleader "r" #'dtm/consult-repl-history))
 
 ;;;###package term
 (add-hook 'term-mode-hook #'dtm-scroll-process-friendly-h)
