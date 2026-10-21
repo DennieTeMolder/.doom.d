@@ -762,14 +762,7 @@ If REGION is active, call `dtm/lispy-mark-car' instead."
         ((lispy-left-p)
          (lispy-dotimes arg
            (if (lispy-left-p)
-               (progn
-                 ;; Step into list
-                 (forward-char 1)
-                 ;; If not at the next list move to end of atom
-                 (unless (or (lispy-left-p)
-                             (lispy--in-empty-list-p
-                              lispy-parens-preceding-syntax-alist))
-                   (lispyville-forward-atom-end)))
+               (forward-char 1)
              (lispyville-forward-atom-end))))
         ((lispy-right-p)
          (lispy-dotimes arg
