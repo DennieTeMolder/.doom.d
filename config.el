@@ -1222,7 +1222,13 @@
 
   (add-hook 'emacs-lisp-mode-hook #'dtm-elisp-extend-imenu-h 'append)
 
-  (defalias 'elisp-mode #'emacs-lisp-mode))
+  (defalias 'elisp-mode #'emacs-lisp-mode)
+
+  (map! :map emacs-lisp-mode-map
+        :localleader :prefix "d"
+        :desc "Debug defun enable"     "d" #'+emacs-lisp/edebug-instrument-defun-on
+        :desc "Debug defun disable"    "D" #'+emacs-lisp/edebug-instrument-defun-off
+        :desc "Remove instrumentation" "r" #'edebug-remove-instrumentation))
 
 (with-eval-after-load 'edebug
   (map! :map edebug-mode-map :n "R" #'edebug-remove-instrumentation))
