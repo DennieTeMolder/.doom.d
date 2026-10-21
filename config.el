@@ -335,12 +335,14 @@
 
 (with-eval-after-load 'recentf
   ;;Exclude non-existent & remote files from recent files list after cleanup
-  (setq recentf-keep '(dtm-file-local-readable-p))
+  (setq recentf-keep '(dtm-file-local-readable-p)
+        recentf-max-saved-items 500)
+
   (add-to-list 'recentf-exclude #'dtm-ess-plot-file-p t)
 
   ;; Exclude autosave file/folder and root from recent files
-  (add-to-list 'recentf-exclude "/autosave/?\\'")
-  (add-to-list 'recentf-exclude "\\`/\\'"))
+  (add-to-list 'recentf-exclude (rx (seq "/autosave" (opt "/") eos)))
+  (add-to-list 'recentf-exclude (rx (seq bos "/" eos))))
 
 (with-eval-after-load 'doom-modeline
   (setq doom-modeline-buffer-file-name-style 'truncate-with-project
