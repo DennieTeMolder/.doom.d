@@ -820,14 +820,11 @@ Else call `lispy-eval-and-insert'."
         ((memq arg '(0 4)) (lispy-eval-and-replace))
         (t (lispy-eval-and-insert))))
 
-(defun dtm/lispy-paste-before ()
+(defun dtm/lispy-paste-before (arg)
   "Version of `lispy-paste' that pastes before the cursor."
-  (interactive)
-  (left-char 1)
-  (insert " ")
-  (call-interactively #'lispy-paste)
-  (right-char 1)
-  (lispy--normalize-1))
+  (interactive "p")
+  (lispy-paste arg)
+  (ignore-errors (lispy-different)))
 
 ;;* Lispyville
 (defmacro dtm-lispyville-smart-remap (evil-fn lispy-fn)
