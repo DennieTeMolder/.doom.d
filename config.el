@@ -1242,6 +1242,9 @@
         :desc "Remove instrumentation" "r" #'edebug-remove-instrumentation))
 
 (with-eval-after-load 'edebug
+  ;; Stop Eldoc from hiding echoed values
+  (add-hook! 'edebug-mode-hook (eldoc-mode (if edebug-mode -1 +1)))
+
   (map! :map edebug-mode-map :n "R" #'edebug-remove-instrumentation))
 
 (with-eval-after-load 'elisp-refs
