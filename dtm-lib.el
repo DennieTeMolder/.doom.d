@@ -2145,6 +2145,39 @@ Higher values give slower scrolling.")
   (dtm-precision-scroll-window-fraction -0.99))
 (put 'dtm-precision-scroll-page-down 'scroll-command t)
 
+;;* Evil
+(evil-define-motion dtm-evil-forward-word-begin (count)
+  "Replacement for `evil-forward-word-begin' that skips word -> symbol boundaries."
+  :type exclusive
+  (unless count (setq count 1))
+  (if (evil-operator-state-p)
+      (evil-forward-word-begin count)
+    (let ((forward (> count 0))
+          (table (copy-syntax-table))
+          (regex (rx (or word-start symbol-start (seq bol eol)
+                         (seq (or symbol-end (syntax whitespace))
+                              (group (not (syntax whitespace))))))))
+      ;; Treat line-ends and punctuation as whitespace
+      (modify-syntax-entry ?\n " " table)
+      (modify-syntax-entry ?\r " " table)
+      (map-char-table (lambda (key value)
+                        (when (eq key ?.)
+                          (modify-syntax-entry key " " table)))
+                      table)
+      ;; Move search boundary past current match
+      (if forward (forward-char 1)
+        (and (bolp) (eolp) (forward-char -1)))
+      (if (with-syntax-table table (re-search-forward regex nil 'noerror count))
+          (goto-char (or (match-beginning 1) (match-beginning 0)))
+        (goto-char (if forward (point-max) (point-min)))))))
+
+(evil-define-motion dtm-evil-backward-word-begin (count)
+  "Replacement for `evil-backward-word-begin' that skips word -> symbol boundaries."
+  :type exclusive
+  (unless count (setq count 1))
+  (dtm-evil-forward-word-begin (- count)))
+
+
 ;;* Evil-collection
 (defun dtm-evil-collection-inhibit-insert-state-a (map-sym)
   "Ignore `evil-enter-replace-state' (R) in MAP-SYM.

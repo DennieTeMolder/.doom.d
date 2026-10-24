@@ -216,7 +216,9 @@
     (evil-add-command-properties cmd :jump nil))
 
   (map! :map evil-motion-state-map
-        ;; Swap these two commands
+        "w" #'dtm-evil-forward-word-begin
+        "b" #'dtm-evil-backward-word-begin
+        ;; Swap these two commands making the former easier to access
         "'" #'evil-goto-mark
         "`" #'evil-goto-mark-line))
 
