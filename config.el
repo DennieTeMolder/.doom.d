@@ -206,6 +206,9 @@
         ;; During search treat all possible characters as special (prefix \V to disable)
         evil-magic 'very-magic)
 
+  ;; Fix region remaining active when pressing I/A in visual mode
+  (add-hook 'evil-insert-state-entry-hook #'deactivate-mark)
+
   ;; Indicate `evil-repeat' to ignore certain commands because they freeze emacs
   (evil-declare-not-repeat #'+workspace/switch-left)
   (evil-declare-not-repeat #'+workspace/switch-right)
