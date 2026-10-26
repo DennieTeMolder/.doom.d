@@ -76,7 +76,7 @@
 ;; BUG: Fix inner/outer-quote/block Evil textobj
 (package! evil-textobj-anyblock
   :recipe (:host github :repo "DennieTeMolder/evil-textobj-anyblock" :branch "master")
-  :pin "2983fe806cbfee6317150b91cb4c829a1eb5d0e9")
+  :pin "5e90a01a2f264893f8eccbf621859a60991be5a7")
 
 ;;* Custom packages
 (package! tempel)
