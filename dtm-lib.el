@@ -97,9 +97,8 @@ If NAME is not provided `buffer-file-name' is used."
 
 (defvar dtm-doom-build-dir
   (file-name-as-directory
-   (file-name-concat (file-truename doom-local-dir)
-                     "straight"
-                     (format "build-%s" emacs-version)))
+   (file-name-concat
+    doom-local-dir "straight" (format "build-%s" emacs-version)))
   "Directory used by Doom for storing build packages.
 Ref: lisp/doom-straight.el")
 
@@ -339,11 +338,21 @@ Elements should be cons cells of: (name . path)")
   (pop-to-buffer-same-window buf))
 
 ;;* Projectile
+(defvar dtm-true-emacs-dir (file-truename doom-emacs-dir)
+  "Truename of what Doom considers to be the Emacs directory.")
+
+(defvar dtm-project-ignore-regex nil
+  "Regex string matching the root of projects to ignore.")
+
 (defun dtm-project-ignored-p (project-root)
-  "Return non-nil if remote or temporary file or a straight package."
-  (or (file-remote-p project-root)
-      (file-in-directory-p project-root temporary-file-directory)
-      (file-in-directory-p project-root doom-local-dir)))
+  "Return non-nil PROJECT-ROOT is remote, temporary, or in `dtm-true-emacs-dir'.
+Also checks against `dtm-project-ignore-regex'."
+  (if (file-remote-p project-root) t
+    (setq project-root (file-truename project-root))
+    (or (string-prefix-p temporary-file-directory project-root)
+        (string-prefix-p dtm-true-emacs-dir project-root)
+        (and dtm-project-ignore-regex
+             (string-match-p dtm-project-ignore-regex project-root)))))
 
 ;;* Doom-modeline
 (defun dtm-doom-modeline-evil-update-visual (&optional arg)
