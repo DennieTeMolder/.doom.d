@@ -2155,37 +2155,54 @@ Higher values give slower scrolling.")
 (put 'dtm-precision-scroll-page-down 'scroll-command t)
 
 ;;* Evil
+(defun dtm-evil-yank-string (str &optional register)
+  "Yank STR to REGISTER like `evil-yank'."
+  (or (stringp str) (setq str (prin1-to-string str)))
+  (with-temp-buffer
+    (insert str)
+    (let ((evil-was-yanked-without-register
+           (and evil-was-yanked-without-register (not register))))
+      (evil-yank-characters (point-min) (point-max) register)))
+  str)
+
 (evil-define-motion dtm-evil-forward-word-begin (count)
   "Replacement for `evil-forward-word-begin' that skips word -> symbol boundaries."
   :type exclusive
-  (unless count (setq count 1))
+  (or count (setq count 1))
   (if (evil-operator-state-p)
       (evil-forward-word-begin count)
-    (let ((forward (> count 0))
+    (let ((direction (if (> count 0) 1 -1))
+          (count (abs count))
           (table (copy-syntax-table))
-          (regex (rx (or word-start symbol-start (seq bol eol)
+          (regex (rx (or word-start
+                         (seq bol eol)
+                         (seq symbol-start nonl (not (syntax word)))
                          (seq (or symbol-end (syntax whitespace))
                               (group (not (syntax whitespace))))))))
-      ;; Treat line-ends and punctuation as whitespace
+      ;; Treat ASCII punctuation as part of a symbol
+      (dotimes (char 128)
+        (when (eq ?. (char-syntax char))
+          (modify-syntax-entry char "_" table)))
       (modify-syntax-entry ?\n " " table)
       (modify-syntax-entry ?\r " " table)
-      (map-char-table (lambda (key value)
-                        (when (eq key ?.)
-                          (modify-syntax-entry key " " table)))
-                      table)
-      ;; Move search boundary past current match
-      (if forward (forward-char 1)
-        (and (bolp) (eolp) (forward-char -1)))
-      (if (with-syntax-table table (re-search-forward regex nil 'noerror count))
-          (goto-char (or (match-beginning 1) (match-beginning 0)))
-        (goto-char (if forward (point-max) (point-min)))))))
+      (with-syntax-table table
+        (while (> count 0)
+          ;; Move search boundary past current match
+          (when (or (eq direction 1) (and (bolp) (eolp)))
+            (forward-char direction))
+          (if (re-search-forward regex nil 'noerror direction)
+              ;; Ignore invisible text
+              (unless (invisible-p (goto-char (or (match-beginning 1)
+                                                  (match-beginning 0))))
+                (setq count (1- count)))
+            (goto-char (if (eq direction 1) (point-max) (point-min)))
+            (setq count -1)))))))
 
 (evil-define-motion dtm-evil-backward-word-begin (count)
   "Replacement for `evil-backward-word-begin' that skips word -> symbol boundaries."
   :type exclusive
   (unless count (setq count 1))
   (dtm-evil-forward-word-begin (- count)))
-
 
 ;;* Evil-collection
 (defun dtm-evil-collection-inhibit-insert-state-a (map-sym)
