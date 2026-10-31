@@ -2160,18 +2160,31 @@ Higher values give slower scrolling.")
 ;;* Evil
 (defun dtm-evil-yank-string (str &optional register)
   "Yank STR to REGISTER like `evil-yank'."
-  (or (stringp str) (setq str (prin1-to-string str)))
   (with-temp-buffer
-    (insert str)
+    (insert (if (stringp str) str (prin1-to-string str)))
     (let ((evil-was-yanked-without-register
            (and evil-was-yanked-without-register (not register))))
       (evil-yank-characters (point-min) (point-max) register)))
   str)
 
+(evil-define-command dtm/evil-yank-from-kill-ring (&optional register)
+  "Prompt for an entry in `kill-ring' to `evil-yank' to REGISTER.
+Prefix with C-u to prompt for register."
+  :suppress-operator t
+  (interactive "<x>")
+  (require 'consult)
+  (cl-letf (((symbol-function 'consult--insertion-preview) #'ignore))
+    (let ((str (consult--read-from-kill-ring))
+          (reg (or register
+                   (when current-prefix-arg
+                     (read-char "Yank to register: ")))))
+      (dtm-evil-yank-string str reg)
+      (message "Yanked selection to register '%s'" (char-to-string (or reg ?0))))))
+
 (evil-define-motion dtm-evil-forward-word-begin (count)
   "Replacement for `evil-forward-word-begin' that skips word -> symbol boundaries."
   :type exclusive
-  (or count (setq count 1))
+  (unless count (setq count 1))
   (if (evil-operator-state-p)
       (evil-forward-word-begin count)
     (let ((direction (if (> count 0) 1 -1))
