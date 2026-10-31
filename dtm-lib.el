@@ -1482,7 +1482,7 @@ Use as advice :before `org-tree-slide--setup'."
 (defun dtm/org-roam-find-file ()
   "Find file in `dtm-org-roam-dir'."
   (interactive)
-  (find-file (read-file-name "Open: " dtm-org-roam-dir)))
+  (find-file (read-file-name "Open: " (concat dtm-org-roam-dir "pages/"))))
 
 (defun dtm/org-roam-grep ()
   "Grep search through `dtm-org-roam-dir'."
