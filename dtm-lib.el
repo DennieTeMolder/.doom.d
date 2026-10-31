@@ -948,12 +948,14 @@ Intended as `vertico-next-group' :around advise."
 
 (defun dtm-vertico-sort-registers (list)
   "Sort numbered registers in LIST first, the rest is sorted by alphabet.
-Intended for use with `consult-register'."
-  (let (front back)
+Excludes empty and non-text registers. Intended for use with `consult-register'."
+  (let ((regex (rx (seq bol "#" nonl (+ (not graph)) (?  "Garbage:") eol)))
+        front back)
     (dolist (reg (vertico-sort-alpha list))
-      (if (string-match-p "^#[0-9]" reg)
-          (push reg front)
-        (push reg back)))
+      (unless (string-match-p regex reg)
+        (if (string-match-p "^#[0-9]" reg)
+            (push reg front)
+          (push reg back))))
     (nconc (nreverse front) (nreverse back))))
 
 ;;* Consult
