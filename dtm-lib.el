@@ -271,7 +271,8 @@ See also: `split-window-sensibly'"
     (if (or (+workspace-exists-p name)
             (+workspace-buffer-list))
         (+workspace-switch name t)
-      (+workspace-rename (+workspace-current-name) name))
+      (+workspace-rename (+workspace-current-name) name)
+      (setq persp-last-persp-name name))
     (+workspace/display)))
 
 (defun dtm/buffer-move-to-workspace (name &optional alist)

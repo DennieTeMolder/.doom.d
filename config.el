@@ -477,7 +477,11 @@
         :desc "Show help" "h" #'helpful-symbol))
 
 (with-eval-after-load 'persp-mode
-  (setq frame-title-format '((:eval (or persp-last-persp-name "%F"))))
+  (setq frame-title-format
+        '((:eval (if persp-last-persp-name
+                     (if (equal persp-last-persp-name persp-nil-name)
+                         "main" persp-last-persp-name)
+                   "%F"))))
 
   ;; Open specific buffers in a dedicated workspace
   (advice-add 'persp-add-or-not-on-find-file :before #'dtm-workspace-dedicated-persp-a)
