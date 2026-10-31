@@ -306,14 +306,20 @@
         ctrlf-go-to-end-of-match nil)
 
   ;; Literal matching using `search-whitespace-regexp' like `isearch-lax-whitespace'
-  (push '(lax . (:prompt "lax"
-                 :translator dtm-ctrlf-translate-lax
-                 :case-fold ctrlf-no-uppercase-literal-p))
-        ctrlf-style-alist)
-  (push '(vim . (:prompt "vim"
-                 :translator dtm-ctrlf-translate-evil
-                 :case-fold dtm-ctrlf-case-fold-evil-p))
-        ctrlf-style-alist)
+  (setq ctrlf-style-alist
+        (append '((lax . (:prompt "lax"
+                          :translator dtm-ctrlf-translate-lax
+                          :case-fold ctrlf-no-uppercase-literal-p))
+                  (vim . (:prompt "vim"
+                          :translator dtm-ctrlf-translate-evil
+                          :case-fold dtm-ctrlf-case-fold-evil-p))
+                  (rx . (:prompt "rx"
+                         :translator dtm-ctrlf-translate-rx
+                         :case-fold dtm-ctrlf-case-fold-rx-p)))
+                ctrlf-style-alist))
+
+  ;; Perform minibuffer setup for the `rx' style (smartparens & lispy)
+  (advice-add 'ctrlf-change-search-style :after #'dtm-ctrlf-change-search-style-a)
 
   ;; Improve Evil integration
   (advice-add 'ctrlf--evil-remember-search-string :override #'dtm-ctrlf-evil-remember-a)

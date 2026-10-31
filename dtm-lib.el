@@ -938,7 +938,7 @@ Ref: https://github.com/jdtsmith/vertico-truncate"
   "Notify the user when a cycling back to the first group.
 Intended as `vertico-next-group' :around advise."
   (when (cdr vertico--groups)
-    (let ((query (substring-no-properties (minibuffer-contents))))
+    (let ((query (minibuffer-contents-no-properties)))
       (unless (and dtm-vertico-first-group
                    (string= query (car dtm-vertico-first-group)))
         (setq-local dtm-vertico-first-group (cons query (car vertico--groups)))))
@@ -1867,16 +1867,33 @@ Alternative `conda-env-activate-for-buffer' that prompts before activation."
   "Return non-nil if case should be ignored according to `evil-ex-regex-case'."
   (eq (evil-ex-regex-case input 'smart) 'insensitive))
 
-(defun dtm/evil-ex-search-set-offset (&optional offset)
-  "Set `evil-ex-search-offset' independent of `evil-ex-start-search'.
-OFFSET is number of lines after match (negative for before).
-Prefix with s/b or e to offset characters from start or end."
-  (interactive
-   (list (read-string "Search offset ([seb]?<num>): ")))
-  (goto-char evil-ex-search-start-point)
-  (evil-ex-search-find-next-pattern evil-ex-search-pattern)
-  (when (evil-ex-search-goto-offset offset)
-    (setq evil-ex-search-offset offset)))
+(defun dtm-ctrlf-translate-rx (input)
+  "Translate INPUT string using `rx'. Wraps INPUT as (seq INPUT)."
+  (thread-first
+    (concat "(seq " input ")")
+    (read-from-string) (car)
+    (rx-to-string) (ignore-errors)
+    (or "")))
+
+(defun dtm-ctrlf-case-fold-rx-p (input)
+  "Return non-nil if case should be ignored in `rx' INPUT."
+  (ctrlf-no-uppercase-regexp-p (dtm-ctrlf-translate-rx input)))
+
+(defun dtm-ctrlf-change-search-style-a (style)
+  "Set-up additional minibuffer functionality for STYLE.
+Intended as `ctrlf-change-search-style' :after advice."
+  (when (eq style 'rx)
+    (let* ((contents (minibuffer-contents-no-properties))
+           (empty-p (length= contents 0))
+           (q? (if empty-p "" "\"")))
+      (setq contents (replace-regexp-in-string q? "\\\\\"" contents))
+      (delete-minibuffer-contents)
+      (insert (concat "(seq " q? contents q? ")"))
+      (backward-char (if empty-p 1 2)))
+    (dolist (hook eval-expression-minibuffer-setup-hook)
+      (unless (and (symbolp hook)
+                   (string-match-p "eldoc" (symbol-name hook)))
+        (funcall hook)))))
 
 (defun dtm-ctrlf-evil-remember-a (str)
   "Respect `ctrlf--case-fold-search' and omit `evil-ex-search-history'.
@@ -1899,12 +1916,12 @@ Intended as :override `'ctrlf--evil-remember-search-string' advice."
   str)
 
 (defun dtm-ctrlf--evil-set-jump-a ()
-  "Reduce number of stored jumps.
+  "Reduce number of stored Evil jumps.
 Only stores the location before search started (no intermediate/final matches).
 Also doesn't store the location if search was canceled.
 Intended as `ctrlf--evil-set-jump' :override advice. "
-  (when (and (fboundp 'evil-set-jump)
-             (eq this-command 'exit-minibuffer))
+  (when (and (eq this-command 'exit-minibuffer)
+             (fboundp 'evil-set-jump))
     (with-selected-window (or (minibuffer-selected-window) (selected-window))
       (save-excursion
         (goto-char ctrlf--starting-point)
@@ -1914,10 +1931,10 @@ Intended as `ctrlf--evil-set-jump' :override advice. "
   "Run `evil-ex' substitute with the current/last CTRLF search query.
 Ref: `ctrlf-occur'."
   (interactive)
-  (let ((input (if ctrlf--active-p (minibuffer-contents)
+  (let ((input (if ctrlf--active-p
+                   (minibuffer-contents-no-properties)
                  (car ctrlf-search-history))))
-    (unless input
-      (user-error "No previous search"))
+    (unless input (user-error "No previous search"))
     (let* ((translator (plist-get
                         (alist-get ctrlf--style ctrlf-style-alist)
                         :translator))
@@ -2180,6 +2197,17 @@ Prefix with C-u to prompt for register."
                      (read-char "Yank to register: ")))))
       (dtm-evil-yank-string str reg)
       (message "Yanked selection to register '%s'" (char-to-string (or reg ?0))))))
+
+(defun dtm/evil-ex-search-set-offset (&optional offset)
+  "Set `evil-ex-search-offset' independent of `evil-ex-start-search'.
+OFFSET is number of lines after match (negative for before).
+Prefix with s/b or e to offset characters from start or end."
+  (interactive
+   (list (read-string "Search offset ([seb]?<num>): ")))
+  (goto-char evil-ex-search-start-point)
+  (evil-ex-search-find-next-pattern evil-ex-search-pattern)
+  (when (evil-ex-search-goto-offset offset)
+    (setq evil-ex-search-offset offset)))
 
 (evil-define-motion dtm-evil-forward-word-begin (count)
   "Replacement for `evil-forward-word-begin' that skips word -> symbol boundaries."
