@@ -1896,7 +1896,7 @@ Intended as `ctrlf-change-search-style' :after advice."
         (funcall hook)))))
 
 (defun dtm-ctrlf-evil-remember-a (str)
-  "Respect `ctrlf--case-fold-search' and omit `evil-ex-search-history'.
+  "Improved `evil-search' integration (case-fold, `evil-ex-search-offset', etc.)
 Intended as :override `'ctrlf--evil-remember-search-string' advice."
   (when (and (bound-and-true-p evil-mode)
              (eq evil-search-module 'evil-search))
@@ -1906,6 +1906,7 @@ Intended as :override `'ctrlf--evil-remember-search-string' advice."
              (ignore-case (if (eq ctrlf--case-fold-search :auto)
                               ctrlf--case-fold-search-last-guessed
                             ctrlf--case-fold-search)))
+        (add-to-history 'evil-ex-search-history translated-str)
         (setq evil-ex-search-direction (if ctrlf--backward-p 'backward 'forward)
               evil-ex-search-pattern (list translated-str ignore-case t)
               evil-ex-search-start-point ctrlf--starting-point
