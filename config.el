@@ -893,6 +893,7 @@
 ;; Org-mode settings
 (with-eval-after-load 'org
   (setq org-ellipsis " …"
+        org-duration-format 'h:mm
         dtm-org-line-spacing 0.1
         org-indent-indentation-per-level 1
         org-pretty-entities-include-sub-superscripts nil
@@ -954,11 +955,12 @@
           :n  "C-j"   #'+org/return
 
           :localleader
-          :desc "Clock-in after last"     "c a" #'dtm/org-clock-in-after
-          :desc "Add file to Agenda"      "F a" #'org-agenda-file-to-front
-          :desc "Remove file from Agenda" "F r" #'org-remove-file
-          :desc "Delete link"             "l D" #'dtm/org-link-kill
-          :desc "Toggle pretty visuals"   "v"   #'dtm/org-pretty-mode-toggle)
+          :desc "Clock-in after last"   "c a" #'dtm/org-clock-in-after
+          :desc "Delete link"           "l D" #'dtm/org-link-kill
+          :desc "Toggle pretty visuals" "v"   #'dtm/org-pretty-mode-toggle
+          (:prefix ("F" . "file")
+           :desc "Add file to Agenda"      "a" #'org-agenda-file-to-front
+           :desc "Remove file from Agenda" "r" #'org-remove-file))
 
     (map! :after org-agenda
           :map org-agenda-mode-map
