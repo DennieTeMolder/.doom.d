@@ -1302,7 +1302,7 @@
   (lispy-define-key lispy-mode-map "c" #'dtm/lispy-change-symbol)
   (lispy-define-key lispy-mode-map "i" #'dtm/lispy-step-into)
   (lispy-define-key lispy-mode-map "D" #'dtm/lispy-delete-list)
-  (lispy-define-key lispy-mode-map "s" #'dtm/lispy-wrap-round)
+  (lispy-define-key lispy-mode-map "S" #'dtm/lispy-wrap-round)
   (lispy-define-key lispy-mode-map "I" #'dtm/lispy-eval-and-insert)
   (lispy-define-key lispy-mode-map "H" #'lispy-slurp-or-barf-left)
   (lispy-define-key lispy-mode-map "L" #'lispy-slurp-or-barf-right)
@@ -1321,7 +1321,8 @@
         "n" #'special-lispy-narrow
         "N" #'special-lispy-widen
         "o" #'special-lispy-different
-        "p" #'special-lispy-paste))
+        "p" #'special-lispy-paste
+        "s" #'special-lispy-stringify))
 
 (with-eval-after-load 'lispyville
   ;; Custom (atom-movement t) key-theme
