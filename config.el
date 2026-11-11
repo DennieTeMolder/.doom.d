@@ -1230,6 +1230,9 @@
   (add-to-list '+eshell-aliases '("up" "eshell-up $1")))
 
 (with-eval-after-load 'ghostel
+  ;; Prompt to install missing modules in `ghostel-comint-mode'
+  (add-hook! 'ghostel-comint-mode-hook (ghostel--load-module 'prompt-user))
+
   (map! :map ghostel-semi-char-mode-map
         [remap ghostel-yank-pop] #'dtm/ghostel-yank-pop-consult))
 
