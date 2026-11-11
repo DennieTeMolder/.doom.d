@@ -534,6 +534,10 @@
   (unless (dtm-doctor-running-p)
     (+popup-cleanup-rules-h)))
 
+(with-eval-after-load 'nerd-icons
+  ;; Simplify and speed-up directory icons
+  (advice-add 'nerd-icons-icon-for-dir :override #'dtm-nerd-icons-icon-for-dir-a))
+
 (with-eval-after-load 'dired
   (setq dired-clean-confirm-killing-deleted-buffers nil
         dired-dwim-target nil

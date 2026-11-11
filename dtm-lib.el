@@ -2375,6 +2375,20 @@ Intended as `eglot--maybe-activate-editing-mode' :around advice."
   (cl-letf (((symbol-function 'eglot-inlay-hints-mode) #'ignore))
     (setq ret-val (apply orig-fn args))))
 
+;;* Nerd-icons
+(defun dtm-nerd-icons-icon-for-dir-a (dir &rest args)
+  "Get the formatted icon for DIR.
+ARG should be a plist containining `:height',`:v-adjust' or `:face'properties.
+Ignores `nerd-icons-dir-icon-alist' and doesn't traverse any additional dirs.
+Intended as `nerd-icons-icon-for-dir' :override advice."
+  (unless dir (setq dir (or default-directory "/")))
+  (cond
+   ((file-remote-p dir)
+    (apply #'nerd-icons-codicon "nf-cod-remote" args))
+   ((file-symlink-p dir)
+    (apply #'nerd-icons-codicon "nf-cod-file_symlink_directory" args))
+   (t (apply #'nerd-icons-sucicon "nf-custom-folder_oct" args))))
+
 ;;* Move-splitter
 (defun dtm-move-right-splitter (amount)
   "Move the right splitter right by AMOUNT."
