@@ -2131,8 +2131,8 @@ Intended as `pixel-scroll-precision-scroll-up'/down :after advice."
           (direction (cons (car target) (if (< (cdr target) current) -1 1)))
           (height-diff (abs (- (cdr target) current)))
           (line-height (pixel-line-height (point))))
-      (while (<= line-height height-diff)
-        (vertical-motion direction)
+      (while (and (<= line-height height-diff)
+                  (not (zerop (vertical-motion direction))))
         (setq height-diff (- height-diff line-height)
               line-height (pixel-line-height (point)))))))
 
