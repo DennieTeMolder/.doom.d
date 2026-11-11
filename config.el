@@ -1497,10 +1497,6 @@
   (setq-hook! 'csv-mode-hook
     buffer-invisibility-spec nil))
 
-(with-eval-after-load 'yaml-ts-mode
-  ;; Needed for TAB indentation to work
-  (require 'yaml-mode))
-
 ;; Recognize .bed files as TSV
 (push `(,(rx (seq "." (or "bed" "agp") eos)) . tsv-mode) auto-mode-alist)
 
