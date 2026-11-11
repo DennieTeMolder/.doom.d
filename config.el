@@ -1481,6 +1481,7 @@
          :localleader :prefix ("c" . "Conda")
          "g" #'dtm/conda-env-guess
          "a" #'conda-env-activate
+         "A" #'conda-env-activate-path
          "d" #'conda-env-deactivate)))
 
 (use-package elpy-shell

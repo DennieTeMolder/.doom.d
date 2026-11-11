@@ -730,7 +730,8 @@ Intended as :after `image-toggle-display-image' advice."
        (file-exists-p dirvish-cache-dir)
        (y-or-n-p (format "Also clear: '%s'? " dirvish-cache-dir))
        (delete-directory dirvish-cache-dir 'recursive))
-  (clear-image-cache t))
+  (clear-image-cache t)
+  (message "Image cache(s) cleared"))
 
 (defun dtm-image-mode--next-file-a (next-file)
   "Don't return NEXT-FILE if it is `buffer-file-name'.
@@ -1633,7 +1634,7 @@ Bypasses `ess-completing-read', defers further lookup if process is busy."
                     t)))
          (win (get-buffer-window buf)))
     (when (and ask (y-or-n-p "Delete process buffer & window?"))
-      (and win (delete-window win))
+      (and win (ignore-errors (delete-window win)))
       (and buf (kill-buffer buf))
       (and (featurep 'ess-plot) (ess-plot-hide)))))
 
@@ -2331,7 +2332,9 @@ Will return nil when beyond end of defun, contrary to `beginning-of-defun'."
   (when (< 0 (length name))
     (magit-set name "user.name"))
   (when (< 0 (length email))
-    (magit-set email "user.email")))
+    (magit-set email "user.email"))
+  (when (eq major-mode 'magit-status-mode)
+    (magit-refresh)))
 
 ;;* Lsp/Eglot
 (defvar dtm-lsp-ignored-modes '()
