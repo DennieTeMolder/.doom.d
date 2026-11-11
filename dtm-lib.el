@@ -2342,6 +2342,12 @@ Will return nil when beyond end of defun, contrary to `beginning-of-defun'."
 Useful as `lsp!'/`eglot-current-server' :before-while advice."
   (not (member major-mode dtm-lsp-ignored-modes)))
 
+(defun dtm-eglot-managed-mode-h ()
+  "Remove hook functions superseded by Eglot.
+Intended for `eglot-managed-mode-hook'."
+  (when (eglot-managed-p)
+    (remove-hook 'completion-at-point-functions #'python-completion-at-point 'local)))
+
 (defvar-local dtm-eglot-eldoc-original-functions nil
   "Value of `eldoc-documentation-functions' before `eglot--managed-mode'.
 Used by `dtm-eglot--managed-mode-a'.")
@@ -2349,18 +2355,25 @@ Used by `dtm-eglot--managed-mode-a'.")
 (defun dtm-eglot--managed-mode-a (orig-fn &rest args)
   "Clear all non-Eglot funs from `eldoc-documentation-functions'.
 Resets `dtm-eglot-eldoc-original-functions' when Eglot is disabled.
+Also inhibits activation of `eglot-inlay-hints-mode'.
 Intended as `eglot--managed-mode' :around advice."
   (let (ret-val)
-    (setq eldoc-documentation-functions
-          (let ((old eldoc-documentation-functions)
-                (eldoc-documentation-functions nil))
-            (setq ret-val (apply orig-fn args))
-            (if eglot--managed-mode
-                (progn
-                  (setq-local dtm-eglot-eldoc-original-functions old)
-                  eldoc-documentation-functions)
-              dtm-eglot-eldoc-original-functions)))
+    (setq-local eldoc-documentation-functions
+                (let ((old eldoc-documentation-functions)
+                      eldoc-documentation-functions)
+                  (setq ret-val (apply orig-fn args))
+                  (if eglot--managed-mode
+                      (progn
+                        (setq-local dtm-eglot-eldoc-original-functions old)
+                        eldoc-documentation-functions)
+                    dtm-eglot-eldoc-original-functions)))
     ret-val))
+
+(defun dtm-eglot--maybe-activate-editing-mode-a (orig-fn &rest args)
+  "Inhibit activation of `eglot-inlay-hints-mode'.
+Intended as `eglot--maybe-activate-editing-mode' :around advice."
+  (cl-letf (((symbol-function 'eglot-inlay-hints-mode) #'ignore))
+    (setq ret-val (apply orig-fn args))))
 
 ;;* Move-splitter
 (defun dtm-move-right-splitter (amount)

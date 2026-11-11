@@ -1191,11 +1191,17 @@
   (advice-add 'lsp! :before-while #'dtm-lsp-run-p))
 
 (with-eval-after-load 'eglot
+  ;; Remove hook functions that Eglot replaces
+  (add-hook 'eglot-managed-mode-hook #'dtm-eglot-managed-mode-h)
+
   ;; Make Eglot respect `dtm-lsp-ignored-modes'
   (advice-add 'eglot-current-server :before-while #'dtm-lsp-run-p)
 
   ;; Remove non-Eglot Eldoc functions so they don't take precedence
-  (advice-add 'eglot--managed-mode :around #'dtm-eglot--managed-mode-a))
+  (advice-add 'eglot--managed-mode :around #'dtm-eglot--managed-mode-a)
+
+  ;; Prevent `eglot-inlay-hints-mode' from auto activating
+  (advice-add 'eglot--maybe-activate-editing-mode :around #'dtm-eglot--maybe-activate-editing-mode-a))
 
 ;;;###package compile
 (add-hook 'compilation-mode-hook #'dtm-scroll-process-friendly-h)
