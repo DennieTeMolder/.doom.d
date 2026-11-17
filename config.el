@@ -573,7 +573,7 @@
         dirvish-input-debounce 0.2
         dirvish-history-sort-function #'dtm-dirvish-sort-history
         dirvish-mode-line-format
-        '(:left (sort file-user " " file-time symlink) :right (omit yank index)))
+        '(:left (sort file-user " " file-time symlink) :right (yank omit index)))
 
   (setopt dirvish-quick-access-entries
           (let ((dcore (abbreviate-file-name doom-core-dir))
@@ -934,6 +934,9 @@
     ;; Prevent doom-themes from overwriting ellipsis color
     '(org-ellipsis :foreground unspecified :background unspecified))
 
+  ;; Prettify, enable hard wrapping and automate paragraph filling
+  (add-hook 'org-mode-hook #'dtm-org-mode-setup-h)
+
   ;; Enforce `+org/insert-item-below' to respect `org-blank-before-new-entry'
   (add-hook 'org-insert-heading-hook #'dtm-org-insert-heading-check-blank)
 
@@ -945,14 +948,10 @@
   (org-link-set-parameters "name" :complete #'dtm-org-link-complete-name)
 
   ;; BUG: org-read-date doesn't use org-mode so it won't trigger evil-org to load
-  (advice-add 'org-read-date :before (lambda (&rest _) (require 'evil-org))
-              '((name . "require evil-org")))
+  (add-transient-hook! 'org-read-date (require 'evil-org))
 
   (advice-add 'org-agenda-file-to-front :around #'dtm-cusomize-save-ignore-a)
-  (advice-add 'org-remove-file :around #'dtm-cusomize-save-ignore-a)
-
-  ;; Prettify, enable hard wrapping and automate paragraph filling
-  (add-hook 'org-mode-hook #'dtm-org-mode-setup-h))
+  (advice-add 'org-remove-file :around #'dtm-cusomize-save-ignore-a))
 
 ;; Bind keys late enough to override `+org-init-keybinds-h'
 (add-hook! 'org-load-hook :append
@@ -969,7 +968,7 @@
           :desc "Toggle pretty visuals" "v"   #'dtm/org-pretty-mode-toggle
           (:prefix ("F" . "file")
            :desc "Add file to Agenda"      "a" #'org-agenda-file-to-front
-           :desc "Remove file from Agenda" "r" #'org-remove-file))
+           :desc "Remove file from Agenda" "A" #'org-remove-file))
 
     (map! :after org-agenda
           :map org-agenda-mode-map
