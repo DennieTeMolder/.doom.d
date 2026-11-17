@@ -489,6 +489,8 @@
                          "main" persp-last-persp-name)
                    "%F"))))
 
+  (add-hook 'persp-renamed-functions #'dtm-persp-update-last-name -10)
+
   ;; Open specific buffers in a dedicated workspace
   (advice-add 'persp-add-or-not-on-find-file :before #'dtm-workspace-dedicated-persp-a)
   (setq dtm-workspace-dedicated-alist

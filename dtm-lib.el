@@ -271,8 +271,7 @@ See also: `split-window-sensibly'"
     (if (or (+workspace-exists-p name)
             (+workspace-buffer-list))
         (+workspace-switch name t)
-      (+workspace-rename (+workspace-current-name) name)
-      (setq persp-last-persp-name name))
+      (+workspace-rename (+workspace-current-name) name))
     (+workspace/display)))
 
 (defun dtm/buffer-move-to-workspace (name &optional alist)
@@ -337,6 +336,12 @@ Elements should be cons cells of: (name . path)")
   (interactive
    (list (read-buffer "Select orphan-buffer: " nil t #'dtm-buffer-orphan-p)))
   (pop-to-buffer-same-window buf))
+
+(defun dtm-persp-update-last-name (persp old-name new-name)
+  "Update `persp-last-persp-name' from OLD-NAME to NEW-NAME.
+Intended for `persp-renamed-functions'."
+  (when (string= old-name persp-last-persp-name)
+    (setq persp-last-persp-name new-name)))
 
 ;;* Projectile
 (defvar dtm-true-emacs-dir (file-truename doom-emacs-dir)
