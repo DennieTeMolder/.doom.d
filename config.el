@@ -1465,6 +1465,9 @@
   ;; Remove deprecated Ipython flag
   (delete "--no-color-info" +python-ipython-command)
 
+  ;; BUG: Doom only enables `pipenv-mode' for `python-mode'
+  (add-hook 'python-ts-mode-hook #'pipenv-mode)
+
   ;; Restore `comint-scroll-to-bottom-on-output'
   (add-hook 'inferior-python-mode-hook #'dtm-inferior-python-mode-h)
 
@@ -1473,9 +1476,9 @@
          (:localleader
           :desc "Eval buffer"            "b"   #'elpy-shell-send-buffer
           :desc "Eval function"          "f"   #'elpy-shell-send-defun
-          :desc "Source file to REPL"    "S"   #'elpy-shell-send-file
-          :desc "Eval DWIM"              "e"   #'dtm/elpy-send-dwim
-          :desc "Eval top statement"     "S"   #'elpy-shell-send-top-statement
+          :desc "Eval DWIM"              "l"   #'dtm/elpy-send-dwim
+          :desc "Eval top statement"     "s"   #'elpy-shell-send-top-statement
+          :desc "Source current file"    "S"   #'elpy-shell-send-file
           :desc "Eval DWIM and step"     ","   #'dtm/elpy-send-dwim-and-step
           :desc "Print symbol or region" "."   #'dtm/elpy-print-symbol-or-region
           :desc "Switch to REPL"         "TAB" #'elpy-shell-switch-to-shell))
