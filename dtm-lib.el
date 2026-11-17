@@ -2398,16 +2398,18 @@ Intended as `eglot--maybe-activate-editing-mode' :around advice."
 
 ;;* Nerd-icons
 (defun dtm-nerd-icons-icon-for-dir-a (dir &rest args)
-  "Get the formatted icon for DIR.
-ARG should be a plist containining `:height',`:v-adjust' or `:face'properties.
+  "Efficiently get the formatted icon for DIR.
+ARGS should be a plist containing `:height',`:v-adjust' or `:face'properties.
+
 Ignores `nerd-icons-dir-icon-alist' and doesn't traverse any additional dirs.
 Intended as `nerd-icons-icon-for-dir' :override advice."
   (unless dir (setq dir (or default-directory "/")))
+  (unless (file-name-absolute-p dir) (setq dir (expand-file-name dir)))
   (cond
    ((file-remote-p dir)
     (apply #'nerd-icons-codicon "nf-cod-remote" args))
-   ((file-symlink-p dir)
-    (apply #'nerd-icons-codicon "nf-cod-file_symlink_directory" args))
+   ((file-symlink-p (directory-file-name dir))
+    (apply #'nerd-icons-codicon "nf-cod-file_symlink_directory" nil))
    (t (apply #'nerd-icons-sucicon "nf-custom-folder_oct" args))))
 
 ;;* Move-splitter
