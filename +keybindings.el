@@ -54,6 +54,9 @@
 
       ;; Code
       (:prefix "c"
+       :desc "Toggle LSP hints"       "h" #'eglot-inlay-hints-mode
+       :desc "LSP start"              "l" #'eglot
+       :desc "LSP stop"               "L" #'eglot-shutdown
        :desc "Multi-edit symbol"      "m" #'evil-multiedit-match-all
        :desc "Describe error checker" "X" #'dtm/diagnostics-describe)
 
@@ -61,6 +64,9 @@
       (:prefix "f"
        :desc "Delete this file"       "D" #'dtm/delete-this-file
        :desc "Yank working directory" "w" #'dtm/yank-default-directory)
+
+      ;; Git - reuse status buffer if it wasn't closed with "q"
+      :desc "Magit status" "g g" #'magit-status-quick
 
       ;; Help
       :desc "Keymap" "h b k" #'embark-bindings-in-keymap
