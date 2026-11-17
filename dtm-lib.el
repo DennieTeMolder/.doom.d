@@ -2364,6 +2364,20 @@ Will return nil when beyond end of defun, contrary to `beginning-of-defun'."
     (when (y-or-n-p (format "Change git user to '%s <%s>'" name email))
       (dtm/magit-set-local-user name email))))
 
+;;* Eldoc
+(defun dtm-eldoc-help-at-point ()
+  "Doom compatible version of `eldoc-print-current-symbol-info'.
+Intended for `+lookup-documentation-functions'."
+  (interactive)
+  (when eldoc--doc-buffer (kill-buffer eldoc--doc-buffer))
+  (let ((eldoc-display-functions
+         (list (lambda (docs _interactive)
+                 (eldoc--format-doc-buffer docs)))))
+    (eldoc--invoke-strategy nil))
+  (when (and (buffer-live-p eldoc--doc-buffer)
+             (> (buffer-size eldoc--doc-buffer) 0))
+    (select-window (eldoc-doc-buffer t))))
+
 ;;* Lsp/Eglot
 (defvar dtm-lsp-ignored-modes '()
   "List of symbols for which the LSP is never started automatically.")

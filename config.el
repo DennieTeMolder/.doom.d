@@ -1179,7 +1179,11 @@
 
 (with-eval-after-load 'eldoc
   (setq eldoc-echo-area-use-multiline-p nil)
-  (set-popup-rule! (rx "*eldoc*") :height 0.3))
+
+  ;; Add Eldoc based fallback for "K" `+lookup/documentation'
+  (add-hook '+lookup-documentation-functions #'dtm-eldoc-help-at-point)
+
+  (set-popup-rule! (rx "*eldoc") :height 0.3))
 
 ;; Header line showing current defun
 (use-package topsy
