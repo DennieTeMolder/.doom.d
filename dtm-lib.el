@@ -937,10 +937,20 @@ Ref: https://github.com/jdtsmith/vertico-truncate"
     (let* ((str (car cand))
            (l (length str))
            (icon (length (cadr cand)))
-           (w (- (vertico--window-width) icon)))
+           (w (- (vertico--window-width) icon 2)))
       (when (> l w)
-        (setcar cand (concat "…" (truncate-string-to-width str l (- l w -2)))))))
+        (setcar cand (concat "…" (truncate-string-to-width str l (- l w)))))))
   cand)
+
+(defun dtm-vertico--affixate-a (orig-fn &rest args)
+  "Update `default-directory' with `vertico--base' for ORIG-FN with ARGS.
+Intended as `vertico--affixate' :around advice."
+  (if (directory-name-p vertico--base)
+      (let ((default-directory (if (file-name-absolute-p vertico--base)
+                                   vertico--base
+                                 (expand-file-name vertico--base))))
+        (apply orig-fn args))
+    (apply orig-fn args)))
 
 (defvar-local dtm-vertico-first-group nil
   "Cons of (QUERY . FIRST_GROUP) for `dtm-vertico-next-group-a'.")
