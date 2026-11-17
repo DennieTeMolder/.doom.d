@@ -2339,12 +2339,20 @@ Will return nil when beyond end of defun, contrary to `beginning-of-defun'."
   (interactive
    (list (read-string "Git user: " (magit-get "user.name"))
          (read-string "Git email: " (magit-get "user.email"))))
-  (when (< 0 (length name))
+  (when (length> name 0)
     (magit-set name "user.name"))
-  (when (< 0 (length email))
+  (when (length> email 0)
     (magit-set email "user.email"))
   (when (eq major-mode 'magit-status-mode)
     (magit-refresh)))
+
+(defun dtm/magit-set-local-user-default ()
+  "Run `dtm/magit-set-local-user' with default values."
+  (interactive)
+  (let ((name "DennieTeMolder")
+        (email "51680200+DennieTeMolder@users.noreply.github.com"))
+    (when (y-or-n-p (format "Change git user to '%s <%s>'" name email))
+      (dtm/magit-set-local-user name email))))
 
 ;;* Lsp/Eglot
 (defvar dtm-lsp-ignored-modes '()
