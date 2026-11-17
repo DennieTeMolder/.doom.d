@@ -337,11 +337,14 @@
 (with-eval-after-load 'projectile
   ;; Projectile sorting by recently opened
   (setq projectile-sort-order 'recently-active
+        projectile-enable-caching t      ; Disable persistent cache
         projectile-auto-update-cache nil ; Can make deleting files slow
-        ;; Replace the doom-project-ignored-p function to ignore remote projects
         projectile-ignored-project-function #'dtm-project-ignored-p)
 
-  ;; Define a generic project as we ignore dotfiles for syncing
+  ;; HACK: Skip running `projectile-project-root-functions' when `dtm-project-ignored-p'
+  (advice-add 'projectile-project-root :before-while #'dtm-projectile-project-root-a)
+
+  ;; Define a generic project as hidden files are not synced on cloud drives
   (projectile-register-project-type 'generic '("PROJECT") :project-file "PROJECT"))
 
 (with-eval-after-load 'recentf

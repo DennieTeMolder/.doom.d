@@ -350,15 +350,20 @@ Intended for `persp-renamed-functions'."
 (defvar dtm-project-ignore-regex nil
   "Regex string matching the root of projects to ignore.")
 
-(defun dtm-project-ignored-p (project-root)
-  "Return non-nil PROJECT-ROOT is remote, temporary, or in `dtm-true-emacs-dir'.
+(defun dtm-project-ignored-p (path)
+  "Return non-nil PATH is remote, temporary, or in `dtm-true-emacs-dir'.
 Also checks against `dtm-project-ignore-regex'."
-  (if (file-remote-p project-root) t
-    (setq project-root (file-truename project-root))
-    (or (string-prefix-p temporary-file-directory project-root)
-        (string-prefix-p dtm-true-emacs-dir project-root)
+  (if (or (not path) (file-remote-p path)) 't
+    (setq path (file-truename path))
+    (or (string-prefix-p temporary-file-directory path)
+        (string-prefix-p dtm-true-emacs-dir path)
         (and dtm-project-ignore-regex
-             (string-match-p dtm-project-ignore-regex project-root)))))
+             (string-match-p dtm-project-ignore-regex path)))))
+
+(defun dtm-projectile-project-root-a (&optional dir)
+  "Prevent potentially expensive Projecile root-dir lookup on ignored paths.
+Intended as `projectile-project-root' :before-while advice."
+  (not (dtm-project-ignored-p (or dir default-directory))))
 
 ;;* Doom-modeline
 (defun dtm-doom-modeline-evil-update-visual (&optional arg)
