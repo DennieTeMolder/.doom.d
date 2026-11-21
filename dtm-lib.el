@@ -1941,15 +1941,16 @@ Alternative `conda-env-activate-for-buffer' that prompts before activation."
 Intended as `ctrlf-change-search-style' :after advice."
   (when (eq style 'rx)
     (let* ((contents (minibuffer-contents-no-properties))
-           (empty-p (length= contents 0))
-           (q? (if empty-p "" "\"")))
-      (setq contents (replace-regexp-in-string q? "\\\\\"" contents))
-      (delete-minibuffer-contents)
-      (insert (concat "(seq " q? contents q? ")"))
+           (empty-p (string-empty-p contents)))
+      (unless empty-p
+        (delete-minibuffer-contents)
+        (let* ((q "\"")
+               (escaped (string-replace q (concat "\\" q) contents)))
+          (setq contents (concat q escaped q))))
+      (insert (format "(seq %s)" contents))
       (backward-char (if empty-p 1 2)))
     (dolist (hook eval-expression-minibuffer-setup-hook)
-      (unless (and (symbolp hook)
-                   (string-match-p "eldoc" (symbol-name hook)))
+      (unless (and (symbolp hook) (string-prefix-p "eldoc-" (symbol-name hook)))
         (funcall hook)))))
 
 (defun dtm-ctrlf-evil-remember-a (str)
@@ -1989,17 +1990,16 @@ Intended as `ctrlf--evil-set-jump' :override advice. "
   "Run `evil-ex' substitute with the current/last CTRLF search query.
 Ref: `ctrlf-occur'."
   (interactive)
-  (let ((input (if ctrlf--active-p
-                   (minibuffer-contents-no-properties)
-                 (car ctrlf-search-history))))
-    (unless input (user-error "No previous search"))
-    (let* ((translator (plist-get
-                        (alist-get ctrlf--style ctrlf-style-alist)
-                        :translator))
-           (regexp (funcall translator input)))
-      (save-excursion
-        (with-current-buffer (window-buffer (minibuffer-selected-window))
-          (evil-ex (concat (if (region-active-p) "'<,'>" "%") "s/" regexp "/")))))))
+  (let* ((input (if ctrlf--active-p
+                    (minibuffer-contents-no-properties)
+                  (or (car ctrlf-search-history)
+                      (user-error "No previous search"))))
+         (translator (plist-get (alist-get ctrlf--style ctrlf-style-alist)
+                                :translator))
+         (regexp (funcall translator input)))
+    (save-excursion
+      (with-current-buffer (window-buffer (minibuffer-selected-window))
+        (evil-ex (concat (if (region-active-p) "'<,'>" "%") "s/" regexp "/"))))))
 
 (defun dtm/ctrlf-yank-word-or-char ()
   "CTRLF version of `isearch-yank-word-or-char' (C-w).
@@ -2017,8 +2017,7 @@ Ref: https://github.com/radian-software/ctrlf/issues/65"
 (defun dtm/ctrlf-toggle-word ()
   "Toggle CTRLF style to `word' or back to `literal'."
   (interactive)
-  (require 'ctrlf)
-  (setq ctrlf--style (if (eq ctrlf--style 'word) 'literal 'word)))
+  (setq ctrlf--style (if (eq ctrlf--style 'word) ctrlf-default-search-style 'word)))
 
 (defun dtm-ctrlf-backward (style &optional preserve initial-contents position fallback)
   "Wrapper for `ctrlf-backward' with same args as `ctrlf-forward'."
