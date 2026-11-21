@@ -226,6 +226,26 @@ See also: `split-window-sensibly'"
   (recenter)
   (dtm-scroll-hide-eob))
 
+;;* Dir-locals
+(defun dtm-dir-locals-find-file-a (orig-fn &rest args)
+  "Disable recursive file searches in `dired-mode' buffers.
+Recursive paths in `dir-locals-directory-cache' are still returned.
+Intended as `dir-locals-find-file' :around advice."
+  ;; REVIEW: should this apply more generally?
+  (if (derived-mode-p 'dired-mode)
+      ;; Only search in `default-directory' for speed
+      (letf! ((defun! locate-dominating-file (file name)
+                (setq file (expand-file-name file))
+                (when (and (not (directory-name-p file))
+                           (file-directory-p file))
+                  (setq file (file-name-as-directory file)))
+                (when (if (stringp name)
+                          (file-exists-p (expand-file-name name file))
+                        (funcall name file))
+                  file)))
+        (apply orig-fn args))
+    (apply orig-fn args)))
+
 ;;* Theme recommendations
 (defvar dtm-first-hour-of-day 7
   "First hour of the day as integer")

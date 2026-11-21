@@ -200,6 +200,9 @@
         ("Anaconda packages" "https://anaconda.org/search?q=%s")))
 
 ;;* Core functionality modifications
+;; HACK: make .dir-locals search non-recursive in `dired-mode'
+(advice-add 'dir-locals-find-file :around #'dtm-dir-locals-find-file-a)
+
 (with-eval-after-load 'evil
   ;; Enable granular undo (remembers delete actions during insert state)
   (setq evil-want-fine-undo t
