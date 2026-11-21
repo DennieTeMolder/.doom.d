@@ -840,7 +840,10 @@
   (advice-add 'jinx-next :after (lambda (_) (backward-char))))
 
 (with-eval-after-load 'magit
+  (setq magit-diff-refine-hunk 'all)    ; Potentially slow
+
   (add-hook 'magit-status-headers-hook #'magit-insert-user-header 'append)
+  (add-hook 'magit-section-movement-hook #'+nav-flash-blink-cursor 'append)
 
   ;; We already have `cape-dabbrev' installed
   (remove-hook 'git-commit-setup-hook #'git-commit-setup-capf)

@@ -2399,6 +2399,35 @@ Will return nil when beyond end of defun, contrary to `beginning-of-defun'."
     (when (y-or-n-p (format "Change git user to '%s <%s>'" name email))
       (dtm/magit-set-local-user name email))))
 
+(defvar dtm-magit-nonessential-funcions
+  '(magit-insert-status-headers
+    magit-insert-untracked-files
+    magit-insert-unpushed-to-pushremote
+    magit-insert-unpushed-to-upstream-or-recent
+    magit-insert-unpulled-from-pushremote
+    magit-insert-unpulled-from-upstream)
+  "List of (expensive) non-essential Magit functions.")
+
+(defvar dtm-magit-status-sections-original nil
+  "Original value of `magit-status-sections-hook'.")
+
+(defun dtm/magit-status-toggle-sections ()
+  "Toggle activation of `dtm-magit-nonessential-funcions' in `magit-status'."
+  (interactive)
+  (if dtm-magit-status-sections-original
+      (setq magit-status-sections-hook dtm-magit-status-sections-original
+            dtm-magit-status-sections-original nil)
+    (setq dtm-magit-status-sections-original
+          (copy-sequence magit-status-sections-hook))
+    (dolist (fn dtm-magit-nonessential-funcions)
+      (remove-hook 'magit-status-sections-hook fn)))
+  (if (eq major-mode 'magit-status-mode)
+      (if dtm-magit-status-sections-original
+          (message "Magit: showing fewer sections on next refresh")
+        (magit-refresh))
+    (message "Magit: showing %s sections"
+             (if dtm-magit-status-sections-original "fewer" "all"))))
+
 ;;* Eldoc
 (defun dtm-eldoc-help-at-point ()
   "Doom compatible version of `eldoc-print-current-symbol-info'.

@@ -65,8 +65,10 @@
        :desc "Delete this file"       "D" #'dtm/delete-this-file
        :desc "Yank working directory" "w" #'dtm/yank-default-directory)
 
-      ;; Git - reuse status buffer if it wasn't closed with "q"
-      :desc "Magit status" "g g" #'magit-status-quick
+      ;; Git
+      (:prefix "g"
+       :desc "Toggle status sections" "t" #'dtm/magit-status-toggle-sections
+       :desc "Git time machine"       "T" #'git-timemachine-toggle)
 
       ;; Help
       :desc "Keymap" "h b k" #'embark-bindings-in-keymap
