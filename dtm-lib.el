@@ -2440,7 +2440,11 @@ Intended for `+lookup-documentation-functions'."
     (eldoc--invoke-strategy nil))
   (when (and (buffer-live-p eldoc--doc-buffer)
              (> (buffer-size eldoc--doc-buffer) 0))
-    (select-window (eldoc-doc-buffer t))))
+    (or (with-current-buffer eldoc--doc-buffer
+          (when (save-excursion (goto-char (point-min)) (end-of-line) (eobp))
+            (funcall eldoc-message-function (buffer-string))
+            'deferred))
+        (select-window (eldoc-doc-buffer t)))))
 
 ;;* Lsp/Eglot
 (defvar dtm-lsp-ignored-modes '()
