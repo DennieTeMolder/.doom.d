@@ -373,7 +373,10 @@
   (advice-add 'evil-visual-highlight :after #'dtm-doom-modeline-evil-update-visual))
 
 (with-eval-after-load 'which-key
-  (setq-hook! 'which-key-init-buffer-hook line-spacing 3))
+  (setq-hook! 'which-key-init-buffer-hook line-spacing 3)
+
+  (add-to-list 'doom-which-key-trim-prefixes
+               (rx  (seq bol "dtm" (any "/-") (? "outline-")))))
 
 (with-eval-after-load 'vertico
   (setq vertico-resize 'grow-only
