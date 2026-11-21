@@ -109,6 +109,22 @@ Ref: lisp/doom-straight.el")
         (setq load-path (cons pkg-path (delete pkg-path load-path)))
       (warn "Could not find: %s" pkg-path))))
 
+(defmacro dtm-profile (&rest body)
+  "Profile CPU usage of BODY."
+  `(unwind-protect (progn
+                     (profiler-start 'cpu)
+                     ,@body)
+     (profiler-stop)
+     (profiler-report)))
+
+(defun dtm-face-redefine (face &rest spec)
+  "Redefine SPEC of FACE defined by `defface'.
+SPEC can either be a \"face spec\" like `defface', multiple attribute-value
+pairs like `set-face-attribute', or a plist."
+  (when (length< spec 2) (setq spec (car spec)))
+  (unless (listp (car-safe spec)) (setq spec `((t ,spec))))
+  (face-spec-set face spec 'face-defface-spec))
+
 ;;* General advice
 (defun dtm-ignore-user-error-a (orig-fun &rest args)
   "Calls ORIG-FUN with ARGS, return nil when an `user-error' is raised.
@@ -121,17 +137,17 @@ Intended as :around advice (e.g. for capf functions)."
   "Call ORIG-FN without undo and reset `buffer-undo-list'.
 Intended as :around advice."
   (buffer-disable-undo)
-  (apply orig-fn args)
-  (buffer-enable-undo)
-  (setq buffer-undo-list nil))
+  (unwind-protect (apply orig-fn args)
+    (setq buffer-undo-list nil)
+    (buffer-enable-undo)))
 
 (defun dtm-y-or-n-p-trash-a (orig-fun &rest args)
   "Replace delete by trashed in `y-or-n-p' prompts within ORIG-FUN.
 Respects `delete-by-moving-to-trash'. Intended as :around advice."
   (letf! ((defadvice y-or-n-p (:filter-args (args))
-            (if delete-by-moving-to-trash
-                (list (string-replace "delete" "trash" (car args)))
-              args)))
+            (when delete-by-moving-to-trash
+              (setcar args (string-replace "delete" "trash" (car args))))
+            args))
     (apply orig-fun args)))
 
 (defun dtm-cusomize-save-ignore-a (orig-fn &rest args)

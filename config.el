@@ -156,6 +156,8 @@
      :icon (nerd-icons-octicon "nf-oct-book" :face '+dashboard-menu-title)
      :action doom/help)))
 
+(dtm-face-redefine 'minibuffer-nonselected :inherit 'isearch-fail)
+
 (defalias 'hide-modeline-mode #'mode-line-invisible-mode)
 
 ;;* General Doom Settings
@@ -178,7 +180,7 @@
 (remove-hook 'doom-first-input-hook #'global-hl-line-mode)
 
 ;; Make current line more visible
-(custom-set-faces! '(line-number-current-line :weight bold))
+(set-face-attribute 'line-number-current-line nil :weight 'bold)
 
 ;; Do not scroll horizontally if auto-fill-mode is active
 (setq-hook! 'auto-fill-mode-hook auto-hscroll-mode (not auto-fill-function))
@@ -743,9 +745,7 @@
   ;; Make q quit the ace window overlay
   (add-to-list 'aw-dispatch-alist '(?q keyboard-quit))
 
-  (custom-set-faces!
-    '(aw-leading-char-face
-      :weight bold :height 2.5 :foreground unspecified :inherit highlight))
+  (dtm-face-redefine 'aw-leading-char-face '(:inherit highlight :weight bold :height 2.5))
 
   (unless noninteractive (ace-window-posframe-mode +1)))
 
@@ -834,8 +834,7 @@
                        :underline (:style wave :color "#ff751a"))))
 
   ;; Move cursor back to what Evil considers as end of word
-  (advice-add 'jinx-next :after (lambda (_) (backward-char))
-              '((name . "backward-char"))))
+  (advice-add 'jinx-next :after (lambda (_) (backward-char))))
 
 (with-eval-after-load 'magit
   (add-hook 'magit-status-headers-hook #'magit-insert-user-header 'append)
@@ -1025,7 +1024,7 @@
                           (?* . "•")))
 
   ;; We use Iosevka expanded -> normal width gives narrower text
-  (custom-set-faces! '(org-modern-label :width normal :height 0.9))
+  (dtm-face-redefine 'org-modern-label :width 'normal :height 0.9)
 
   ;; Introduce `org-caption' face to enable spell checking
   (advice-add 'org-modern--make-font-lock-keywords :filter-return
@@ -1274,6 +1273,8 @@
 
   (add-hook 'emacs-lisp-mode-hook #'dtm-elisp-extend-imenu-h 'append)
 
+  (set-face-attribute 'elisp-shorthand-font-lock-face nil :foreground 'unspecified)
+
   (defalias 'elisp-mode #'emacs-lisp-mode))
 
 (with-eval-after-load 'elisp-mode
@@ -1389,7 +1390,7 @@
   (dolist (keyword '(ess-fl-keyword:fun-calls ess-fl-keyword:numbers ess-R-fl-keyword:F&T))
     (setf (alist-get keyword ess-R-font-lock-keywords) t))
 
-  (custom-set-faces! '(ess-numbers-face :inherit font-lock-number-face))
+  (dtm-face-redefine 'ess-numbers-face :inherit 'font-lock-number-face)
 
   ;; Improve lookup experience
   (set-lookup-handlers! '(ess-r-mode ess-julia-mode)
