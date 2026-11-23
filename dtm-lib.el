@@ -130,6 +130,11 @@ pairs like `set-face-attribute', or a plist."
   (unless (listp (car-safe spec)) (setq spec `((t ,spec))))
   (face-spec-set face spec 'face-defface-spec))
 
+(defmacro dtm-set-jump-maybe ()
+  "Register a jump of enclosing function was called interactively"
+  '(and (called-interactively-p 'any)
+        (better-jumper-set-jump)))
+
 ;;* General advice
 (defun dtm-ignore-user-error-a (orig-fun &rest args)
   "Calls ORIG-FUN with ARGS, return nil when an `user-error' is raised.
@@ -1732,9 +1737,7 @@ Intended as :before `ess--dbg-activate-overlays' advice."
   (interactive)
   (when (and (markerp dtm-ess-debug-previous-position)
              (buffer-live-p (marker-buffer dtm-ess-debug-previous-position)))
-    (and (bound-and-true-p better-jumper-mode)
-         (called-interactively-p 'interactive)
-         (better-jumper-set-jump))
+    (dtm-set-jump-maybe)
     (pop-to-buffer-same-window (marker-buffer dtm-ess-debug-previous-position))
     (goto-char (marker-position dtm-ess-debug-previous-position))
     (back-to-indentation)
@@ -1839,6 +1842,7 @@ Also prompts to activate a Conda env if executable is found."
   (interactive)
   (unless (use-region-p)
     (user-error "Region is not active!"))
+  (dtm-set-jump-maybe)
   (elpy-shell-send-region-or-buffer-and-step)
   (deactivate-mark)
   (elpy-shell--skip-to-next-code-line)
@@ -1848,6 +1852,7 @@ Also prompts to activate a Conda env if executable is found."
   "Send the current sexp or line and step."
   (interactive)
   (require 'elpy-shell)
+  (dtm-set-jump-maybe)
   (elpy-shell--nav-beginning-of-statement)
   (let ((start (point)))
     (python-nav-forward-sexp-safe)
@@ -1860,15 +1865,22 @@ Also prompts to activate a Conda env if executable is found."
     (elpy-shell--skip-to-next-code-line)
     (back-to-indentation)))
 
+(defun dtm/elpy-send-statement-and-step ()
+  "Send the current statement and step."
+  (interactive)
+  (require 'elpy-shell)
+  (dtm-set-jump-maybe)
+  (elpy-shell-send-statement-and-step))
+
 (defun dtm/elpy-send-dwim-and-step (&optional no-recenter)
   "Send current region, statement, or sexp to Python shell and step.
 Call `recenter' unless NO-RECENTER."
   (interactive)
-  (require 'elpy-shell)
+  (dtm-set-jump-maybe)
   (cond ((use-region-p)
          (dtm/elpy-send-region-and-step))
         ((python-info-statement-starts-block-p)
-         (elpy-shell-send-statement-and-step))
+         (dtm/elpy-send-statement-and-step))
         (t (dtm/elpy-send-sexp-and-step)))
   (unless no-recenter (recenter)))
 
@@ -2557,7 +2569,7 @@ Ref: `outline-indent--setup-outline' (outline-indent.el)"
 (defun dtm/outline-indent-forward-same-level (arg)
   "Move forward ARG lines with the same indentation."
   (interactive "p")
-  (better-jumper-set-jump)
+  (dtm-set-jump-maybe)
   (dtm-skip-comments-empty-lines)
   (or (dtm-outline-indent-wrapper #'outline-forward-same-level arg)
       ;; Same level failed, move to a line with less indentation
@@ -2569,7 +2581,7 @@ Ref: `outline-indent--setup-outline' (outline-indent.el)"
 (defun dtm/outline-indent-backward-same-level (arg)
   "Move backward ARG lines with the same indentation."
   (interactive "p")
-  (better-jumper-set-jump)
+  (dtm-set-jump-maybe)
   (or (dtm-outline-indent-wrapper #'outline-backward-same-level arg)
       (let ((lvl (dtm-outline-indent-level)))
         (while (and (dtm-outline-indent-wrapper #'outline-previous-visible-heading)
@@ -2579,20 +2591,20 @@ Ref: `outline-indent--setup-outline' (outline-indent.el)"
 (defun dtm/outline-indent-last-same-level ()
   "Move to the last line with the same indentation."
   (interactive)
-  (better-jumper-set-jump)
+  (dtm-set-jump-maybe)
   (dtm-skip-comments-empty-lines)
   (dtm-outline-indent-wrapper #'outline-forward-same-level 99999))
 
 (defun dtm/outline-indent-first-same-level ()
   "Move to the first line with the same indentation."
   (interactive)
-  (better-jumper-set-jump)
+  (dtm-set-jump-maybe)
   (dtm-outline-indent-wrapper #'outline-backward-same-level 99999))
 
 (defun dtm/outline-indent-up (arg)
   "Move up ARG indentation levels."
   (interactive "p")
-  (better-jumper-set-jump)
+  (dtm-set-jump-maybe)
   (dtm-outline-indent-wrapper #'outline-up-heading)
   (if (> arg 1)
       (dtm/outline-indent-up (1- arg))
@@ -2601,7 +2613,7 @@ Ref: `outline-indent--setup-outline' (outline-indent.el)"
 (defun dtm/outline-indent-up-to-level (to)
   "Call `dtm/outline-indent-up' till reaching level TO."
   (interactive "p")
-  (better-jumper-set-jump)
+  (dtm-set-jump-maybe)
   (let (lvl)
     (while (and (not (eq lvl (setq lvl (dtm-outline-indent-level))))
                 (> lvl to))
@@ -2611,7 +2623,7 @@ Ref: `outline-indent--setup-outline' (outline-indent.el)"
 (defun dtm/outline-indent-down (arg)
   "Move down ARG indentation levels."
   (interactive "p")
-  (better-jumper-set-jump)
+  (dtm-set-jump-maybe)
   (let ((lvl (dtm-outline-indent-level)))
     (while (and lvl (dtm-outline-indent-wrapper #'outline-next-visible-heading))
       (unless (or (eobp) (eq lvl (dtm-outline-indent-level)))
