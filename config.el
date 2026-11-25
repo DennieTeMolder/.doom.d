@@ -582,6 +582,7 @@
   (setq dirvish-hide-details t
         dirvish-reuse-session nil
         dirvish-input-debounce 0.2
+        dirvish-file-count-overflow 1000
         dirvish-history-sort-function #'dtm-dirvish-sort-history
         dirvish-mode-line-format
         '(:left (sort file-user " " file-time symlink) :right (yank omit index)))
