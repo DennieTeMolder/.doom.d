@@ -67,7 +67,7 @@
       ;; Code
       (:prefix "c"
        :desc "Toggle LSP hints"       "h" #'eglot-inlay-hints-mode
-       :desc "LSP start"              "l" #'eglot
+       :desc "LSP start"              "l" #'dtm/eglot-start
        :desc "LSP stop"               "L" #'eglot-shutdown
        :desc "Multi-edit symbol"      "m" #'evil-multiedit-match-all
        :desc "Describe error checker" "X" #'dtm/diagnostics-describe)

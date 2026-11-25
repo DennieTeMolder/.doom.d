@@ -2472,6 +2472,11 @@ Intended for `+lookup-documentation-functions'."
 Useful as `lsp!'/`eglot-current-server' :before-while advice."
   (not (member major-mode dtm-lsp-ignored-modes)))
 
+(defun dtm/eglot-start ()
+  (interactive)
+  (call-interactively #'eglot)
+  (message "Finished loading Eglot"))
+
 (defun dtm-eglot-managed-mode-h ()
   "Remove hook functions superseded by Eglot.
 Intended for `eglot-managed-mode-hook'."
