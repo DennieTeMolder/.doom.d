@@ -81,7 +81,6 @@
 ;;* Custom packages
 (package! tempel)
 (package! ess-r-insert-obj)
-(package! transpose-frame)
 (package! info-colors)
 (package! trashed)
 (package! ctrlf)

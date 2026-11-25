@@ -123,7 +123,7 @@
                                       "O" #'doom/window-enlargen
                                       "s" #'dtm/split-window-optimally
                                       "S" #'evil-window-split
-                                      "T" #'transpose-frame)
+                                      "T" #'window-layout-rotate-clockwise)
 
       ;; Workspace
       (:prefix "TAB"
