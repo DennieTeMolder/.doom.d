@@ -83,15 +83,16 @@ If NAME is not provided `buffer-file-name' is used."
 
 (defun dtm-code-line-p ()
   "Returns nil if current line is blank or a comment."
-  (eq (pos-bol) (save-excursion (forward-comment 1) (pos-bol))))
+  (save-excursion
+    (eq (goto-char (pos-bol))
+        (progn (forward-comment 1) (pos-bol)))))
 
-(defun dtm-skip-comments-empty-lines (&optional direction)
-  "Wrapper of `forward-comment' that takes DIRECTION."
-  (let ((factor (cond ((natnump (or direction 1)) 9999)
-                      ((dtm-code-line-p) 0)
-                      (t -9999))))
-    (unless (eq factor 0)
-      (forward-comment factor))))
+(defun dtm-skip-comments-blank-lines (&optional direction)
+  "Move in DIRECTION past comments and blank lines."
+  (cond ((natnump (or direction 1))
+         (forward-comment 9999))
+        ((not (dtm-code-line-p))
+         (forward-comment -9999))))
 
 (defun dtm-advice-list (symbol)
   "Return the list of functions advising SYMBOL."
@@ -937,7 +938,7 @@ Moves the point to the next non-empty line unless NO-STEP is non-nil."
       (+nav-flash-blink-cursor))
     (unless no-step
       (forward-line)
-      (dtm-skip-comments-empty-lines)
+      (dtm-skip-comments-blank-lines)
       (back-to-indentation))
     (save-selected-window
       (dtm/ghostel-other-window)
@@ -2527,117 +2528,102 @@ Intended as `nerd-icons-icon-for-dir' :override advice."
    (t (apply #'nerd-icons-sucicon "nf-custom-folder_oct" args))))
 
 ;;* Outline-indent
-(defun dtm-outline-indent-level ()
-  "Determine the outline level based on the current indentation."
-  (1+ (current-indentation)))
+(defun dtm-indent-move (count pred)
+  "Move forward until PRED returns non-nil COUNT times.
+PRED is a function with a single argument: the initial `current-indentation'.
+Negative COUNT moves backward. If PRED returns 'stop, abort immediately.
+Returns remaining count or -1 when aborted."
+  (let ((direction (if (natnump count) 1 -1))
+        (count (abs count))
+        (lvl (current-indentation))
+        (lvl-start (current-indentation))
+        (column (current-column)))
+    (dtm-skip-comments-blank-lines direction)
+    (while (and (> count 0)
+                (line-move direction))
+      (when-let* ((pred-val (funcall pred lvl)))
+        (if (eq pred-val 'stop)
+            (setq count -1)
+          (setq count (1- count)
+                lvl (current-indentation)))))
+    (if (eq lvl-start (current-indentation))
+        (move-to-column column)
+      (back-to-indentation))
+    count))
 
-(defun dtm-outline-indent-search (&optional bound move backward looking-at)
-  "Search for the next or previous outline heading.
-This replaces `outline-regexp' to provide a reliable structural search
-that strictly finds lines containing at least one non-whitespace character.
-BOUND, MOVE, BACKWARD, and LOOKING-AT are standard arguments for
-`outline-search-function'.
-Ref: `outline-indent--search-function' (outline-indent.el)"
-  (let ((regexp (rx line-start
-                    (group (zero-or-more (in " \t")))
-                    (not (in " \t\r\n")))))
-    (cond (looking-at (looking-at regexp))
-          (backward (re-search-backward regexp bound (if move 'move t)))
-          (t (re-search-forward regexp bound (if move 'move t))))))
-
-(defun dtm-outline-indent-wrapper (fun &optional count)
-  "Call `outline-mode' function FUN with ARGS with indentation based levels.
-Ref: `outline-indent--setup-outline' (outline-indent.el)"
-  (unless count (setq count 1))
-  (let ((outline-level #'dtm-outline-indent-level)
-        (outline-search-function #'dtm-outline-indent-search) ; Emacs29+
-        outline-heading-alist outline-minor-mode-highlight
-        ;; Inhibit additional jumps from being register (Ref: `doom-set-jump-a')
-        (evil--jumps-jumping t)
-        (better-jumper--jumping t)
-        (column (current-column))
-        (success-p 't)
-        (pt (point)))
-    (while (and success-p (> count 0))
-      (condition-case err
-          (progn (funcall fun 1)
-                 (if (eq pt (setq pt (point)))
-                     (setq success-p nil)
-                   (when (dtm-code-line-p)
-                     (setq count (1- count)))))
-        (error
-         (goto-char pt)
-         (setq success-p nil))))
-    (move-to-column column)
-    success-p))
-
-(defun dtm/outline-indent-forward-same-level (arg)
-  "Move forward ARG lines with the same indentation."
-  (interactive "p")
+(evil-define-motion dtm/indent-move-forward-same-level (count)
+  "Move forward COUNT lines with the same indentation level."
+  :type exclusive
   (dtm-set-jump-maybe)
-  (dtm-skip-comments-empty-lines)
-  (or (dtm-outline-indent-wrapper #'outline-forward-same-level arg)
-      ;; Same level failed, move to a line with less indentation
-      (let ((lvl (dtm-outline-indent-level)))
-        (while (and (dtm-outline-indent-wrapper #'outline-next-visible-heading)
-                    (< lvl (dtm-outline-indent-level))))
-        (back-to-indentation))))
+  (let (lvl-changed)
+    (dtm-indent-move
+     (or count 1)
+     (lambda (lvl)
+       (let ((ci (current-indentation)))
+         ;; Wait for indentation to change before triggering
+         (unless lvl-changed
+           (when (or (dtm-line-empty-p)
+                     (not (eq ci lvl)))
+             (setq lvl-changed t)))
+         ;; Return t when return to same lvl, stop when less indented
+         (and lvl-changed (dtm-code-line-p)
+              (or (eq ci lvl)
+                  (when (< ci lvl) 'stop))))))))
 
-(defun dtm/outline-indent-backward-same-level (arg)
-  "Move backward ARG lines with the same indentation."
-  (interactive "p")
+(evil-define-motion dtm/indent-move-backward-same-level (count)
+  "Move back COUNT lines with the same indentation level."
+  :type exclusive
   (dtm-set-jump-maybe)
-  (or (dtm-outline-indent-wrapper #'outline-backward-same-level arg)
-      (let ((lvl (dtm-outline-indent-level)))
-        (while (and (dtm-outline-indent-wrapper #'outline-previous-visible-heading)
-                    (< lvl (dtm-outline-indent-level))))
-        (back-to-indentation))))
+  (dtm/indent-move-forward-same-level (if count (- count) -1)))
 
-(defun dtm/outline-indent-last-same-level ()
-  "Move to the last line with the same indentation."
-  (interactive)
+(evil-define-motion dtm/indent-move-down (count)
+  "Move down COUNT indentation levels."
+  :type exclusive
   (dtm-set-jump-maybe)
-  (dtm-skip-comments-empty-lines)
-  (dtm-outline-indent-wrapper #'outline-forward-same-level 99999))
+  (dtm-indent-move
+   (or count 1)
+   (lambda (lvl)
+     (when (dtm-code-line-p)
+       (let ((ci (current-indentation)))
+         (or (> ci lvl)
+             (when (< ci lvl)
+               (line-move -1)
+               (dtm-skip-comments-blank-lines -1)
+               'stop)))))))
 
-(defun dtm/outline-indent-first-same-level ()
-  "Move to the first line with the same indentation."
-  (interactive)
+(evil-define-motion dtm/indent-move-up (count)
+  "Move up COUNT indentation levels."
+  :type exclusive
+  (setq count (- (or count 1)))
   (dtm-set-jump-maybe)
-  (dtm-outline-indent-wrapper #'outline-backward-same-level 99999))
+  (dtm-indent-move
+   count
+   (lambda (lvl)
+     (if (> lvl 0)
+         (and (dtm-code-line-p)
+              (< (current-indentation) lvl))
+       (dtm-skip-comments-blank-lines count)
+       'stop))))
 
-(defun dtm/outline-indent-up (arg)
-  "Move up ARG indentation levels."
-  (interactive "p")
+(evil-define-motion dtm/indent-move-block-end (direction)
+  "Move to the last line of the current indentation block."
+  :type line
+  (setq direction (if (natnump (or direction 1)) 1 -1))
   (dtm-set-jump-maybe)
-  (dtm-outline-indent-wrapper #'outline-up-heading)
-  (if (> arg 1)
-      (dtm/outline-indent-up (1- arg))
-    (back-to-indentation)))
+  (dtm-indent-move
+   direction
+   (lambda (lvl)
+     (when (and (dtm-code-line-p)
+                (< (current-indentation) lvl))
+       (line-move (- direction))
+       (dtm-skip-comments-blank-lines (- direction))
+       'stop))))
 
-(defun dtm/outline-indent-up-to-level (to)
-  "Call `dtm/outline-indent-up' till reaching level TO."
-  (interactive "p")
+(evil-define-motion dtm/indent-move-block-start ()
+  "Move to the first line of the current indentation block."
+  :type line
   (dtm-set-jump-maybe)
-  (let (lvl)
-    (while (and (not (eq lvl (setq lvl (dtm-outline-indent-level))))
-                (> lvl to))
-      (dtm-outline-indent-wrapper #'outline-up-heading)))
-  (back-to-indentation))
-
-(defun dtm/outline-indent-down (arg)
-  "Move down ARG indentation levels."
-  (interactive "p")
-  (dtm-set-jump-maybe)
-  (let ((lvl (dtm-outline-indent-level)))
-    (while (and lvl (dtm-outline-indent-wrapper #'outline-next-visible-heading))
-      (unless (or (eobp) (eq lvl (dtm-outline-indent-level)))
-        (when (>= lvl (dtm-outline-indent-level))
-          (dtm-outline-indent-wrapper #'outline-previous-visible-heading))
-        (setq lvl nil))))
-  (if (> arg 1)
-      (dtm/outline-indent-down (1- arg))
-    (back-to-indentation)))
+  (dtm/indent-move-block-end -1))
 
 ;;* Move-splitter
 (defun dtm-move-right-splitter (amount)

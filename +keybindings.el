@@ -23,13 +23,12 @@
        :nv "r" #'evil-lion-right)
 
       ;; Move by indentation
-      :m "gj" #'dtm/outline-indent-forward-same-level
-      :m "gk" #'dtm/outline-indent-backward-same-level
-      :m "gK" #'dtm/outline-indent-first-same-level
-      :m "gl" #'dtm/outline-indent-down
-      :m "gL" #'dtm/outline-indent-last-same-level
-      :m "gh" #'dtm/outline-indent-up
-      :m "gH" #'dtm/outline-indent-up-to-level
+      :m "gj" #'dtm/indent-move-forward-same-level
+      :m "gk" #'dtm/indent-move-backward-same-level
+      :m "gl" #'dtm/indent-move-down
+      :m "gh" #'dtm/indent-move-up
+      :m "gL" #'dtm/indent-move-block-end
+      :m "gH" #'dtm/indent-move-block-start
 
       ;; Use mouse buttons to go forward/backward through window configs
       :n [mouse-8] #'winner-undo
